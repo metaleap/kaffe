@@ -37,8 +37,8 @@ type User struct {
 	Auth     yodb.Ref[yoauth.UserAuth, yodb.RefOnDelCascade]
 	NickName yodb.Text
 	Btw      yodb.Text
-	BwtDt    yodb.DateTime
-	Buddies  yodb.Arr[yodb.I64]
+	BwtDt    *yodb.DateTime
+	Buddies  yodb.Arr[int64]
 }
 
 type Post struct {
