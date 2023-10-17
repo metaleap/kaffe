@@ -120,9 +120,9 @@ function qIn(x: QueryVal, ...set: QueryVal[]): QueryExpr { return { __yoQOp: 'IN
 
 const errsUserSignIn = ['TimedOut', '___yo_authLogin_AccountDoesNotExist', '___yo_authLogin_EmailInvalid', '___yo_authLogin_EmailRequiredButMissing', '___yo_authLogin_OkButFailedToCreateSignedToken', '___yo_authLogin_WrongPassword'] as const
 export type UserSignInErr = typeof errsUserSignIn[number]
-export async function callUserSignIn(payload: ApiAccountPayload, query?: {[_:string]:string}): Promise<Void> {
+export async function apiUserSignIn(payload: ApiAccountPayload, query?: {[_:string]:string}): Promise<Void> {
 	try {
-		return req<ApiAccountPayload, Void>('userSignIn', payload, query)
+		return req<ApiAccountPayload, Void>('_/userSignIn', payload, query)
 	} catch(err) {
 		if (err && err['body_text'] && (errsUserSignIn.indexOf(err.body_text) >= 0))
 			throw(new Err<UserSignInErr>(err.body_text as UserSignInErr))
@@ -132,9 +132,9 @@ export async function callUserSignIn(payload: ApiAccountPayload, query?: {[_:str
 
 const errsUserSignOut = ['TimedOut'] as const
 export type UserSignOutErr = typeof errsUserSignOut[number]
-export async function callUserSignOut(payload: Void, query?: {[_:string]:string}): Promise<Void> {
+export async function apiUserSignOut(payload: Void, query?: {[_:string]:string}): Promise<Void> {
 	try {
-		return req<Void, Void>('userSignOut', payload, query)
+		return req<Void, Void>('_/userSignOut', payload, query)
 	} catch(err) {
 		if (err && err['body_text'] && (errsUserSignOut.indexOf(err.body_text) >= 0))
 			throw(new Err<UserSignOutErr>(err.body_text as UserSignOutErr))
@@ -144,9 +144,9 @@ export async function callUserSignOut(payload: Void, query?: {[_:string]:string}
 
 const errsUserSignUp = ['DbWriteRequestAcceptedWithoutErrButNotStoredEither', 'TimedOut', '___yo_authLogin_AccountDoesNotExist', '___yo_authLogin_EmailInvalid', '___yo_authLogin_EmailRequiredButMissing', '___yo_authLogin_OkButFailedToCreateSignedToken', '___yo_authLogin_WrongPassword', '___yo_authRegister_EmailAddrAlreadyExists', '___yo_authRegister_EmailInvalid', '___yo_authRegister_EmailRequiredButMissing', '___yo_authRegister_PasswordInvalid', '___yo_authRegister_PasswordTooLong', '___yo_authRegister_PasswordTooShort'] as const
 export type UserSignUpErr = typeof errsUserSignUp[number]
-export async function callUserSignUp(payload: ApiAccountPayload, query?: {[_:string]:string}): Promise<User> {
+export async function apiUserSignUp(payload: ApiAccountPayload, query?: {[_:string]:string}): Promise<User> {
 	try {
-		return req<ApiAccountPayload, User>('userSignUp', payload, query)
+		return req<ApiAccountPayload, User>('_/userSignUp', payload, query)
 	} catch(err) {
 		if (err && err['body_text'] && (errsUserSignUp.indexOf(err.body_text) >= 0))
 			throw(new Err<UserSignUpErr>(err.body_text as UserSignUpErr))
@@ -156,9 +156,9 @@ export async function callUserSignUp(payload: ApiAccountPayload, query?: {[_:str
 
 const errsUserUpdate = ['DbUpdExpectedIdGt0', 'DbUpdate_ExpectedChangesForUpdate', 'DbUpdate_ExpectedQueryForUpdate', 'DbWriteRequestAcceptedWithoutErrButNotStoredEither', 'TimedOut', 'Unauthorized'] as const
 export type UserUpdateErr = typeof errsUserUpdate[number]
-export async function callUserUpdate(payload: ApiUpdateArgs_haxsh_app_User_, query?: {[_:string]:string}): Promise<Void> {
+export async function apiUserUpdate(payload: ApiUpdateArgs_haxsh_app_User_, query?: {[_:string]:string}): Promise<Void> {
 	try {
-		return req<ApiUpdateArgs_haxsh_app_User_, Void>('userUpdate', payload, query)
+		return req<ApiUpdateArgs_haxsh_app_User_, Void>('_/userUpdate', payload, query)
 	} catch(err) {
 		if (err && err['body_text'] && (errsUserUpdate.indexOf(err.body_text) >= 0))
 			throw(new Err<UserUpdateErr>(err.body_text as UserUpdateErr))
