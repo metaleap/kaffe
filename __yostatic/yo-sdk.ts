@@ -155,9 +155,9 @@ export async function callUserSignUp(payload: ApiAccountPayload, query?: {[_:str
 
 export const errsUserUpdate = ['DbUpdExpectedIdGt0', 'DbUpdate_ExpectedChangesForUpdate', 'DbUpdate_ExpectedQueryForUpdate', 'DbWriteRequestAcceptedWithoutErrButNotStoredEither', 'TimedOut', 'Unauthorized'] as const
 export type UserUpdateErr = typeof errsUserUpdate[number]
-export async function callUserUpdate(payload: ApiUpdateArgs_main_User_, query?: {[_:string]:string}): Promise<Void> {
+export async function callUserUpdate(payload: ApiUpdateArgs_haxsh_app_User_, query?: {[_:string]:string}): Promise<Void> {
 	try {
-		return req<ApiUpdateArgs_main_User_, Void>('userUpdate', payload, query)
+		return req<ApiUpdateArgs_haxsh_app_User_, Void>('userUpdate', payload, query)
 	} catch(err) {
 		if (err && err['body_text'] && (errsUserUpdate.indexOf(err.body_text) >= 0))
 			throw(new Err<UserUpdateErr>(err.body_text as UserUpdateErr))
@@ -176,7 +176,7 @@ export type User = {
 	NickName: string
 }
 
-export type ApiUpdateArgs_main_User_ = {
+export type ApiUpdateArgs_haxsh_app_User_ = {
 	Changes: User
 	Id: I64
 	IncludingEmptyOrMissingFields: boolean
