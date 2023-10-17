@@ -37,23 +37,22 @@ type User struct {
 func apiUserSignUp(this *ApiCtx[yoauth.ApiAccountPayload, User]) {
 	this.Ctx.DbTx()
 
-	auth := Call(this.Ctx, yoauth.ApiUserRegister, this.Args)
+	auth := Do(yoauth.ApiUserRegister, this.Ctx, this.Args)
 	var user User
 	user.Auth.SetId(auth.Id)
 	if user.Id = yodb.CreateOne(this.Ctx, &user); user.Id <= 0 {
 		panic(ErrDbNotStored)
 	}
-	_ = Call(this.Ctx, apiUserSignIn, this.Args)
+	_ = Do(apiUserSignIn, this.Ctx, this.Args)
 	this.Ret = &user
 }
 
 func apiUserSignOut(this *ApiCtx[Void, Void]) {
-	_ = Call(this.Ctx, yoauth.ApiUserLogout, this.Args)
+	_ = Do(yoauth.ApiUserLogout, this.Ctx, this.Args)
 }
 
 func apiUserSignIn(this *ApiCtx[yoauth.ApiAccountPayload, Void]) {
-	this.Ctx.DbTx()
-	_ = Call(this.Ctx, yoauth.ApiUserLogin, this.Args)
+	_ = Do(yoauth.ApiUserLogin, this.Ctx, this.Args)
 }
 
 func apiUserUpdate(this *ApiCtx[yodb.ApiUpdateArgs[User], Void]) {
