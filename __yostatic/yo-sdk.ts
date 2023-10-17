@@ -153,7 +153,7 @@ export async function callUserSignUp(payload: ApiAccountPayload, query?: {[_:str
 	}
 }
 
-export const errsUserUpdate = ['DbUpdate_ExpectedChangesForUpdate', 'DbUpdate_ExpectedQueryForUpdate', 'DbWriteRequestAcceptedWithoutErrButNotStoredEither', 'ErrDbUpdExpectedIdGt0', 'TimedOut', 'Unauthorized'] as const
+export const errsUserUpdate = ['DbUpdExpectedIdGt0', 'DbUpdate_ExpectedChangesForUpdate', 'DbUpdate_ExpectedQueryForUpdate', 'DbWriteRequestAcceptedWithoutErrButNotStoredEither', 'TimedOut', 'Unauthorized'] as const
 export type UserUpdateErr = typeof errsUserUpdate[number]
 export async function callUserUpdate(payload: ApiUpdateArgs_main_User_, query?: {[_:string]:string}): Promise<Void> {
 	try {

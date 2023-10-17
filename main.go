@@ -2,6 +2,8 @@ package main
 
 import (
 	"yo"
+
+	_ "haxsh/app"
 )
 
 func main() {
