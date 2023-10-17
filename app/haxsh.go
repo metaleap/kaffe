@@ -6,7 +6,7 @@ import (
 )
 
 func Init(staticFsApp fs.FS) {
-	yosrv.StaticFileServes["_/files/"] = staticFsApp
+	yosrv.StaticFileServes["__static"] = staticFsApp
 }
 
 func OnBeforeListenAndServe() {
