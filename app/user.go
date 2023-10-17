@@ -14,6 +14,8 @@ var checkSignedIn = Pair[Err, func(*Ctx) bool]{ErrUnauthorized, yoauth.Currently
 
 func init() {
 	yodb.Ensure[User, UserField]("", nil)
+	yodb.Ensure[Post, PostField]("", nil)
+
 	Apis(ApiMethods{
 		"userSignOut": Api(apiUserSignOut, PkgInfo).
 			CouldFailWith(":" + yoauth.MethodPathLogout),
@@ -32,9 +34,25 @@ type User struct {
 	Id      yodb.I64
 	Created *yodb.DateTime
 
-	Auth      yodb.Ref[yoauth.UserAuth, yodb.RefOnDelCascade]
-	EmailAddr yodb.Text
-	NickName  yodb.Text
+	Auth     yodb.Ref[yoauth.UserAuth, yodb.RefOnDelCascade]
+	NickName yodb.Text
+	Btw      yodb.Text
+	BwtDt    yodb.DateTime
+	Buddies  yodb.Arr[yodb.I64]
+}
+
+type Post struct {
+	Id      yodb.I64
+	Created *yodb.DateTime
+
+	Md    yodb.Text
+	Files yodb.Arr[struct {
+		Id   string
+		Name string
+	}]
+
+	User yodb.Ref[User, yodb.RefOnDelCascade]
+	Rcpt yodb.Arr[yodb.I64]
 }
 
 func apiUserSignUp(this *ApiCtx[yoauth.ApiAccountPayload, User]) {
