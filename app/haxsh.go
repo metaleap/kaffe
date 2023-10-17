@@ -1,5 +1,13 @@
 package haxsh
 
-func Init() {}
+import (
+	"io/fs"
+	yosrv "yo/srv"
+)
 
-func OnBeforeListenAndServe() {}
+func Init(staticFsApp fs.FS) {
+	yosrv.StaticFileServes["_/files/"] = staticFsApp
+}
+
+func OnBeforeListenAndServe() {
+}

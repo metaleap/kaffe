@@ -15,13 +15,13 @@ var checkSignedIn = Pair[Err, func(*Ctx) bool]{ErrUnauthorized, yoauth.Currently
 func init() {
 	yodb.Ensure[User, UserField]("", nil)
 	Apis(ApiMethods{
-		"userSignOut": Api(apiUserSignOut, PkgInfo).
+		"_/userSignOut": Api(apiUserSignOut, PkgInfo).
 			CouldFailWith(":" + yoauth.MethodPathLogout),
-		"userSignUp": Api(apiUserSignUp, PkgInfo).
+		"_/userSignUp": Api(apiUserSignUp, PkgInfo).
 			CouldFailWith(":"+yoauth.MethodPathRegister, ":userSignIn"),
-		"userSignIn": Api(apiUserSignIn, PkgInfo).
+		"_/userSignIn": Api(apiUserSignIn, PkgInfo).
 			CouldFailWith(":" + yoauth.MethodPathLogin),
-		"userUpdate": Api(apiUserUpdate, PkgInfo,
+		"_/userUpdate": Api(apiUserUpdate, PkgInfo,
 			Fails{Err: ErrDbUpdExpectedIdGt0, If: UserUpdateId.LessOrEqual(0)},
 		).PreCheck(checkSignedIn).
 			CouldFailWith(":"+yodb.ErrSetDbUpdate, ErrDbNotStored),
