@@ -11,14 +11,12 @@ import (
 //go:embed __static
 var staticFsApp embed.FS
 
+//go:embed __yostatic
+var staticFsYo embed.FS
+
 func main() {
-	// data, err := staticFsApp.ReadFile("__static/haxsh.html")
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// println(">>>>>>>>>" + string(data))
-	haxsh.Init(staticFsApp)
-	doListenAndServe := yo.Init()
+	haxsh.Init()
+	doListenAndServe := yo.Init(staticFsApp, "__static", staticFsYo)
 	haxsh.OnBeforeListenAndServe()
 	doListenAndServe()
 }
