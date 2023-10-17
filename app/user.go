@@ -8,6 +8,8 @@ import (
 	. "yo/util"
 )
 
+const ctxKeyCurUser = "haxshCurUser"
+
 var checkSignedIn = Pair[Err, func(*Ctx) bool]{ErrUnauthorized, yoauth.CurrentlyLoggedIn}
 
 func init() {
@@ -30,8 +32,9 @@ type User struct {
 	Id      yodb.I64
 	Created *yodb.DateTime
 
-	Auth     yodb.Ref[yoauth.UserAuth, yodb.RefOnDelCascade]
-	NickName yodb.Text
+	Auth      yodb.Ref[yoauth.UserAuth, yodb.RefOnDelCascade]
+	EmailAddr yodb.Text
+	NickName  yodb.Text
 }
 
 func apiUserSignUp(this *ApiCtx[yoauth.ApiAccountPayload, User]) {
@@ -62,4 +65,14 @@ func apiUserUpdate(this *ApiCtx[yodb.ApiUpdateArgs[User], Void]) {
 		panic(ErrUnauthorized)
 	}
 	yodb.Update[User](this.Ctx, &this.Args.Changes, this.Args.IncludingEmptyOrMissingFields, nil)
+}
+
+func CurUser(ctx *Ctx) (ret *User) {
+	if ret = ctx.Get(ctxKeyCurUser, nil).(*User); ret == nil {
+		if _, user_auth_id := yoauth.CurrentlyLoggedInUser(ctx); user_auth_id != 0 {
+			ret = yodb.FindOne[User](ctx, UserColAuth.Equal(user_auth_id))
+			ctx.Set(ctxKeyCurUser, ret)
+		}
+	}
+	return
 }

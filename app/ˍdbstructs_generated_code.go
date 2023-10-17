@@ -6,19 +6,21 @@ import q "yo/db/query"
 type UserCol = q.C
 
 const (
-	UserColId       = UserCol("id_")
-	UserColCreated  = UserCol("created_")
-	UserColAuth     = UserCol("auth_")
-	UserColNickName = UserCol("nick_name_")
+	UserColId        = UserCol("id_")
+	UserColCreated   = UserCol("created_")
+	UserColAuth      = UserCol("auth_")
+	UserColEmailAddr = UserCol("email_addr_")
+	UserColNickName  = UserCol("nick_name_")
 )
 
 type UserField q.F
 
 const (
-	UserFieldId       UserField = "Id"
-	UserFieldCreated  UserField = "Created"
-	UserFieldAuth     UserField = "Auth"
-	UserFieldNickName UserField = "NickName"
+	UserFieldId        UserField = "Id"
+	UserFieldCreated   UserField = "Created"
+	UserFieldAuth      UserField = "Auth"
+	UserFieldEmailAddr UserField = "EmailAddr"
+	UserFieldNickName  UserField = "NickName"
 )
 
 func (me UserField) Asc() q.OrderBy               { return ((q.F)(me)).Asc() }

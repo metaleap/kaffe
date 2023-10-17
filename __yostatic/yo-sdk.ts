@@ -165,13 +165,14 @@ export async function callUserUpdate(payload: ApiUpdateArgs_haxsh_app_User_, que
 	}
 }
 
-export type UserField = 'Id' | 'Created' | 'Auth' | 'NickName'
+export type UserField = 'Id' | 'Created' | 'Auth' | 'EmailAddr' | 'NickName'
 
 export type UserAuthField = 'Id' | 'Created' | 'EmailAddr'
 
 export type User = {
 	Auth: I64
 	Created?: DateTime
+	EmailAddr: string
 	Id: I64
 	NickName: string
 }
