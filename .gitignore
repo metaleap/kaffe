@@ -1,0 +1,10 @@
+*.js
+
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+go.work
