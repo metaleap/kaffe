@@ -41,20 +41,6 @@ type User struct {
 	Buddies  yodb.Arr[int64]
 }
 
-type Post struct {
-	Id      yodb.I64
-	Created *yodb.DateTime
-
-	Md    yodb.Text
-	Files yodb.Arr[struct {
-		Id   string
-		Name string
-	}]
-
-	User yodb.Ref[User, yodb.RefOnDelCascade]
-	Rcpt yodb.Arr[yodb.I64]
-}
-
 func apiUserSignUp(this *ApiCtx[yoauth.ApiAccountPayload, User]) {
 	this.Ctx.DbTx()
 
