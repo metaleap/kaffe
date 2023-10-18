@@ -154,7 +154,7 @@ export async function apiUserSignUp(payload: ApiAccountPayload, query?: {[_:stri
 	}
 }
 
-const errsUserUpdate = ['DbUpdExpectedIdGt0', 'DbUpdate_ExpectedChangesForUpdate', 'DbUpdate_ExpectedQueryForUpdate', 'DbWriteRequestAcceptedWithoutErrButNotStoredEither', 'TimedOut', 'Unauthorized'] as const
+const errsUserUpdate = ['DbUpdExpectedIdGt0', 'DbUpdate_ExpectedChangesForUpdate', 'DbUpdate_ExpectedQueryForUpdate', 'DbWriteRequestAcceptedWithoutErrButNotStoredEither', 'TimedOut', 'Unauthorized', 'UserUpdate_NicknameAlreadyExists'] as const
 export type UserUpdateErr = typeof errsUserUpdate[number]
 export async function apiUserUpdate(payload: ApiUpdateArgs_haxsh_app_User_, query?: {[_:string]:string}): Promise<Void> {
 	try {
@@ -168,15 +168,15 @@ export async function apiUserUpdate(payload: ApiUpdateArgs_haxsh_app_User_, quer
 
 export type PostField = 'Id' | 'Created' | 'By' | 'To' | 'Md' | 'Files' | 'Repl'
 
-export type UserField = 'Id' | 'Created' | 'Auth' | 'NickName' | 'Btw' | 'BwtDt' | 'Buddies'
+export type UserField = 'Id' | 'Created' | 'Auth' | 'NickName' | 'Btw' | 'BtwDt' | 'Buddies'
 
 export type UserAuthField = 'Id' | 'Created' | 'EmailAddr'
 
 export type User = {
 	Auth: I64
 	Btw: string
+	BtwDt?: DateTime
 	Buddies: I64[]
-	BwtDt?: DateTime
 	Created?: DateTime
 	Id: I64
 	NickName: string

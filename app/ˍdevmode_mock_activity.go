@@ -80,34 +80,20 @@ func mockEnsureUser(i int) {
 	defer ctx.OnDone(nil)
 	ctx.DbTx()
 
-	is_every_11th, is_every_7th := ((i % 11) == 0), ((i % 7) == 0)
 	user := UserByEmailAddr(ctx, user_email_addr)
 	if user == nil { // not yet exists: create
 		auth_id := yoauth.UserRegister(ctx, user_email_addr, "foobar")
-		user = &User{NickName: If(is_every_11th, "", yodb.Text(user_email_addr[:str.Idx(user_email_addr, '@')]))}
+		user = &User{}
 		user.Auth.SetId(auth_id)
-		if user.Id = yodb.CreateOne[User](ctx, user); user.Id <= 0 {
-			panic(ErrDbNotStored)
+		// give new User a nickname and some btw
+		for col, fld := range map[UserCol]*yodb.Text{UserColNickName: &user.NickName, UserColBtw: &user.Btw} {
+			for *fld == "" {
+				if *fld = yodb.Text(mockGetFortune(If(col == UserColBtw, 123, 23), true)); yodb.FindOne[User](ctx, col.Equal(*fld)) != nil {
+					*fld = ""
+				}
+			}
 		}
-	}
-
-	// give a new nickname
-	for (!is_every_11th) && (user.NickName == "") {
-		if user.NickName = yodb.Text(mockGetFortune(22, true)); yodb.FindOne[User](ctx, UserColNickName.Equal(user.NickName)) != nil {
-			user.NickName = ""
-		}
-	}
-	if is_every_11th {
-		user.NickName = ""
-	}
-
-	if !is_every_7th { // give a new btw
-		for old_btw := user.Btw; (user.Btw == "") || (user.Btw == old_btw); user.Btw.Do(str.Trim) {
-			user.Btw = yodb.Text(mockGetFortune(88, false))
-		}
-	}
-
-	if len(user.Buddies) == 0 { // give user some buddies
+		// give new User some buddies
 		num_buddies := 3 + rand.Intn(22)
 		for i := 0; i < num_buddies; i++ {
 			var buddy *User
@@ -118,6 +104,10 @@ func mockEnsureUser(i int) {
 				buddy = yodb.FindOne[User](ctx, UserColId.Equal(buddy_id))
 			}
 			user.Buddies = append(user.Buddies, buddy.Id)
+		}
+
+		if user.Id = yodb.CreateOne[User](ctx, user); user.Id <= 0 {
+			panic(ErrDbNotStored)
 		}
 	}
 }

@@ -1,6 +1,8 @@
 package haxsh
 
 import (
+	"time"
+
 	. "yo/ctx"
 	yodb "yo/db"
 	yoauth "yo/feat_auth"
@@ -38,7 +40,7 @@ type User struct {
 	Auth     yodb.Ref[yoauth.UserAuth, yodb.RefOnDelCascade]
 	NickName yodb.Text
 	Btw      yodb.Text
-	BwtDt    *yodb.DateTime
+	BtwDt    *yodb.DateTime
 	Buddies  yodb.Arr[yodb.I64]
 }
 
@@ -76,6 +78,10 @@ func apiUserUpdate(this *ApiCtx[yodb.ApiUpdateArgs[User], Void]) {
 
 func UserUpdate(ctx *Ctx, upd *User, inclEmptyOrMissingFields bool) bool {
 	ctx.DbTx()
+	if upd.Btw.Do(str.Trim); (upd.Btw != "") && (upd.BtwDt == nil) {
+		upd.BtwDt = yodb.DtFrom(time.Now)
+	}
+	upd.Buddies.EnsureAllUnique()
 	if upd.NickName.Do(str.Trim); upd.NickName != "" {
 		if other := yodb.FindOne[User](ctx, UserColNickName.Equal(upd.NickName)); (other != nil) && ((other.Id != upd.Id) || (other.Auth.Id() != upd.Auth.Id())) {
 			panic(ErrUserUpdate_NicknameAlreadyExists)

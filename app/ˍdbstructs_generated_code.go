@@ -11,7 +11,7 @@ const (
 	UserColAuth     = UserCol("auth_")
 	UserColNickName = UserCol("nick_name_")
 	UserColBtw      = UserCol("btw_")
-	UserColBwtDt    = UserCol("bwt_dt_")
+	UserColBtwDt    = UserCol("btw_dt_")
 	UserColBuddies  = UserCol("buddies_")
 )
 
@@ -23,7 +23,7 @@ const (
 	UserFieldAuth     UserField = "Auth"
 	UserFieldNickName UserField = "NickName"
 	UserFieldBtw      UserField = "Btw"
-	UserFieldBwtDt    UserField = "BwtDt"
+	UserFieldBtwDt    UserField = "BtwDt"
 	UserFieldBuddies  UserField = "Buddies"
 )
 
