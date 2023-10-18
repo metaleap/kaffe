@@ -183,7 +183,7 @@ func mockSomeActivityPostSomething(ctx *Ctx, user *User) {
 				to = append(to, buddy_id)
 			}
 		}
-		println("TO:", len(to))
+		println("TOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO:" + str.FromInt(len(to)))
 	}
 
 	UserPost(ctx, user, md, in_reply_to, files, to)
