@@ -8,7 +8,6 @@ type UserCol = q.C
 const (
 	UserColId        = UserCol("id_")
 	UserColCreated   = UserCol("created_")
-	UserColAuth      = UserCol("auth_")
 	UserColPicFileId = UserCol("pic_file_id_")
 	UserColNick      = UserCol("nick_")
 	UserColBtw       = UserCol("btw_")
@@ -21,7 +20,6 @@ type UserField q.F
 const (
 	UserFieldId        UserField = "Id"
 	UserFieldCreated   UserField = "Created"
-	UserFieldAuth      UserField = "Auth"
 	UserFieldPicFileId UserField = "PicFileId"
 	UserFieldNick      UserField = "Nick"
 	UserFieldBtw       UserField = "Btw"
@@ -50,11 +48,9 @@ type PostCol = q.C
 const (
 	PostColId      = PostCol("id_")
 	PostColCreated = PostCol("created_")
-	PostColBy      = PostCol("by_")
 	PostColTo      = PostCol("to_")
 	PostColMd      = PostCol("md_")
 	PostColFiles   = PostCol("files_")
-	PostColRepl    = PostCol("repl_")
 )
 
 type PostField q.F
@@ -62,11 +58,9 @@ type PostField q.F
 const (
 	PostFieldId      PostField = "Id"
 	PostFieldCreated PostField = "Created"
-	PostFieldBy      PostField = "By"
 	PostFieldTo      PostField = "To"
 	PostFieldMd      PostField = "Md"
 	PostFieldFiles   PostField = "Files"
-	PostFieldRepl    PostField = "Repl"
 )
 
 func (me PostField) Asc() q.OrderBy               { return ((q.F)(me)).Asc() }

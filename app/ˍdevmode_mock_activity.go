@@ -24,7 +24,7 @@ const mockUsersNumTotal = 1444 // don't go higher than that due to limited numbe
 const mockUsersNumActiveMin = mockUsersNumTotal / 2
 const mockFilesDirPath = "__static/mockfiles"
 
-var mockUsersNumMaxBuddies = 22 + rand.Intn(44)
+var mockUsersNumMaxBuddies = 11 + rand.Intn(22)
 var mockUserPicFiles = []string{"user0.png", "user1.jpg", "user2.png", "user3.jpg", "user4.png", "user5.jpg", "user6.png", "user7.jpg"}
 var mockPostFiles = []string{"vid1.webm", "vid2.mp4", "vid3.mp4", "post1.jpg", "post10.png", "post11.jpg", "post12.jpg", "post13.png", "post14.jpg", "post15.jpg", "post16.png", "post17.png", "post18.png", "post19.jpg", "post2.jpg", "post20.png", "post21.webp", "post22.jpg", "post23.png", "post24.jpg", "post25.jpg", "post26.png", "post27.jpeg", "post28.jpg", "post29.jpg", "post3.jpg", "post30.jpg", "post31.webp", "post4.jpg", "post5.jpg", "post6.jpg", "post7.jpg", "post8.jpg", "post9.jpg"}
 var mockUsersAllById = map[yodb.I64]string{}
@@ -70,11 +70,11 @@ var mockActions = []string{ // don't reorder items with consulting/adapting the 
 }
 
 func mockSomeActivity() {
-	defer time.AfterFunc(time.Millisecond*time.Duration(111+rand.Intn(1111)), mockSomeActivity)
-	// we do about 1-3 dozen reqs per sec with the above and the `rand`ed goroutining of this func set up in `init`
+	defer time.AfterFunc(time.Millisecond*time.Duration(11+rand.Intn(111)), mockSomeActivity)
+	// we do about 11-33 dozen reqs per sec with the above and the `rand`ed goroutining of this func set up in `init`
 
 	action := mockActions[len(mockActions)-1] // default to the much-more-frequent-than-the-others-by-design action...
-	if rand.Intn(len(mockActions)) == 0 {     // ...except there's a 1-in-n chance for another action
+	if rand.Intn(len(mockActions)) <= 1 {     // ...except there's still a (just much-lower) chance for another action
 		action = mockActions[rand.Intn(len(mockActions))]
 	}
 
@@ -84,9 +84,6 @@ func mockSomeActivity() {
 		action = mockActions[0]
 	}
 	mockLock.Unlock()
-	if true && rand.Intn(2) == 0 {
-		action = mockActions[len(mockActions)-2]
-	}
 
 	ctx := NewCtxNonHttp(time.Minute, user_email_addr+" "+action)
 	defer ctx.OnDone(nil)
@@ -138,7 +135,7 @@ func mockSomeActivity() {
 }
 
 func mockSomeActivityChangeBuddy(ctx *Ctx, user *User, userEmailAddr string) {
-	if add_or_remove := rand.Intn(3); ((add_or_remove == 0) || (len(user.Buddies) > mockUsersNumMaxBuddies)) && (len(user.Buddies) > 0) {
+	if add_or_remove := rand.Intn(2); ((add_or_remove == 0) || (len(user.Buddies) > mockUsersNumMaxBuddies)) && (len(user.Buddies) > 0) {
 		user.Buddies = sl.WithoutIdx(user.Buddies, rand.Intn(len(user.Buddies)), true) // remove a buddy
 	} else { // add a buddy
 		var buddy_email_addr string
@@ -169,7 +166,8 @@ func mockSomeActivityPostSomething(ctx *Ctx, user *User) {
 		}
 	}
 
-	if max := len(user.Buddies) - 1; (rand.Intn(11) <= 3) && (max > 1) {
+	// addressing only some not all?
+	if max := len(user.Buddies) - 1; (rand.Intn(11) <= 4) && (max > 1) {
 		for to = make([]yodb.I64, 0, 1+rand.Intn(max-1)); len(to) < cap(to); {
 			if buddy_id := user.Buddies[rand.Intn(len(user.Buddies))]; !sl.Has(to, buddy_id) {
 				to = append(to, buddy_id)
@@ -177,8 +175,8 @@ func mockSomeActivityPostSomething(ctx *Ctx, user *User) {
 		}
 	}
 
-	// in reply to some other post?
-	if (true || (rand.Intn(11) <= 5)) && (len(user.Buddies) > 0) {
+	// in reply to some other post? (if so, changes `to` that post's `to`)
+	if (rand.Intn(11) <= 3) && (len(user.Buddies) > 0) {
 		if post := yodb.FindOne[Post](ctx,
 			PostColRepl.Equal(nil).And(PostColBy.In(user.Buddies.Anys()...).And(
 				PostColTo.Equal(nil).Or(q.JsonHas(PostColTo, q.That(user.Id))),
@@ -186,7 +184,7 @@ func mockSomeActivityPostSomething(ctx *Ctx, user *User) {
 		); post != nil {
 			to, in_reply_to = post.To, post.Id
 			if len(to) > 0 {
-				panic("YAY HOORAY!")
+				println(in_reply_to, "@", len(to), "x")
 			}
 		}
 	}
