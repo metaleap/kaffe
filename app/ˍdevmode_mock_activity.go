@@ -90,9 +90,6 @@ func mockSomeActivity() {
 	ctx.TimingsNoPrintInDevMode = true
 
 	user := UserByEmailAddr(ctx, user_email_addr)
-	if user.Nick == "" {
-		action = mockActions[1]
-	}
 	switch _ = user; action {
 	case "logInOrOut":
 		mockLock.Lock()
@@ -184,6 +181,9 @@ func mockSomeActivityPostSomething(ctx *Ctx, user *User) {
 			}
 		}
 		println("TOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO:" + str.FromInt(len(to)))
+		if len(to) > 1 {
+			panic(len(to))
+		}
 	}
 
 	UserPost(ctx, user, md, in_reply_to, files, to)
