@@ -15,7 +15,8 @@ import (
 	"yo/util/str"
 )
 
-const numMockUsers = 1234
+const mockUsersNumTotal = 2342
+const mockUsersNumActive = 123
 const mockFilesDirPath = "__static/mockfiles"
 
 var mockUserPicFiles = []string{
@@ -68,7 +69,7 @@ var mockPostFiles = []string{
 
 func init() {
 	devModeInitMockUsers = func() {
-		for i := 0; i < numMockUsers; i++ {
+		for i := 0; i < mockUsersNumTotal; i++ {
 			mockEnsureUser(i)
 		}
 	}
