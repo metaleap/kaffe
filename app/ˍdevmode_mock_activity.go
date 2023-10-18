@@ -162,7 +162,7 @@ func mockSomeActivityPostSomething(ctx *Ctx, user *User) {
 		md = ""
 	} // separate rands because can have file-only posts as well as text+file/s posts
 	if (md == "") || (rand.Intn(11) <= 2) {
-		for i := 0; i < rand.Intn(11); i++ {
+		for i := 0; i < If(rand.Intn(2) == 0, 1, 1+rand.Intn(11)); i++ {
 			file_name := mockPostFiles[rand.Intn(len(mockPostFiles))]
 			files = append(files, FileRef{Id: file_name, Name: file_name})
 		}
@@ -170,15 +170,15 @@ func mockSomeActivityPostSomething(ctx *Ctx, user *User) {
 	}
 
 	// in reply to some other post?
-	if rand.Intn(11) <= 2 {
-		if post := yodb.FindOne[Post](ctx, PostColBy.In(user.Buddies.ToAnys()...).And(PostColRepl.Equal(0))); post != nil {
+	if (rand.Intn(11) <= 2) && (len(user.Buddies) > 0) {
+		if post := yodb.FindOne[Post](ctx, PostColRepl.Equal(0).And(PostColBy.In(user.Buddies.Anys()...))); post != nil {
 			in_reply_to = post.Id
 			println("REPL2:", in_reply_to)
 		}
 	}
 
-	if rand.Intn(11) <= 3 {
-		for to = make([]yodb.I64, 0, 1+rand.Intn(len(user.Buddies)-2)); len(to) < cap(to); {
+	if max := len(user.Buddies) - 1; (rand.Intn(11) <= 3) && (max > 1) {
+		for to = make([]yodb.I64, 0, 1+rand.Intn(max-1)); len(to) < cap(to); {
 			if buddy_id := user.Buddies[rand.Intn(len(user.Buddies))]; !sl.Has(to, buddy_id) {
 				to = append(to, buddy_id)
 			}
