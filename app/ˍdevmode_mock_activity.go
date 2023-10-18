@@ -15,7 +15,7 @@ import (
 	"yo/util/str"
 )
 
-const mockUsersNumTotal = 2342
+const mockUsersNumTotal = 1448 // don't go higher than that due to limited number of `fortune`s (at nickname short length) for unique-nickname generation
 const mockUsersNumActive = 123
 const mockFilesDirPath = "__static/mockfiles"
 
@@ -76,8 +76,9 @@ func init() {
 }
 
 func mockEnsureUser(i int) {
+	yodb.PrintRawSqlInDevMode = false
 	user_email_addr := str.Fmt("foo%d@bar.baz", i)
-	ctx := NewDebugNoCatch(time.Minute, user_email_addr)
+	ctx := NewCtxDebugNoCatch(time.Minute, user_email_addr)
 	defer ctx.OnDone(nil)
 	ctx.DbTx()
 
@@ -95,8 +96,8 @@ func mockEnsureUser(i int) {
 			}
 		}
 		// give new User some buddies
-		num_buddies := 3 + rand.Intn(22)
-		for i := 0; i < num_buddies; i++ {
+		num_buddies := rand.Intn(23)
+		for len(user.Buddies) < num_buddies {
 			var buddy *User
 			for buddy_id := yodb.I64(0); buddy == nil; buddy_id = 0 {
 				for (buddy_id == 0) || (buddy_id == user.Id) || sl.Has(user.Buddies, buddy_id) {
