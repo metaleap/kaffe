@@ -40,12 +40,16 @@ func init() {
 				for mockUsersLoggedIn[user_email_addr] != nil {
 					user_email_addr = next_email_addr()
 				}
-				mockUsersLoggedIn[user_email_addr] = &http.Client{Timeout: time.Second}
+				mockUsersLoggedIn[user_email_addr] = newClient()
 			}
-			mockSomeActivity()
+			for i, num_parallel := 0, 11+rand.Intn(11); i < num_parallel; i++ {
+				time.AfterFunc(time.Second*time.Duration(i), mockSomeActivity)
+			}
 		}
 	}
 }
+
+func newClient() *http.Client { return &http.Client{Timeout: time.Second} }
 
 var mockActions = []Pair[string, func(*Ctx, *User)]{
 	{"logInOrOut", nil}, // this must be at index 0, see `mockSomeActivity`
@@ -57,11 +61,12 @@ var mockActions = []Pair[string, func(*Ctx, *User)]{
 }
 
 func mockSomeActivity() {
-	defer time.AfterFunc(time.Millisecond*time.Duration(11+rand.Intn(111)), mockSomeActivity)
+	defer time.AfterFunc(time.Millisecond*time.Duration(111+rand.Intn(1111)), mockSomeActivity)
 
 	user_email_addr := str.Fmt("foo%d@bar.baz", rand.Intn(mockUsersNumTotal))
 	do := mockActions[rand.Intn(len(mockActions))]
-	if (len(mockUsersLoggedIn) < mockUsersNumActiveMin) && (mockUsersLoggedIn[user_email_addr] == nil) {
+	is_logged_in := mockUsersLoggedIn[user_email_addr]
+	if (len(mockUsersLoggedIn) < mockUsersNumActiveMin) && (is_logged_in == nil) {
 		do = mockActions[0]
 	}
 
@@ -72,6 +77,11 @@ func mockSomeActivity() {
 	user := UserByEmailAddr(ctx, user_email_addr)
 	switch _ = user; do.Key {
 	case "logInOrOut":
+		if is_logged_in == nil {
+			mockUsersLoggedIn[user_email_addr] = newClient()
+		} else {
+			delete(mockUsersLoggedIn, user_email_addr)
+		}
 	case "changeBtw":
 	case "changeNick":
 	case "changePic":
@@ -83,7 +93,6 @@ func mockSomeActivity() {
 }
 
 func mockEnsureUser(i int) {
-	yodb.PrintRawSqlInDevMode = false
 	user_email_addr := str.Fmt("foo%d@bar.baz", i)
 	ctx := NewCtxNonHttp(time.Minute, user_email_addr)
 	defer ctx.OnDone(nil)
@@ -124,7 +133,6 @@ func mockEnsureUser(i int) {
 	}
 	mockUsersAllByEmail[user_email_addr] = user.Id
 	mockUsersAllById[user.Id] = user_email_addr
-	yodb.PrintRawSqlInDevMode = true
 }
 
 func mockGetFortune(maxLen int, ident bool) (ret string) {

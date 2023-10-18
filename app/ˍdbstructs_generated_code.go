@@ -6,25 +6,27 @@ import q "yo/db/query"
 type UserCol = q.C
 
 const (
-	UserColId       = UserCol("id_")
-	UserColCreated  = UserCol("created_")
-	UserColAuth     = UserCol("auth_")
-	UserColNickName = UserCol("nick_name_")
-	UserColBtw      = UserCol("btw_")
-	UserColBtwDt    = UserCol("btw_dt_")
-	UserColBuddies  = UserCol("buddies_")
+	UserColId        = UserCol("id_")
+	UserColCreated   = UserCol("created_")
+	UserColAuth      = UserCol("auth_")
+	UserColPicFileId = UserCol("pic_file_id_")
+	UserColNickName  = UserCol("nick_name_")
+	UserColBtw       = UserCol("btw_")
+	UserColBtwDt     = UserCol("btw_dt_")
+	UserColBuddies   = UserCol("buddies_")
 )
 
 type UserField q.F
 
 const (
-	UserFieldId       UserField = "Id"
-	UserFieldCreated  UserField = "Created"
-	UserFieldAuth     UserField = "Auth"
-	UserFieldNickName UserField = "NickName"
-	UserFieldBtw      UserField = "Btw"
-	UserFieldBtwDt    UserField = "BtwDt"
-	UserFieldBuddies  UserField = "Buddies"
+	UserFieldId        UserField = "Id"
+	UserFieldCreated   UserField = "Created"
+	UserFieldAuth      UserField = "Auth"
+	UserFieldPicFileId UserField = "PicFileId"
+	UserFieldNickName  UserField = "NickName"
+	UserFieldBtw       UserField = "Btw"
+	UserFieldBtwDt     UserField = "BtwDt"
+	UserFieldBuddies   UserField = "Buddies"
 )
 
 func (me UserField) Asc() q.OrderBy               { return ((q.F)(me)).Asc() }
