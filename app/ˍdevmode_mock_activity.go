@@ -12,6 +12,7 @@ import (
 
 	. "yo/ctx"
 	yodb "yo/db"
+	q "yo/db/query"
 	yoauth "yo/feat_auth"
 	. "yo/util"
 	"yo/util/sl"
@@ -175,15 +176,16 @@ func mockSomeActivityPostSomething(ctx *Ctx, user *User) {
 
 	// in reply to some other post?
 	if (rand.Intn(11) <= 5) && (len(user.Buddies) > 0) {
-		ctx.Db.PrintRawSqlInDevMode = true
 		if post := yodb.FindOne[Post](ctx,
 			PostColRepl.Equal(nil).And(PostColBy.In(user.Buddies.Anys()...).And(
-				PostColTo.Equal(nil), /*.Or(q.That(user.Id).InJsonArr(PostColTo))*/
+				PostColTo.Equal(nil).Or(q.JsonArrHas(PostColTo, q.That(user.Id))),
 			)),
 		); post != nil {
 			to, in_reply_to = post.To, post.Id
+			if len(to) > 0 {
+				panic("YAY HOORAY!")
+			}
 		}
-		ctx.Db.PrintRawSqlInDevMode = false
 	}
 
 	UserPost(ctx, user, md, in_reply_to, files, to)
