@@ -163,15 +163,6 @@ func mockSomeActivityPostSomething(ctx *Ctx, user *User) {
 			file_name := mockPostFiles[rand.Intn(len(mockPostFiles))]
 			files = append(files, FileRef{Id: file_name, Name: file_name})
 		}
-		println("FILES:", len(files))
-	}
-
-	// in reply to some other post?
-	if (rand.Intn(11) <= 2) && (len(user.Buddies) > 0) {
-		if post := yodb.FindOne[Post](ctx, PostColRepl.Equal(0).And(PostColBy.In(user.Buddies.Anys()...))); post != nil {
-			in_reply_to = post.Id
-			println("REPL2:", in_reply_to)
-		}
 	}
 
 	if max := len(user.Buddies) - 1; (rand.Intn(11) <= 3) && (max > 1) {
@@ -180,10 +171,20 @@ func mockSomeActivityPostSomething(ctx *Ctx, user *User) {
 				to = append(to, buddy_id)
 			}
 		}
-		println("TOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO:" + str.FromInt(len(to)))
-		if len(to) > 1 {
-			panic(len(to))
+	}
+
+	// in reply to some other post?
+	if (true || (rand.Intn(11) <= 4)) && (len(user.Buddies) > 0) {
+		ctx.Db.PrintRawSqlInDevMode = true
+		if post := yodb.FindOne[Post](ctx,
+			PostColRepl.Equal(nil).And(PostColBy.In(user.Buddies.Anys()...).And(
+				PostColTo.Equal(nil), /*.Or(q.That(user.Id).In(PostColTo))*/
+			)),
+		); post != nil {
+			to, in_reply_to = post.To, post.Id
+			panic("REPL:" + str.From(in_reply_to))
 		}
+		ctx.Db.PrintRawSqlInDevMode = false
 	}
 
 	UserPost(ctx, user, md, in_reply_to, files, to)
