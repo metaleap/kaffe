@@ -20,6 +20,7 @@ import (
 const mockLiveActivity = true
 const mockUsersNumTotal = 1448 // don't go higher than that due to limited number of `fortune`s (at nickname short length) for unique-nickname generation
 const mockUsersNumActiveMin = mockUsersNumTotal / 2
+const mockUsersNumMaxBuddies = 77
 const mockFilesDirPath = "__static/mockfiles"
 
 var mockUserPicFiles = []string{"user0.png", "user1.jpg", "user2.png", "user3.jpg", "user4.png", "user5.jpg", "user6.png", "user7.jpg"}
@@ -74,7 +75,7 @@ func mockSomeActivity() {
 	}
 	mockLock.Unlock()
 
-	ctx := NewCtxNonHttp(time.Minute, user_email_addr+" "+time.Now().Format("05.000000000"))
+	ctx := NewCtxNonHttp(time.Minute, user_email_addr+" "+do.Key)
 	defer ctx.OnDone(nil)
 	ctx.DbTx()
 
@@ -92,9 +93,22 @@ func mockSomeActivity() {
 		mockUpdEnsureChange(&user.Btw, func() yodb.Text { return yodb.Text(mockGetFortune(123, false)) })
 		_ = UserUpdate(ctx, &User{Id: user.Id, Auth: user.Auth, Btw: user.Btw}, false)
 	case "changeNick":
+		mockUpdEnsureChange(&user.NickName, func() yodb.Text { return yodb.Text(mockGetFortune(23, true)) })
+		_ = UserUpdate(ctx, &User{Id: user.Id, Auth: user.Auth, NickName: user.NickName}, false)
 	case "changePic":
-	case "postSomething":
+		mockUpdEnsureChange(&user.PicFileId, func() yodb.Text { return yodb.Text(mockUserPicFiles[rand.Intn(len(mockUserPicFiles))]) })
+		_ = UserUpdate(ctx, &User{Id: user.Id, Auth: user.Auth, PicFileId: user.PicFileId}, false)
 	case "changeBuddy":
+		if add_or_remove := rand.Intn(3); (add_or_remove == 0) || (len(user.Buddies) > mockUsersNumMaxBuddies) {
+			user.Buddies = sl.WithoutIdx(user.Buddies, rand.Intn(len(user.Buddies)), true)
+		} else {
+			var buddy_id yodb.I64
+			for (buddy_id == 0) || (buddy_id == user.Id) {
+				buddy_id = yodb.I64(rand.Intn(mockUsersNumTotal))
+			}
+		}
+		_ = UserUpdate(ctx, &User{Id: user.Id, Auth: user.Auth, Buddies: user.Buddies}, false)
+	case "postSomething":
 	default:
 		panic(do.Key)
 	}
@@ -123,7 +137,7 @@ func mockEnsureUser(i int) {
 		// give new User a nickname and some btw
 		for col, fld := range map[UserCol]*yodb.Text{UserColNickName: &user.NickName, UserColBtw: &user.Btw} {
 			for *fld == "" {
-				if *fld = yodb.Text(mockGetFortune(If(col == UserColBtw, 123, 23), true)); yodb.FindOne[User](ctx, col.Equal(*fld)) != nil {
+				if *fld = yodb.Text(mockGetFortune(If(col == UserColBtw, 123, 23), col == UserColNickName)); yodb.FindOne[User](ctx, col.Equal(*fld)) != nil {
 					*fld = ""
 				}
 			}
