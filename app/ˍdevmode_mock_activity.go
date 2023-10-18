@@ -99,24 +99,28 @@ func mockSomeActivity() {
 			delete(mockUsersLoggedIn, user_email_addr)
 		}
 		mockLock.Unlock()
-	// case "changeBtw":
-	// 	mockUpdEnsureChange(&user.Btw, func() yodb.Text { return yodb.Text(mockGetFortune(123, false)) }, nil)
-	// 	_ = UserUpdate(ctx, &User{Id: user.Id, Auth: user.Auth, Btw: user.Btw}, false)
-	// case "changeNick":
-	// 	mockUpdEnsureChange(&user.NickName, func() yodb.Text { return yodb.Text(mockGetFortune(23, true)) }, func(it yodb.Text) bool {
-	// 		return (nil == yodb.FindOne[User](ctx, UserColNickName.Equal(it)))
-	// 	})
-	// 	_ = UserUpdate(ctx, &User{Id: user.Id, Auth: user.Auth, NickName: user.NickName}, false)
-	// case "changePic":
-	// 	mockUpdEnsureChange(&user.PicFileId, func() yodb.Text { return yodb.Text(mockUserPicFiles[rand.Intn(len(mockUserPicFiles))]) }, nil)
-	// 	_ = UserUpdate(ctx, &User{Id: user.Id, Auth: user.Auth, PicFileId: user.PicFileId}, false)
-	// case "changeBuddy":
-	// 	mockSomeActivityChangeBuddy(ctx, user, user_email_addr)
-	// 	_ = UserUpdate(ctx, &User{Id: user.Id, Auth: user.Auth, Buddies: user.Buddies}, false)
-	// case "postSomething":
-	// 	mockSomeActivityPostSomething(ctx, user)
-	default:
-		panic(action)
+	case "changeBtw":
+		mockUpdEnsureChange(&user.Btw, func() yodb.Text { return yodb.Text(mockGetFortune(123, false)) }, nil)
+		if upd := (&User{Id: user.Id, Auth: user.Auth, Btw: user.Btw}); !UserUpdate(ctx, upd, false) {
+			panic(str.From(upd))
+		}
+	case "changeNick":
+		mockUpdEnsureChange(&user.NickName, func() yodb.Text { return yodb.Text(mockGetFortune(23, true)) }, func(it yodb.Text) bool {
+			return (nil == yodb.FindOne[User](ctx, UserColNickName.Equal(it)))
+		})
+		_ = UserUpdate(ctx, &User{Id: user.Id, Auth: user.Auth, NickName: user.NickName}, false)
+	case "changePic":
+		mockUpdEnsureChange(&user.PicFileId, func() yodb.Text { return yodb.Text(mockUserPicFiles[rand.Intn(len(mockUserPicFiles))]) }, nil)
+		if upd := (&User{Id: user.Id, Auth: user.Auth, PicFileId: user.PicFileId}); !UserUpdate(ctx, upd, false) {
+			panic(str.From(upd))
+		}
+		// case "changeBuddy":
+		// 	mockSomeActivityChangeBuddy(ctx, user, user_email_addr)
+		// 	_ = UserUpdate(ctx, &User{Id: user.Id, Auth: user.Auth, Buddies: user.Buddies}, false)
+		// case "postSomething":
+		// 	mockSomeActivityPostSomething(ctx, user)
+		// default:
+		// 	panic(action)
 	}
 }
 
@@ -153,14 +157,13 @@ func mockEnsureUser(i int, idsSoFar []yodb.I64) yodb.I64 {
 	ctx := NewCtxNonHttp(time.Minute, user_email_addr)
 	defer ctx.OnDone(nil)
 	ctx.DbTx()
-	ctx.TimingsNoPrintInDevMode = true
 
 	ctx.Timings.Step("check exists")
 	user := UserByEmailAddr(ctx, user_email_addr)
 	if user == nil { // not yet exists: create
 		ctx.Timings.Step("register new auth")
 		auth_id := yoauth.UserRegister(ctx, user_email_addr, "foobar")
-		user = &User{}
+		user = &User{NickName: yodb.Text(user_email_addr[:str.Idx(string(user_email_addr), '@')])}
 		user.Auth.SetId(auth_id)
 
 		ctx.Timings.Step("insert new user")
