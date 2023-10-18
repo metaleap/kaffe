@@ -18,7 +18,7 @@ import (
 )
 
 const mockLiveActivity = true
-const mockUsersNumTotal = 1448 // don't go higher than that due to limited number of `fortune`s (at nickname short length) for unique-nickname generation
+const mockUsersNumTotal = 1444 // don't go higher than that due to limited number of `fortune`s (at nickname short length) for unique-nickname generation
 const mockUsersNumActiveMin = mockUsersNumTotal / 2
 const mockUsersNumMaxBuddies = 77
 const mockFilesDirPath = "__static/mockfiles"
@@ -31,9 +31,13 @@ var mockUsersLoggedIn = map[string]*http.Client{}
 
 func init() {
 	devModeInitMockUsers = func() {
+		// ensure all users exist
+		ids_so_far := make([]yodb.I64, 0, mockUsersNumTotal)
 		for i := 0; i < mockUsersNumTotal; i++ {
-			mockEnsureUser(i)
+			ids_so_far = append(ids_so_far, mockEnsureUser(i, ids_so_far))
 		}
+
+		// initiate some goroutines that regularly fake some action or other
 		if mockLiveActivity {
 			next_email_addr := func() string { return str.Fmt("foo%d@bar.baz", rand.Intn(mockUsersNumTotal)) }
 			// mock-login at least the min number of some random users
@@ -54,33 +58,39 @@ func init() {
 func newClient() *http.Client { return &http.Client{Timeout: time.Second} }
 
 var mockLock sync.Mutex
-var mockActions = []Pair[string, func(*Ctx, *User)]{
-	{"logInOrOut", nil}, // this must be at index 0, see `mockSomeActivity`
-	{"changeBtw", nil},
-	{"changeNick", nil},
-	{"changePic", nil},
-	{"postSomething", nil},
-	{"changeBuddy", nil},
+var mockActions = []string{
+	"logInOrOut", // this must be at index 0
+	"changeBtw",
+	"changeNick",
+	"changePic",
+	"changeBuddy",
+	"postSomething", // this must be at the end
 }
 
 func mockSomeActivity() {
 	defer time.AfterFunc(time.Millisecond*time.Duration(111+rand.Intn(1111)), mockSomeActivity)
 	// we do about 1-3 dozen reqs per sec with the above and the `rand`ed goroutining of this func set up in `init`
 
+	action := mockActions[len(mockActions)-1]     // default to the much-more-frequent-than-the-others-by-design action...
+	if true || rand.Intn(len(mockActions)) == 0 { // ...except there's a 1-in-n chance for another action
+		action = mockActions[rand.Intn(len(mockActions))]
+	}
+
 	user_email_addr := str.Fmt("foo%d@bar.baz", rand.Intn(mockUsersNumTotal))
-	do := mockActions[rand.Intn(len(mockActions))]
 	mockLock.Lock()
 	if (len(mockUsersLoggedIn) < mockUsersNumActiveMin) && (mockUsersLoggedIn[user_email_addr] == nil) {
-		do = mockActions[0]
+		action = mockActions[0]
 	}
 	mockLock.Unlock()
+	println(action, user_email_addr)
 
-	ctx := NewCtxNonHttp(time.Minute, user_email_addr+" "+do.Key)
+	ctx := NewCtxNonHttp(time.Minute, user_email_addr+" "+action)
 	defer ctx.OnDone(nil)
 	ctx.DbTx()
+	ctx.TimingsNoPrintInDevMode = true
 
 	user := UserByEmailAddr(ctx, user_email_addr)
-	switch _ = user; do.Key {
+	switch _ = user; action {
 	case "logInOrOut":
 		mockLock.Lock()
 		if mockUsersLoggedIn[user_email_addr] == nil {
@@ -89,71 +99,69 @@ func mockSomeActivity() {
 			delete(mockUsersLoggedIn, user_email_addr)
 		}
 		mockLock.Unlock()
-	case "changeBtw":
-		mockUpdEnsureChange(&user.Btw, func() yodb.Text { return yodb.Text(mockGetFortune(123, false)) })
-		_ = UserUpdate(ctx, &User{Id: user.Id, Auth: user.Auth, Btw: user.Btw}, false)
-	case "changeNick":
-		mockUpdEnsureChange(&user.NickName, func() yodb.Text { return yodb.Text(mockGetFortune(23, true)) })
-		_ = UserUpdate(ctx, &User{Id: user.Id, Auth: user.Auth, NickName: user.NickName}, false)
-	case "changePic":
-		mockUpdEnsureChange(&user.PicFileId, func() yodb.Text { return yodb.Text(mockUserPicFiles[rand.Intn(len(mockUserPicFiles))]) })
-		_ = UserUpdate(ctx, &User{Id: user.Id, Auth: user.Auth, PicFileId: user.PicFileId}, false)
-	case "changeBuddy":
-		if add_or_remove := rand.Intn(3); (add_or_remove == 0) || (len(user.Buddies) > mockUsersNumMaxBuddies) {
-			user.Buddies = sl.WithoutIdx(user.Buddies, rand.Intn(len(user.Buddies)), true)
-		} else {
-			var buddy_id yodb.I64
-			for (buddy_id == 0) || (buddy_id == user.Id) {
-				buddy_id = yodb.I64(rand.Intn(mockUsersNumTotal))
-			}
-		}
-		_ = UserUpdate(ctx, &User{Id: user.Id, Auth: user.Auth, Buddies: user.Buddies}, false)
-	case "postSomething":
+	// case "changeBtw":
+	// 	mockUpdEnsureChange(&user.Btw, func() yodb.Text { return yodb.Text(mockGetFortune(123, false)) }, nil)
+	// 	_ = UserUpdate(ctx, &User{Id: user.Id, Auth: user.Auth, Btw: user.Btw}, false)
+	// case "changeNick":
+	// 	mockUpdEnsureChange(&user.NickName, func() yodb.Text { return yodb.Text(mockGetFortune(23, true)) }, func(it yodb.Text) bool {
+	// 		return (nil == yodb.FindOne[User](ctx, UserColNickName.Equal(it)))
+	// 	})
+	// 	_ = UserUpdate(ctx, &User{Id: user.Id, Auth: user.Auth, NickName: user.NickName}, false)
+	// case "changePic":
+	// 	mockUpdEnsureChange(&user.PicFileId, func() yodb.Text { return yodb.Text(mockUserPicFiles[rand.Intn(len(mockUserPicFiles))]) }, nil)
+	// 	_ = UserUpdate(ctx, &User{Id: user.Id, Auth: user.Auth, PicFileId: user.PicFileId}, false)
+	// case "changeBuddy":
+	// 	mockSomeActivityChangeBuddy(ctx, user, user_email_addr)
+	// 	_ = UserUpdate(ctx, &User{Id: user.Id, Auth: user.Auth, Buddies: user.Buddies}, false)
+	// case "postSomething":
+	// 	mockSomeActivityPostSomething(ctx, user)
 	default:
-		panic(do.Key)
+		panic(action)
 	}
 }
 
-func mockUpdEnsureChange[T comparable](at *T, getAnother func() T) {
+func mockSomeActivityChangeBuddy(ctx *Ctx, user *User, userEmailAddr string) {
+	if add_or_remove := rand.Intn(3); (add_or_remove == 0) || (len(user.Buddies) > mockUsersNumMaxBuddies) {
+		user.Buddies = sl.WithoutIdx(user.Buddies, rand.Intn(len(user.Buddies)), true)
+	} else {
+		var buddy_email_addr string
+		var buddy_id yodb.I64
+		for (buddy_id == 0) || (buddy_id == user.Id) || sl.Has(user.Buddies, buddy_id) || (buddy_email_addr == "") || (buddy_email_addr == userEmailAddr) {
+			if buddy_email_addr = str.Fmt("foo%d@bar.baz", rand.Intn(mockUsersNumTotal)); buddy_email_addr != userEmailAddr {
+				buddy_id = UserByEmailAddr(ctx, buddy_email_addr).Id
+			}
+		}
+		user.Buddies = append(user.Buddies, buddy_id)
+	}
+}
+
+func mockSomeActivityPostSomething(ctx *Ctx, user *User) {
+	post := &Post{To: nil, Md: yodb.Text(mockGetFortune(0, false)), Files: nil}
+	post.By.SetId(user.Id)
+	_ = yodb.CreateOne(ctx, post)
+}
+
+func mockUpdEnsureChange[T comparable](at *T, getAnother func() T, ok func(T) bool) {
 	orig := *at
-	for (*at) == orig {
+	for (*at) == orig || ((ok != nil) && !ok(*at)) {
 		*at = getAnother()
 	}
 }
 
-func mockEnsureUser(i int) {
+func mockEnsureUser(i int, idsSoFar []yodb.I64) yodb.I64 {
 	user_email_addr := str.Fmt("foo%d@bar.baz", i)
 	ctx := NewCtxNonHttp(time.Minute, user_email_addr)
 	defer ctx.OnDone(nil)
 	ctx.DbTx()
+	ctx.TimingsNoPrintInDevMode = true
 
 	ctx.Timings.Step("check exists")
 	user := UserByEmailAddr(ctx, user_email_addr)
 	if user == nil { // not yet exists: create
-		ctx.Timings.Step("init new user")
+		ctx.Timings.Step("register new auth")
 		auth_id := yoauth.UserRegister(ctx, user_email_addr, "foobar")
 		user = &User{}
 		user.Auth.SetId(auth_id)
-		// give new User a nickname and some btw
-		for col, fld := range map[UserCol]*yodb.Text{UserColNickName: &user.NickName, UserColBtw: &user.Btw} {
-			for *fld == "" {
-				if *fld = yodb.Text(mockGetFortune(If(col == UserColBtw, 123, 23), col == UserColNickName)); yodb.FindOne[User](ctx, col.Equal(*fld)) != nil {
-					*fld = ""
-				}
-			}
-		}
-		// give new User some buddies
-		num_buddies := rand.Intn(23)
-		for len(user.Buddies) < num_buddies {
-			var buddy *User
-			for buddy_id := yodb.I64(0); buddy == nil; buddy_id = 0 {
-				for (buddy_id == 0) || (buddy_id == user.Id) || sl.Has(user.Buddies, buddy_id) {
-					buddy_id = yodb.I64(4 + rand.Intn(1234))
-				}
-				buddy = yodb.FindOne[User](ctx, UserColId.Equal(buddy_id))
-			}
-			user.Buddies = append(user.Buddies, buddy.Id)
-		}
 
 		ctx.Timings.Step("insert new user")
 		if user.Id = yodb.CreateOne[User](ctx, user); user.Id <= 0 {
@@ -162,6 +170,7 @@ func mockEnsureUser(i int) {
 	}
 	mockUsersAllByEmail[user_email_addr] = user.Id
 	mockUsersAllById[user.Id] = user_email_addr
+	return user.Id
 }
 
 func mockGetFortune(maxLen int, ident bool) (ret string) {
