@@ -166,7 +166,7 @@ export async function apiUserUpdate(payload: ApiUpdateArgs_haxsh_app_User_, quer
 	}
 }
 
-export type PostField = 'Id' | 'Created' | 'Md' | 'Files' | 'User' | 'Rcpt'
+export type PostField = 'Id' | 'Created' | 'By' | 'To' | 'Md' | 'Files' | 'Repl'
 
 export type UserField = 'Id' | 'Created' | 'Auth' | 'NickName' | 'Btw' | 'BwtDt' | 'Buddies'
 
