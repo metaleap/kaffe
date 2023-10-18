@@ -26,6 +26,7 @@ const Err___yo_authRegister_PasswordTooLong util.Err = "___yo_authRegister_Passw
 const Err___yo_authRegister_PasswordTooShort util.Err = "___yo_authRegister_PasswordTooShort"
 const ErrDbUpdate_ExpectedChangesForUpdate util.Err = "DbUpdate_ExpectedChangesForUpdate"
 const ErrDbUpdate_ExpectedQueryForUpdate util.Err = "DbUpdate_ExpectedQueryForUpdate"
+const ErrUserUpdate_NicknameAlreadyExists util.Err = "UserUpdate_NicknameAlreadyExists"
 const UserSignInEmailAddr = q.F("EmailAddr")
 const UserSignInPasswordPlain = q.F("PasswordPlain")
 const UserSignUpEmailAddr = q.F("EmailAddr")

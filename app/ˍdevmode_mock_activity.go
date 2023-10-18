@@ -2,9 +2,32 @@
 
 package haxsh
 
-import "yo/util/str"
+import (
+	"math/rand"
+	"os/exec"
+	"time"
 
+	. "yo/ctx"
+	yodb "yo/db"
+	yoauth "yo/feat_auth"
+	. "yo/util"
+	"yo/util/sl"
+	"yo/util/str"
+)
+
+const numMockUsers = 1234
 const mockFilesDirPath = "__static/mockfiles"
+
+var mockUserPicFiles = []string{
+	"user0.png",
+	"user1.jpg",
+	"user2.png",
+	"user3.jpg",
+	"user4.png",
+	"user5.jpg",
+	"user6.png",
+	"user7.jpg",
+}
 
 var mockPostFiles = []string{
 	"vid1.webm",
@@ -44,21 +67,73 @@ var mockPostFiles = []string{
 }
 
 func init() {
-	devModeStartMockUsers = func() {
-		for nick_name, pic_file_name := range (str.Dict{
-			"foo1@bar.baz": "user1.jpg",
-			"foo2@bar.baz": "user2.png",
-			"foo3@bar.baz": "user3.jpg",
-			"foo4@bar.baz": "user4.png",
-			"foo5@bar.baz": "user5.jpg",
-			"foo6@bar.baz": "user6.png",
-			"foo7@bar.baz": "user7.jpg",
-			"foo8@bar.baz": "user8.png",
-		}) {
-			_, _ = nick_name, pic_file_name
+	devModeInitMockUsers = func() {
+		for i := 0; i < numMockUsers; i++ {
+			mockEnsureUser(i)
 		}
 	}
 }
 
-func startMockUser(i int) {
+func mockEnsureUser(i int) {
+	user_email_addr := str.Fmt("foo%d@bar.baz", i)
+	ctx := NewDebugNoCatch(time.Minute, user_email_addr)
+	defer ctx.OnDone(nil)
+	ctx.DbTx()
+
+	is_every_11th, is_every_7th := ((i % 11) == 0), ((i % 7) == 0)
+	user := UserByEmailAddr(ctx, user_email_addr)
+	if user == nil { // not yet exists: create
+		auth_id := yoauth.UserRegister(ctx, user_email_addr, "foobar")
+		user = &User{NickName: If(is_every_11th, "", yodb.Text(user_email_addr[:str.Idx(user_email_addr, '@')]))}
+		user.Auth.SetId(auth_id)
+		if user.Id = yodb.CreateOne[User](ctx, user); user.Id <= 0 {
+			panic(ErrDbNotStored)
+		}
+	}
+
+	// give a new nickname
+	for (!is_every_11th) && (user.NickName == "") {
+		if user.NickName = yodb.Text(mockGetFortune(22, true)); yodb.FindOne[User](ctx, UserColNickName.Equal(user.NickName)) != nil {
+			user.NickName = ""
+		}
+	}
+	if is_every_11th {
+		user.NickName = ""
+	}
+
+	if !is_every_7th { // give a new btw
+		for old_btw := user.Btw; (user.Btw == "") || (user.Btw == old_btw); user.Btw.Do(str.Trim) {
+			user.Btw = yodb.Text(mockGetFortune(88, false))
+		}
+	}
+
+	if len(user.Buddies) == 0 { // give user some buddies
+		num_buddies := 3 + rand.Intn(22)
+		for i := 0; i < num_buddies; i++ {
+			var buddy *User
+			for buddy_id := yodb.I64(0); buddy == nil; buddy_id = 0 {
+				for (buddy_id == 0) || (buddy_id == user.Id) || sl.Has(user.Buddies, buddy_id) {
+					buddy_id = yodb.I64(4 + rand.Intn(1234))
+				}
+				buddy = yodb.FindOne[User](ctx, UserColId.Equal(buddy_id))
+			}
+			user.Buddies = append(user.Buddies, buddy.Id)
+		}
+	}
+}
+
+func mockGetFortune(maxLen int, ident bool) (ret string) {
+	allow_multi_line := (maxLen <= 0)
+	for (ret == "") || ((!allow_multi_line) && (str.Idx(ret, '\n') >= 0)) || str.IsUp(ret) {
+		cmd := exec.Command("fortune", "-n", str.FromInt(maxLen), "-s")
+		output, err := cmd.CombinedOutput()
+		if err != nil {
+			panic(err)
+		}
+		ret = str.Trim(string(output))
+	}
+	if ident {
+		ret = str.Up0(ToIdentWith(ret, 0))
+	}
+	return
 }

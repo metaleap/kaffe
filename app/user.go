@@ -6,6 +6,7 @@ import (
 	yoauth "yo/feat_auth"
 	. "yo/srv"
 	. "yo/util"
+	"yo/util/str"
 )
 
 const ctxKeyCurUser = "haxshCurUser"
@@ -26,7 +27,7 @@ func init() {
 		"userUpdate": Api(apiUserUpdate, PkgInfo,
 			Fails{Err: ErrDbUpdExpectedIdGt0, If: UserUpdateId.LessOrEqual(0)},
 		).PreCheck(checkSignedIn).
-			CouldFailWith(":"+yodb.ErrSetDbUpdate, ErrDbNotStored),
+			CouldFailWith(":"+yodb.ErrSetDbUpdate, ErrDbNotStored, "NicknameAlreadyExists"),
 	})
 }
 
@@ -38,7 +39,7 @@ type User struct {
 	NickName yodb.Text
 	Btw      yodb.Text
 	BwtDt    *yodb.DateTime
-	Buddies  yodb.Arr[int64]
+	Buddies  yodb.Arr[yodb.I64]
 }
 
 func apiUserSignUp(this *ApiCtx[yoauth.ApiAccountPayload, User]) {
@@ -68,10 +69,29 @@ func apiUserUpdate(this *ApiCtx[yodb.ApiUpdateArgs[User], Void]) {
 	if user_auth_id != this.Args.Changes.Auth.Id() {
 		panic(ErrUnauthorized)
 	}
-	yodb.Update[User](this.Ctx, &this.Args.Changes, this.Args.IncludingEmptyOrMissingFields, nil)
+	if !UserUpdate(this.Ctx, &this.Args.Changes, this.Args.IncludingEmptyOrMissingFields) {
+		panic(ErrDbNotStored)
+	}
 }
 
-func CurUser(ctx *Ctx) (ret *User) {
+func UserUpdate(ctx *Ctx, upd *User, inclEmptyOrMissingFields bool) bool {
+	ctx.DbTx()
+	if upd.NickName.Do(str.Trim); upd.NickName != "" {
+		if other := yodb.FindOne[User](ctx, UserColNickName.Equal(upd.NickName)); (other != nil) && ((other.Id != upd.Id) || (other.Auth.Id() != upd.Auth.Id())) {
+			panic(ErrUserUpdate_NicknameAlreadyExists)
+		}
+	}
+	return (yodb.Update[User](ctx, upd, inclEmptyOrMissingFields, nil) > 0)
+}
+
+func UserByEmailAddr(ctx *Ctx, emailAddr string) *User {
+	if user_auth := yodb.FindOne[yoauth.UserAuth](ctx, yoauth.UserAuthColEmailAddr.Equal(emailAddr)); user_auth != nil {
+		return yodb.FindOne[User](ctx, UserFieldAuth.Equal(user_auth.Id))
+	}
+	return nil
+}
+
+func UserCur(ctx *Ctx) (ret *User) {
 	if ret = ctx.Get(ctxKeyCurUser, nil).(*User); ret == nil {
 		if _, user_auth_id := yoauth.CurrentlyLoggedInUser(ctx); user_auth_id != 0 {
 			ret = yodb.FindOne[User](ctx, UserColAuth.Equal(user_auth_id))

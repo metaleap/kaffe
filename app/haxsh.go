@@ -1,12 +1,12 @@
 package haxsh
 
-var devModeStartMockUsers func()
+var devModeInitMockUsers func()
 
 func Init() {
 }
 
 func OnBeforeListenAndServe() {
-	if devModeStartMockUsers != nil {
-		go devModeStartMockUsers()
+	if devModeInitMockUsers != nil {
+		go devModeInitMockUsers()
 	}
 }
