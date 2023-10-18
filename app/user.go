@@ -37,11 +37,12 @@ type User struct {
 	Id      yodb.I64
 	Created *yodb.DateTime
 
-	Auth     yodb.Ref[yoauth.UserAuth, yodb.RefOnDelCascade]
-	NickName yodb.Text
-	Btw      yodb.Text
-	BtwDt    *yodb.DateTime
-	Buddies  yodb.Arr[yodb.I64]
+	Auth      yodb.Ref[yoauth.UserAuth, yodb.RefOnDelCascade]
+	PicFileId yodb.Text
+	NickName  yodb.Text
+	Btw       yodb.Text
+	BtwDt     *yodb.DateTime
+	Buddies   yodb.Arr[yodb.I64]
 }
 
 func apiUserSignUp(this *ApiCtx[yoauth.ApiAccountPayload, User]) {

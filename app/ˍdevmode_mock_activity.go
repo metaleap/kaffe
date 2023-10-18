@@ -15,57 +15,13 @@ import (
 	"yo/util/str"
 )
 
+const mockLiveActivity = true
 const mockUsersNumTotal = 1448 // don't go higher than that due to limited number of `fortune`s (at nickname short length) for unique-nickname generation
-const mockUsersNumActive = 123
+const mockUsersNumActive = 1234
 const mockFilesDirPath = "__static/mockfiles"
 
-var mockUserPicFiles = []string{
-	"user0.png",
-	"user1.jpg",
-	"user2.png",
-	"user3.jpg",
-	"user4.png",
-	"user5.jpg",
-	"user6.png",
-	"user7.jpg",
-}
-
-var mockPostFiles = []string{
-	"vid1.webm",
-	"vid2.mp4",
-	"vid3.mp4",
-	"post1.jpg",
-	"post10.png",
-	"post11.jpg",
-	"post12.jpg",
-	"post13.png",
-	"post14.jpg",
-	"post15.jpg",
-	"post16.png",
-	"post17.png",
-	"post18.png",
-	"post19.jpg",
-	"post2.jpg",
-	"post20.png",
-	"post21.webp",
-	"post22.jpg",
-	"post23.png",
-	"post24.jpg",
-	"post25.jpg",
-	"post26.png",
-	"post27.jpeg",
-	"post28.jpg",
-	"post29.jpg",
-	"post3.jpg",
-	"post30.jpg",
-	"post31.webp",
-	"post4.jpg",
-	"post5.jpg",
-	"post6.jpg",
-	"post7.jpg",
-	"post8.jpg",
-	"post9.jpg",
-}
+var mockUserPicFiles = []string{"user0.png", "user1.jpg", "user2.png", "user3.jpg", "user4.png", "user5.jpg", "user6.png", "user7.jpg"}
+var mockPostFiles = []string{"vid1.webm", "vid2.mp4", "vid3.mp4", "post1.jpg", "post10.png", "post11.jpg", "post12.jpg", "post13.png", "post14.jpg", "post15.jpg", "post16.png", "post17.png", "post18.png", "post19.jpg", "post2.jpg", "post20.png", "post21.webp", "post22.jpg", "post23.png", "post24.jpg", "post25.jpg", "post26.png", "post27.jpeg", "post28.jpg", "post29.jpg", "post3.jpg", "post30.jpg", "post31.webp", "post4.jpg", "post5.jpg", "post6.jpg", "post7.jpg", "post8.jpg", "post9.jpg"}
 
 func init() {
 	devModeInitMockUsers = func() {
@@ -133,4 +89,5 @@ func mockGetFortune(maxLen int, ident bool) (ret string) {
 
 func mockSomeActivity() {
 	defer time.AfterFunc(time.Second*time.Duration(1+rand.Intn(11)), mockSomeActivity)
+
 }
