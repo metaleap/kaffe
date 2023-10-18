@@ -174,15 +174,14 @@ func mockSomeActivityPostSomething(ctx *Ctx, user *User) {
 	}
 
 	// in reply to some other post?
-	if (true || (rand.Intn(11) <= 4)) && (len(user.Buddies) > 0) {
+	if (rand.Intn(11) <= 5) && (len(user.Buddies) > 0) {
 		ctx.Db.PrintRawSqlInDevMode = true
 		if post := yodb.FindOne[Post](ctx,
 			PostColRepl.Equal(nil).And(PostColBy.In(user.Buddies.Anys()...).And(
-				PostColTo.Equal(nil), /*.Or(q.That(user.Id).In(PostColTo))*/
+				PostColTo.Equal(nil), /*.Or(q.That(user.Id).InJsonArr(PostColTo))*/
 			)),
 		); post != nil {
 			to, in_reply_to = post.To, post.Id
-			panic("REPL:" + str.From(in_reply_to))
 		}
 		ctx.Db.PrintRawSqlInDevMode = false
 	}

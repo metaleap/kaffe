@@ -7,7 +7,6 @@ import (
 )
 
 func init() {
-	yodb.Ensure[Post, PostField]("", nil)
 }
 
 type Post struct {

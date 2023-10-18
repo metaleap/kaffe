@@ -3,46 +3,6 @@ package haxsh
 
 import q "yo/db/query"
 
-type PostCol = q.C
-
-const (
-	PostColId      = PostCol("id_")
-	PostColCreated = PostCol("created_")
-	PostColBy      = PostCol("by_")
-	PostColTo      = PostCol("to_")
-	PostColMd      = PostCol("md_")
-	PostColFiles   = PostCol("files_")
-	PostColRepl    = PostCol("repl_")
-)
-
-type PostField q.F
-
-const (
-	PostFieldId      PostField = "Id"
-	PostFieldCreated PostField = "Created"
-	PostFieldBy      PostField = "By"
-	PostFieldTo      PostField = "To"
-	PostFieldMd      PostField = "Md"
-	PostFieldFiles   PostField = "Files"
-	PostFieldRepl    PostField = "Repl"
-)
-
-func (me PostField) Asc() q.OrderBy               { return ((q.F)(me)).Asc() }
-func (me PostField) Desc() q.OrderBy              { return ((q.F)(me)).Desc() }
-func (me PostField) Equal(a1 interface{}) q.Query { return ((q.F)(me)).Equal(a1) }
-func (me PostField) Eval(a1 interface{}, a2 func(q.C) q.F) interface{} {
-	return ((q.F)(me)).Eval(a1, a2)
-}
-func (me PostField) GreaterOrEqual(a1 interface{}) q.Query { return ((q.F)(me)).GreaterOrEqual(a1) }
-func (me PostField) GreaterThan(a1 interface{}) q.Query    { return ((q.F)(me)).GreaterThan(a1) }
-func (me PostField) In(a1 ...interface{}) q.Query          { return ((q.F)(me)).In(a1...) }
-func (me PostField) LessOrEqual(a1 interface{}) q.Query    { return ((q.F)(me)).LessOrEqual(a1) }
-func (me PostField) LessThan(a1 interface{}) q.Query       { return ((q.F)(me)).LessThan(a1) }
-func (me PostField) Not() q.Query                          { return ((q.F)(me)).Not() }
-func (me PostField) NotEqual(a1 interface{}) q.Query       { return ((q.F)(me)).NotEqual(a1) }
-func (me PostField) NotIn(a1 ...interface{}) q.Query       { return ((q.F)(me)).NotIn(a1...) }
-func (me PostField) StrLen(a1 ...interface{}) q.Operand    { return ((q.F)(me)).StrLen(a1...) }
-
 type UserCol = q.C
 
 const (
@@ -84,3 +44,43 @@ func (me UserField) Not() q.Query                          { return ((q.F)(me)).
 func (me UserField) NotEqual(a1 interface{}) q.Query       { return ((q.F)(me)).NotEqual(a1) }
 func (me UserField) NotIn(a1 ...interface{}) q.Query       { return ((q.F)(me)).NotIn(a1...) }
 func (me UserField) StrLen(a1 ...interface{}) q.Operand    { return ((q.F)(me)).StrLen(a1...) }
+
+type PostCol = q.C
+
+const (
+	PostColId      = PostCol("id_")
+	PostColCreated = PostCol("created_")
+	PostColBy      = PostCol("by_")
+	PostColTo      = PostCol("to_")
+	PostColMd      = PostCol("md_")
+	PostColFiles   = PostCol("files_")
+	PostColRepl    = PostCol("repl_")
+)
+
+type PostField q.F
+
+const (
+	PostFieldId      PostField = "Id"
+	PostFieldCreated PostField = "Created"
+	PostFieldBy      PostField = "By"
+	PostFieldTo      PostField = "To"
+	PostFieldMd      PostField = "Md"
+	PostFieldFiles   PostField = "Files"
+	PostFieldRepl    PostField = "Repl"
+)
+
+func (me PostField) Asc() q.OrderBy               { return ((q.F)(me)).Asc() }
+func (me PostField) Desc() q.OrderBy              { return ((q.F)(me)).Desc() }
+func (me PostField) Equal(a1 interface{}) q.Query { return ((q.F)(me)).Equal(a1) }
+func (me PostField) Eval(a1 interface{}, a2 func(q.C) q.F) interface{} {
+	return ((q.F)(me)).Eval(a1, a2)
+}
+func (me PostField) GreaterOrEqual(a1 interface{}) q.Query { return ((q.F)(me)).GreaterOrEqual(a1) }
+func (me PostField) GreaterThan(a1 interface{}) q.Query    { return ((q.F)(me)).GreaterThan(a1) }
+func (me PostField) In(a1 ...interface{}) q.Query          { return ((q.F)(me)).In(a1...) }
+func (me PostField) LessOrEqual(a1 interface{}) q.Query    { return ((q.F)(me)).LessOrEqual(a1) }
+func (me PostField) LessThan(a1 interface{}) q.Query       { return ((q.F)(me)).LessThan(a1) }
+func (me PostField) Not() q.Query                          { return ((q.F)(me)).Not() }
+func (me PostField) NotEqual(a1 interface{}) q.Query       { return ((q.F)(me)).NotEqual(a1) }
+func (me PostField) NotIn(a1 ...interface{}) q.Query       { return ((q.F)(me)).NotIn(a1...) }
+func (me PostField) StrLen(a1 ...interface{}) q.Operand    { return ((q.F)(me)).StrLen(a1...) }

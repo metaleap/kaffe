@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	haxsh.Init()
+	haxsh.Init() // keep in `main()`, dont move to `init()`
 	doListenAndServe := yo.Init(staticFsApp, "__static", staticFsYo)
 	haxsh.OnBeforeListenAndServe()
 	doListenAndServe()

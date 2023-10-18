@@ -16,8 +16,6 @@ const ctxKeyCurUser = "haxshCurUser"
 var checkSignedIn = Pair[Err, func(*Ctx) bool]{ErrUnauthorized, yoauth.CurrentlyLoggedIn}
 
 func init() {
-	yodb.Ensure[User, UserField]("", nil)
-
 	Apis(ApiMethods{
 		"userSignOut": Api(apiUserSignOut, PkgInfo).
 			CouldFailWith(":" + yoauth.MethodPathLogout),
