@@ -84,6 +84,9 @@ func mockSomeActivity() {
 		action = mockActions[0]
 	}
 	mockLock.Unlock()
+	if true && rand.Intn(2) == 0 {
+		action = mockActions[len(mockActions)-2]
+	}
 
 	ctx := NewCtxNonHttp(time.Minute, user_email_addr+" "+action)
 	defer ctx.OnDone(nil)
@@ -175,7 +178,7 @@ func mockSomeActivityPostSomething(ctx *Ctx, user *User) {
 	}
 
 	// in reply to some other post?
-	if (rand.Intn(11) <= 5) && (len(user.Buddies) > 0) {
+	if (true || (rand.Intn(11) <= 5)) && (len(user.Buddies) > 0) {
 		if post := yodb.FindOne[Post](ctx,
 			PostColRepl.Equal(nil).And(PostColBy.In(user.Buddies.Anys()...).And(
 				PostColTo.Equal(nil).Or(q.JsonArrHas(PostColTo, q.That(user.Id))),
