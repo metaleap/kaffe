@@ -86,10 +86,10 @@ func mockSomeActivity() {
 	ctx := NewCtxNonHttp(time.Minute, user_email_addr+" "+action)
 	defer ctx.OnDone(nil)
 	ctx.DbTx()
-	// ctx.TimingsNoPrintInDevMode = true
+	ctx.TimingsNoPrintInDevMode = true
 
 	user := UserByEmailAddr(ctx, user_email_addr)
-	if user.NickName == "" {
+	if user.Nick == "" {
 		action = mockActions[1]
 	}
 	switch _ = user; action {
@@ -110,7 +110,7 @@ func mockSomeActivity() {
 			panic(str.From(upd))
 		}
 	case "changeNick":
-		mockUpdEnsureChange(&user.NickName, func() yodb.Text {
+		mockUpdEnsureChange(&user.Nick, func() yodb.Text {
 			var one, two string
 			for one == "" || two == "" || one == two {
 				one, two = mockGetFortune(11+rand.Intn(11), true), mockGetFortune(11+rand.Intn(11), true)
@@ -119,7 +119,7 @@ func mockSomeActivity() {
 		}, func(it yodb.Text) bool {
 			return !yodb.Exists[User](ctx, UserColNickName.Equal(it))
 		})
-		_ = UserUpdate(ctx, &User{Id: user.Id, Auth: user.Auth, NickName: user.NickName}, false)
+		_ = UserUpdate(ctx, &User{Id: user.Id, Auth: user.Auth, Nick: user.Nick}, false)
 	case "changePic":
 		mockUpdEnsureChange(&user.PicFileId, func() yodb.Text { return yodb.Text(mockUserPicFiles[rand.Intn(len(mockUserPicFiles))]) }, nil)
 		if upd := (&User{Id: user.Id, Auth: user.Auth, PicFileId: user.PicFileId}); !UserUpdate(ctx, upd, false) {
@@ -172,7 +172,7 @@ func mockEnsureUser(i int, idsSoFar []yodb.I64) yodb.I64 {
 	if user == nil { // not yet exists: create
 		ctx.Timings.Step("register new auth")
 		auth_id := yoauth.UserRegister(ctx, user_email_addr, "foobar")
-		user = &User{NickName: yodb.Text(user_email_addr[:str.Idx(string(user_email_addr), '@')])}
+		user = &User{Nick: yodb.Text(user_email_addr[:str.Idx(string(user_email_addr), '@')])}
 		user.Auth.SetId(auth_id)
 
 		ctx.Timings.Step("insert new user")
