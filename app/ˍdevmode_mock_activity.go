@@ -166,12 +166,14 @@ func mockSomeActivityPostSomething(ctx *Ctx, user *User) {
 			file_name := mockPostFiles[rand.Intn(len(mockPostFiles))]
 			files = append(files, FileRef{Id: file_name, Name: file_name})
 		}
+		println("FILES:", len(files))
 	}
 
 	// in reply to some other post?
 	if rand.Intn(11) <= 2 {
-		if post := yodb.FindOne[Post](ctx, PostColBy.In(user.Buddies.ToAnys()...).And(PostColRepl.Equal(""))); post != nil {
+		if post := yodb.FindOne[Post](ctx, PostColBy.In(user.Buddies.ToAnys()...).And(PostColRepl.Equal(0))); post != nil {
 			in_reply_to = post.Id
+			println("REPL2:", in_reply_to)
 		}
 	}
 
@@ -181,6 +183,7 @@ func mockSomeActivityPostSomething(ctx *Ctx, user *User) {
 				to = append(to, buddy_id)
 			}
 		}
+		println("TO:", len(to))
 	}
 
 	UserPost(ctx, user, md, in_reply_to, files, to)
