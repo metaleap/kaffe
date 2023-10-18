@@ -3,7 +3,6 @@ package haxsh
 import (
 	. "yo/ctx"
 	yodb "yo/db"
-	. "yo/util"
 )
 
 type Post struct {

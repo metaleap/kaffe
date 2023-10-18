@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"net/http"
 	"os/exec"
+	"path/filepath"
 	"sync"
 	"time"
 
@@ -117,7 +118,7 @@ func mockSomeActivity() {
 			}
 			return yodb.Text(If(rand.Intn(2) == 0, one+two, two+one))
 		}, func(it yodb.Text) bool {
-			return !yodb.Exists[User](ctx, UserColNickName.Equal(it))
+			return !yodb.Exists[User](ctx, UserColNick.Equal(it))
 		})
 		_ = UserUpdate(ctx, &User{Id: user.Id, Auth: user.Auth, Nick: user.Nick}, false)
 	case "changePic":
@@ -186,16 +187,29 @@ func mockEnsureUser(i int, idsSoFar []yodb.I64) yodb.I64 {
 }
 
 func mockGetFortune(maxLen int, ident bool) (ret string) {
-	allow_multi_line := (maxLen <= 0)
+	allow_multi_line, did_shower := (maxLen <= 0), false
 	for (ret == "") || ((!allow_multi_line) && (str.Idx(ret, '\n') >= 0)) || str.IsUp(ret) {
-		cmd := exec.Command("fortune", If(maxLen <= 0, []string{}, []string{"-n", str.FromInt(maxLen), "-s"})...)
+		var args []string
+		if maxLen > 0 {
+			args = append(args, "-n", str.FromInt(maxLen), "-s")
+		}
+		if did_shower = ((maxLen >= 77) || (maxLen <= 0)) && (rand.Intn(If(maxLen <= 0, 4, 2)) != 0); did_shower {
+			args = append(args, filepath.Join(mockFilesDirPath, "fortune_showerthoughts.txt"))
+		}
+		cmd := exec.Command("fortune", args...)
 		output, err := cmd.CombinedOutput()
-		if err != nil {
+		if ret = string(output); err != nil {
 			panic(err)
 		}
-		if ret = str.Trim(string(output)); ident {
+		if idx := str.IdxRune(ret, '―'); idx >= 0 {
+			ret = ret[:idx]
+		}
+		if ret = str.Trim(ret); ident {
 			ret = str.Up0(ToIdentWith(ret, 0))
 		}
+	}
+	if did_shower {
+		println(ret)
 	}
 	return
 }

@@ -84,7 +84,7 @@ func UserUpdate(ctx *Ctx, upd *User, inclEmptyOrMissingFields bool) bool {
 	}
 	upd.Buddies.EnsureAllUnique()
 	if upd.Nick.Do(str.Trim); upd.Nick != "" {
-		if other := yodb.FindOne[User](ctx, UserColNickName.Equal(upd.Nick)); (other != nil) && ((other.Id != upd.Id) || (other.Auth.Id() != upd.Auth.Id())) {
+		if other := yodb.FindOne[User](ctx, UserColNick.Equal(upd.Nick)); (other != nil) && ((other.Id != upd.Id) || (other.Auth.Id() != upd.Auth.Id())) {
 			panic(ErrUserUpdate_NicknameAlreadyExists)
 		}
 	}

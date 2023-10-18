@@ -168,7 +168,7 @@ export async function apiUserUpdate(payload: ApiUpdateArgs_haxsh_app_User_, quer
 
 export type PostField = 'Id' | 'Created' | 'By' | 'To' | 'Md' | 'Files' | 'Repl'
 
-export type UserField = 'Id' | 'Created' | 'Auth' | 'PicFileId' | 'NickName' | 'Btw' | 'BtwDt' | 'Buddies'
+export type UserField = 'Id' | 'Created' | 'Auth' | 'PicFileId' | 'Nick' | 'Btw' | 'BtwDt' | 'Buddies'
 
 export type UserAuthField = 'Id' | 'Created' | 'EmailAddr'
 
@@ -179,7 +179,7 @@ export type User = {
 	Buddies: I64[]
 	Created?: DateTime
 	Id: I64
-	NickName: string
+	Nick: string
 	PicFileId: string
 }
 

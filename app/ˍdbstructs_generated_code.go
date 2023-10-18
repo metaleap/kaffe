@@ -10,7 +10,7 @@ const (
 	UserColCreated   = UserCol("created_")
 	UserColAuth      = UserCol("auth_")
 	UserColPicFileId = UserCol("pic_file_id_")
-	UserColNickName  = UserCol("nick_name_")
+	UserColNick      = UserCol("nick_")
 	UserColBtw       = UserCol("btw_")
 	UserColBtwDt     = UserCol("btw_dt_")
 	UserColBuddies   = UserCol("buddies_")
@@ -23,7 +23,7 @@ const (
 	UserFieldCreated   UserField = "Created"
 	UserFieldAuth      UserField = "Auth"
 	UserFieldPicFileId UserField = "PicFileId"
-	UserFieldNickName  UserField = "NickName"
+	UserFieldNick      UserField = "Nick"
 	UserFieldBtw       UserField = "Btw"
 	UserFieldBtwDt     UserField = "BtwDt"
 	UserFieldBuddies   UserField = "Buddies"
