@@ -58,21 +58,21 @@ func init() {
 func newClient() *http.Client { return &http.Client{Timeout: time.Second} }
 
 var mockLock sync.Mutex
-var mockActions = []string{
-	"logInOrOut", // this must be at index 0
-	"changeBtw",
+var mockActions = []string{ // don't reorder items with consulting/adapting the below `mockSomeActivity` func
+	"logInOrOut",
 	"changeNick",
+	"changeBtw",
 	"changePic",
 	"changeBuddy",
-	"postSomething", // this must be at the end
+	"postSomething",
 }
 
 func mockSomeActivity() {
 	defer time.AfterFunc(time.Millisecond*time.Duration(111+rand.Intn(1111)), mockSomeActivity)
 	// we do about 1-3 dozen reqs per sec with the above and the `rand`ed goroutining of this func set up in `init`
 
-	action := mockActions[len(mockActions)-1]     // default to the much-more-frequent-than-the-others-by-design action...
-	if true || rand.Intn(len(mockActions)) == 0 { // ...except there's a 1-in-n chance for another action
+	action := mockActions[len(mockActions)-1] // default to the much-more-frequent-than-the-others-by-design action...
+	if rand.Intn(len(mockActions)) == 0 {     // ...except there's a 1-in-n chance for another action
 		action = mockActions[rand.Intn(len(mockActions))]
 	}
 
@@ -86,9 +86,12 @@ func mockSomeActivity() {
 	ctx := NewCtxNonHttp(time.Minute, user_email_addr+" "+action)
 	defer ctx.OnDone(nil)
 	ctx.DbTx()
-	ctx.TimingsNoPrintInDevMode = true
+	// ctx.TimingsNoPrintInDevMode = true
 
 	user := UserByEmailAddr(ctx, user_email_addr)
+	if user.NickName == "" {
+		action = mockActions[1]
+	}
 	switch _ = user; action {
 	case "logInOrOut":
 		mockLock.Lock()
@@ -100,6 +103,9 @@ func mockSomeActivity() {
 		mockLock.Unlock()
 	case "changeBtw":
 		mockUpdEnsureChange(&user.Btw, func() yodb.Text { return yodb.Text(mockGetFortune(123, false)) }, nil)
+		if rand.Intn(22) == 0 {
+			user.Btw = ""
+		}
 		if upd := (&User{Id: user.Id, Auth: user.Auth, Btw: user.Btw}); !UserUpdate(ctx, upd, false) {
 			panic(str.From(upd))
 		}
@@ -145,10 +151,7 @@ func mockSomeActivityChangeBuddy(ctx *Ctx, user *User, userEmailAddr string) {
 }
 
 func mockSomeActivityPostSomething(ctx *Ctx, user *User) {
-	post := &Post{To: nil, Md: yodb.Text(mockGetFortune(0, false)), Files: nil}
-	post.By.SetId(user.Id)
-	println(post.Md)
-	_ = yodb.CreateOne(ctx, post)
+	UserPost(ctx, user, mockGetFortune(0, false), 0, nil, nil)
 }
 
 func mockUpdEnsureChange[T comparable](at *T, getAnother func() T, ok func(T) bool) {
