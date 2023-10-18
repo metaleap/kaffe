@@ -8,6 +8,7 @@ type UserCol = q.C
 const (
 	UserColId        = UserCol("id_")
 	UserColCreated   = UserCol("created_")
+	UserColAuth      = UserCol("auth_")
 	UserColPicFileId = UserCol("pic_file_id_")
 	UserColNick      = UserCol("nick_")
 	UserColBtw       = UserCol("btw_")
@@ -18,13 +19,18 @@ const (
 type UserField q.F
 
 const (
-	UserFieldId        UserField = "Id"
-	UserFieldCreated   UserField = "Created"
-	UserFieldPicFileId UserField = "PicFileId"
-	UserFieldNick      UserField = "Nick"
-	UserFieldBtw       UserField = "Btw"
-	UserFieldBtwDt     UserField = "BtwDt"
-	UserFieldBuddies   UserField = "Buddies"
+	UserFieldId                  UserField = "Id"
+	UserFieldCreated             UserField = "Created"
+	UserFieldAuth                UserField = "Auth"
+	UserFieldPicFileId           UserField = "PicFileId"
+	UserFieldNick                UserField = "Nick"
+	UserFieldBtw                 UserField = "Btw"
+	UserFieldBtwDt               UserField = "BtwDt"
+	UserFieldBuddies             UserField = "Buddies"
+	UserFieldAuth_Id                       = UserField("Auth.Id")
+	UserFieldAuth_Created                  = UserField("Auth.Created")
+	UserFieldAuth_EmailAddr                = UserField("Auth.EmailAddr")
+	userFieldAuth_passwordHashed           = UserField("Auth.passwordHashed")
 )
 
 func (me UserField) Asc() q.OrderBy               { return ((q.F)(me)).Asc() }
@@ -48,19 +54,38 @@ type PostCol = q.C
 const (
 	PostColId      = PostCol("id_")
 	PostColCreated = PostCol("created_")
+	PostColBy      = PostCol("by_")
 	PostColTo      = PostCol("to_")
 	PostColMd      = PostCol("md_")
 	PostColFiles   = PostCol("files_")
+	PostColRepl    = PostCol("repl_")
 )
 
 type PostField q.F
 
 const (
-	PostFieldId      PostField = "Id"
-	PostFieldCreated PostField = "Created"
-	PostFieldTo      PostField = "To"
-	PostFieldMd      PostField = "Md"
-	PostFieldFiles   PostField = "Files"
+	PostFieldId           PostField = "Id"
+	PostFieldCreated      PostField = "Created"
+	PostFieldBy           PostField = "By"
+	PostFieldTo           PostField = "To"
+	PostFieldMd           PostField = "Md"
+	PostFieldFiles        PostField = "Files"
+	PostFieldRepl         PostField = "Repl"
+	PostFieldBy_Id                  = PostField("By.Id")
+	PostFieldBy_Created             = PostField("By.Created")
+	PostFieldBy_Auth                = PostField("By.Auth")
+	PostFieldBy_PicFileId           = PostField("By.PicFileId")
+	PostFieldBy_Nick                = PostField("By.Nick")
+	PostFieldBy_Btw                 = PostField("By.Btw")
+	PostFieldBy_BtwDt               = PostField("By.BtwDt")
+	PostFieldBy_Buddies             = PostField("By.Buddies")
+	PostFieldRepl_Id                = PostField("Repl.Id")
+	PostFieldRepl_Created           = PostField("Repl.Created")
+	PostFieldRepl_By                = PostField("Repl.By")
+	PostFieldRepl_To                = PostField("Repl.To")
+	PostFieldRepl_Md                = PostField("Repl.Md")
+	PostFieldRepl_Files             = PostField("Repl.Files")
+	PostFieldRepl_Repl              = PostField("Repl.Repl")
 )
 
 func (me PostField) Asc() q.OrderBy               { return ((q.F)(me)).Asc() }
