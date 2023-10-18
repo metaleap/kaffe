@@ -3,7 +3,12 @@ package haxsh
 import (
 	. "yo/ctx"
 	yodb "yo/db"
+	"yo/util/str"
 )
+
+func init() {
+	yodb.Ensure[Post, PostField]("", nil)
+}
 
 type Post struct {
 	Id      yodb.I64
@@ -22,7 +27,7 @@ type FileRef struct {
 }
 
 func UserPost(ctx *Ctx, user *User, md string, inReplyTo yodb.I64, files []FileRef, to []yodb.I64) {
-	post := &Post{Md: yodb.Text(md), To: to, Files: files}
+	post := &Post{Md: yodb.Text(md).But(str.Trim), To: to, Files: files}
 	post.By.SetId(user.Id)
 	post.Repl.SetId(inReplyTo)
 	_ = yodb.CreateOne(ctx, post)

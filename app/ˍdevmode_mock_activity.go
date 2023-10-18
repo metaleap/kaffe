@@ -156,6 +156,33 @@ func mockSomeActivityPostSomething(ctx *Ctx, user *User) {
 	var to []yodb.I64
 	var in_reply_to yodb.I64
 	md := mockGetFortune(0, false)
+
+	// add one or more files?
+	if rand.Intn(11) <= 2 {
+		md = ""
+	} // separate rands because can have file-only posts as well as text+file/s posts
+	if (md == "") || (rand.Intn(11) <= 2) {
+		for i := 0; i < rand.Intn(11); i++ {
+			file_name := mockPostFiles[rand.Intn(len(mockPostFiles))]
+			files = append(files, FileRef{Id: file_name, Name: file_name})
+		}
+	}
+
+	// in reply to some other post?
+	if rand.Intn(11) <= 2 {
+		if post := yodb.FindOne[Post](ctx, PostColBy.In(user.Buddies.ToAnys()...).And(PostColRepl.Equal(""))); post != nil {
+			in_reply_to = post.Id
+		}
+	}
+
+	if rand.Intn(11) <= 3 {
+		for to = make([]yodb.I64, 0, 1+rand.Intn(len(user.Buddies)-2)); len(to) < cap(to); {
+			if buddy_id := user.Buddies[rand.Intn(len(user.Buddies))]; !sl.Has(to, buddy_id) {
+				to = append(to, buddy_id)
+			}
+		}
+	}
+
 	UserPost(ctx, user, md, in_reply_to, files, to)
 }
 

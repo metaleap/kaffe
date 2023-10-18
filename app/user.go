@@ -17,7 +17,6 @@ var checkSignedIn = Pair[Err, func(*Ctx) bool]{ErrUnauthorized, yoauth.Currently
 
 func init() {
 	yodb.Ensure[User, UserField]("", nil)
-	yodb.Ensure[Post, PostField]("", nil)
 
 	Apis(ApiMethods{
 		"userSignOut": Api(apiUserSignOut, PkgInfo).
