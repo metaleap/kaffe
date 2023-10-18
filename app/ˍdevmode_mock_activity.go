@@ -64,6 +64,7 @@ var mockActions = []Pair[string, func(*Ctx, *User)]{
 
 func mockSomeActivity() {
 	defer time.AfterFunc(time.Millisecond*time.Duration(111+rand.Intn(1111)), mockSomeActivity)
+	// we do about 1-3 dozen reqs per sec with the above and the `rand`ed goroutining of this func set up in `init`
 
 	user_email_addr := str.Fmt("foo%d@bar.baz", rand.Intn(mockUsersNumTotal))
 	do := mockActions[rand.Intn(len(mockActions))]
@@ -73,7 +74,7 @@ func mockSomeActivity() {
 	}
 	mockLock.Unlock()
 
-	ctx := NewCtxNonHttp(time.Minute, user_email_addr+" "+do.Key)
+	ctx := NewCtxNonHttp(time.Minute, user_email_addr+" "+time.Now().Format("05.000000000"))
 	defer ctx.OnDone(nil)
 	ctx.DbTx()
 
@@ -88,12 +89,21 @@ func mockSomeActivity() {
 		}
 		mockLock.Unlock()
 	case "changeBtw":
+		mockUpdEnsureChange(&user.Btw, func() yodb.Text { return yodb.Text(mockGetFortune(123, false)) })
+		_ = UserUpdate(ctx, &User{Id: user.Id, Auth: user.Auth, Btw: user.Btw}, false)
 	case "changeNick":
 	case "changePic":
 	case "postSomething":
 	case "changeBuddy":
 	default:
 		panic(do.Key)
+	}
+}
+
+func mockUpdEnsureChange[T comparable](at *T, getAnother func() T) {
+	orig := *at
+	for (*at) == orig {
+		*at = getAnother()
 	}
 }
 
