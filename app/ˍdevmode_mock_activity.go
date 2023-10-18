@@ -4,6 +4,7 @@ package haxsh
 
 import (
 	"math/rand"
+	"net/http"
 	"os/exec"
 	"time"
 
@@ -24,7 +25,7 @@ var mockUserPicFiles = []string{"user0.png", "user1.jpg", "user2.png", "user3.jp
 var mockPostFiles = []string{"vid1.webm", "vid2.mp4", "vid3.mp4", "post1.jpg", "post10.png", "post11.jpg", "post12.jpg", "post13.png", "post14.jpg", "post15.jpg", "post16.png", "post17.png", "post18.png", "post19.jpg", "post2.jpg", "post20.png", "post21.webp", "post22.jpg", "post23.png", "post24.jpg", "post25.jpg", "post26.png", "post27.jpeg", "post28.jpg", "post29.jpg", "post3.jpg", "post30.jpg", "post31.webp", "post4.jpg", "post5.jpg", "post6.jpg", "post7.jpg", "post8.jpg", "post9.jpg"}
 var mockUsersAllById = map[yodb.I64]string{}
 var mockUsersAllByEmail = map[string]yodb.I64{}
-var mockUsersLoggedIn = map[string]bool{}
+var mockUsersLoggedIn = map[string]*http.Client{}
 
 func init() {
 	devModeInitMockUsers = func() {
@@ -36,10 +37,10 @@ func init() {
 			// mock-login at least the min number of some random users
 			for len(mockUsersLoggedIn) < mockUsersNumActiveMin {
 				user_email_addr := next_email_addr()
-				for mockUsersLoggedIn[user_email_addr] {
+				for mockUsersLoggedIn[user_email_addr] != nil {
 					user_email_addr = next_email_addr()
 				}
-				mockUsersLoggedIn[user_email_addr] = true
+				mockUsersLoggedIn[user_email_addr] = &http.Client{Timeout: time.Second}
 			}
 			mockSomeActivity()
 		}
@@ -60,7 +61,7 @@ func mockSomeActivity() {
 
 	user_email_addr := str.Fmt("foo%d@bar.baz", rand.Intn(mockUsersNumTotal))
 	do := mockActions[rand.Intn(len(mockActions))]
-	if (len(mockUsersLoggedIn) < mockUsersNumActiveMin) && !mockUsersLoggedIn[user_email_addr] {
+	if (len(mockUsersLoggedIn) < mockUsersNumActiveMin) && (mockUsersLoggedIn[user_email_addr] == nil) {
 		do = mockActions[0]
 	}
 
