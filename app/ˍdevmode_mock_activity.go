@@ -20,9 +20,9 @@ import (
 const mockLiveActivity = true
 const mockUsersNumTotal = 1444 // don't go higher than that due to limited number of `fortune`s (at nickname short length) for unique-nickname generation
 const mockUsersNumActiveMin = mockUsersNumTotal / 2
-const mockUsersNumMaxBuddies = 77
 const mockFilesDirPath = "__static/mockfiles"
 
+var mockUsersNumMaxBuddies = 22 + rand.Intn(44)
 var mockUserPicFiles = []string{"user0.png", "user1.jpg", "user2.png", "user3.jpg", "user4.png", "user5.jpg", "user6.png", "user7.jpg"}
 var mockPostFiles = []string{"vid1.webm", "vid2.mp4", "vid3.mp4", "post1.jpg", "post10.png", "post11.jpg", "post12.jpg", "post13.png", "post14.jpg", "post15.jpg", "post16.png", "post17.png", "post18.png", "post19.jpg", "post2.jpg", "post20.png", "post21.webp", "post22.jpg", "post23.png", "post24.jpg", "post25.jpg", "post26.png", "post27.jpeg", "post28.jpg", "post29.jpg", "post3.jpg", "post30.jpg", "post31.webp", "post4.jpg", "post5.jpg", "post6.jpg", "post7.jpg", "post8.jpg", "post9.jpg"}
 var mockUsersAllById = map[yodb.I64]string{}
@@ -82,7 +82,6 @@ func mockSomeActivity() {
 		action = mockActions[0]
 	}
 	mockLock.Unlock()
-	println(action, user_email_addr)
 
 	ctx := NewCtxNonHttp(time.Minute, user_email_addr+" "+action)
 	defer ctx.OnDone(nil)
@@ -105,8 +104,14 @@ func mockSomeActivity() {
 			panic(str.From(upd))
 		}
 	case "changeNick":
-		mockUpdEnsureChange(&user.NickName, func() yodb.Text { return yodb.Text(mockGetFortune(23, true)) }, func(it yodb.Text) bool {
-			return (nil == yodb.FindOne[User](ctx, UserColNickName.Equal(it)))
+		mockUpdEnsureChange(&user.NickName, func() yodb.Text {
+			var one, two string
+			for one == "" || two == "" || one == two {
+				one, two = mockGetFortune(11+rand.Intn(11), true), mockGetFortune(11+rand.Intn(11), true)
+			}
+			return yodb.Text(If(rand.Intn(2) == 0, one+two, two+one))
+		}, func(it yodb.Text) bool {
+			return !yodb.Exists[User](ctx, UserColNickName.Equal(it))
 		})
 		_ = UserUpdate(ctx, &User{Id: user.Id, Auth: user.Auth, NickName: user.NickName}, false)
 	case "changePic":
@@ -114,20 +119,20 @@ func mockSomeActivity() {
 		if upd := (&User{Id: user.Id, Auth: user.Auth, PicFileId: user.PicFileId}); !UserUpdate(ctx, upd, false) {
 			panic(str.From(upd))
 		}
-		// case "changeBuddy":
-		// 	mockSomeActivityChangeBuddy(ctx, user, user_email_addr)
-		// 	_ = UserUpdate(ctx, &User{Id: user.Id, Auth: user.Auth, Buddies: user.Buddies}, false)
-		// case "postSomething":
-		// 	mockSomeActivityPostSomething(ctx, user)
-		// default:
-		// 	panic(action)
+	case "changeBuddy":
+		mockSomeActivityChangeBuddy(ctx, user, user_email_addr)
+		_ = UserUpdate(ctx, &User{Id: user.Id, Auth: user.Auth, Buddies: user.Buddies}, false)
+	case "postSomething":
+		mockSomeActivityPostSomething(ctx, user)
+	default:
+		panic(action)
 	}
 }
 
 func mockSomeActivityChangeBuddy(ctx *Ctx, user *User, userEmailAddr string) {
-	if add_or_remove := rand.Intn(3); (add_or_remove == 0) || (len(user.Buddies) > mockUsersNumMaxBuddies) {
-		user.Buddies = sl.WithoutIdx(user.Buddies, rand.Intn(len(user.Buddies)), true)
-	} else {
+	if add_or_remove := rand.Intn(3); ((add_or_remove == 0) || (len(user.Buddies) > mockUsersNumMaxBuddies)) && (len(user.Buddies) > 0) {
+		user.Buddies = sl.WithoutIdx(user.Buddies, rand.Intn(len(user.Buddies)), true) // remove a buddy
+	} else { // add a buddy
 		var buddy_email_addr string
 		var buddy_id yodb.I64
 		for (buddy_id == 0) || (buddy_id == user.Id) || sl.Has(user.Buddies, buddy_id) || (buddy_email_addr == "") || (buddy_email_addr == userEmailAddr) {
@@ -142,6 +147,7 @@ func mockSomeActivityChangeBuddy(ctx *Ctx, user *User, userEmailAddr string) {
 func mockSomeActivityPostSomething(ctx *Ctx, user *User) {
 	post := &Post{To: nil, Md: yodb.Text(mockGetFortune(0, false)), Files: nil}
 	post.By.SetId(user.Id)
+	println(post.Md)
 	_ = yodb.CreateOne(ctx, post)
 }
 
@@ -179,15 +185,14 @@ func mockEnsureUser(i int, idsSoFar []yodb.I64) yodb.I64 {
 func mockGetFortune(maxLen int, ident bool) (ret string) {
 	allow_multi_line := (maxLen <= 0)
 	for (ret == "") || ((!allow_multi_line) && (str.Idx(ret, '\n') >= 0)) || str.IsUp(ret) {
-		cmd := exec.Command("fortune", "-n", str.FromInt(maxLen), "-s")
+		cmd := exec.Command("fortune", If(maxLen <= 0, []string{}, []string{"-n", str.FromInt(maxLen), "-s"})...)
 		output, err := cmd.CombinedOutput()
 		if err != nil {
 			panic(err)
 		}
-		ret = str.Trim(string(output))
-	}
-	if ident {
-		ret = str.Up0(ToIdentWith(ret, 0))
+		if ret = str.Trim(string(output)); ident {
+			ret = str.Up0(ToIdentWith(ret, 0))
+		}
 	}
 	return
 }
