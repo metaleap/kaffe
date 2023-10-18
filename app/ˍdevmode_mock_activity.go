@@ -17,30 +17,81 @@ import (
 
 const mockLiveActivity = true
 const mockUsersNumTotal = 1448 // don't go higher than that due to limited number of `fortune`s (at nickname short length) for unique-nickname generation
-const mockUsersNumActive = 1234
+const mockUsersNumActiveMin = mockUsersNumTotal / 2
 const mockFilesDirPath = "__static/mockfiles"
 
 var mockUserPicFiles = []string{"user0.png", "user1.jpg", "user2.png", "user3.jpg", "user4.png", "user5.jpg", "user6.png", "user7.jpg"}
 var mockPostFiles = []string{"vid1.webm", "vid2.mp4", "vid3.mp4", "post1.jpg", "post10.png", "post11.jpg", "post12.jpg", "post13.png", "post14.jpg", "post15.jpg", "post16.png", "post17.png", "post18.png", "post19.jpg", "post2.jpg", "post20.png", "post21.webp", "post22.jpg", "post23.png", "post24.jpg", "post25.jpg", "post26.png", "post27.jpeg", "post28.jpg", "post29.jpg", "post3.jpg", "post30.jpg", "post31.webp", "post4.jpg", "post5.jpg", "post6.jpg", "post7.jpg", "post8.jpg", "post9.jpg"}
+var mockUsersAllById = map[yodb.I64]string{}
+var mockUsersAllByEmail = map[string]yodb.I64{}
+var mockUsersLoggedIn = map[string]bool{}
 
 func init() {
 	devModeInitMockUsers = func() {
 		for i := 0; i < mockUsersNumTotal; i++ {
 			mockEnsureUser(i)
 		}
-		mockSomeActivity()
+		if mockLiveActivity {
+			next_email_addr := func() string { return str.Fmt("foo%d@bar.baz", rand.Intn(mockUsersNumTotal)) }
+			// mock-login at least the min number of some random users
+			for len(mockUsersLoggedIn) < mockUsersNumActiveMin {
+				user_email_addr := next_email_addr()
+				for mockUsersLoggedIn[user_email_addr] {
+					user_email_addr = next_email_addr()
+				}
+				mockUsersLoggedIn[user_email_addr] = true
+			}
+			mockSomeActivity()
+		}
+	}
+}
+
+var mockActions = []Pair[string, func(*Ctx, *User)]{
+	{"logInOrOut", nil}, // this must be at index 0, see `mockSomeActivity`
+	{"changeBtw", nil},
+	{"changeNick", nil},
+	{"changePic", nil},
+	{"postSomething", nil},
+	{"changeBuddy", nil},
+}
+
+func mockSomeActivity() {
+	defer time.AfterFunc(time.Millisecond*time.Duration(11+rand.Intn(111)), mockSomeActivity)
+
+	user_email_addr := str.Fmt("foo%d@bar.baz", rand.Intn(mockUsersNumTotal))
+	do := mockActions[rand.Intn(len(mockActions))]
+	if (len(mockUsersLoggedIn) < mockUsersNumActiveMin) && !mockUsersLoggedIn[user_email_addr] {
+		do = mockActions[0]
+	}
+
+	ctx := NewCtxNonHttp(time.Minute, user_email_addr+" "+do.Key)
+	defer ctx.OnDone(nil)
+	ctx.DbTx()
+
+	user := UserByEmailAddr(ctx, user_email_addr)
+	switch _ = user; do.Key {
+	case "logInOrOut":
+	case "changeBtw":
+	case "changeNick":
+	case "changePic":
+	case "postSomething":
+	case "changeBuddy":
+	default:
+		panic(do.Key)
 	}
 }
 
 func mockEnsureUser(i int) {
 	yodb.PrintRawSqlInDevMode = false
 	user_email_addr := str.Fmt("foo%d@bar.baz", i)
-	ctx := NewCtxDebugNoCatch(time.Minute, user_email_addr)
+	ctx := NewCtxNonHttp(time.Minute, user_email_addr)
 	defer ctx.OnDone(nil)
 	ctx.DbTx()
 
+	ctx.Timings.Step("check exists")
 	user := UserByEmailAddr(ctx, user_email_addr)
 	if user == nil { // not yet exists: create
+		ctx.Timings.Step("init new user")
 		auth_id := yoauth.UserRegister(ctx, user_email_addr, "foobar")
 		user = &User{}
 		user.Auth.SetId(auth_id)
@@ -65,10 +116,14 @@ func mockEnsureUser(i int) {
 			user.Buddies = append(user.Buddies, buddy.Id)
 		}
 
+		ctx.Timings.Step("insert new user")
 		if user.Id = yodb.CreateOne[User](ctx, user); user.Id <= 0 {
 			panic(ErrDbNotStored)
 		}
 	}
+	mockUsersAllByEmail[user_email_addr] = user.Id
+	mockUsersAllById[user.Id] = user_email_addr
+	yodb.PrintRawSqlInDevMode = true
 }
 
 func mockGetFortune(maxLen int, ident bool) (ret string) {
@@ -85,9 +140,4 @@ func mockGetFortune(maxLen int, ident bool) (ret string) {
 		ret = str.Up0(ToIdentWith(ret, 0))
 	}
 	return
-}
-
-func mockSomeActivity() {
-	defer time.AfterFunc(time.Second*time.Duration(1+rand.Intn(11)), mockSomeActivity)
-
 }
