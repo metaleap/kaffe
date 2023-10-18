@@ -193,7 +193,7 @@ func mockGetFortune(maxLen int, ident bool) (ret string) {
 		if maxLen > 0 {
 			args = append(args, "-n", str.FromInt(maxLen), "-s")
 		}
-		if did_shower = ((maxLen >= 77) || (maxLen <= 0)) && (rand.Intn(If(maxLen <= 0, 4, 2)) != 0); did_shower {
+		if did_shower = ((maxLen >= 77) || (maxLen <= 0)) && (rand.Intn(If(maxLen <= 0, 3, 2)) != 0); did_shower {
 			args = append(args, filepath.Join(mockFilesDirPath, "fortune_showerthoughts.txt"))
 		}
 		cmd := exec.Command("fortune", args...)
