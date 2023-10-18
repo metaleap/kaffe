@@ -187,13 +187,13 @@ func mockEnsureUser(i int, idsSoFar []yodb.I64) yodb.I64 {
 }
 
 func mockGetFortune(maxLen int, ident bool) (ret string) {
-	allow_multi_line, did_shower := (maxLen <= 0), false
+	allow_multi_line, did_alt := (maxLen <= 0), false
 	for (ret == "") || ((!allow_multi_line) && (str.Idx(ret, '\n') >= 0)) || str.IsUp(ret) {
 		var args []string
 		if maxLen > 0 {
 			args = append(args, "-n", str.FromInt(maxLen), "-s")
 		}
-		if did_shower = ((maxLen >= 77) || (maxLen <= 0)) && (rand.Intn(If(maxLen <= 0, 3, 2)) != 0); did_shower {
+		if did_alt = ((maxLen >= 77) || (maxLen <= 0)) && (rand.Intn(If(maxLen <= 0, 3, 2)) != 0); did_alt {
 			args = append(args, filepath.Join(mockFilesDirPath, "fortune_showerthoughts.txt"))
 		}
 		cmd := exec.Command("fortune", args...)
@@ -207,9 +207,6 @@ func mockGetFortune(maxLen int, ident bool) (ret string) {
 		if ret = str.Trim(ret); ident {
 			ret = str.Up0(ToIdentWith(ret, 0))
 		}
-	}
-	if did_shower {
-		println(ret)
 	}
 	return
 }
