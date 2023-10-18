@@ -181,7 +181,7 @@ func mockSomeActivityPostSomething(ctx *Ctx, user *User) {
 	if (true || (rand.Intn(11) <= 5)) && (len(user.Buddies) > 0) {
 		if post := yodb.FindOne[Post](ctx,
 			PostColRepl.Equal(nil).And(PostColBy.In(user.Buddies.Anys()...).And(
-				PostColTo.Equal(nil).Or(q.JsonArrHas(PostColTo, q.That(user.Id))),
+				PostColTo.Equal(nil).Or(q.JsonHas(PostColTo, q.That(user.Id))),
 			)),
 		); post != nil {
 			to, in_reply_to = post.To, post.Id
