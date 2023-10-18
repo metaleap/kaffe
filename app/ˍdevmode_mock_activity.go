@@ -72,6 +72,7 @@ func init() {
 		for i := 0; i < mockUsersNumTotal; i++ {
 			mockEnsureUser(i)
 		}
+		mockSomeActivity()
 	}
 }
 
@@ -128,4 +129,8 @@ func mockGetFortune(maxLen int, ident bool) (ret string) {
 		ret = str.Up0(ToIdentWith(ret, 0))
 	}
 	return
+}
+
+func mockSomeActivity() {
+	defer time.AfterFunc(time.Second*time.Duration(1+rand.Intn(11)), mockSomeActivity)
 }
