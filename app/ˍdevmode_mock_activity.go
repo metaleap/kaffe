@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"net/http"
 	"os/exec"
+	"sync"
 	"time"
 
 	. "yo/ctx"
@@ -51,6 +52,7 @@ func init() {
 
 func newClient() *http.Client { return &http.Client{Timeout: time.Second} }
 
+var mockLock sync.Mutex
 var mockActions = []Pair[string, func(*Ctx, *User)]{
 	{"logInOrOut", nil}, // this must be at index 0, see `mockSomeActivity`
 	{"changeBtw", nil},
@@ -65,10 +67,11 @@ func mockSomeActivity() {
 
 	user_email_addr := str.Fmt("foo%d@bar.baz", rand.Intn(mockUsersNumTotal))
 	do := mockActions[rand.Intn(len(mockActions))]
-	is_logged_in := mockUsersLoggedIn[user_email_addr]
-	if (len(mockUsersLoggedIn) < mockUsersNumActiveMin) && (is_logged_in == nil) {
+	mockLock.Lock()
+	if (len(mockUsersLoggedIn) < mockUsersNumActiveMin) && (mockUsersLoggedIn[user_email_addr] == nil) {
 		do = mockActions[0]
 	}
+	mockLock.Unlock()
 
 	ctx := NewCtxNonHttp(time.Minute, user_email_addr+" "+do.Key)
 	defer ctx.OnDone(nil)
@@ -77,11 +80,13 @@ func mockSomeActivity() {
 	user := UserByEmailAddr(ctx, user_email_addr)
 	switch _ = user; do.Key {
 	case "logInOrOut":
-		if is_logged_in == nil {
+		mockLock.Lock()
+		if mockUsersLoggedIn[user_email_addr] == nil {
 			mockUsersLoggedIn[user_email_addr] = newClient()
 		} else {
 			delete(mockUsersLoggedIn, user_email_addr)
 		}
+		mockLock.Unlock()
 	case "changeBtw":
 	case "changeNick":
 	case "changePic":
