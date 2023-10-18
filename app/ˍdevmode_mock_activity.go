@@ -152,7 +152,11 @@ func mockSomeActivityChangeBuddy(ctx *Ctx, user *User, userEmailAddr string) {
 }
 
 func mockSomeActivityPostSomething(ctx *Ctx, user *User) {
-	UserPost(ctx, user, mockGetFortune(0, false), 0, nil, nil)
+	var files []FileRef
+	var to []yodb.I64
+	var in_reply_to yodb.I64
+	md := mockGetFortune(0, false)
+	UserPost(ctx, user, md, in_reply_to, files, to)
 }
 
 func mockUpdEnsureChange[T comparable](at *T, getAnother func() T, ok func(T) bool) {
