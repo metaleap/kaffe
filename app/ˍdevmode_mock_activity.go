@@ -33,9 +33,6 @@ var mockUsersLoggedIn = map[string]*http.Client{}
 
 func init() {
 	devModeInitMockUsers = func() {
-		if true {
-			return
-		}
 		// ensure all users exist
 		ids_so_far := make([]yodb.I64, 0, mockUsersNumTotal)
 		for i := 0; i < mockUsersNumTotal; i++ {
@@ -73,8 +70,8 @@ var mockActions = []string{ // don't reorder items with consulting/adapting the 
 }
 
 func mockSomeActivity() {
-	defer time.AfterFunc(time.Millisecond*time.Duration(111+rand.Intn(1111)), mockSomeActivity)
-	// we do about 1-3dozen reqs per sec with the above and the `rand`ed goroutining of this func set up in `init`
+	defer time.AfterFunc(time.Millisecond*time.Duration(11+rand.Intn(111)), mockSomeActivity)
+	// we do about 11-33 dozen reqs per sec with the above and the `rand`ed goroutining of this func set up in `init`
 
 	action := mockActions[len(mockActions)-1] // default to the much-more-frequent-than-the-others-by-design action...
 	if rand.Intn(len(mockActions)) <= 1 {     // ...except there's still a (just much-lower) chance for another action
@@ -92,7 +89,7 @@ func mockSomeActivity() {
 	defer ctx.OnDone(nil)
 	ctx.DbTx()
 	ctx.TimingsNoPrintInDevMode = true
-	// ctx.Db.PrintRawSqlInDevMode = true
+	ctx.Db.PrintRawSqlInDevMode = true
 
 	user := UserByEmailAddr(ctx, user_email_addr)
 	switch _ = user; action {
@@ -164,8 +161,12 @@ func mockSomeActivityPostSomething(ctx *Ctx, user *User) {
 		md = ""
 	} // separate rands because can have file-only posts as well as text+file/s posts
 	if (md == "") || (rand.Intn(11) <= 2) {
-		for i := 0; i < If(rand.Intn(2) == 0, 1, 1+rand.Intn(11)); i++ {
-			file_name := mockPostFiles[rand.Intn(len(mockPostFiles))]
+		num_files := If(rand.Intn(2) == 0, 1, 1+rand.Intn(11))
+		for i := 0; i < num_files; i++ {
+			var file_name string
+			for (file_name == "") || sl.HasWhere(files, func(it FileRef) bool { return (it.Id == file_name) }) {
+				file_name = mockPostFiles[rand.Intn(len(mockPostFiles))]
+			}
 			files = append(files, FileRef{Id: file_name, Name: file_name})
 		}
 	}
