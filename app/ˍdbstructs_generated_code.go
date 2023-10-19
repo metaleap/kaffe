@@ -20,13 +20,13 @@ const (
 	userAuth_pwdHashed UserField = "Auth.pwdHashed"
 )
 
-func (me UserField) AsField() q.F                 { return ((q.F)(me)).AsField() }
 func (me UserField) Asc() q.OrderBy               { return ((q.F)(me)).Asc() }
 func (me UserField) Desc() q.OrderBy              { return ((q.F)(me)).Desc() }
 func (me UserField) Equal(a1 interface{}) q.Query { return ((q.F)(me)).Equal(a1) }
 func (me UserField) Eval(a1 interface{}, a2 func(q.C) q.F) interface{} {
 	return ((q.F)(me)).Eval(a1, a2)
 }
+func (me UserField) F() q.F                                { return ((q.F)(me)).F() }
 func (me UserField) GreaterOrEqual(a1 interface{}) q.Query { return ((q.F)(me)).GreaterOrEqual(a1) }
 func (me UserField) GreaterThan(a1 interface{}) q.Query    { return ((q.F)(me)).GreaterThan(a1) }
 func (me UserField) In(a1 ...interface{}) q.Query          { return ((q.F)(me)).In(a1...) }
@@ -64,13 +64,13 @@ const (
 	PostRepl_Repl    PostField = "Repl.Repl"
 )
 
-func (me PostField) AsField() q.F                 { return ((q.F)(me)).AsField() }
 func (me PostField) Asc() q.OrderBy               { return ((q.F)(me)).Asc() }
 func (me PostField) Desc() q.OrderBy              { return ((q.F)(me)).Desc() }
 func (me PostField) Equal(a1 interface{}) q.Query { return ((q.F)(me)).Equal(a1) }
 func (me PostField) Eval(a1 interface{}, a2 func(q.C) q.F) interface{} {
 	return ((q.F)(me)).Eval(a1, a2)
 }
+func (me PostField) F() q.F                                { return ((q.F)(me)).F() }
 func (me PostField) GreaterOrEqual(a1 interface{}) q.Query { return ((q.F)(me)).GreaterOrEqual(a1) }
 func (me PostField) GreaterThan(a1 interface{}) q.Query    { return ((q.F)(me)).GreaterThan(a1) }
 func (me PostField) In(a1 ...interface{}) q.Query          { return ((q.F)(me)).In(a1...) }

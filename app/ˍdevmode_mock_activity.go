@@ -105,28 +105,35 @@ func mockSomeActivity() {
 		if rand.Intn(22) == 0 {
 			user.Btw = ""
 		}
-		if upd := (&User{Id: user.Id, Auth: user.Auth, Btw: user.Btw}); !UserUpdate(ctx, upd, false) {
+		if upd := (&User{Id: user.Id, Btw: user.Btw}); !UserUpdate(ctx, upd, (user.Btw == ""), UserBtw) {
 			panic(str.From(upd))
 		}
 	case "changeNick":
 		mockUpdEnsureChange(&user.Nick, func() yodb.Text {
 			var one, two string
-			for one == "" || two == "" || one == two {
+			for (one == "") || (two == "") || (one == two) {
 				one, two = mockGetFortune(11+rand.Intn(11), true), mockGetFortune(11+rand.Intn(11), true)
 			}
 			return yodb.Text(If(rand.Intn(2) == 0, one+two, two+one))
 		}, func(it yodb.Text) bool {
 			return !yodb.Exists[User](ctx, UserNick.Equal(it))
 		})
-		_ = UserUpdate(ctx, &User{Id: user.Id, Auth: user.Auth, Nick: user.Nick}, false)
+		if upd := (&User{Id: user.Id, Nick: user.Nick}); !UserUpdate(ctx, upd, false, UserNick) {
+			panic(str.From(upd))
+		}
 	case "changePic":
 		mockUpdEnsureChange(&user.PicFileId, func() yodb.Text { return yodb.Text(mockUserPicFiles[rand.Intn(len(mockUserPicFiles))]) }, nil)
-		if upd := (&User{Id: user.Id, Auth: user.Auth, PicFileId: user.PicFileId}); !UserUpdate(ctx, upd, false) {
+		if rand.Intn(22) == 0 {
+			user.PicFileId = ""
+		}
+		if upd := (&User{Id: user.Id, PicFileId: user.PicFileId}); !UserUpdate(ctx, upd, (user.PicFileId == ""), UserPicFileId) {
 			panic(str.From(upd))
 		}
 	case "changeBuddy":
 		mockSomeActivityChangeBuddy(ctx, user, user_email_addr)
-		_ = UserUpdate(ctx, &User{Id: user.Id, Auth: user.Auth, Buddies: user.Buddies}, false)
+		if upd := (&User{Id: user.Id, Buddies: user.Buddies}); !UserUpdate(ctx, upd, false, UserBuddies) {
+			panic(str.From(upd))
+		}
 	case "postSomething":
 		mockSomeActivityPostSomething(ctx, user)
 	default:

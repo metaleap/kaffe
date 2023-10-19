@@ -8,6 +8,7 @@ import (
 	yoauth "yo/feat_auth"
 	. "yo/srv"
 	. "yo/util"
+	"yo/util/sl"
 	"yo/util/str"
 )
 
@@ -74,19 +75,20 @@ func apiUserUpdate(this *ApiCtx[yodb.ApiUpdateArgs[User], Void]) {
 	}
 }
 
-func UserUpdate(ctx *Ctx, upd *User, inclEmptyOrMissingFields bool) bool {
+func UserUpdate(ctx *Ctx, upd *User, inclEmptyOrMissingFields bool, onlyFields ...UserField) bool {
 	ctx.DbTx()
 	if upd.Btw.Do(str.Trim); (upd.Btw != "") && (upd.BtwDt == nil) {
 		upd.BtwDt = yodb.DtFrom(time.Now)
 	}
 	upd.Buddies.EnsureAllUnique()
 	if upd.Nick.Do(str.Trim); upd.Nick != "" {
-		if other := yodb.FindOne[User](ctx, UserNick.Equal(upd.Nick)); (other != nil) && ((other.Id != upd.Id) || (other.Auth.Id() != upd.Auth.Id())) {
+		// TODO Exists with id!=userid instead of FindOne
+		if other := yodb.FindOne[User](ctx, UserNick.Equal(upd.Nick)); (other != nil) && (other.Id != upd.Id) {
 			panic(ErrUserUpdate_NicknameAlreadyExists)
 		}
 	}
 	ctx.Db.PrintRawSqlInDevMode = true
-	return (yodb.Update[User](ctx, upd, inclEmptyOrMissingFields, nil) > 0)
+	return (yodb.Update[User](ctx, upd, nil, !inclEmptyOrMissingFields, sl.To(onlyFields, UserField.F)...) > 0)
 }
 
 func UserByEmailAddr(ctx *Ctx, emailAddr string) (ret *User) {
