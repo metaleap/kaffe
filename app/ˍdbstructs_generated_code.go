@@ -3,19 +3,6 @@ package haxsh
 
 import q "yo/db/query"
 
-type UserCol = q.C
-
-const (
-	UserColId        = UserCol("id_")
-	UserColCreated   = UserCol("created_")
-	UserColAuth      = UserCol("auth_")
-	UserColPicFileId = UserCol("pic_file_id_")
-	UserColNick      = UserCol("nick_")
-	UserColBtw       = UserCol("btw_")
-	UserColBtwDt     = UserCol("btw_dt_")
-	UserColBuddies   = UserCol("buddies_")
-)
-
 type UserField q.F
 
 const (
@@ -48,18 +35,6 @@ func (me UserField) Not() q.Query                          { return ((q.F)(me)).
 func (me UserField) NotEqual(a1 interface{}) q.Query       { return ((q.F)(me)).NotEqual(a1) }
 func (me UserField) NotIn(a1 ...interface{}) q.Query       { return ((q.F)(me)).NotIn(a1...) }
 func (me UserField) StrLen(a1 ...interface{}) q.Operand    { return ((q.F)(me)).StrLen(a1...) }
-
-type PostCol = q.C
-
-const (
-	PostColId      = PostCol("id_")
-	PostColCreated = PostCol("created_")
-	PostColBy      = PostCol("by_")
-	PostColTo      = PostCol("to_")
-	PostColMd      = PostCol("md_")
-	PostColFiles   = PostCol("files_")
-	PostColRepl    = PostCol("repl_")
-)
 
 type PostField q.F
 

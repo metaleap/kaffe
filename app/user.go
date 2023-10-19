@@ -81,7 +81,7 @@ func UserUpdate(ctx *Ctx, upd *User, inclEmptyOrMissingFields bool) bool {
 	}
 	upd.Buddies.EnsureAllUnique()
 	if upd.Nick.Do(str.Trim); upd.Nick != "" {
-		if other := yodb.FindOne[User](ctx, UserColNick.Equal(upd.Nick)); (other != nil) && ((other.Id != upd.Id) || (other.Auth.Id() != upd.Auth.Id())) {
+		if other := yodb.FindOne[User](ctx, UserFieldNick.Equal(upd.Nick)); (other != nil) && ((other.Id != upd.Id) || (other.Auth.Id() != upd.Auth.Id())) {
 			panic(ErrUserUpdate_NicknameAlreadyExists)
 		}
 	}
@@ -90,7 +90,7 @@ func UserUpdate(ctx *Ctx, upd *User, inclEmptyOrMissingFields bool) bool {
 
 func UserByEmailAddr(ctx *Ctx, emailAddr string) (ret *User) {
 	// TODO: UserColAuth_EmailAddr.Equal(emailAddr)
-	if user_auth := yodb.FindOne[yoauth.UserAuth](ctx, yoauth.UserAuthColEmailAddr.Equal(emailAddr)); user_auth != nil {
+	if user_auth := yodb.FindOne[yoauth.UserAuth](ctx, yoauth.UserAuthFieldEmailAddr.Equal(emailAddr)); user_auth != nil {
 		ret = yodb.FindOne[User](ctx, UserFieldAuth.Equal(user_auth.Id))
 	}
 	return
@@ -99,7 +99,7 @@ func UserByEmailAddr(ctx *Ctx, emailAddr string) (ret *User) {
 func UserCur(ctx *Ctx) (ret *User) {
 	if ret = ctx.Get(ctxKeyCurUser, nil).(*User); ret == nil {
 		if _, user_auth_id := yoauth.CurrentlyLoggedInUser(ctx); user_auth_id != 0 {
-			ret = yodb.FindOne[User](ctx, UserColAuth.Equal(user_auth_id))
+			ret = yodb.FindOne[User](ctx, UserFieldAuth.Equal(user_auth_id))
 			ctx.Set(ctxKeyCurUser, ret)
 		}
 	}
