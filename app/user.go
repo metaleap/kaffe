@@ -85,6 +85,7 @@ func UserUpdate(ctx *Ctx, upd *User, inclEmptyOrMissingFields bool) bool {
 			panic(ErrUserUpdate_NicknameAlreadyExists)
 		}
 	}
+	ctx.Db.PrintRawSqlInDevMode = true
 	return (yodb.Update[User](ctx, upd, inclEmptyOrMissingFields, nil) > 0)
 }
 
