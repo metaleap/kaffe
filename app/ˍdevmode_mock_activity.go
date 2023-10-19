@@ -33,6 +33,9 @@ var mockUsersLoggedIn = map[string]*http.Client{}
 
 func init() {
 	devModeInitMockUsers = func() {
+		if true {
+			return
+		}
 		// ensure all users exist
 		ids_so_far := make([]yodb.I64, 0, mockUsersNumTotal)
 		for i := 0; i < mockUsersNumTotal; i++ {
@@ -117,7 +120,7 @@ func mockSomeActivity() {
 			}
 			return yodb.Text(If(rand.Intn(2) == 0, one+two, two+one))
 		}, func(it yodb.Text) bool {
-			return !yodb.Exists[User](ctx, UserFieldNick.Equal(it))
+			return !yodb.Exists[User](ctx, UserNick.Equal(it))
 		})
 		_ = UserUpdate(ctx, &User{Id: user.Id, Auth: user.Auth, Nick: user.Nick}, false)
 	case "changePic":
@@ -179,8 +182,8 @@ func mockSomeActivityPostSomething(ctx *Ctx, user *User) {
 	// in reply to some other post? (if so, changes `to` that post's `to`)
 	if (rand.Intn(11) <= 3) && (len(user.Buddies) > 0) {
 		if post := yodb.FindOne[Post](ctx,
-			PostFieldRepl.Equal(nil).And(PostFieldBy.In(user.Buddies.Anys()...).And(
-				PostFieldTo.Equal(nil).Or(q.JsonHas(PostFieldTo, q.That(user.Id))),
+			PostRepl.Equal(nil).And(PostBy.In(user.Buddies.Anys()...).And(
+				PostTo.Equal(nil).Or(q.JsonHas(PostTo, q.That(user.Id))),
 			)),
 		); post != nil {
 			to, in_reply_to = post.To, post.Id

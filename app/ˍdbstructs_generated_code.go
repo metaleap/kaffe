@@ -6,18 +6,18 @@ import q "yo/db/query"
 type UserField q.F
 
 const (
-	UserFieldId                  UserField = "Id"
-	UserFieldCreated             UserField = "Created"
-	UserFieldAuth                UserField = "Auth"
-	UserFieldPicFileId           UserField = "PicFileId"
-	UserFieldNick                UserField = "Nick"
-	UserFieldBtw                 UserField = "Btw"
-	UserFieldBtwDt               UserField = "BtwDt"
-	UserFieldBuddies             UserField = "Buddies"
-	UserFieldAuth_Id                       = UserField("Auth.Id")
-	UserFieldAuth_Created                  = UserField("Auth.Created")
-	UserFieldAuth_EmailAddr                = UserField("Auth.EmailAddr")
-	userFieldAuth_passwordHashed           = UserField("Auth.passwordHashed")
+	UserId                  UserField = "Id"
+	UserCreated             UserField = "Created"
+	UserAuth                UserField = "Auth"
+	UserPicFileId           UserField = "PicFileId"
+	UserNick                UserField = "Nick"
+	UserBtw                 UserField = "Btw"
+	UserBtwDt               UserField = "BtwDt"
+	UserBuddies             UserField = "Buddies"
+	UserFieldAuth_Id                  = UserField("Auth.Id")
+	UserFieldAuth_Created             = UserField("Auth.Created")
+	UserFieldAuth_EmailAddr           = UserField("Auth.EmailAddr")
+	userFieldAuth_pwdHashed           = UserField("Auth.pwdHashed")
 )
 
 func (me UserField) AsField() q.F                 { return ((q.F)(me)).AsField() }
@@ -40,13 +40,13 @@ func (me UserField) StrLen(a1 ...interface{}) q.Operand    { return ((q.F)(me)).
 type PostField q.F
 
 const (
-	PostFieldId           PostField = "Id"
-	PostFieldCreated      PostField = "Created"
-	PostFieldBy           PostField = "By"
-	PostFieldTo           PostField = "To"
-	PostFieldMd           PostField = "Md"
-	PostFieldFiles        PostField = "Files"
-	PostFieldRepl         PostField = "Repl"
+	PostId                PostField = "Id"
+	PostCreated           PostField = "Created"
+	PostBy                PostField = "By"
+	PostTo                PostField = "To"
+	PostMd                PostField = "Md"
+	PostFiles             PostField = "Files"
+	PostRepl              PostField = "Repl"
 	PostFieldBy_Id                  = PostField("By.Id")
 	PostFieldBy_Created             = PostField("By.Created")
 	PostFieldBy_Auth                = PostField("By.Auth")
