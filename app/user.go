@@ -31,7 +31,7 @@ func init() {
 		"userGet": Api(apiUserGet, PkgInfo),
 	})
 	PreApiHandling = append(PreApiHandling, Middleware{"setUserLastSeen", func(ctx *Ctx) {
-		go setUserLastSeen(0, ctx.Get(yoauth.CtxKeyAuthId, yodb.I64(0)).(yodb.I64))
+		go setUserLastSeen(ctx.Get(yoauth.CtxKeyAuthId, yodb.I64(0)).(yodb.I64))
 	}})
 }
 
@@ -86,14 +86,15 @@ func apiUserGet(this *ApiCtx[struct {
 	this.Ret = UserByEmailAddr(this.Ctx, this.Args.EmailAddr)
 }
 
-func setUserLastSeen(id yodb.I64, auth_id yodb.I64) {
+func setUserLastSeen(auth_id yodb.I64) {
+	if auth_id == 0 {
+		return
+	}
 	ctx := NewCtxNonHttp(time.Minute, "setUserLastSeen")
 	defer ctx.OnDone(nil)
-	upd := &User{LastSeen: yodb.DtFrom(time.Now), Id: id}
-	if auth_id != 0 {
-		upd.Auth.SetId(auth_id)
-	}
-	go UserUpdate(ctx, upd, false, UserLastSeen)
+	upd := &User{LastSeen: yodb.DtFrom(time.Now)}
+	upd.Auth.SetId(auth_id)
+	UserUpdate(ctx, upd, false, UserLastSeen)
 }
 
 func UserUpdate(ctx *Ctx, upd *User, inclEmptyOrMissingFields bool, onlyFields ...UserField) bool {
