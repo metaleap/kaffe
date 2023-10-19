@@ -20,7 +20,8 @@ import (
 	"yo/util/str"
 )
 
-const mockLiveActivity = true
+var mockLiveActivity = true
+
 const mockUsersNumTotal = 1444 // don't go higher than that due to limited number of `fortune`s (at nickname short length) for unique-nickname generation
 const mockUsersNumActiveInitially = mockUsersNumTotal / 2
 const mockFilesDirPath = "__static/mockfiles"
@@ -72,6 +73,9 @@ var mockActions = []string{ // don't reorder items with consulting/adapting the 
 var busy = map[string]bool{}
 
 func mockSomeActivity() {
+	if !mockLiveActivity { // for turning off live during debugging
+		return
+	}
 	defer time.AfterFunc(time.Millisecond*time.Duration(111+rand.Intn(1111)), mockSomeActivity)
 	// we do about 1-3 dozen reqs per sec with the above and the `rand`ed goroutining of this func set up in `init`
 
@@ -210,7 +214,7 @@ func mockSomeActivityPostSomething(ctx *Ctx, user *User, client *http.Client) {
 	new_post := &Post{Md: yodb.Text(md), Files: files, To: to}
 	new_post.By.SetId(user.Id)
 	new_post.Repl.SetId(in_reply_to)
-	ViaHttp[Post, Void](blaPostNew, ctx, new_post, client)
+	ViaHttp[Post, Void](apiPostNew, ctx, new_post, client)
 	// PostNew(ctx, user, md, in_reply_to, files, to)
 }
 
