@@ -11,7 +11,7 @@ type apiPkgInfo util.Void
 func (apiPkgInfo) PkgName() string    { return "haxsh" }
 func (me apiPkgInfo) PkgPath() string { return reflect.TypeOf(me).PkgPath() }
 
-var PkgInfo = apiPkgInfo{}
+var ThisPkg = apiPkgInfo{}
 
 const Err___yo_authLogin_AccountDoesNotExist util.Err = "___yo_authLogin_AccountDoesNotExist"
 const Err___yo_authLogin_EmailInvalid util.Err = "___yo_authLogin_EmailInvalid"

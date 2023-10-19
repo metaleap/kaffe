@@ -8,6 +8,13 @@ import (
 	"yo/util/str"
 )
 
+func init() {
+	Apis(ApiMethods{
+		"postNew": apiPostNew.
+			From(ThisPkg),
+	})
+}
+
 type Post struct {
 	Id      yodb.I64
 	Created *yodb.DateTime
@@ -26,7 +33,7 @@ type FileRef struct {
 
 var apiPostNew = Api(func(this *ApiCtx[Post, Void]) {
 	postNew(this.Ctx, this.Args)
-}, PkgInfo)
+})
 
 func postNew(ctx *Ctx, post *Post) {
 	_ = yodb.CreateOne(ctx, post)

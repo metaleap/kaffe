@@ -18,17 +18,22 @@ var checkSignedIn = Pair[Err, func(*Ctx) bool]{ErrUnauthorized, yoauth.Currently
 
 func init() {
 	Apis(ApiMethods{
-		"userSignOut": Api(apiUserSignOut, PkgInfo).
+		"userSignOut": Api(apiUserSignOut).
+			From(ThisPkg).
 			CouldFailWith(":" + yoauth.MethodPathLogout),
-		"userSignUp": Api(apiUserSignUp, PkgInfo).
+		"userSignUp": Api(apiUserSignUp).
+			From(ThisPkg).
 			CouldFailWith(":"+yoauth.MethodPathRegister, ":userSignIn"),
-		"userSignIn": Api(apiUserSignIn, PkgInfo).
+		"userSignIn": Api(apiUserSignIn).
+			From(ThisPkg).
 			CouldFailWith(":" + yoauth.MethodPathLogin),
-		"userUpdate": Api(apiUserUpdate, PkgInfo,
+		"userUpdate": Api(apiUserUpdate,
 			Fails{Err: ErrDbUpdExpectedIdGt0, If: UserUpdateId.LessOrEqual(0)},
-		).PreCheck(checkSignedIn).
+		).From(ThisPkg).
+			PreCheck(checkSignedIn).
 			CouldFailWith(":"+yodb.ErrSetDbUpdate, ErrDbNotStored, "NicknameAlreadyExists"),
-		"userGet": Api(apiUserGet, PkgInfo),
+		"userGet": Api(apiUserGet).
+			From(ThisPkg),
 	})
 	PreApiHandling = append(PreApiHandling, Middleware{"setUserLastSeen", func(ctx *Ctx) {
 		go setUserLastSeen(ctx.Get(yoauth.CtxKeyAuthId, yodb.I64(0)).(yodb.I64))
