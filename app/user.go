@@ -14,8 +14,6 @@ import (
 
 const ctxKeyCurUser = "haxshCurUser"
 
-var checkSignedIn = Pair[Err, func(*Ctx) bool]{ErrUnauthorized, yoauth.CurrentlyLoggedIn}
-
 func init() {
 	Apis(ApiMethods{
 		"userSignOut": api(apiUserSignOut).
@@ -27,8 +25,8 @@ func init() {
 		"userUpdate": api(apiUserUpdate,
 			Fails{Err: ErrDbUpdExpectedIdGt0, If: UserUpdateId.LessOrEqual(0)},
 		).
-			PreCheck(checkSignedIn).
-			CouldFailWith(":"+yodb.ErrSetDbUpdate, ErrDbNotStored, "NicknameAlreadyExists"),
+			CouldFailWith(":"+yodb.ErrSetDbUpdate, ErrDbNotStored, "NicknameAlreadyExists").
+			FailIf(ErrUnauthorized, yoauth.CurrentlyNotLoggedIn),
 		"userGet": api(apiUserGet),
 	})
 	PreApiHandling = append(PreApiHandling, Middleware{"setUserLastSeen", func(ctx *Ctx) {

@@ -11,11 +11,13 @@ import (
 
 func init() {
 	Apis(ApiMethods{
-		"postNew": apiPostNew.
-			Checks(Fails{"ExpectedNonEmptyPost", PostMd.Equal("").And(PostFiles.Len().Equal(0))}).
-			Checks(Fails{"InvalidItemInFiles", PostFiles.ArrAny(q.Equal, "").Equal(true)}).
-			Checks(Fails{"ExpectedOnlyBuddyRecipients", PostTo.ArrAny(q.LessOrEqual, yodb.I64(0)).Equal(true)}).
-			CouldFailWith(ErrDbNotStored, ErrUnauthorized, "RepliedToPostDoesNotExist", "ExpectedOnlyBuddyRecipients"),
+		"postNew": apiPostNew.Checks(
+			Fails{Err: "ExpectedNonEmptyPost", If: PostMd.Equal("").And(PostFiles.Len().Equal(0))},
+			Fails{Err: "RepliedToPostDoesNotExist", If: PostRepl.LessThan(0)},
+			Fails{Err: "InvalidItemInFiles", If: PostFiles.ArrAny(q.Equal, "").Equal(true)},
+			Fails{Err: "ExpectedOnlyBuddyRecipients", If: PostTo.ArrAny(q.LessOrEqual, 0).Equal(true)},
+		).
+			CouldFailWith(ErrDbNotStored, ErrUnauthorized),
 	})
 }
 
