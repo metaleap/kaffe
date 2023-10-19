@@ -248,6 +248,9 @@ func mockGetFortune(maxLen int, ident bool) (ret string) {
 		if ret = string(output); err != nil {
 			panic(err)
 		}
+		if str.Has(str.Lo(ret), "who") && str.Has(str.Lo(ret), "on") && str.Has(str.Lo(ret), "first") { // TODO temp
+			panic(ret) //"WhoSOnFirst"
+		}
 		if idx := str.IdxRune(ret, '―'); idx >= 0 {
 			ret = ret[:idx]
 		}

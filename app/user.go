@@ -82,17 +82,16 @@ func UserUpdate(ctx *Ctx, upd *User, inclEmptyOrMissingFields bool, onlyFields .
 	}
 	upd.Buddies.EnsureAllUnique()
 	if upd.Nick.Do(str.Trim); upd.Nick != "" {
-		// TODO Exists with id!=userid instead of FindOne
-		if other := yodb.FindOne[User](ctx, UserNick.Equal(upd.Nick)); (other != nil) && (other.Id != upd.Id) {
+		if yodb.Exists[User](ctx, UserNick.Equal(upd.Nick).And(UserId.NotEqual(upd.Id))) {
 			panic(ErrUserUpdate_NicknameAlreadyExists)
 		}
 	}
-	ctx.Db.PrintRawSqlInDevMode = true
 	return (yodb.Update[User](ctx, upd, nil, !inclEmptyOrMissingFields, sl.To(onlyFields, UserField.F)...) > 0)
 }
 
 func UserByEmailAddr(ctx *Ctx, emailAddr string) (ret *User) {
 	// TODO: UserColAuth_EmailAddr.Equal(emailAddr)
+	// syntax: select user_.* from user_ join user_auth_  on user_.auth_ = user_auth_.id_ where user_auth_.email_addr_ = 'foo321@bar.baz'
 	if user_auth := yodb.FindOne[yoauth.UserAuth](ctx, yoauth.UserAuthEmailAddr.Equal(emailAddr)); user_auth != nil {
 		ret = yodb.FindOne[User](ctx, UserAuth.Equal(user_auth.Id))
 	}
