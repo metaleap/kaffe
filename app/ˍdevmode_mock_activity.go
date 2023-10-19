@@ -89,7 +89,7 @@ func mockSomeActivity() {
 	defer ctx.OnDone(nil)
 	ctx.DbTx()
 	ctx.TimingsNoPrintInDevMode = true
-	// ctx.Db.PrintRawSqlInDevMode = true
+	ctx.Db.PrintRawSqlInDevMode = true
 
 	user := UserByEmailAddr(ctx, user_email_addr)
 	switch _ = user; action {
@@ -202,10 +202,12 @@ func mockEnsureUser(i int, idsSoFar []yodb.I64) yodb.I64 {
 	ctx := NewCtxNonHttp(time.Minute, user_email_addr)
 	defer ctx.OnDone(nil)
 	ctx.DbTx()
+	ctx.TimingsNoPrintInDevMode = true
 
 	ctx.Timings.Step("check exists")
 	user := UserByEmailAddr(ctx, user_email_addr)
 	if user == nil { // not yet exists: create
+		ctx.TimingsNoPrintInDevMode = false
 		ctx.Timings.Step("register new auth")
 		auth_id := yoauth.UserRegister(ctx, user_email_addr, "foobar")
 		user = &User{Nick: yodb.Text(user_email_addr[:str.Idx(string(user_email_addr), '@')])}
@@ -240,7 +242,7 @@ func mockGetFortune(maxLen int, ident bool) (ret string) {
 			ret = ret[:idx]
 		}
 		if ret = str.Trim(ret); ident {
-			ret = str.Up0(ToIdentWith(ret, 0))
+			ret = str.Up0(ToIdentWith(str.Repl(ret, str.Dict{"'": "", "`": "", "´": ""}), 0))
 		}
 	}
 	return
