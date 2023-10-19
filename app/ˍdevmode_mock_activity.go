@@ -20,7 +20,7 @@ import (
 	"yo/util/str"
 )
 
-var mockLiveActivity = false
+var mockLiveActivity = true
 
 const mockUsersNumTotal = 1444 // don't go higher than that due to limited number of `fortune`s (at nickname short length) for unique-nickname generation
 const mockUsersNumActiveInitially = mockUsersNumTotal / 2
