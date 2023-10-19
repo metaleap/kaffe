@@ -91,7 +91,6 @@ func UserUpdate(ctx *Ctx, upd *User, inclEmptyOrMissingFields bool, onlyFields .
 
 func UserByEmailAddr(ctx *Ctx, emailAddr string) (ret *User) {
 	// TODO: UserColAuth_EmailAddr.Equal(emailAddr)
-	// syntax: select user_.* from user_ join user_auth_  on user_.auth_ = user_auth_.id_ where user_auth_.email_addr_ = 'foo321@bar.baz'
 	if user_auth := yodb.FindOne[yoauth.UserAuth](ctx, yoauth.UserAuthEmailAddr.Equal(emailAddr)); user_auth != nil {
 		ret = yodb.FindOne[User](ctx, UserAuth.Equal(user_auth.Id))
 	}
