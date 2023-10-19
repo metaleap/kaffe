@@ -14,10 +14,10 @@ const (
 	UserBtw                 UserField = "Btw"
 	UserBtwDt               UserField = "BtwDt"
 	UserBuddies             UserField = "Buddies"
-	UserFieldAuth_Id                  = UserField("Auth.Id")
-	UserFieldAuth_Created             = UserField("Auth.Created")
-	UserFieldAuth_EmailAddr           = UserField("Auth.EmailAddr")
-	userFieldAuth_pwdHashed           = UserField("Auth.pwdHashed")
+	UserFieldAuth_Id        UserField = "Auth.Id"
+	UserFieldAuth_Created   UserField = "Auth.Created"
+	UserFieldAuth_EmailAddr UserField = "Auth.EmailAddr"
+	userFieldAuth_pwdHashed UserField = "Auth.pwdHashed"
 )
 
 func (me UserField) AsField() q.F                 { return ((q.F)(me)).AsField() }
@@ -47,21 +47,21 @@ const (
 	PostMd                PostField = "Md"
 	PostFiles             PostField = "Files"
 	PostRepl              PostField = "Repl"
-	PostFieldBy_Id                  = PostField("By.Id")
-	PostFieldBy_Created             = PostField("By.Created")
-	PostFieldBy_Auth                = PostField("By.Auth")
-	PostFieldBy_PicFileId           = PostField("By.PicFileId")
-	PostFieldBy_Nick                = PostField("By.Nick")
-	PostFieldBy_Btw                 = PostField("By.Btw")
-	PostFieldBy_BtwDt               = PostField("By.BtwDt")
-	PostFieldBy_Buddies             = PostField("By.Buddies")
-	PostFieldRepl_Id                = PostField("Repl.Id")
-	PostFieldRepl_Created           = PostField("Repl.Created")
-	PostFieldRepl_By                = PostField("Repl.By")
-	PostFieldRepl_To                = PostField("Repl.To")
-	PostFieldRepl_Md                = PostField("Repl.Md")
-	PostFieldRepl_Files             = PostField("Repl.Files")
-	PostFieldRepl_Repl              = PostField("Repl.Repl")
+	PostFieldBy_Id        PostField = "By.Id"
+	PostFieldBy_Created   PostField = "By.Created"
+	PostFieldBy_Auth      PostField = "By.Auth"
+	PostFieldBy_PicFileId PostField = "By.PicFileId"
+	PostFieldBy_Nick      PostField = "By.Nick"
+	PostFieldBy_Btw       PostField = "By.Btw"
+	PostFieldBy_BtwDt     PostField = "By.BtwDt"
+	PostFieldBy_Buddies   PostField = "By.Buddies"
+	PostFieldRepl_Id      PostField = "Repl.Id"
+	PostFieldRepl_Created PostField = "Repl.Created"
+	PostFieldRepl_By      PostField = "Repl.By"
+	PostFieldRepl_To      PostField = "Repl.To"
+	PostFieldRepl_Md      PostField = "Repl.Md"
+	PostFieldRepl_Files   PostField = "Repl.Files"
+	PostFieldRepl_Repl    PostField = "Repl.Repl"
 )
 
 func (me PostField) AsField() q.F                 { return ((q.F)(me)).AsField() }
