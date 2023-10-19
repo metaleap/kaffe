@@ -68,6 +68,7 @@ var mockActions = []string{ // don't reorder items with consulting/adapting the 
 	"changeBuddy",
 	"postSomething",
 }
+var busy = map[string]bool{}
 
 func mockSomeActivity() {
 	defer time.AfterFunc(time.Millisecond*time.Duration(11+rand.Intn(111)), mockSomeActivity)
@@ -77,14 +78,19 @@ func mockSomeActivity() {
 	if rand.Intn(len(mockActions)) <= 1 {     // ...except there's still a (just much-lower) chance for another action
 		action = mockActions[rand.Intn(len(mockActions))]
 	}
-
-	user_email_addr := str.Fmt("foo%d@bar.baz", rand.Intn(mockUsersNumTotal))
-	mockLock.Lock()
-	if (len(mockUsersLoggedIn) < mockUsersNumActiveMin) && (mockUsersLoggedIn[user_email_addr] == nil) {
-		action = mockActions[0]
+	var user_email_addr string
+	{
+		mockLock.Lock()
+		for (user_email_addr == "") || busy[user_email_addr] {
+			user_email_addr = str.Fmt("foo%d@bar.baz", rand.Intn(mockUsersNumTotal))
+		}
+		if (len(mockUsersLoggedIn) < mockUsersNumActiveMin) && (mockUsersLoggedIn[user_email_addr] == nil) {
+			action = mockActions[0]
+		}
+		busy[user_email_addr] = true
+		defer func() { mockLock.Lock(); busy[user_email_addr] = false; mockLock.Unlock() }()
+		mockLock.Unlock()
 	}
-	mockLock.Unlock()
-
 	ctx := NewCtxNonHttp(time.Minute, user_email_addr+" "+action)
 	defer ctx.OnDone(nil)
 	ctx.DbTx()
@@ -248,14 +254,12 @@ func mockGetFortune(maxLen int, ident bool) (ret string) {
 		if ret = string(output); err != nil {
 			panic(err)
 		}
-		if str.Has(str.Lo(ret), "who") && str.Has(str.Lo(ret), "on") && str.Has(str.Lo(ret), "first") { // TODO temp
-			panic(ret) //"WhoSOnFirst"
-		}
 		if idx := str.IdxRune(ret, '―'); idx >= 0 {
 			ret = ret[:idx]
 		}
 		if ret = str.Trim(ret); ident {
-			ret = str.Up0(ToIdentWith(str.Repl(ret, str.Dict{"'": "", "`": "", "´": ""}), 0))
+			ret = str.Replace(ret, str.Dict{"'": "", "`": "", "´": ""})
+			ret = str.Up0(ToIdentWith(ret, 0))
 		}
 	}
 	return
