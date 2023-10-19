@@ -118,11 +118,11 @@ function qGreaterThan(x: QueryVal, y: QueryVal): QueryExpr { return { __yoQOp: '
 function qGreaterOrEqual(x: QueryVal, y: QueryVal): QueryExpr { return { __yoQOp: 'GE', __yoQOperands: [x, y] } as QueryExpr }
 function qIn(x: QueryVal, ...set: QueryVal[]): QueryExpr { return { __yoQOp: 'IN', __yoQOperands: [x].concat(set) } as QueryExpr }
 
-const errsPostNew = ['TimedOut'] as const
+const errsPostNew = ['DbWriteRequestAcceptedWithoutErrButNotStoredEither', 'PostNew_ExpectedNonEmptyPost', 'PostNew_ExpectedOnlyBuddyRecipients', 'PostNew_RepliedToPostDoesNotExist', 'TimedOut'] as const
 export type PostNewErr = typeof errsPostNew[number]
-export async function apiPostNew(payload: Post, query?: {[_:string]:string}): Promise<Void> {
+export async function apiPostNew(payload: Post, query?: {[_:string]:string}): Promise<Return_yo_db_I64_> {
 	try {
-		return req<Post, Void>('_/postNew', payload, query)
+		return req<Post, Return_yo_db_I64_>('_/postNew', payload, query)
 	} catch(err) {
 		if (err && err['body_text'] && (errsPostNew.indexOf(err.body_text) >= 0))
 			throw(new Err<PostNewErr>(err.body_text as PostNewErr))
@@ -231,6 +231,10 @@ export type DateTime = string
 export type ApiAccountPayload = {
 	EmailAddr: string
 	PasswordPlain: string
+}
+
+export type Return_yo_db_I64_ = {
+	Result: I64
 }
 
 export type Void = {

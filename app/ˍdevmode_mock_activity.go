@@ -215,7 +215,7 @@ func mockSomeActivityPostSomething(ctx *Ctx, user *User, client *http.Client) {
 	new_post := &Post{Md: yodb.Text(md), Files: files, To: to}
 	new_post.by.SetId(user.Id)
 	new_post.Repl.SetId(in_reply_to)
-	ViaHttp[Post, Void](apiPostNew, ctx, new_post, client)
+	ViaHttp[Post, Return[yodb.I64]](apiPostNew, ctx, new_post, client)
 }
 
 func mockUpdEnsureChange[T comparable](at *T, getAnother func() T, ok func(T) bool) {

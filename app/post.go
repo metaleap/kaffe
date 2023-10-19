@@ -9,7 +9,9 @@ import (
 
 func init() {
 	Apis(ApiMethods{
-		"postNew": apiPostNew,
+		"postNew": apiPostNew.
+			Checks(Fails{"ExpectedNonEmptyPost", PostMd.Equal("").And(PostFiles.Len().Equal(0))}).
+			CouldFailWith(ErrDbNotStored, "RepliedToPostDoesNotExist", "ExpectedOnlyBuddyRecipients"),
 	})
 }
 
@@ -29,14 +31,18 @@ type FileRef struct {
 	Name string
 }
 
-var apiPostNew = api(func(this *ApiCtx[Post, Void]) {
-	postNew(this.Ctx, this.Args, true)
+var apiPostNew = api(func(this *ApiCtx[Post, Return[yodb.I64]]) {
+	this.Ret.Result = postNew(this.Ctx, this.Args, true)
 })
 
-func postNew(ctx *Ctx, post *Post, byCurUserInCtx bool) {
+func postNew(ctx *Ctx, post *Post, byCurUserInCtx bool) (ret yodb.I64) {
 	if byCurUserInCtx {
 		user := UserCur(ctx)
 		post.by.SetId(user.Id)
 	}
-	_ = yodb.CreateOne(ctx, post)
+
+	if ret = yodb.CreateOne(ctx, post); ret <= 0 {
+		panic(ErrDbNotStored)
+	}
+	return
 }
