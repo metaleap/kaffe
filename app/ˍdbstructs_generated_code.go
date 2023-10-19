@@ -8,6 +8,7 @@ type UserField q.F
 const (
 	UserId             UserField = "Id"
 	UserCreated        UserField = "Created"
+	UserLastSeen       UserField = "LastSeen"
 	UserAuth           UserField = "Auth"
 	UserPicFileId      UserField = "PicFileId"
 	UserNick           UserField = "Nick"
@@ -49,6 +50,7 @@ const (
 	PostRepl         PostField = "Repl"
 	PostBy_Id        PostField = "By.Id"
 	PostBy_Created   PostField = "By.Created"
+	PostBy_LastSeen  PostField = "By.LastSeen"
 	PostBy_Auth      PostField = "By.Auth"
 	PostBy_PicFileId PostField = "By.PicFileId"
 	PostBy_Nick      PostField = "By.Nick"

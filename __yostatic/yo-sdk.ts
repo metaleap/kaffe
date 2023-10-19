@@ -118,6 +118,18 @@ function qGreaterThan(x: QueryVal, y: QueryVal): QueryExpr { return { __yoQOp: '
 function qGreaterOrEqual(x: QueryVal, y: QueryVal): QueryExpr { return { __yoQOp: 'GE', __yoQOperands: [x, y] } as QueryExpr }
 function qIn(x: QueryVal, ...set: QueryVal[]): QueryExpr { return { __yoQOp: 'IN', __yoQOperands: [x].concat(set) } as QueryExpr }
 
+const errsUserGet = ['TimedOut'] as const
+export type UserGetErr = typeof errsUserGet[number]
+export async function apiUserGet(payload: userGet_In, query?: {[_:string]:string}): Promise<User> {
+	try {
+		return req<userGet_In, User>('_/userGet', payload, query)
+	} catch(err) {
+		if (err && err['body_text'] && (errsUserGet.indexOf(err.body_text) >= 0))
+			throw(new Err<UserGetErr>(err.body_text as UserGetErr))
+		throw(err)
+	}
+}
+
 const errsUserSignIn = ['TimedOut', '___yo_authLogin_AccountDoesNotExist', '___yo_authLogin_EmailInvalid', '___yo_authLogin_EmailRequiredButMissing', '___yo_authLogin_OkButFailedToCreateSignedToken', '___yo_authLogin_WrongPassword'] as const
 export type UserSignInErr = typeof errsUserSignIn[number]
 export async function apiUserSignIn(payload: ApiAccountPayload, query?: {[_:string]:string}): Promise<Void> {
@@ -166,9 +178,9 @@ export async function apiUserUpdate(payload: ApiUpdateArgs_haxsh_app_User_, quer
 	}
 }
 
-export type PostField = 'Id' | 'Created' | 'By' | 'To' | 'Md' | 'Files' | 'Repl' | 'By.Id' | 'By.Created' | 'By.Auth' | 'By.PicFileId' | 'By.Nick' | 'By.Btw' | 'By.BtwDt' | 'By.Buddies' | 'Repl.Id' | 'Repl.Created' | 'Repl.By' | 'Repl.To' | 'Repl.Md' | 'Repl.Files' | 'Repl.Repl'
+export type PostField = 'Id' | 'Created' | 'By' | 'To' | 'Md' | 'Files' | 'Repl' | 'By.Id' | 'By.Created' | 'By.LastSeen' | 'By.Auth' | 'By.PicFileId' | 'By.Nick' | 'By.Btw' | 'By.BtwDt' | 'By.Buddies' | 'Repl.Id' | 'Repl.Created' | 'Repl.By' | 'Repl.To' | 'Repl.Md' | 'Repl.Files' | 'Repl.Repl'
 
-export type UserField = 'Id' | 'Created' | 'Auth' | 'PicFileId' | 'Nick' | 'Btw' | 'BtwDt' | 'Buddies' | 'Auth.Id' | 'Auth.Created' | 'Auth.EmailAddr'
+export type UserField = 'Id' | 'Created' | 'LastSeen' | 'Auth' | 'PicFileId' | 'Nick' | 'Btw' | 'BtwDt' | 'Buddies' | 'Auth.Id' | 'Auth.Created' | 'Auth.EmailAddr'
 
 export type UserAuthField = 'Id' | 'Created' | 'EmailAddr'
 
@@ -179,8 +191,13 @@ export type User = {
 	Buddies: I64[]
 	Created?: DateTime
 	Id: I64
+	LastSeen?: DateTime
 	Nick: string
 	PicFileId: string
+}
+
+export type userGet_In = {
+	EmailAddr: string
 }
 
 export type ApiUpdateArgs_haxsh_app_User_ = {
