@@ -202,7 +202,7 @@ func mockSomeActivityPostSomething(ctx *Ctx, user *User, client *http.Client) {
 	}
 
 	// in reply to some other post? (if so, changes `to` to NULL but apis/ux make it then effectively that post's `to`)
-	if (rand.Intn(11) <= 3) && (len(user.Buddies) > 0) {
+	if /*(rand.Intn(11) <= 3) &&*/ len(user.Buddies) > 0 {
 		if post := yodb.FindOne[Post](ctx,
 			PostRepl.Equal(nil).And(postBy.In(user.Buddies.Anys()...).And(
 				PostTo.Equal(nil).Or(q.JsonHas(PostTo, q.That(user.Id))),
@@ -215,6 +215,9 @@ func mockSomeActivityPostSomething(ctx *Ctx, user *User, client *http.Client) {
 	new_post := &Post{Md: yodb.Text(md), Files: files, To: to}
 	new_post.by.SetId(user.Id)
 	new_post.Repl.SetId(in_reply_to)
+	if in_reply_to != 0 {
+		println(in_reply_to)
+	}
 	ViaHttp[Post, Void](apiPostNew, ctx, new_post, client)
 }
 
