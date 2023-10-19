@@ -70,8 +70,8 @@ var mockActions = []string{ // don't reorder items with consulting/adapting the 
 }
 
 func mockSomeActivity() {
-	defer time.AfterFunc(time.Millisecond*time.Duration(11+rand.Intn(111)), mockSomeActivity)
-	// we do about 11-33 dozen reqs per sec with the above and the `rand`ed goroutining of this func set up in `init`
+	defer time.AfterFunc(time.Millisecond*time.Duration(111+rand.Intn(1111)), mockSomeActivity)
+	// we do about 1-3dozen reqs per sec with the above and the `rand`ed goroutining of this func set up in `init`
 
 	action := mockActions[len(mockActions)-1] // default to the much-more-frequent-than-the-others-by-design action...
 	if rand.Intn(len(mockActions)) <= 1 {     // ...except there's still a (just much-lower) chance for another action
@@ -89,6 +89,7 @@ func mockSomeActivity() {
 	defer ctx.OnDone(nil)
 	ctx.DbTx()
 	ctx.TimingsNoPrintInDevMode = true
+	ctx.Db.PrintRawSqlInDevMode = true
 
 	user := UserByEmailAddr(ctx, user_email_addr)
 	switch _ = user; action {
@@ -183,9 +184,6 @@ func mockSomeActivityPostSomething(ctx *Ctx, user *User) {
 			)),
 		); post != nil {
 			to, in_reply_to = post.To, post.Id
-			if len(to) > 0 {
-				println(in_reply_to, "@", len(to), "x")
-			}
 		}
 	}
 
