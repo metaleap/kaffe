@@ -10,8 +10,7 @@ import (
 
 func init() {
 	Apis(ApiMethods{
-		"postNew": apiPostNew.
-			From(ThisPkg),
+		"postNew": apiPostNew,
 	})
 }
 
@@ -31,7 +30,7 @@ type FileRef struct {
 	Name string
 }
 
-var apiPostNew = Api(func(this *ApiCtx[Post, Void]) {
+var apiPostNew = api(func(this *ApiCtx[Post, Void]) {
 	postNew(this.Ctx, this.Args)
 })
 

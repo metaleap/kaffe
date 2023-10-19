@@ -2,6 +2,7 @@
 package haxsh
 
 import reflect "reflect"
+import yosrv "yo/srv"
 import util "yo/util"
 import q "yo/db/query"
 
@@ -11,7 +12,11 @@ type apiPkgInfo util.Void
 func (apiPkgInfo) PkgName() string    { return "haxsh" }
 func (me apiPkgInfo) PkgPath() string { return reflect.TypeOf(me).PkgPath() }
 
-var ThisPkg = apiPkgInfo{}
+var haxshPkg = apiPkgInfo{}
+
+func api[TIn any, TOut any](f func(*yosrv.ApiCtx[TIn, TOut]), failIfs ...yosrv.Fails) yosrv.ApiMethod {
+	return yosrv.Api[TIn, TOut](f, failIfs...).From(haxshPkg)
+}
 
 const Err___yo_authLogin_AccountDoesNotExist util.Err = "___yo_authLogin_AccountDoesNotExist"
 const Err___yo_authLogin_EmailInvalid util.Err = "___yo_authLogin_EmailInvalid"
