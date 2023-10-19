@@ -22,7 +22,7 @@ import (
 
 const mockLiveActivity = true
 const mockUsersNumTotal = 1444 // don't go higher than that due to limited number of `fortune`s (at nickname short length) for unique-nickname generation
-const mockUsersNumActiveMin = mockUsersNumTotal / 2
+const mockUsersNumActiveInitially = mockUsersNumTotal / 2
 const mockFilesDirPath = "__static/mockfiles"
 
 var mockUsersNumMaxBuddies = 11 + rand.Intn(22)
@@ -44,7 +44,7 @@ func init() {
 		if mockLiveActivity {
 			next_email_addr := func() string { return str.Fmt("foo%d@bar.baz", rand.Intn(mockUsersNumTotal)) }
 			// mock-login at least the min number of some random users
-			for len(mockUsersLoggedIn) < mockUsersNumActiveMin {
+			for len(mockUsersLoggedIn) < mockUsersNumActiveInitially {
 				user_email_addr := next_email_addr()
 				for mockUsersLoggedIn[user_email_addr] != nil {
 					user_email_addr = next_email_addr()
@@ -80,12 +80,14 @@ func mockSomeActivity() {
 		action = mockActions[rand.Intn(len(mockActions))]
 	}
 	var user_email_addr string
+	var user_client *http.Client
 	{
 		mockLock.Lock()
 		for (user_email_addr == "") || busy[user_email_addr] {
 			user_email_addr = str.Fmt("foo%d@bar.baz", rand.Intn(mockUsersNumTotal))
 		}
-		if (len(mockUsersLoggedIn) < mockUsersNumActiveMin) && (mockUsersLoggedIn[user_email_addr] == nil) {
+		user_client = mockUsersLoggedIn[user_email_addr]
+		if user_client == nil {
 			action = mockActions[0]
 		}
 		busy[user_email_addr] = true
@@ -102,7 +104,8 @@ func mockSomeActivity() {
 	case "logInOrOut":
 		mockLock.Lock()
 		if mockUsersLoggedIn[user_email_addr] == nil {
-			mockUsersLoggedIn[user_email_addr] = newClient()
+			user_client = newClient()
+			mockUsersLoggedIn[user_email_addr] = user_client
 		} else {
 			delete(mockUsersLoggedIn, user_email_addr)
 		}
@@ -142,7 +145,7 @@ func mockSomeActivity() {
 			panic(str.From(upd))
 		}
 	case "postSomething":
-		mockSomeActivityPostSomething(ctx, user)
+		mockSomeActivityPostSomething(ctx, user, user_client)
 	default:
 		panic(action)
 	}
@@ -163,7 +166,7 @@ func mockSomeActivityChangeBuddy(ctx *Ctx, user *User, userEmailAddr string) {
 	}
 }
 
-func mockSomeActivityPostSomething(ctx *Ctx, user *User) {
+func mockSomeActivityPostSomething(ctx *Ctx, user *User, client *http.Client) {
 	var files []FileRef
 	var to []yodb.I64
 	var in_reply_to yodb.I64
@@ -207,8 +210,7 @@ func mockSomeActivityPostSomething(ctx *Ctx, user *User) {
 	new_post := &Post{Md: yodb.Text(md), Files: files, To: to}
 	new_post.By.SetId(user.Id)
 	new_post.Repl.SetId(in_reply_to)
-	ViaHttp[Post, Void](blaPostNew, ctx, new_post, nil)
-
+	ViaHttp[Post, Void](blaPostNew, ctx, new_post, client)
 	// PostNew(ctx, user, md, in_reply_to, files, to)
 }
 
