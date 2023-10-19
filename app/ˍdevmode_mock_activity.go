@@ -89,7 +89,7 @@ func mockSomeActivity() {
 	defer ctx.OnDone(nil)
 	ctx.DbTx()
 	ctx.TimingsNoPrintInDevMode = true
-	ctx.Db.PrintRawSqlInDevMode = true
+	// ctx.Db.PrintRawSqlInDevMode = true
 
 	user := UserByEmailAddr(ctx, user_email_addr)
 	switch _ = user; action {

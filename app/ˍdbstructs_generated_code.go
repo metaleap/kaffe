@@ -20,6 +20,7 @@ const (
 	userFieldAuth_passwordHashed           = UserField("Auth.passwordHashed")
 )
 
+func (me UserField) AsField() q.F                 { return ((q.F)(me)).AsField() }
 func (me UserField) Asc() q.OrderBy               { return ((q.F)(me)).Asc() }
 func (me UserField) Desc() q.OrderBy              { return ((q.F)(me)).Desc() }
 func (me UserField) Equal(a1 interface{}) q.Query { return ((q.F)(me)).Equal(a1) }
@@ -63,6 +64,7 @@ const (
 	PostFieldRepl_Repl              = PostField("Repl.Repl")
 )
 
+func (me PostField) AsField() q.F                 { return ((q.F)(me)).AsField() }
 func (me PostField) Asc() q.OrderBy               { return ((q.F)(me)).Asc() }
 func (me PostField) Desc() q.OrderBy              { return ((q.F)(me)).Desc() }
 func (me PostField) Equal(a1 interface{}) q.Query { return ((q.F)(me)).Equal(a1) }
