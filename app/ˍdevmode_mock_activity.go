@@ -14,6 +14,7 @@ import (
 	yodb "yo/db"
 	q "yo/db/query"
 	yoauth "yo/feat_auth"
+	. "yo/srv"
 	. "yo/util"
 	"yo/util/sl"
 	"yo/util/str"
@@ -71,8 +72,8 @@ var mockActions = []string{ // don't reorder items with consulting/adapting the 
 var busy = map[string]bool{}
 
 func mockSomeActivity() {
-	defer time.AfterFunc(time.Millisecond*time.Duration(11+rand.Intn(111)), mockSomeActivity)
-	// we do about 11-33 dozen reqs per sec with the above and the `rand`ed goroutining of this func set up in `init`
+	defer time.AfterFunc(time.Millisecond*time.Duration(111+rand.Intn(1111)), mockSomeActivity)
+	// we do about 1-3 dozen reqs per sec with the above and the `rand`ed goroutining of this func set up in `init`
 
 	action := mockActions[len(mockActions)-1] // default to the much-more-frequent-than-the-others-by-design action...
 	if rand.Intn(len(mockActions)) <= 1 {     // ...except there's still a (just much-lower) chance for another action
@@ -203,7 +204,12 @@ func mockSomeActivityPostSomething(ctx *Ctx, user *User) {
 		}
 	}
 
-	UserPost(ctx, user, md, in_reply_to, files, to)
+	new_post := &Post{Md: yodb.Text(md), Files: files, To: to}
+	new_post.By.SetId(user.Id)
+	new_post.Repl.SetId(in_reply_to)
+	ViaHttp[Post, Void](blaPostNew, ctx, new_post, nil)
+
+	// PostNew(ctx, user, md, in_reply_to, files, to)
 }
 
 func mockUpdEnsureChange[T comparable](at *T, getAnother func() T, ok func(T) bool) {

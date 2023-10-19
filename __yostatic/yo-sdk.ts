@@ -118,6 +118,18 @@ function qGreaterThan(x: QueryVal, y: QueryVal): QueryExpr { return { __yoQOp: '
 function qGreaterOrEqual(x: QueryVal, y: QueryVal): QueryExpr { return { __yoQOp: 'GE', __yoQOperands: [x, y] } as QueryExpr }
 function qIn(x: QueryVal, ...set: QueryVal[]): QueryExpr { return { __yoQOp: 'IN', __yoQOperands: [x].concat(set) } as QueryExpr }
 
+const errsPostNew = ['TimedOut'] as const
+export type PostNewErr = typeof errsPostNew[number]
+export async function apiPostNew(payload: Post, query?: {[_:string]:string}): Promise<Void> {
+	try {
+		return req<Post, Void>('_/postNew', payload, query)
+	} catch(err) {
+		if (err && err['body_text'] && (errsPostNew.indexOf(err.body_text) >= 0))
+			throw(new Err<PostNewErr>(err.body_text as PostNewErr))
+		throw(err)
+	}
+}
+
 const errsUserGet = ['TimedOut'] as const
 export type UserGetErr = typeof errsUserGet[number]
 export async function apiUserGet(payload: userGet_In, query?: {[_:string]:string}): Promise<User> {
@@ -184,6 +196,16 @@ export type UserField = 'Id' | 'Created' | 'LastSeen' | 'Auth' | 'PicFileId' | '
 
 export type UserAuthField = 'Id' | 'Created' | 'EmailAddr'
 
+export type Post = {
+	By: I64
+	Created?: DateTime
+	Files: FileRef[]
+	Id: I64
+	Md: string
+	Repl: I64
+	To: I64[]
+}
+
 export type User = {
 	Auth: I64
 	Btw: string
@@ -213,4 +235,9 @@ export type ApiAccountPayload = {
 }
 
 export type Void = {
+}
+
+export type FileRef = {
+	Id: string
+	Name: string
 }
