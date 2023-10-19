@@ -185,10 +185,10 @@ func mockSomeActivityPostSomething(ctx *Ctx, user *User, client *http.Client) {
 		num_files := If(rand.Intn(2) == 0, 1, 1+rand.Intn(11))
 		for i := 0; i < num_files; i++ {
 			var file_name string
-			for (file_name == "") || sl.HasWhere(files, func(it FileRef) bool { return (it.Id == file_name) }) {
+			for (file_name == "") || sl.Has(files, FileRef(file_name)) {
 				file_name = mockPostFiles[rand.Intn(len(mockPostFiles))]
 			}
-			files = append(files, FileRef{Id: file_name, Name: file_name})
+			files = append(files, FileRef(file_name))
 		}
 	}
 

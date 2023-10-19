@@ -118,7 +118,7 @@ function qGreaterThan(x: QueryVal, y: QueryVal): QueryExpr { return { __yoQOp: '
 function qGreaterOrEqual(x: QueryVal, y: QueryVal): QueryExpr { return { __yoQOp: 'GE', __yoQOperands: [x, y] } as QueryExpr }
 function qIn(x: QueryVal, ...set: QueryVal[]): QueryExpr { return { __yoQOp: 'IN', __yoQOperands: [x].concat(set) } as QueryExpr }
 
-const errsPostNew = ['DbWriteRequestAcceptedWithoutErrButNotStoredEither', 'PostNew_ExpectedNonEmptyPost', 'PostNew_ExpectedOnlyBuddyRecipients', 'PostNew_RepliedToPostDoesNotExist', 'TimedOut'] as const
+const errsPostNew = ['DbWriteRequestAcceptedWithoutErrButNotStoredEither', 'PostNew_ExpectedNonEmptyPost', 'PostNew_ExpectedOnlyBuddyRecipients', 'PostNew_InvalidItemInFiles', 'PostNew_RepliedToPostDoesNotExist', 'TimedOut', 'Unauthorized'] as const
 export type PostNewErr = typeof errsPostNew[number]
 export async function apiPostNew(payload: Post, query?: {[_:string]:string}): Promise<Return_yo_db_I64_> {
 	try {
@@ -198,7 +198,7 @@ export type UserAuthField = 'Id' | 'Created' | 'EmailAddr'
 
 export type Post = {
 	Created?: DateTime
-	Files: FileRef[]
+	Files: string[]
 	Id: I64
 	Md: string
 	Repl: I64
@@ -238,9 +238,4 @@ export type Return_yo_db_I64_ = {
 }
 
 export type Void = {
-}
-
-export type FileRef = {
-	Id: string
-	Name: string
 }

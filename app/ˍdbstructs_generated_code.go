@@ -21,9 +21,11 @@ const (
 	userAuth_pwdHashed UserField = "Auth.pwdHashed"
 )
 
-func (me UserField) Asc() q.OrderBy               { return ((q.F)(me)).Asc() }
-func (me UserField) Desc() q.OrderBy              { return ((q.F)(me)).Desc() }
-func (me UserField) Equal(a1 interface{}) q.Query { return ((q.F)(me)).Equal(a1) }
+func (me UserField) ArrAll(a1 ...interface{}) q.Operand { return ((q.F)(me)).ArrAll(a1...) }
+func (me UserField) ArrAny(a1 ...interface{}) q.Operand { return ((q.F)(me)).ArrAny(a1...) }
+func (me UserField) Asc() q.OrderBy                     { return ((q.F)(me)).Asc() }
+func (me UserField) Desc() q.OrderBy                    { return ((q.F)(me)).Desc() }
+func (me UserField) Equal(a1 interface{}) q.Query       { return ((q.F)(me)).Equal(a1) }
 func (me UserField) Eval(a1 interface{}, a2 func(q.C) q.F) interface{} {
 	return ((q.F)(me)).Eval(a1, a2)
 }
@@ -67,9 +69,11 @@ const (
 	PostRepl_Repl    PostField = "Repl.Repl"
 )
 
-func (me PostField) Asc() q.OrderBy               { return ((q.F)(me)).Asc() }
-func (me PostField) Desc() q.OrderBy              { return ((q.F)(me)).Desc() }
-func (me PostField) Equal(a1 interface{}) q.Query { return ((q.F)(me)).Equal(a1) }
+func (me PostField) ArrAll(a1 ...interface{}) q.Operand { return ((q.F)(me)).ArrAll(a1...) }
+func (me PostField) ArrAny(a1 ...interface{}) q.Operand { return ((q.F)(me)).ArrAny(a1...) }
+func (me PostField) Asc() q.OrderBy                     { return ((q.F)(me)).Asc() }
+func (me PostField) Desc() q.OrderBy                    { return ((q.F)(me)).Desc() }
+func (me PostField) Equal(a1 interface{}) q.Query       { return ((q.F)(me)).Equal(a1) }
 func (me PostField) Eval(a1 interface{}, a2 func(q.C) q.F) interface{} {
 	return ((q.F)(me)).Eval(a1, a2)
 }

@@ -20,6 +20,7 @@ func api[TIn any, TOut any](f func(*yosrv.ApiCtx[TIn, TOut]), failIfs ...yosrv.F
 
 const ErrPostNew_ExpectedNonEmptyPost util.Err = "PostNew_ExpectedNonEmptyPost"
 const ErrPostNew_ExpectedOnlyBuddyRecipients util.Err = "PostNew_ExpectedOnlyBuddyRecipients"
+const ErrPostNew_InvalidItemInFiles util.Err = "PostNew_InvalidItemInFiles"
 const ErrPostNew_RepliedToPostDoesNotExist util.Err = "PostNew_RepliedToPostDoesNotExist"
 const Err___yo_authLogin_AccountDoesNotExist util.Err = "___yo_authLogin_AccountDoesNotExist"
 const Err___yo_authLogin_EmailInvalid util.Err = "___yo_authLogin_EmailInvalid"
