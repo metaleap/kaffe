@@ -93,6 +93,7 @@ func setUserLastSeen(auth_id yodb.I64) {
 	}
 	ctx := NewCtxNonHttp(time.Minute, "setUserLastSeen")
 	defer ctx.OnDone(nil)
+	ctx.TimingsNoPrintInDevMode = true
 	upd := &User{LastSeen: yodb.DtFrom(time.Now)}
 	upd.Auth.SetId(auth_id)
 	UserUpdate(ctx, upd, false, UserLastSeen)
@@ -121,7 +122,7 @@ func UserByEmailAddr(ctx *Ctx, emailAddr string) *User {
 }
 
 func UserCur(ctx *Ctx) (ret *User) {
-	if ret = ctx.Get(ctxKeyCurUser, nil).(*User); ret == nil {
+	if ret, _ = ctx.Get(ctxKeyCurUser, nil).(*User); ret == nil {
 		if _, user_auth_id := yoauth.CurrentlyLoggedInUser(ctx); user_auth_id != 0 {
 			ret = yodb.FindOne[User](ctx, UserAuth.Equal(user_auth_id))
 			ctx.Set(ctxKeyCurUser, ret)

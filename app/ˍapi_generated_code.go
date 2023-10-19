@@ -32,7 +32,6 @@ const Err___yo_authRegister_PasswordTooShort util.Err = "___yo_authRegister_Pass
 const ErrDbUpdate_ExpectedChangesForUpdate util.Err = "DbUpdate_ExpectedChangesForUpdate"
 const ErrDbUpdate_ExpectedQueryForUpdate util.Err = "DbUpdate_ExpectedQueryForUpdate"
 const ErrUserUpdate_NicknameAlreadyExists util.Err = "UserUpdate_NicknameAlreadyExists"
-const PostNewBy = q.F("By")
 const PostNewCreated = q.F("Created")
 const PostNewFiles = q.F("Files")
 const PostNewId = q.F("Id")

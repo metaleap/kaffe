@@ -190,14 +190,13 @@ export async function apiUserUpdate(payload: ApiUpdateArgs_haxsh_app_User_, quer
 	}
 }
 
-export type PostField = 'Id' | 'Created' | 'By' | 'To' | 'Md' | 'Files' | 'Repl' | 'By.Id' | 'By.Created' | 'By.LastSeen' | 'By.Auth' | 'By.PicFileId' | 'By.Nick' | 'By.Btw' | 'By.BtwDt' | 'By.Buddies' | 'Repl.Id' | 'Repl.Created' | 'Repl.By' | 'Repl.To' | 'Repl.Md' | 'Repl.Files' | 'Repl.Repl'
+export type PostField = 'Id' | 'Created' | 'To' | 'Md' | 'Files' | 'Repl' | 'by.Id' | 'by.Created' | 'by.LastSeen' | 'by.Auth' | 'by.PicFileId' | 'by.Nick' | 'by.Btw' | 'by.BtwDt' | 'by.Buddies' | 'Repl.Id' | 'Repl.Created' | 'Repl.To' | 'Repl.Md' | 'Repl.Files' | 'Repl.Repl'
 
 export type UserField = 'Id' | 'Created' | 'LastSeen' | 'Auth' | 'PicFileId' | 'Nick' | 'Btw' | 'BtwDt' | 'Buddies' | 'Auth.Id' | 'Auth.Created' | 'Auth.EmailAddr'
 
 export type UserAuthField = 'Id' | 'Created' | 'EmailAddr'
 
 export type Post = {
-	By: I64
 	Created?: DateTime
 	Files: FileRef[]
 	Id: I64

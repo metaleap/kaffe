@@ -8,7 +8,7 @@ func Init() {
 	yodb.Ensure[User, UserField]("", nil,
 		yodb.Unique[UserField]{UserAuth, UserNick}, yodb.ReadOnly[UserField]{UserAuth})
 	yodb.Ensure[Post, PostField]("", nil,
-		yodb.Index[PostField]{PostBy, PostTo}, yodb.ReadOnly[PostField]{PostBy, PostRepl})
+		yodb.Index[PostField]{postBy, PostTo}, yodb.ReadOnly[PostField]{postBy, PostRepl})
 }
 
 func OnBeforeListenAndServe() {
