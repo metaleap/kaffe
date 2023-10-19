@@ -121,6 +121,10 @@ func UserByEmailAddr(ctx *Ctx, emailAddr string) *User {
 	return yodb.FindOne[User](ctx, UserAuth_EmailAddr.Equal(emailAddr))
 }
 
+func UserById(ctx *Ctx, id yodb.I64) *User {
+	return yodb.ById[User](ctx, id)
+}
+
 func UserCur(ctx *Ctx) (ret *User) {
 	if ret, _ = ctx.Get(ctxKeyCurUser, nil).(*User); ret == nil {
 		if _, user_auth_id := yoauth.CurrentlyLoggedInUser(ctx); user_auth_id != 0 {
