@@ -89,12 +89,8 @@ func UserUpdate(ctx *Ctx, upd *User, inclEmptyOrMissingFields bool, onlyFields .
 	return (yodb.Update[User](ctx, upd, nil, !inclEmptyOrMissingFields, sl.To(onlyFields, UserField.F)...) > 0)
 }
 
-func UserByEmailAddr(ctx *Ctx, emailAddr string) (ret *User) {
-	// TODO: UserColAuth_EmailAddr.Equal(emailAddr)
-	if user_auth := yodb.FindOne[yoauth.UserAuth](ctx, yoauth.UserAuthEmailAddr.Equal(emailAddr)); user_auth != nil {
-		ret = yodb.FindOne[User](ctx, UserAuth.Equal(user_auth.Id))
-	}
-	return
+func UserByEmailAddr(ctx *Ctx, emailAddr string) *User {
+	return yodb.FindOne[User](ctx, UserAuth_EmailAddr.Equal(emailAddr))
 }
 
 func UserCur(ctx *Ctx) (ret *User) {
