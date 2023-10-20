@@ -74,3 +74,18 @@ func postNew(ctx *Ctx, post *Post, byCurUserInCtx bool) (ret yodb.I64) {
 	}
 	return
 }
+
+type RecentUpdates struct {
+	Posts   []*Post
+	Buddies bool
+	Since   *yodb.DateTime
+	Next    *yodb.DateTime
+}
+
+func listRecentUpdates(ctx *Ctx, forUser *User, since *yodb.DateTime) (ret RecentUpdates) {
+	if since == nil {
+		since = forUser.LastSeen
+	}
+
+	return
+}

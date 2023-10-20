@@ -46,7 +46,7 @@ type User struct {
 	PicFileId yodb.Text
 	Nick      yodb.Text
 	Btw       yodb.Text
-	BtwDt     *yodb.DateTime
+	ModDt     *yodb.DateTime
 	Buddies   yodb.Arr[yodb.I64]
 }
 
@@ -93,11 +93,7 @@ var apiUserUpdate = api(func(this *ApiCtx[yodb.ApiUpdateArgs[User, UserField], V
 
 func userUpdate(ctx *Ctx, upd *User, inclEmptyOrMissingFields bool, onlyFields ...UserField) {
 	ctx.DbTx()
-	if upd.Btw.Do(str.Trim); (upd.Btw != "") && (upd.BtwDt == nil) && ((len(onlyFields) == 0) || sl.Has(onlyFields, UserBtw)) {
-		if upd.BtwDt = yodb.DtFrom(time.Now); (len(onlyFields) != 0) && !sl.Has(onlyFields, UserBtwDt) {
-			onlyFields = append(onlyFields, UserBtwDt)
-		}
-	}
+	upd.Btw.Do(str.Trim)
 	if (len(onlyFields) == 0) || sl.Has(onlyFields, UserBuddies) {
 		upd.Buddies.EnsureAllUnique()
 	}
@@ -109,6 +105,7 @@ func userUpdate(ctx *Ctx, upd *User, inclEmptyOrMissingFields bool, onlyFields .
 	if upd.LastSeen != nil {
 		upd.LastSeen = yodb.DtFrom(time.Now)
 	}
+	upd.ModDt = yodb.DtFrom(time.Now)
 	if yodb.Update[User](ctx, upd, nil, !inclEmptyOrMissingFields, sl.To(onlyFields, UserField.F)...) <= 0 {
 		panic(ErrDbNotStored)
 	}
