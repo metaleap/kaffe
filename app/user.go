@@ -30,7 +30,7 @@ func init() {
 			Fails{Err: ErrDbUpdExpectedIdGt0, If: UserUpdateId.LessOrEqual(0)},
 		).
 			FailIf(ErrUnauthorized, yoauth.CurrentlyNotLoggedIn).
-			CouldFailWith(":"+yodb.ErrSetDbUpdate, ErrDbNotStored, "NicknameAlreadyExists"),
+			CouldFailWith(":"+yodb.ErrSetDbUpdate, "NicknameAlreadyExists"),
 	})
 	PreApiHandling = append(PreApiHandling, Middleware{"userSetLastSeen", func(ctx *Ctx) {
 		go userSetLastSeen(ctx.Get(yoauth.CtxKeyAuthId, yodb.I64(0)).(yodb.I64))
@@ -60,9 +60,7 @@ var apiUserSignUp = api(func(this *ApiCtx[yoauth.ApiAccountPayload, User]) {
 	auth := Do(yoauth.ApiUserRegister, this.Ctx, this.Args)
 	user := User{LastSeen: yodb.DtFrom(time.Now)}
 	user.Auth.SetId(auth.Id)
-	if user.Id = yodb.CreateOne(this.Ctx, &user); user.Id <= 0 {
-		panic(ErrDbNotStored)
-	}
+	user.Id = yodb.CreateOne(this.Ctx, &user)
 	// _ = Do(apiUserSignIn, this.Ctx, this.Args)
 	this.Ret = &user
 })
@@ -105,9 +103,7 @@ func userUpdate(ctx *Ctx, upd *User, inclEmptyOrMissingFields bool, onlyFields .
 	if upd.LastSeen != nil {
 		upd.LastSeen = yodb.DtFrom(time.Now)
 	}
-	if yodb.Update[User](ctx, upd, nil, !inclEmptyOrMissingFields, sl.To(onlyFields, UserField.F)...) <= 0 {
-		panic(ErrDbNotStored)
-	}
+	_ = yodb.Update[User](ctx, upd, nil, !inclEmptyOrMissingFields, sl.To(onlyFields, UserField.F)...)
 }
 
 func userByEmailAddr(ctx *Ctx, emailAddr string) *User {

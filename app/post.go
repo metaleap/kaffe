@@ -18,8 +18,7 @@ func init() {
 			Fails{Err: "InvalidItemInFiles", If: PostFiles.ArrAny(q.Equal, "").Equal(true)},
 			Fails{Err: "ExpectedOnlyBuddyRecipients", If: PostTo.ArrAny(q.LessOrEqual, 0).Equal(true)},
 		).
-			FailIf(ErrUnauthorized, yoauth.CurrentlyNotLoggedIn).
-			CouldFailWith(ErrDbNotStored),
+			FailIf(ErrUnauthorized, yoauth.CurrentlyNotLoggedIn),
 	})
 }
 
@@ -41,7 +40,7 @@ var apiPostNew = api(func(this *ApiCtx[Post, Return[yodb.I64]]) {
 	this.Ret.Result = postNew(this.Ctx, this.Args, true)
 })
 
-func postNew(ctx *Ctx, post *Post, byCurUserInCtx bool) (ret yodb.I64) {
+func postNew(ctx *Ctx, post *Post, byCurUserInCtx bool) yodb.I64 {
 	ctx.DbTx()
 
 	var user *User
@@ -70,10 +69,7 @@ func postNew(ctx *Ctx, post *Post, byCurUserInCtx bool) (ret yodb.I64) {
 		}
 	}
 
-	if ret = yodb.CreateOne(ctx, post); ret <= 0 {
-		panic(ErrDbNotStored)
-	}
-	return
+	return yodb.CreateOne(ctx, post)
 }
 
 type RecentUpdates struct {

@@ -231,9 +231,7 @@ func mockEnsureUser(i int, idsSoFar []yodb.I64) yodb.I64 {
 		user.Auth.SetId(auth_id)
 
 		ctx.Timings.Step("insert new user")
-		if user.Id = yodb.CreateOne[User](ctx, user); user.Id <= 0 {
-			panic(ErrDbNotStored)
-		}
+		user.Id = yodb.CreateOne[User](ctx, user)
 	}
 	mockUsersAllByEmail[user_email_addr] = user.Id
 	mockUsersAllById[user.Id] = user_email_addr
