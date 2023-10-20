@@ -22,7 +22,8 @@ import (
 
 var mockLiveActivity = true
 
-const mockUsersNumTotal = 1444 // don't go higher than that due to limited number of `fortune`s (at nickname short length) for unique-nickname generation
+const mockNumReqsPerSecApprox = 55
+const mockUsersNumTotal = 1444
 const mockFilesDirPath = "__static/mockfiles"
 
 var mockUsersNumMaxBuddies = 11 + rand.Intn(22)
@@ -42,8 +43,8 @@ func init() {
 
 		// initiate some goroutines that regularly fake some action or other
 		if mockLiveActivity {
-			for i, num_parallel := 0, 11+rand.Intn(11); i < num_parallel; i++ {
-				time.AfterFunc(time.Second*time.Duration(i), mockSomeActivity)
+			for i := 0; i < mockNumReqsPerSecApprox; i++ {
+				time.AfterFunc(time.Second+(time.Duration(i)*(time.Second/mockNumReqsPerSecApprox)), mockSomeActivity)
 			}
 		}
 	}
@@ -60,11 +61,11 @@ var mockActions = []string{ // don't reorder items with consulting/adapting the 
 var busy = map[string]bool{}
 
 func mockSomeActivity() {
-	if !mockLiveActivity { // for turning off live during debugging
+	if !mockLiveActivity { // for turning off on-the-fly during debugging
 		return
 	}
-	defer time.AfterFunc(time.Millisecond*time.Duration(111+rand.Intn(1111)), mockSomeActivity)
-	// we do about 1-3 dozen reqs per sec with the above and the `rand`ed goroutining of this func set up in `init`
+	const sec_half = time.Second / 2
+	defer time.AfterFunc(sec_half+time.Duration(rand.Intn(int(2*sec_half))), mockSomeActivity)
 
 	action := mockActions[0]                // default to the much-more-frequent-than-the-others-by-design action...
 	if rand.Intn(2*len(mockActions)) <= 1 { // ...except there's still a (just much-lower) chance for another action
