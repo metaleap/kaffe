@@ -190,14 +190,15 @@ export async function apiUserUpdate(payload: ApiUpdateArgs_haxsh_app_User_haxsh_
 	}
 }
 
-export type PostField = 'Id' | 'Created' | 'To' | 'Md' | 'Files' | 'Repl' | 'by.Id' | 'by.Created' | 'by.LastSeen' | 'by.Auth' | 'by.PicFileId' | 'by.Nick' | 'by.Btw' | 'by.BtwDt' | 'by.Buddies' | 'Repl.Id' | 'Repl.Created' | 'Repl.To' | 'Repl.Md' | 'Repl.Files' | 'Repl.Repl'
+export type PostField = 'Id' | 'DtMade' | 'DtMod' | 'To' | 'Md' | 'Files' | 'Repl' | 'by.Id' | 'by.DtMade' | 'by.DtMod' | 'by.LastSeen' | 'by.Auth' | 'by.PicFileId' | 'by.Nick' | 'by.Btw' | 'by.Buddies' | 'Repl.Id' | 'Repl.DtMade' | 'Repl.DtMod' | 'Repl.To' | 'Repl.Md' | 'Repl.Files' | 'Repl.Repl'
 
-export type UserField = 'Id' | 'Created' | 'LastSeen' | 'Auth' | 'PicFileId' | 'Nick' | 'Btw' | 'BtwDt' | 'Buddies' | 'Auth.Id' | 'Auth.Created' | 'Auth.EmailAddr'
+export type UserField = 'Id' | 'DtMade' | 'DtMod' | 'LastSeen' | 'Auth' | 'PicFileId' | 'Nick' | 'Btw' | 'Buddies' | 'Auth.Id' | 'Auth.DtMade' | 'Auth.DtMod' | 'Auth.EmailAddr'
 
-export type UserAuthField = 'Id' | 'Created' | 'EmailAddr'
+export type UserAuthField = 'Id' | 'DtMade' | 'DtMod' | 'EmailAddr'
 
 export type Post = {
-	Created?: DateTime
+	DtMade?: DateTime
+	DtMod?: DateTime
 	Files: string[]
 	Id: I64
 	Md: string
@@ -208,9 +209,9 @@ export type Post = {
 export type User = {
 	Auth: I64
 	Btw: string
-	BtwDt?: DateTime
 	Buddies: I64[]
-	Created?: DateTime
+	DtMade?: DateTime
+	DtMod?: DateTime
 	Id: I64
 	LastSeen?: DateTime
 	Nick: string

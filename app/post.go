@@ -24,8 +24,9 @@ func init() {
 }
 
 type Post struct {
-	Id      yodb.I64
-	Created *yodb.DateTime
+	Id     yodb.I64
+	DtMade *yodb.DateTime
+	DtMod  *yodb.DateTime
 
 	by    yodb.Ref[User, yodb.RefOnDelCascade]
 	To    yodb.Arr[yodb.I64]

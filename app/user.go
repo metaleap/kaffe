@@ -38,8 +38,9 @@ func init() {
 }
 
 type User struct {
-	Id      yodb.I64
-	Created *yodb.DateTime
+	Id     yodb.I64
+	DtMade *yodb.DateTime
+	DtMod  *yodb.DateTime
 
 	LastSeen  *yodb.DateTime
 	Auth      yodb.Ref[yoauth.UserAuth, yodb.RefOnDelCascade]
