@@ -26,7 +26,7 @@ const mockNumReqsPerSecApprox = 44 // max ~111 in outside-vscode `go run`s, ~55 
 const mockUsersNumTotal = 12345
 const mockFilesDirPath = "__static/mockfiles"
 
-var mockUsersNumMaxBuddies = 11 + rand.Intn(22)
+var mockUsersNumMaxBuddies = 11 + rand.Intn(11)
 var mockUserPicFiles = []string{"user0.png", "user1.jpg", "user2.png", "user3.jpg", "user4.png", "user5.jpg", "user6.png", "user7.jpg"}
 var mockPostFiles = []string{"vid1.webm", "vid2.mp4", "vid3.mp4", "post1.jpg", "post10.png", "post11.jpg", "post12.jpg", "post13.png", "post14.jpg", "post15.jpg", "post16.png", "post17.png", "post18.png", "post19.jpg", "post2.jpg", "post20.png", "post21.webp", "post22.jpg", "post23.png", "post24.jpg", "post25.jpg", "post26.png", "post27.jpeg", "post28.jpg", "post29.jpg", "post3.jpg", "post30.jpg", "post31.webp", "post4.jpg", "post5.jpg", "post6.jpg", "post7.jpg", "post8.jpg", "post9.jpg"}
 var mockUsersAllById = map[yodb.I64]string{}
@@ -52,10 +52,10 @@ func init() {
 var mockLock sync.Mutex
 var mockActions = []string{ // don't reorder items with consulting/adapting the below `mockSomeActivity` func
 	"postSomething",
+	"changeBuddy",
 	"changeNick",
 	"changeBtw",
 	"changePic",
-	"changeBuddy",
 }
 var busy = map[string]bool{}
 
@@ -66,8 +66,8 @@ func mockSomeActivity() {
 	const sec_half = time.Second / 2
 	defer time.AfterFunc(sec_half+time.Duration(rand.Intn(int(2*sec_half))), mockSomeActivity)
 
-	action := mockActions[0]                // default to the much-more-frequent-than-the-others-by-design action...
-	if rand.Intn(2*len(mockActions)) <= 1 { // ...except there's still a (just much-lower) chance for another action
+	action := mockActions[0]              // default to the much-more-frequent-than-the-others-by-design action...
+	if rand.Intn(len(mockActions)) == 0 { // ...except there's still a (just much-lower) chance for another action
 		action = mockActions[rand.Intn(len(mockActions))]
 	}
 	var user_email_addr string
@@ -147,7 +147,7 @@ func mockSomeActivity() {
 }
 
 func mockSomeActivityChangeBuddy(ctx *Ctx, user *User, userEmailAddr string) {
-	if add_or_remove := rand.Intn(2); ((add_or_remove == 0) || (len(user.Buddies) > mockUsersNumMaxBuddies)) && (len(user.Buddies) > 0) {
+	if add_or_remove := rand.Intn(11); ((add_or_remove == 0) || (len(user.Buddies) > mockUsersNumMaxBuddies)) && (len(user.Buddies) > 0) {
 		user.Buddies = sl.WithoutIdx(user.Buddies, rand.Intn(len(user.Buddies)), true) // remove a buddy
 	} else { // add a buddy
 		var buddy_email_addr string

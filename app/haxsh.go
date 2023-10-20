@@ -1,8 +1,20 @@
 package haxsh
 
-import yodb "yo/db"
+import (
+	yodb "yo/db"
+	yosrv "yo/srv"
+	. "yo/util"
+)
 
 var devModeInitMockUsers func()
+
+func init() {
+	yosrv.AppApiUrlPrefix = "_/"
+	yosrv.AppSideStaticRePathFor = func(requestPath string) string {
+		is_home := (requestPath == "") // `requestPath` never has a leading slash
+		return If(is_home, "__static/home.html", "__static/haxsh.html")
+	}
+}
 
 func Init() {
 	yodb.Ensure[User, UserField]("", nil,
