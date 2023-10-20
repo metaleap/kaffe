@@ -202,9 +202,9 @@ export async function apiUserUpdate(payload: ApiUpdateArgs_haxsh_app_User_haxsh_
 	}
 }
 
-export type PostField = 'Id' | 'DtMade' | 'DtMod' | 'By' | 'To' | 'Md' | 'Files' | 'Repl' | 'By.Id' | 'By.DtMade' | 'By.DtMod' | 'By.LastSeen' | 'By.Auth' | 'By.PicFileId' | 'By.Nick' | 'By.Btw' | 'By.Buddies' | 'Repl.Id' | 'Repl.DtMade' | 'Repl.DtMod' | 'Repl.By' | 'Repl.To' | 'Repl.Md' | 'Repl.Files' | 'Repl.Repl'
+export type PostField = 'Id' | 'DtMade' | 'DtMod' | 'By' | 'To' | 'Md' | 'Files' | 'Repl'
 
-export type UserField = 'Id' | 'DtMade' | 'DtMod' | 'LastSeen' | 'Auth' | 'PicFileId' | 'Nick' | 'Btw' | 'Buddies' | 'Auth.Id' | 'Auth.DtMade' | 'Auth.DtMod' | 'Auth.EmailAddr'
+export type UserField = 'Id' | 'DtMade' | 'DtMod' | 'LastSeen' | 'Auth' | 'PicFileId' | 'Nick' | 'Btw' | 'Buddies'
 
 export type UserAuthField = 'Id' | 'DtMade' | 'DtMod' | 'EmailAddr'
 
