@@ -36,9 +36,8 @@ var mockUsersLoggedIn = map[string]*http.Client{}
 func init() {
 	devModeInitMockUsers = func() {
 		// ensure all users exist
-		ids_so_far := make([]yodb.I64, 0, mockUsersNumTotal)
-		for i := 0; i < mockUsersNumTotal; i++ {
-			ids_so_far = append(ids_so_far, mockEnsureUser(i, ids_so_far))
+		for i := 1; i <= mockUsersNumTotal; i++ {
+			mockEnsureUser(i)
 		}
 
 		// initiate some goroutines that regularly fake some action or other
@@ -216,7 +215,7 @@ func mockUpdEnsureChange[T comparable](at *T, getAnother func() T, ok func(T) bo
 	}
 }
 
-func mockEnsureUser(i int, idsSoFar []yodb.I64) yodb.I64 {
+func mockEnsureUser(i int) yodb.I64 {
 	user_email_addr := str.Fmt("foo%d@bar.baz", i)
 	ctx := NewCtxNonHttp(time.Minute, user_email_addr)
 	defer ctx.OnDone(nil)

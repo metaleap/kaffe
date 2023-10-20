@@ -8,6 +8,7 @@ func Init() {
 	yodb.Ensure[User, UserField]("", nil,
 		yodb.ReadOnly[UserField]{UserAuth},
 		yodb.Unique[UserField]{UserAuth, UserNick},
+		yodb.NoUpdTrigger[UserField]{UserLastSeen},
 	)
 	yodb.Ensure[Post, PostField]("", nil,
 		yodb.ReadOnly[PostField]{PostBy, PostRepl},
