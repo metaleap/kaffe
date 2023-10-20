@@ -118,7 +118,7 @@ function qGreaterThan(x: QueryVal, y: QueryVal): QueryExpr { return { __yoQOp: '
 function qGreaterOrEqual(x: QueryVal, y: QueryVal): QueryExpr { return { __yoQOp: 'GE', __yoQOperands: [x, y] } as QueryExpr }
 function qIn(x: QueryVal, ...set: QueryVal[]): QueryExpr { return { __yoQOp: 'IN', __yoQOperands: [x].concat(set) } as QueryExpr }
 
-const errsPostNew = ['DbWriteRequestAcceptedWithoutErrButNotStoredEither', 'PostNew_ExpectedNonEmptyPost', 'PostNew_ExpectedOnlyBuddyRecipients', 'PostNew_InvalidItemInFiles', 'PostNew_RepliedToPostDoesNotExist', 'TimedOut', 'Unauthorized'] as const
+const errsPostNew = ['PostNew_ExpectedNonEmptyPost', 'PostNew_ExpectedOnlyBuddyRecipients', 'PostNew_InvalidItemInFiles', 'PostNew_RepliedToPostDoesNotExist', 'TimedOut', 'Unauthorized'] as const
 export type PostNewErr = typeof errsPostNew[number]
 export async function apiPostNew(payload: Post, query?: {[_:string]:string}): Promise<Return_yo_db_I64_> {
 	try {
@@ -166,7 +166,7 @@ export async function apiUserSignOut(payload: Void, query?: {[_:string]:string})
 	}
 }
 
-const errsUserSignUp = ['DbWriteRequestAcceptedWithoutErrButNotStoredEither', 'TimedOut', '___yo_authLogin_AccountDoesNotExist', '___yo_authLogin_EmailInvalid', '___yo_authLogin_EmailRequiredButMissing', '___yo_authLogin_OkButFailedToCreateSignedToken', '___yo_authLogin_WrongPassword', '___yo_authRegister_EmailAddrAlreadyExists', '___yo_authRegister_EmailInvalid', '___yo_authRegister_EmailRequiredButMissing', '___yo_authRegister_PasswordInvalid', '___yo_authRegister_PasswordTooLong', '___yo_authRegister_PasswordTooShort'] as const
+const errsUserSignUp = ['TimedOut', '___yo_authLogin_AccountDoesNotExist', '___yo_authLogin_EmailInvalid', '___yo_authLogin_EmailRequiredButMissing', '___yo_authLogin_OkButFailedToCreateSignedToken', '___yo_authLogin_WrongPassword', '___yo_authRegister_EmailAddrAlreadyExists', '___yo_authRegister_EmailInvalid', '___yo_authRegister_EmailRequiredButMissing', '___yo_authRegister_PasswordInvalid', '___yo_authRegister_PasswordTooLong', '___yo_authRegister_PasswordTooShort'] as const
 export type UserSignUpErr = typeof errsUserSignUp[number]
 export async function apiUserSignUp(payload: ApiAccountPayload, query?: {[_:string]:string}): Promise<User> {
 	try {
@@ -178,7 +178,7 @@ export async function apiUserSignUp(payload: ApiAccountPayload, query?: {[_:stri
 	}
 }
 
-const errsUserUpdate = ['DbUpdExpectedIdGt0', 'DbUpdate_ExpectedChangesForUpdate', 'DbUpdate_ExpectedQueryForUpdate', 'DbWriteRequestAcceptedWithoutErrButNotStoredEither', 'TimedOut', 'Unauthorized', 'UserUpdate_NicknameAlreadyExists'] as const
+const errsUserUpdate = ['DbUpdExpectedIdGt0', 'DbUpdate_ExpectedChangesForUpdate', 'DbUpdate_ExpectedQueryForUpdate', 'TimedOut', 'Unauthorized', 'UserUpdate_NicknameAlreadyExists'] as const
 export type UserUpdateErr = typeof errsUserUpdate[number]
 export async function apiUserUpdate(payload: ApiUpdateArgs_haxsh_app_User_haxsh_app_UserField_, query?: {[_:string]:string}): Promise<Void> {
 	try {

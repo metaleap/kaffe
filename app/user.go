@@ -86,10 +86,10 @@ var apiUserUpdate = api(func(this *ApiCtx[yodb.ApiUpdateArgs[User, UserField], V
 	if user_auth_id != this.Args.Changes.Auth.Id() {
 		panic(ErrUnauthorized)
 	}
-	userUpdate(this.Ctx, &this.Args.Changes, (len(this.Args.ChangedFields) > 0), this.Args.ChangedFields...)
+	userUpdate(this.Ctx, &this.Args.Changes, true, (len(this.Args.ChangedFields) > 0), this.Args.ChangedFields...)
 })
 
-func userUpdate(ctx *Ctx, upd *User, inclEmptyOrMissingFields bool, onlyFields ...UserField) {
+func userUpdate(ctx *Ctx, upd *User, byCurUserInCtx bool, inclEmptyOrMissingFields bool, onlyFields ...UserField) {
 	ctx.DbTx()
 	upd.Btw.Do(str.Trim)
 	if (len(onlyFields) == 0) || sl.Has(onlyFields, UserBuddies) {
@@ -100,10 +100,12 @@ func userUpdate(ctx *Ctx, upd *User, inclEmptyOrMissingFields bool, onlyFields .
 			panic(ErrUserUpdate_NicknameAlreadyExists)
 		}
 	}
-	if upd.LastSeen != nil {
+	if byCurUserInCtx {
 		upd.LastSeen = yodb.DtFrom(time.Now)
 	}
-	_ = yodb.Update[User](ctx, upd, nil, !inclEmptyOrMissingFields, sl.To(onlyFields, UserField.F)...)
+	if 0 == yodb.Update[User](ctx, upd, nil, !inclEmptyOrMissingFields, sl.To(onlyFields, UserField.F)...) {
+		panic("nochanges in " + str.From(onlyFields) + "?" + str.From(upd) + "vs." + str.From(userCur(ctx)))
+	}
 }
 
 func userByEmailAddr(ctx *Ctx, emailAddr string) *User {
@@ -142,5 +144,5 @@ func userSetLastSeen(auth_id yodb.I64) {
 	ctx.TimingsNoPrintInDevMode = true
 	upd := &User{LastSeen: yodb.DtFrom(time.Now)}
 	upd.Auth.SetId(auth_id)
-	userUpdate(ctx, upd, false, UserLastSeen)
+	userUpdate(ctx, upd, true, false, UserLastSeen)
 }
