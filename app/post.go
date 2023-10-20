@@ -40,6 +40,13 @@ type Post struct {
 
 type FileRef string
 
+type RecentUpdates struct {
+	Posts   []*Post
+	Buddies bool
+	Since   *yodb.DateTime
+	Next    *yodb.DateTime
+}
+
 var apiPostNew = api(func(this *ApiCtx[Post, Return[yodb.I64]]) {
 	this.Ret.Result = postNew(this.Ctx, this.Args, true)
 })
@@ -86,22 +93,20 @@ func postNew(ctx *Ctx, post *Post, byCurUserInCtx bool) yodb.I64 {
 	return yodb.CreateOne(ctx, post)
 }
 
-type RecentUpdates struct {
-	Posts   []*Post
-	Buddies bool
-	Since   *yodb.DateTime
-	Next    *yodb.DateTime
-}
-
 func getRecentUpdates(ctx *Ctx, forUser *User, since *yodb.DateTime) *RecentUpdates {
+	const max_posts_to_fetch = 123
 	if since == nil {
 		if since = forUser.LastSeen; since == nil {
 			since = forUser.DtMod
 		}
 	}
-	buddy_ids := append(forUser.Buddies.Anys(), forUser.Id)
+	buddy_ids := forUser.Buddies.Anys()
 	ret := &RecentUpdates{Since: since, Next: yodb.DtFrom(time.Now)} // the below outside the ctor to ensure Next is set before hitting the DB
-	ret.Buddies = yodb.Exists[User](ctx, UserId.In(buddy_ids...).And(UserDtMod.GreaterOrEqual(since)))
-	ret.Posts = yodb.FindMany[Post](ctx, PostDtMod.GreaterOrEqual(since).And(PostBy.In(buddy_ids...)), 1234, PostDtMade.Desc())
+	ret.Buddies = yodb.Exists[User](ctx,
+		UserId.In(buddy_ids...).And(UserDtMod.GreaterOrEqual(since)))
+	ret.Posts = yodb.FindMany[Post](ctx,
+		PostDtMod.GreaterOrEqual(since).And(PostBy.In(buddy_ids...).
+			And(q.Empty(PostTo).Or(q.JsonIsIn(forUser.Id, PostTo)))),
+		max_posts_to_fetch, PostDtMade.Desc())
 	return ret
 }
