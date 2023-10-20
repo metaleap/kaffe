@@ -44,7 +44,7 @@ func postNew(ctx *Ctx, post *Post, byCurUserInCtx bool) (ret yodb.I64) {
 	var user *User
 	post_by_user_id := post.by.Id()
 	if byCurUserInCtx || (post_by_user_id <= 0) {
-		user = UserCur(ctx)
+		user = userCur(ctx)
 		post_by_user_id = user.Id
 		post.by.SetId(user.Id)
 	}
@@ -52,7 +52,7 @@ func postNew(ctx *Ctx, post *Post, byCurUserInCtx bool) (ret yodb.I64) {
 		panic(ErrUnauthorized)
 	}
 	if user == nil {
-		if user = UserById(ctx, post_by_user_id); user == nil {
+		if user = userById(ctx, post_by_user_id); user == nil {
 			panic(ErrUnauthorized)
 		}
 	}

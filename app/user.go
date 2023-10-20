@@ -16,21 +16,23 @@ const ctxKeyCurUser = "haxshCurUser"
 
 func init() {
 	Apis(ApiMethods{
-		"userSignOut": api(apiUserSignOut).
+		"userSignOut": apiUserSignOut.
 			CouldFailWith(":" + yoauth.MethodPathLogout),
-		"userSignUp": api(apiUserSignUp).
+		"userSignUp": apiUserSignUp.
 			CouldFailWith(":"+yoauth.MethodPathRegister, ":userSignIn"),
 		"userSignIn": apiUserSignIn.
 			CouldFailWith(":" + yoauth.MethodPathLogin),
+		"userBy": apiUserBy.Checks(
+			Fails{Err: "ExpectedEitherNickNameOrEmailAddr", If: UserByEmailAddr.Equal("").And(UserByNickName.Equal(""))},
+		),
 		"userUpdate": api(apiUserUpdate,
 			Fails{Err: ErrDbUpdExpectedIdGt0, If: UserUpdateId.LessOrEqual(0)},
 		).
 			CouldFailWith(":"+yodb.ErrSetDbUpdate, ErrDbNotStored, "NicknameAlreadyExists").
 			FailIf(ErrUnauthorized, yoauth.CurrentlyNotLoggedIn),
-		"userGet": api(apiUserGet),
 	})
-	PreApiHandling = append(PreApiHandling, Middleware{"setUserLastSeen", func(ctx *Ctx) {
-		go setUserLastSeen(ctx.Get(yoauth.CtxKeyAuthId, yodb.I64(0)).(yodb.I64))
+	PreApiHandling = append(PreApiHandling, Middleware{"userSetLastSeen", func(ctx *Ctx) {
+		go userSetLastSeen(ctx.Get(yoauth.CtxKeyAuthId, yodb.I64(0)).(yodb.I64))
 	}})
 }
 
@@ -51,7 +53,7 @@ var apiUserSignIn = api(func(this *ApiCtx[yoauth.ApiAccountPayload, Void]) {
 	Do(yoauth.ApiUserLogin, this.Ctx, this.Args)
 })
 
-func apiUserSignUp(this *ApiCtx[yoauth.ApiAccountPayload, User]) {
+var apiUserSignUp = api(func(this *ApiCtx[yoauth.ApiAccountPayload, User]) {
 	this.Ctx.DbTx()
 
 	auth := Do(yoauth.ApiUserRegister, this.Ctx, this.Args)
@@ -62,42 +64,33 @@ func apiUserSignUp(this *ApiCtx[yoauth.ApiAccountPayload, User]) {
 	}
 	// _ = Do(apiUserSignIn, this.Ctx, this.Args)
 	this.Ret = &user
-}
+})
 
-func apiUserSignOut(this *ApiCtx[Void, Void]) {
+var apiUserSignOut = api(func(this *ApiCtx[Void, Void]) {
 	_ = Do(yoauth.ApiUserLogout, this.Ctx, this.Args)
-}
+})
 
-func apiUserUpdate(this *ApiCtx[yodb.ApiUpdateArgs[User], Void]) {
+var apiUserBy = api(func(this *ApiCtx[struct {
+	EmailAddr string
+	NickName  string
+}, User]) {
+	if this.Args.NickName != "" {
+		this.Ret = userByNickName(this.Ctx, this.Args.NickName)
+	} else {
+		this.Ret = userByEmailAddr(this.Ctx, this.Args.EmailAddr)
+	}
+})
+
+func apiUserUpdate(this *ApiCtx[yodb.ApiUpdateArgs[User, UserField], Void]) {
 	_, user_auth_id := yoauth.CurrentlyLoggedInUser(this.Ctx)
 	this.Args.Changes.Id = this.Args.Id
 	if user_auth_id != this.Args.Changes.Auth.Id() {
 		panic(ErrUnauthorized)
 	}
-	if !UserUpdate(this.Ctx, &this.Args.Changes, this.Args.IncludingEmptyOrMissingFields) {
-		panic(ErrDbNotStored)
-	}
+	userUpdate(this.Ctx, &this.Args.Changes, this.Args.IncludingEmptyOrMissingFields)
 }
 
-func apiUserGet(this *ApiCtx[struct {
-	EmailAddr string
-}, User]) {
-	this.Ret = UserByEmailAddr(this.Ctx, this.Args.EmailAddr)
-}
-
-func setUserLastSeen(auth_id yodb.I64) {
-	if auth_id == 0 {
-		return
-	}
-	ctx := NewCtxNonHttp(time.Minute, "setUserLastSeen")
-	defer ctx.OnDone(nil)
-	ctx.TimingsNoPrintInDevMode = true
-	upd := &User{LastSeen: yodb.DtFrom(time.Now)}
-	upd.Auth.SetId(auth_id)
-	UserUpdate(ctx, upd, false, UserLastSeen)
-}
-
-func UserUpdate(ctx *Ctx, upd *User, inclEmptyOrMissingFields bool, onlyFields ...UserField) bool {
+func userUpdate(ctx *Ctx, upd *User, inclEmptyOrMissingFields bool, onlyFields ...UserField) {
 	ctx.DbTx()
 	if upd.Btw.Do(str.Trim); (upd.Btw != "") && (upd.BtwDt == nil) && ((len(onlyFields) == 0) || sl.Has(onlyFields, UserBtw)) {
 		if upd.BtwDt = yodb.DtFrom(time.Now); (len(onlyFields) != 0) && !sl.Has(onlyFields, UserBtwDt) {
@@ -112,18 +105,28 @@ func UserUpdate(ctx *Ctx, upd *User, inclEmptyOrMissingFields bool, onlyFields .
 			panic(ErrUserUpdate_NicknameAlreadyExists)
 		}
 	}
-	return (yodb.Update[User](ctx, upd, nil, !inclEmptyOrMissingFields, sl.To(onlyFields, UserField.F)...) > 0)
+	if yodb.Update[User](ctx, upd, nil, !inclEmptyOrMissingFields, sl.To(onlyFields, UserField.F)...) <= 0 {
+		panic(ErrDbNotStored)
+	}
 }
 
-func UserByEmailAddr(ctx *Ctx, emailAddr string) *User {
+func userByEmailAddr(ctx *Ctx, emailAddr string) *User {
 	return yodb.FindOne[User](ctx, UserAuth_EmailAddr.Equal(emailAddr))
 }
 
-func UserById(ctx *Ctx, id yodb.I64) *User {
+func userByNickName(ctx *Ctx, nickName string) *User {
+	return yodb.FindOne[User](ctx, UserNick.Equal(nickName))
+}
+
+func userById(ctx *Ctx, id yodb.I64) *User {
+	user_cur, _ := ctx.Get(ctxKeyCurUser, nil).(*User)
+	if (user_cur != nil) && (user_cur.Id == id) {
+		return user_cur
+	}
 	return yodb.ById[User](ctx, id)
 }
 
-func UserCur(ctx *Ctx) (ret *User) {
+func userCur(ctx *Ctx) (ret *User) {
 	if ret, _ = ctx.Get(ctxKeyCurUser, nil).(*User); ret == nil {
 		_, user_auth_id := yoauth.CurrentlyLoggedInUser(ctx)
 		if user_auth_id != 0 {
@@ -132,4 +135,16 @@ func UserCur(ctx *Ctx) (ret *User) {
 		}
 	}
 	return
+}
+
+func userSetLastSeen(auth_id yodb.I64) {
+	if auth_id == 0 {
+		return
+	}
+	ctx := NewCtxNonHttp(time.Minute, "userSetLastSeen")
+	defer ctx.OnDone(nil)
+	ctx.TimingsNoPrintInDevMode = true
+	upd := &User{LastSeen: yodb.DtFrom(time.Now)}
+	upd.Auth.SetId(auth_id)
+	userUpdate(ctx, upd, false, UserLastSeen)
 }

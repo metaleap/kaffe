@@ -100,16 +100,14 @@ func mockSomeActivity() {
 	}
 
 	action = mockActions[0]
-	user := UserByEmailAddr(ctx, user_email_addr)
+	user := userByEmailAddr(ctx, user_email_addr)
 	switch _ = user; action {
 	case "changeBtw":
 		mockUpdEnsureChange(&user.Btw, func() yodb.Text { return yodb.Text(mockGetFortune(123, false)) }, nil)
 		if rand.Intn(22) == 0 {
 			user.Btw = ""
 		}
-		if upd := (&User{Id: user.Id, Btw: user.Btw}); !UserUpdate(ctx, upd, (user.Btw == ""), UserBtw) {
-			panic(str.From(upd))
-		}
+		userUpdate(ctx, &User{Id: user.Id, Btw: user.Btw}, (user.Btw == ""), UserBtw)
 	case "changeNick":
 		mockUpdEnsureChange(&user.Nick, func() yodb.Text {
 			var one, two string
@@ -120,22 +118,16 @@ func mockSomeActivity() {
 		}, func(it yodb.Text) bool {
 			return !yodb.Exists[User](ctx, UserNick.Equal(it))
 		})
-		if upd := (&User{Id: user.Id, Nick: user.Nick}); !UserUpdate(ctx, upd, false, UserNick) {
-			panic(str.From(upd))
-		}
+		userUpdate(ctx, &User{Id: user.Id, Nick: user.Nick}, false, UserNick)
 	case "changePic":
 		mockUpdEnsureChange(&user.PicFileId, func() yodb.Text { return yodb.Text(mockUserPicFiles[rand.Intn(len(mockUserPicFiles))]) }, nil)
 		if rand.Intn(22) == 0 {
 			user.PicFileId = ""
 		}
-		if upd := (&User{Id: user.Id, PicFileId: user.PicFileId}); !UserUpdate(ctx, upd, (user.PicFileId == ""), UserPicFileId) {
-			panic(str.From(upd))
-		}
+		userUpdate(ctx, &User{Id: user.Id, PicFileId: user.PicFileId}, (user.PicFileId == ""), UserPicFileId)
 	case "changeBuddy":
 		mockSomeActivityChangeBuddy(ctx, user, user_email_addr)
-		if upd := (&User{Id: user.Id, Buddies: user.Buddies}); !UserUpdate(ctx, upd, false, UserBuddies) {
-			panic(str.From(upd))
-		}
+		userUpdate(ctx, &User{Id: user.Id, Buddies: user.Buddies}, false, UserBuddies)
 	case "postSomething":
 		mockSomeActivityPostSomething(ctx, user, user_client)
 	default:
@@ -151,7 +143,7 @@ func mockSomeActivityChangeBuddy(ctx *Ctx, user *User, userEmailAddr string) {
 		var buddy_id yodb.I64
 		for (buddy_id == 0) || (buddy_id == user.Id) || sl.Has(user.Buddies, buddy_id) || (buddy_email_addr == "") || (buddy_email_addr == userEmailAddr) {
 			if buddy_email_addr = str.Fmt("foo%d@bar.baz", rand.Intn(mockUsersNumTotal)); buddy_email_addr != userEmailAddr {
-				buddy_id = UserByEmailAddr(ctx, buddy_email_addr).Id
+				buddy_id = userByEmailAddr(ctx, buddy_email_addr).Id
 			}
 		}
 		user.Buddies = append(user.Buddies, buddy_id)
@@ -220,7 +212,7 @@ func mockEnsureUser(i int, idsSoFar []yodb.I64) yodb.I64 {
 	ctx.TimingsNoPrintInDevMode = true
 
 	ctx.Timings.Step("check exists")
-	user := UserByEmailAddr(ctx, user_email_addr)
+	user := userByEmailAddr(ctx, user_email_addr)
 	if user == nil { // not yet exists: create
 		ctx.TimingsNoPrintInDevMode = false
 		ctx.Timings.Step("register new auth")
