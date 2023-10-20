@@ -99,11 +99,12 @@ func mockSomeActivity() {
 		}, user_client)
 	}
 
-	do_update := func(upd *User, changedFields ...UserField) {
-		userUpdate(ctx, upd, true, changedFields...)
+	do_update := func(curUser *User, upd *User, changedFields ...UserField) {
+		upd.Id = curUser.Id
+		upd.Auth.SetId(curUser.Auth.Id())
 		ViaHttp[yodb.ApiUpdateArgs[User, UserField], Void](apiUserUpdate, ctx, &yodb.ApiUpdateArgs[User, UserField]{
 			Changes:       *upd,
-			Id:            upd.Id,
+			Id:            curUser.Id,
 			ChangedFields: changedFields,
 		}, user_client)
 	}
@@ -115,7 +116,7 @@ func mockSomeActivity() {
 		if rand.Intn(22) == 0 {
 			user.Btw = ""
 		}
-		do_update(&User{Id: user.Id, Btw: user.Btw}, UserBtw)
+		do_update(user, &User{Btw: user.Btw}, UserBtw)
 	case "changeNick":
 		mockUpdEnsureChange(&user.Nick, func() yodb.Text {
 			var one, two string
@@ -126,16 +127,16 @@ func mockSomeActivity() {
 		}, func(it yodb.Text) bool {
 			return !yodb.Exists[User](ctx, UserNick.Equal(it))
 		})
-		do_update(&User{Id: user.Id, Nick: user.Nick}, UserNick)
+		do_update(user, &User{Nick: user.Nick}, UserNick)
 	case "changePic":
 		mockUpdEnsureChange(&user.PicFileId, func() yodb.Text { return yodb.Text(mockUserPicFiles[rand.Intn(len(mockUserPicFiles))]) }, nil)
 		if rand.Intn(22) == 0 {
 			user.PicFileId = ""
 		}
-		do_update(&User{Id: user.Id, PicFileId: user.PicFileId}, UserPicFileId)
+		do_update(user, &User{PicFileId: user.PicFileId}, UserPicFileId)
 	case "changeBuddy":
 		mockSomeActivityChangeBuddy(ctx, user, user_email_addr)
-		do_update(&User{Id: user.Id, Buddies: user.Buddies}, UserBuddies)
+		do_update(user, &User{Buddies: user.Buddies}, UserBuddies)
 	case "postSomething":
 		mockSomeActivityPostSomething(ctx, user, user_client)
 	default:

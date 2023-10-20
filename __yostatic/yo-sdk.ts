@@ -130,14 +130,14 @@ export async function apiPostNew(payload: Post, query?: {[_:string]:string}): Pr
 	}
 }
 
-const errsUserGet = ['TimedOut'] as const
-export type UserGetErr = typeof errsUserGet[number]
-export async function apiUserGet(payload: userGet_In, query?: {[_:string]:string}): Promise<User> {
+const errsUserBy = ['TimedOut', 'Unauthorized', 'UserBy_ExpectedEitherNickNameOrEmailAddr'] as const
+export type UserByErr = typeof errsUserBy[number]
+export async function apiUserBy(payload: userBy_In, query?: {[_:string]:string}): Promise<User> {
 	try {
-		return req<userGet_In, User>('_/userGet', payload, query)
+		return req<userBy_In, User>('_/userBy', payload, query)
 	} catch(err) {
-		if (err && err['body_text'] && (errsUserGet.indexOf(err.body_text) >= 0))
-			throw(new Err<UserGetErr>(err.body_text as UserGetErr))
+		if (err && err['body_text'] && (errsUserBy.indexOf(err.body_text) >= 0))
+			throw(new Err<UserByErr>(err.body_text as UserByErr))
 		throw(err)
 	}
 }
@@ -180,9 +180,9 @@ export async function apiUserSignUp(payload: ApiAccountPayload, query?: {[_:stri
 
 const errsUserUpdate = ['DbUpdExpectedIdGt0', 'DbUpdate_ExpectedChangesForUpdate', 'DbUpdate_ExpectedQueryForUpdate', 'DbWriteRequestAcceptedWithoutErrButNotStoredEither', 'TimedOut', 'Unauthorized', 'UserUpdate_NicknameAlreadyExists'] as const
 export type UserUpdateErr = typeof errsUserUpdate[number]
-export async function apiUserUpdate(payload: ApiUpdateArgs_haxsh_app_User_, query?: {[_:string]:string}): Promise<Void> {
+export async function apiUserUpdate(payload: ApiUpdateArgs_haxsh_app_User_haxsh_app_UserField_, query?: {[_:string]:string}): Promise<Void> {
 	try {
-		return req<ApiUpdateArgs_haxsh_app_User_, Void>('_/userUpdate', payload, query)
+		return req<ApiUpdateArgs_haxsh_app_User_haxsh_app_UserField_, Void>('_/userUpdate', payload, query)
 	} catch(err) {
 		if (err && err['body_text'] && (errsUserUpdate.indexOf(err.body_text) >= 0))
 			throw(new Err<UserUpdateErr>(err.body_text as UserUpdateErr))
@@ -217,14 +217,15 @@ export type User = {
 	PicFileId: string
 }
 
-export type userGet_In = {
+export type userBy_In = {
 	EmailAddr: string
+	NickName: string
 }
 
-export type ApiUpdateArgs_haxsh_app_User_ = {
+export type ApiUpdateArgs_haxsh_app_User_haxsh_app_UserField_ = {
+	ChangedFields: UserField[]
 	Changes: User
 	Id: I64
-	IncludingEmptyOrMissingFields: boolean
 }
 
 export type DateTime = string
