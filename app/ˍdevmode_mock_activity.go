@@ -76,7 +76,7 @@ func mockSomeActivity() {
 	{
 		mockLock.Lock()
 		for (user_email_addr == "") || busy[user_email_addr] {
-			user_email_addr = str.Fmt("foo%d@bar.baz", rand.Intn(mockUsersNumTotal))
+			user_email_addr = str.Fmt("foo%d@bar.baz", 1+rand.Intn(mockUsersNumTotal))
 		}
 		user_client = mockUsersLoggedIn[user_email_addr]
 		busy[user_email_addr] = true
@@ -153,7 +153,7 @@ func mockSomeActivityChangeBuddy(ctx *Ctx, user *User, userEmailAddr string) {
 		var buddy_email_addr string
 		var buddy_id yodb.I64
 		for (buddy_id == 0) || (buddy_id == user.Id) || sl.Has(user.Buddies, buddy_id) || (buddy_email_addr == "") || (buddy_email_addr == userEmailAddr) {
-			if buddy_email_addr = str.Fmt("foo%d@bar.baz", rand.Intn(mockUsersNumTotal)); buddy_email_addr != userEmailAddr {
+			if buddy_email_addr = str.Fmt("foo%d@bar.baz", 1+rand.Intn(mockUsersNumTotal)); buddy_email_addr != userEmailAddr {
 				buddy_id = userByEmailAddr(ctx, buddy_email_addr).Id
 			}
 		}
