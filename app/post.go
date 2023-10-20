@@ -99,14 +99,17 @@ func getRecentUpdates(ctx *Ctx, forUser *User, since *yodb.DateTime) *RecentUpda
 		if since = forUser.LastSeen; since == nil {
 			since = forUser.DtMod
 		}
+		since = forUser.DtMade // temporary
 	}
 	buddy_ids := forUser.Buddies.Anys()
 	ret := &RecentUpdates{Since: since, Next: yodb.DtFrom(time.Now)} // the below outside the ctor to ensure Next is set before hitting the DB
 	ret.Buddies = yodb.Exists[User](ctx,
 		UserId.In(buddy_ids...).And(UserDtMod.GreaterOrEqual(since)))
 	ret.Posts = yodb.FindMany[Post](ctx,
-		PostDtMod.GreaterOrEqual(since).And(PostBy.In(buddy_ids...).
-			And(q.Empty(PostTo).Or(q.JsonIsIn(forUser.Id, PostTo)))),
+		PostDtMod.GreaterOrEqual(since).And(PostBy.In(buddy_ids...)),
 		max_posts_to_fetch, PostDtMade.Desc())
+	ret.Posts = sl.Where(ret.Posts, func(it *Post) bool {
+		return (len(it.To) == 0) || (sl.Has(it.To, forUser.Id))
+	})
 	return ret
 }
