@@ -130,6 +130,18 @@ export async function apiPostNew(payload: Post, query?: {[_:string]:string}): Pr
 	}
 }
 
+const errsRecentUpdates = ['TimedOut', 'Unauthorized'] as const
+export type RecentUpdatesErr = typeof errsRecentUpdates[number]
+export async function apiRecentUpdates(payload: recentUpdates_In, query?: {[_:string]:string}): Promise<RecentUpdates> {
+	try {
+		return req<recentUpdates_In, RecentUpdates>('_/recentUpdates', payload, query)
+	} catch(err) {
+		if (err && err['body_text'] && (errsRecentUpdates.indexOf(err.body_text) >= 0))
+			throw(new Err<RecentUpdatesErr>(err.body_text as RecentUpdatesErr))
+		throw(err)
+	}
+}
+
 const errsUserBy = ['TimedOut', 'Unauthorized', 'UserBy_ExpectedEitherNickNameOrEmailAddr'] as const
 export type UserByErr = typeof errsUserBy[number]
 export async function apiUserBy(payload: userBy_In, query?: {[_:string]:string}): Promise<User> {
@@ -190,13 +202,14 @@ export async function apiUserUpdate(payload: ApiUpdateArgs_haxsh_app_User_haxsh_
 	}
 }
 
-export type PostField = 'Id' | 'DtMade' | 'DtMod' | 'To' | 'Md' | 'Files' | 'Repl' | 'by.Id' | 'by.DtMade' | 'by.DtMod' | 'by.LastSeen' | 'by.Auth' | 'by.PicFileId' | 'by.Nick' | 'by.Btw' | 'by.Buddies' | 'Repl.Id' | 'Repl.DtMade' | 'Repl.DtMod' | 'Repl.To' | 'Repl.Md' | 'Repl.Files' | 'Repl.Repl'
+export type PostField = 'Id' | 'DtMade' | 'DtMod' | 'By' | 'To' | 'Md' | 'Files' | 'Repl' | 'By.Id' | 'By.DtMade' | 'By.DtMod' | 'By.LastSeen' | 'By.Auth' | 'By.PicFileId' | 'By.Nick' | 'By.Btw' | 'By.Buddies' | 'Repl.Id' | 'Repl.DtMade' | 'Repl.DtMod' | 'Repl.By' | 'Repl.To' | 'Repl.Md' | 'Repl.Files' | 'Repl.Repl'
 
 export type UserField = 'Id' | 'DtMade' | 'DtMod' | 'LastSeen' | 'Auth' | 'PicFileId' | 'Nick' | 'Btw' | 'Buddies' | 'Auth.Id' | 'Auth.DtMade' | 'Auth.DtMod' | 'Auth.EmailAddr'
 
 export type UserAuthField = 'Id' | 'DtMade' | 'DtMod' | 'EmailAddr'
 
 export type Post = {
+	By: I64
 	DtMade?: DateTime
 	DtMod?: DateTime
 	Files: string[]
@@ -204,6 +217,13 @@ export type Post = {
 	Md: string
 	Repl: I64
 	To: I64[]
+}
+
+export type RecentUpdates = {
+	Buddies: boolean
+	Next?: DateTime
+	Posts: Post[]
+	Since?: DateTime
 }
 
 export type User = {
@@ -216,6 +236,10 @@ export type User = {
 	LastSeen?: DateTime
 	Nick: string
 	PicFileId: string
+}
+
+export type recentUpdates_In = {
+	Since?: DateTime
 }
 
 export type userBy_In = {

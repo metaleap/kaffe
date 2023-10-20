@@ -6,11 +6,13 @@ var devModeInitMockUsers func()
 
 func Init() {
 	yodb.Ensure[User, UserField]("", nil,
+		yodb.ReadOnly[UserField]{UserAuth},
 		yodb.Unique[UserField]{UserAuth, UserNick},
-		yodb.ReadOnly[UserField]{UserAuth})
+	)
 	yodb.Ensure[Post, PostField]("", nil,
+		yodb.ReadOnly[PostField]{PostBy, PostRepl},
 		yodb.Index[PostField]{PostBy, PostTo},
-		yodb.ReadOnly[PostField]{PostBy, PostRepl})
+	)
 }
 
 func OnBeforeListenAndServe() {
