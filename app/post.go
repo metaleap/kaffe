@@ -4,6 +4,7 @@ import (
 	. "yo/ctx"
 	yodb "yo/db"
 	q "yo/db/query"
+	yoauth "yo/feat_auth"
 	. "yo/srv"
 	. "yo/util"
 	"yo/util/sl"
@@ -17,7 +18,8 @@ func init() {
 			Fails{Err: "InvalidItemInFiles", If: PostFiles.ArrAny(q.Equal, "").Equal(true)},
 			Fails{Err: "ExpectedOnlyBuddyRecipients", If: PostTo.ArrAny(q.LessOrEqual, 0).Equal(true)},
 		).
-			CouldFailWith(ErrDbNotStored, ErrUnauthorized),
+			FailIf(ErrUnauthorized, yoauth.CurrentlyNotLoggedIn).
+			CouldFailWith(ErrDbNotStored),
 	})
 }
 

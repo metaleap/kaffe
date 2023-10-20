@@ -24,12 +24,13 @@ func init() {
 			CouldFailWith(":" + yoauth.MethodPathLogin),
 		"userBy": apiUserBy.Checks(
 			Fails{Err: "ExpectedEitherNickNameOrEmailAddr", If: UserByEmailAddr.Equal("").And(UserByNickName.Equal(""))},
-		),
-		"userUpdate": api(apiUserUpdate,
+		).
+			FailIf(ErrUnauthorized, yoauth.CurrentlyNotLoggedIn),
+		"userUpdate": apiUserUpdate.Checks(
 			Fails{Err: ErrDbUpdExpectedIdGt0, If: UserUpdateId.LessOrEqual(0)},
 		).
-			CouldFailWith(":"+yodb.ErrSetDbUpdate, ErrDbNotStored, "NicknameAlreadyExists").
-			FailIf(ErrUnauthorized, yoauth.CurrentlyNotLoggedIn),
+			FailIf(ErrUnauthorized, yoauth.CurrentlyNotLoggedIn).
+			CouldFailWith(":"+yodb.ErrSetDbUpdate, ErrDbNotStored, "NicknameAlreadyExists"),
 	})
 	PreApiHandling = append(PreApiHandling, Middleware{"userSetLastSeen", func(ctx *Ctx) {
 		go userSetLastSeen(ctx.Get(yoauth.CtxKeyAuthId, yodb.I64(0)).(yodb.I64))
@@ -81,14 +82,14 @@ var apiUserBy = api(func(this *ApiCtx[struct {
 	}
 })
 
-func apiUserUpdate(this *ApiCtx[yodb.ApiUpdateArgs[User, UserField], Void]) {
+var apiUserUpdate = api(func(this *ApiCtx[yodb.ApiUpdateArgs[User, UserField], Void]) {
 	_, user_auth_id := yoauth.CurrentlyLoggedInUser(this.Ctx)
 	this.Args.Changes.Id = this.Args.Id
 	if user_auth_id != this.Args.Changes.Auth.Id() {
 		panic(ErrUnauthorized)
 	}
-	userUpdate(this.Ctx, &this.Args.Changes, this.Args.IncludingEmptyOrMissingFields)
-}
+	userUpdate(this.Ctx, &this.Args.Changes, (len(this.Args.ChangedFields) > 0), this.Args.ChangedFields...)
+})
 
 func userUpdate(ctx *Ctx, upd *User, inclEmptyOrMissingFields bool, onlyFields ...UserField) {
 	ctx.DbTx()
@@ -104,6 +105,9 @@ func userUpdate(ctx *Ctx, upd *User, inclEmptyOrMissingFields bool, onlyFields .
 		if yodb.Exists[User](ctx, UserNick.Equal(upd.Nick).And(UserId.NotEqual(upd.Id))) {
 			panic(ErrUserUpdate_NicknameAlreadyExists)
 		}
+	}
+	if upd.LastSeen != nil {
+		upd.LastSeen = yodb.DtFrom(time.Now)
 	}
 	if yodb.Update[User](ctx, upd, nil, !inclEmptyOrMissingFields, sl.To(onlyFields, UserField.F)...) <= 0 {
 		panic(ErrDbNotStored)
