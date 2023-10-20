@@ -20,7 +20,7 @@ func init() {
 			CouldFailWith(":" + yoauth.MethodPathLogout),
 		"userSignUp": api(apiUserSignUp).
 			CouldFailWith(":"+yoauth.MethodPathRegister, ":userSignIn"),
-		"userSignIn": api(apiUserSignIn).
+		"userSignIn": apiUserSignIn.
 			CouldFailWith(":" + yoauth.MethodPathLogin),
 		"userUpdate": api(apiUserUpdate,
 			Fails{Err: ErrDbUpdExpectedIdGt0, If: UserUpdateId.LessOrEqual(0)},
@@ -47,6 +47,10 @@ type User struct {
 	Buddies   yodb.Arr[yodb.I64]
 }
 
+var apiUserSignIn = api(func(this *ApiCtx[yoauth.ApiAccountPayload, Void]) {
+	Do(yoauth.ApiUserLogin, this.Ctx, this.Args)
+})
+
 func apiUserSignUp(this *ApiCtx[yoauth.ApiAccountPayload, User]) {
 	this.Ctx.DbTx()
 
@@ -56,16 +60,12 @@ func apiUserSignUp(this *ApiCtx[yoauth.ApiAccountPayload, User]) {
 	if user.Id = yodb.CreateOne(this.Ctx, &user); user.Id <= 0 {
 		panic(ErrDbNotStored)
 	}
-	_ = Do(apiUserSignIn, this.Ctx, this.Args)
+	// _ = Do(apiUserSignIn, this.Ctx, this.Args)
 	this.Ret = &user
 }
 
 func apiUserSignOut(this *ApiCtx[Void, Void]) {
 	_ = Do(yoauth.ApiUserLogout, this.Ctx, this.Args)
-}
-
-func apiUserSignIn(this *ApiCtx[yoauth.ApiAccountPayload, Void]) {
-	Do(yoauth.ApiUserLogin, this.Ctx, this.Args)
 }
 
 func apiUserUpdate(this *ApiCtx[yodb.ApiUpdateArgs[User], Void]) {
@@ -125,7 +125,8 @@ func UserById(ctx *Ctx, id yodb.I64) *User {
 
 func UserCur(ctx *Ctx) (ret *User) {
 	if ret, _ = ctx.Get(ctxKeyCurUser, nil).(*User); ret == nil {
-		if _, user_auth_id := yoauth.CurrentlyLoggedInUser(ctx); user_auth_id != 0 {
+		_, user_auth_id := yoauth.CurrentlyLoggedInUser(ctx)
+		if user_auth_id != 0 {
 			ret = yodb.FindOne[User](ctx, UserAuth.Equal(user_auth_id))
 			ctx.Set(ctxKeyCurUser, ret)
 		}

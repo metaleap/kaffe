@@ -23,7 +23,6 @@ import (
 var mockLiveActivity = true
 
 const mockUsersNumTotal = 1444 // don't go higher than that due to limited number of `fortune`s (at nickname short length) for unique-nickname generation
-const mockUsersNumActiveInitially = mockUsersNumTotal / 2
 const mockFilesDirPath = "__static/mockfiles"
 
 var mockUsersNumMaxBuddies = 11 + rand.Intn(22)
@@ -43,15 +42,6 @@ func init() {
 
 		// initiate some goroutines that regularly fake some action or other
 		if mockLiveActivity {
-			next_email_addr := func() string { return str.Fmt("foo%d@bar.baz", rand.Intn(mockUsersNumTotal)) }
-			// mock-login at least the min number of some random users
-			for len(mockUsersLoggedIn) < mockUsersNumActiveInitially {
-				user_email_addr := next_email_addr()
-				for mockUsersLoggedIn[user_email_addr] != nil {
-					user_email_addr = next_email_addr()
-				}
-				mockUsersLoggedIn[user_email_addr] = newClient()
-			}
 			for i, num_parallel := 0, 11+rand.Intn(11); i < num_parallel; i++ {
 				time.AfterFunc(time.Second*time.Duration(i), mockSomeActivity)
 			}
@@ -59,16 +49,13 @@ func init() {
 	}
 }
 
-func newClient() *http.Client { return &http.Client{Timeout: 11 * time.Second} }
-
 var mockLock sync.Mutex
 var mockActions = []string{ // don't reorder items with consulting/adapting the below `mockSomeActivity` func
-	"logInOrOut",
+	"postSomething",
 	"changeNick",
 	"changeBtw",
 	"changePic",
 	"changeBuddy",
-	"postSomething",
 }
 var busy = map[string]bool{}
 
@@ -79,42 +66,42 @@ func mockSomeActivity() {
 	defer time.AfterFunc(time.Millisecond*time.Duration(111+rand.Intn(1111)), mockSomeActivity)
 	// we do about 1-3 dozen reqs per sec with the above and the `rand`ed goroutining of this func set up in `init`
 
-	action := mockActions[len(mockActions)-1] // default to the much-more-frequent-than-the-others-by-design action...
-	if rand.Intn(len(mockActions)) <= 1 {     // ...except there's still a (just much-lower) chance for another action
+	action := mockActions[0]                // default to the much-more-frequent-than-the-others-by-design action...
+	if rand.Intn(2*len(mockActions)) <= 1 { // ...except there's still a (just much-lower) chance for another action
 		action = mockActions[rand.Intn(len(mockActions))]
 	}
 	var user_email_addr string
 	var user_client *http.Client
+	var must_log_in_first bool
 	{
 		mockLock.Lock()
 		for (user_email_addr == "") || busy[user_email_addr] {
 			user_email_addr = str.Fmt("foo%d@bar.baz", rand.Intn(mockUsersNumTotal))
 		}
 		user_client = mockUsersLoggedIn[user_email_addr]
-		if user_client == nil {
-			action = mockActions[0]
-		}
 		busy[user_email_addr] = true
+		if must_log_in_first = (user_client == nil); must_log_in_first {
+			user_client = NewClient()
+			mockUsersLoggedIn[user_email_addr] = user_client
+		}
 		defer func() { mockLock.Lock(); busy[user_email_addr] = false; mockLock.Unlock() }()
 		mockLock.Unlock()
 	}
+
 	ctx := NewCtxNonHttp(time.Minute, user_email_addr+" "+action)
 	defer ctx.OnDone(nil)
 	ctx.DbTx()
 	ctx.TimingsNoPrintInDevMode = true
 
-	ctx.Set(CtxKeyForcedTestUser, user_email_addr)
+	if must_log_in_first {
+		ViaHttp[yoauth.ApiAccountPayload, Void](apiUserSignIn, ctx, &yoauth.ApiAccountPayload{
+			EmailAddr: user_email_addr, PasswordPlain: "foobar",
+		}, user_client)
+	}
+
+	action = mockActions[0]
 	user := UserByEmailAddr(ctx, user_email_addr)
 	switch _ = user; action {
-	case "logInOrOut":
-		mockLock.Lock()
-		if mockUsersLoggedIn[user_email_addr] == nil {
-			user_client = newClient()
-			mockUsersLoggedIn[user_email_addr] = user_client
-		} else {
-			delete(mockUsersLoggedIn, user_email_addr)
-		}
-		mockLock.Unlock()
 	case "changeBtw":
 		mockUpdEnsureChange(&user.Btw, func() yodb.Text { return yodb.Text(mockGetFortune(123, false)) }, nil)
 		if rand.Intn(22) == 0 {
