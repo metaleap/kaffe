@@ -1,6 +1,8 @@
 package haxsh
 
 import (
+	"time"
+
 	. "yo/ctx"
 	yodb "yo/db"
 	q "yo/db/query"
@@ -19,6 +21,8 @@ func init() {
 			Fails{Err: "ExpectedOnlyBuddyRecipients", If: PostTo.ArrAny(q.LessOrEqual, 0).Equal(true)},
 		).
 			FailIf(ErrUnauthorized, yoauth.CurrentlyNotLoggedIn),
+		"recentUpdates": apiRecentUpdates.
+			FailIf(ErrUnauthorized, yoauth.CurrentlyNotLoggedIn),
 	})
 }
 
@@ -27,7 +31,7 @@ type Post struct {
 	DtMade *yodb.DateTime
 	DtMod  *yodb.DateTime
 
-	by    yodb.Ref[User, yodb.RefOnDelCascade]
+	By    yodb.Ref[User, yodb.RefOnDelCascade]
 	To    yodb.Arr[yodb.I64]
 	Md    yodb.Text
 	Files yodb.Arr[FileRef]
@@ -40,15 +44,25 @@ var apiPostNew = api(func(this *ApiCtx[Post, Return[yodb.I64]]) {
 	this.Ret.Result = postNew(this.Ctx, this.Args, true)
 })
 
+var apiRecentUpdates = api(func(this *ApiCtx[struct {
+	Since *yodb.DateTime
+}, RecentUpdates]) {
+	user_cur := userCur(this.Ctx)
+	if user_cur == nil {
+		panic(ErrUnauthorized)
+	}
+	this.Ret = getRecentUpdates(this.Ctx, user_cur, this.Args.Since)
+})
+
 func postNew(ctx *Ctx, post *Post, byCurUserInCtx bool) yodb.I64 {
 	ctx.DbTx()
 
 	var user *User
-	post_by_user_id := post.by.Id()
+	post_by_user_id := post.By.Id()
 	if byCurUserInCtx || (post_by_user_id <= 0) {
 		user = userCur(ctx)
 		post_by_user_id = user.Id
-		post.by.SetId(user.Id)
+		post.By.SetId(user.Id)
 	}
 	if post_by_user_id <= 0 {
 		panic(ErrUnauthorized)
@@ -79,10 +93,15 @@ type RecentUpdates struct {
 	Next    *yodb.DateTime
 }
 
-func listRecentUpdates(ctx *Ctx, forUser *User, since *yodb.DateTime) (ret RecentUpdates) {
+func getRecentUpdates(ctx *Ctx, forUser *User, since *yodb.DateTime) *RecentUpdates {
 	if since == nil {
-		since = forUser.LastSeen
+		if since = forUser.LastSeen; since == nil {
+			since = forUser.DtMod
+		}
 	}
-
-	return
+	buddy_ids := append(forUser.Buddies.Anys(), forUser.Id)
+	ret := &RecentUpdates{Next: yodb.DtFrom(time.Now)} // the below outside the ctor to ensure Next is set before hitting the DB
+	ret.Buddies = yodb.Exists[User](ctx, UserId.In(buddy_ids...).And(UserDtMod.GreaterOrEqual(since)))
+	ret.Posts = yodb.FindMany[Post](ctx, PostDtMod.GreaterOrEqual(since).And(PostBy.In(buddy_ids...)), 1234, PostDtMade.Desc())
+	return ret
 }
