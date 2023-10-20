@@ -46,7 +46,6 @@ type User struct {
 	PicFileId yodb.Text
 	Nick      yodb.Text
 	Btw       yodb.Text
-	ModDt     *yodb.DateTime
 	Buddies   yodb.Arr[yodb.I64]
 }
 
@@ -105,7 +104,6 @@ func userUpdate(ctx *Ctx, upd *User, inclEmptyOrMissingFields bool, onlyFields .
 	if upd.LastSeen != nil {
 		upd.LastSeen = yodb.DtFrom(time.Now)
 	}
-	upd.ModDt = yodb.DtFrom(time.Now)
 	if yodb.Update[User](ctx, upd, nil, !inclEmptyOrMissingFields, sl.To(onlyFields, UserField.F)...) <= 0 {
 		panic(ErrDbNotStored)
 	}
