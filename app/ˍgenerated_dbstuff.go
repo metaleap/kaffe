@@ -22,8 +22,6 @@ const (
 	userAuth_pwdHashed UserField = "Auth.pwdHashed"
 )
 
-func (me UserField) ArrAll(a1 ...interface{}) q.Operand { return ((q.F)(me)).ArrAll(a1...) }
-func (me UserField) ArrAny(a1 ...interface{}) q.Operand { return ((q.F)(me)).ArrAny(a1...) }
 func (me UserField) ArrLen(a1 ...interface{}) q.Operand { return ((q.F)(me)).ArrLen(a1...) }
 func (me UserField) Asc() q.OrderBy                     { return ((q.F)(me)).Asc() }
 func (me UserField) Desc() q.OrderBy                    { return ((q.F)(me)).Desc() }
@@ -74,8 +72,6 @@ const (
 	PostRepl_Repl    PostField = "Repl.Repl"
 )
 
-func (me PostField) ArrAll(a1 ...interface{}) q.Operand { return ((q.F)(me)).ArrAll(a1...) }
-func (me PostField) ArrAny(a1 ...interface{}) q.Operand { return ((q.F)(me)).ArrAny(a1...) }
 func (me PostField) ArrLen(a1 ...interface{}) q.Operand { return ((q.F)(me)).ArrLen(a1...) }
 func (me PostField) Asc() q.OrderBy                     { return ((q.F)(me)).Asc() }
 func (me PostField) Desc() q.OrderBy                    { return ((q.F)(me)).Desc() }

@@ -15,9 +15,9 @@ import (
 func init() {
 	Apis(ApiMethods{
 		"postNew": apiPostNew.Checks(
-			Fails{Err: "ExpectedNonEmptyPost", If: PostMd.Equal("").And(q.ArrIsEmpty(PostFiles))},
+			Fails{Err: "ExpectedNonEmptyPost", If: PostMd.Equal("").And(q.ArrEmpty(PostFiles))},
 			Fails{Err: "RepliedToPostDoesNotExist", If: PostRepl.LessThan(0)},
-			Fails{Err: "ExpectedOnlyBuddyRecipients", If: PostTo.ArrAny(q.LessOrEqual, 0).Equal(true)},
+			Fails{Err: "ExpectedOnlyBuddyRecipients", If: q.ArrAreAnyIn(PostTo, q.OpLeq, 0)},
 		).
 			FailIf(ErrUnauthorized, yoauth.CurrentlyNotLoggedIn),
 		"recentUpdates": apiRecentUpdates.
