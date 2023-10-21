@@ -18,6 +18,8 @@ func api[TIn any, TOut any](f func(*yosrv.ApiCtx[TIn, TOut]), failIfs ...yosrv.F
 	return yosrv.Api[TIn, TOut](f, failIfs...).From(haxshPkg)
 }
 
+const ErrPostNew_ExpectedNonEmptyPost util.Err = "PostNew_ExpectedNonEmptyPost"
+const ErrPostNew_ExpectedOnlyBuddyRecipients util.Err = "PostNew_ExpectedOnlyBuddyRecipients"
 const ErrPostNew_RepliedToPostDoesNotExist util.Err = "PostNew_RepliedToPostDoesNotExist"
 const ErrUserBy_ExpectedEitherNickNameOrEmailAddr util.Err = "UserBy_ExpectedEitherNickNameOrEmailAddr"
 const Err___yo_authLogin_AccountDoesNotExist util.Err = "___yo_authLogin_AccountDoesNotExist"

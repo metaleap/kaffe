@@ -35,11 +35,13 @@ func (me UserField) F() q.F                                { return ((q.F)(me)).
 func (me UserField) GreaterOrEqual(a1 interface{}) q.Query { return ((q.F)(me)).GreaterOrEqual(a1) }
 func (me UserField) GreaterThan(a1 interface{}) q.Query    { return ((q.F)(me)).GreaterThan(a1) }
 func (me UserField) In(a1 ...interface{}) q.Query          { return ((q.F)(me)).In(a1...) }
+func (me UserField) InArr(a1 interface{}) q.Query          { return ((q.F)(me)).InArr(a1) }
 func (me UserField) LessOrEqual(a1 interface{}) q.Query    { return ((q.F)(me)).LessOrEqual(a1) }
 func (me UserField) LessThan(a1 interface{}) q.Query       { return ((q.F)(me)).LessThan(a1) }
 func (me UserField) Not() q.Query                          { return ((q.F)(me)).Not() }
 func (me UserField) NotEqual(a1 interface{}) q.Query       { return ((q.F)(me)).NotEqual(a1) }
 func (me UserField) NotIn(a1 ...interface{}) q.Query       { return ((q.F)(me)).NotIn(a1...) }
+func (me UserField) NotInArr(a1 interface{}) q.Query       { return ((q.F)(me)).NotInArr(a1) }
 func (me UserField) StrLen(a1 ...interface{}) q.Operand    { return ((q.F)(me)).StrLen(a1...) }
 
 type PostField q.F
@@ -85,9 +87,11 @@ func (me PostField) F() q.F                                { return ((q.F)(me)).
 func (me PostField) GreaterOrEqual(a1 interface{}) q.Query { return ((q.F)(me)).GreaterOrEqual(a1) }
 func (me PostField) GreaterThan(a1 interface{}) q.Query    { return ((q.F)(me)).GreaterThan(a1) }
 func (me PostField) In(a1 ...interface{}) q.Query          { return ((q.F)(me)).In(a1...) }
+func (me PostField) InArr(a1 interface{}) q.Query          { return ((q.F)(me)).InArr(a1) }
 func (me PostField) LessOrEqual(a1 interface{}) q.Query    { return ((q.F)(me)).LessOrEqual(a1) }
 func (me PostField) LessThan(a1 interface{}) q.Query       { return ((q.F)(me)).LessThan(a1) }
 func (me PostField) Not() q.Query                          { return ((q.F)(me)).Not() }
 func (me PostField) NotEqual(a1 interface{}) q.Query       { return ((q.F)(me)).NotEqual(a1) }
 func (me PostField) NotIn(a1 ...interface{}) q.Query       { return ((q.F)(me)).NotIn(a1...) }
+func (me PostField) NotInArr(a1 interface{}) q.Query       { return ((q.F)(me)).NotInArr(a1) }
 func (me PostField) StrLen(a1 ...interface{}) q.Operand    { return ((q.F)(me)).StrLen(a1...) }

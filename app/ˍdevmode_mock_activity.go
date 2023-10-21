@@ -193,7 +193,7 @@ func mockSomeActivityPostSomething(ctx *Ctx, user *User, client *http.Client) {
 	// in reply to some other post? (if so, changes `to` to NULL but apis/ux make it then effectively that post's `to`)
 	if (rand.Intn(11) <= 5) && len(user.Buddies) > 0 {
 		if post := yodb.FindOne[Post](ctx,
-			PostRepl.Equal(nil).And(PostBy.In(user.Buddies.Anys()...)), /*.And(q.JsonArrEmpty(PostTo))*/
+			PostRepl.Equal(nil).And(PostBy.In(user.Buddies.Anys()...)), /*.And(PostTo.ArrEmpty()),*/
 		); post != nil {
 			to, in_reply_to = nil, post.Id
 		}
