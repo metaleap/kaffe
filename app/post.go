@@ -5,7 +5,6 @@ import (
 
 	. "yo/ctx"
 	yodb "yo/db"
-	q "yo/db/query"
 	yoauth "yo/feat_auth"
 	. "yo/srv"
 	. "yo/util"
@@ -15,10 +14,10 @@ import (
 func init() {
 	Apis(ApiMethods{
 		"postNew": apiPostNew.Checks(
-			Fails{Err: "ExpectedNonEmptyPost", If: PostMd.Equal("") /*.And(PostFiles.Len().Equal(0))*/},
+			// Fails{Err: "ExpectedNonEmptyPost", If: PostMd.Equal("").And(PostFiles.Equal(nil))},
 			Fails{Err: "RepliedToPostDoesNotExist", If: PostRepl.LessThan(0)},
-			Fails{Err: "InvalidItemInFiles", If: PostFiles.ArrAny(q.Equal, "").Equal(true)},
-			Fails{Err: "ExpectedOnlyBuddyRecipients", If: PostTo.ArrAny(q.LessOrEqual, 0).Equal(true)},
+			// Fails{Err: "InvalidItemInFiles", If: PostFiles.ArrAny(q.Equal, "").Equal(true)},
+			// Fails{Err: "ExpectedOnlyBuddyRecipients", If: PostTo.ArrAny(q.LessOrEqual, 0).Equal(true)},
 		).
 			FailIf(ErrUnauthorized, yoauth.CurrentlyNotLoggedIn),
 		"recentUpdates": apiRecentUpdates.
@@ -34,7 +33,7 @@ type Post struct {
 	By    yodb.Ref[User, yodb.RefOnDelCascade]
 	To    yodb.Arr[yodb.I64]
 	Md    yodb.Text
-	Files yodb.JsonMap[string]
+	Files yodb.Arr[yodb.Text]
 	Repl  yodb.Ref[Post, yodb.RefOnDelCascade]
 }
 
@@ -84,7 +83,7 @@ func postNew(ctx *Ctx, post *Post, byCurUserInCtx bool) yodb.I64 {
 
 	if len(post.To) > 0 {
 		if sl.Any(post.To, func(it yodb.I64) bool { return !sl.Has(user.Buddies, it) }) {
-			panic(ErrPostNew_ExpectedOnlyBuddyRecipients)
+			panic("ErrPostNew_ExpectedOnlyBuddyRecipients")
 		}
 	}
 

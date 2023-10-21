@@ -22,7 +22,7 @@ import (
 var mockLiveActivity = true
 
 const mockNumReqsPerSecApprox = 44 // max ~111 in outside-vscode `go run`s, ~55 in vscode dlv debug runs (due to default Postgres container's conn-limits setup)
-const mockUsersNumTotal = 12345
+const mockUsersNumTotal = 123
 const mockFilesDirPath = "__static/mockfiles"
 
 var mockUsersNumMaxBuddies = 11 + rand.Intn(11)
@@ -161,7 +161,7 @@ func mockSomeActivityChangeBuddy(ctx *Ctx, user *User, userEmailAddr string) {
 }
 
 func mockSomeActivityPostSomething(ctx *Ctx, user *User, client *http.Client) {
-	files := yodb.JsonMap[string]{}
+	files := yodb.Arr[yodb.Text]{}
 	var to []yodb.I64
 	var in_reply_to yodb.I64
 	md := mockGetFortune(0, false)
@@ -173,11 +173,11 @@ func mockSomeActivityPostSomething(ctx *Ctx, user *User, client *http.Client) {
 	if (md == "") || (rand.Intn(11) <= 2) {
 		num_files := If(rand.Intn(2) == 0, 1, 1+rand.Intn(11))
 		for i := 0; i < num_files; i++ {
-			var file_name string
-			for (file_name == "") || (files[file_name] != "") {
-				file_name = mockPostFiles[rand.Intn(len(mockPostFiles))]
+			var file_name yodb.Text
+			for (file_name == "") || sl.Has(files, file_name) {
+				file_name = yodb.Text(mockPostFiles[rand.Intn(len(mockPostFiles))])
 			}
-			files[file_name] = file_name
+			files = append(files, file_name)
 		}
 	}
 

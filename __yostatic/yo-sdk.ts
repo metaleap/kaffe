@@ -119,7 +119,7 @@ function qGreaterThan(x: QueryVal, y: QueryVal): QueryExpr { return { __yoQOp: '
 function qGreaterOrEqual(x: QueryVal, y: QueryVal): QueryExpr { return { __yoQOp: 'GE', __yoQOperands: [x, y] } as QueryExpr }
 function qIn(x: QueryVal, ...set: QueryVal[]): QueryExpr { return { __yoQOp: 'IN', __yoQOperands: [x].concat(set) } as QueryExpr }
 
-const errsPostNew = ['PostNew_ExpectedNonEmptyPost', 'PostNew_ExpectedOnlyBuddyRecipients', 'PostNew_InvalidItemInFiles', 'PostNew_RepliedToPostDoesNotExist', 'TimedOut', 'Unauthorized'] as const
+const errsPostNew = ['PostNew_RepliedToPostDoesNotExist', 'TimedOut', 'Unauthorized'] as const
 export async function apiPostNew(payload: Post, query?: {[_:string]:string}): Promise<Return_yo_db_I64_> {
 	try {
 		return req<Post, Return_yo_db_I64_>('_/postNew', payload, query)
@@ -213,7 +213,7 @@ export type Post = {
 	By: I64
 	DtMade?: DateTime
 	DtMod?: DateTime
-	Files: { [_:string]: string }
+	Files: string[]
 	Id: I64
 	Md: string
 	Repl: I64
