@@ -12,6 +12,7 @@ import (
 
 	. "yo/ctx"
 	yodb "yo/db"
+	q "yo/db/query"
 	yoauth "yo/feat_auth"
 	. "yo/srv"
 	. "yo/util"
@@ -192,8 +193,9 @@ func mockSomeActivityPostSomething(ctx *Ctx, user *User, client *http.Client) {
 
 	// in reply to some other post? (if so, changes `to` to NULL but apis/ux make it then effectively that post's `to`)
 	if (rand.Intn(11) <= 5) && len(user.Buddies) > 0 {
+		ctx.Db.PrintRawSqlInDevMode = true
 		if post := yodb.FindOne[Post](ctx,
-			PostRepl.Equal(nil).And(PostBy.In(user.Buddies.Anys()...)), /*.And(PostTo.ArrEmpty()),*/
+			PostRepl.Equal(nil).And(PostBy.In(user.Buddies.Anys()...)).And(q.ArrIsEmpty(PostTo).Or(q.ArrHas(PostTo, user.Id))),
 		); post != nil {
 			to, in_reply_to = nil, post.Id
 		}
