@@ -17,12 +17,12 @@ func init() {
 }
 
 func Init() {
-	yodb.Ensure[User, UserField]("", nil,
+	yodb.Ensure[User, UserField]("", nil, false,
 		yodb.ReadOnly[UserField]{UserAuth},
 		yodb.Unique[UserField]{UserAuth, UserNick},
 		yodb.NoUpdTrigger[UserField]{UserLastSeen},
 	)
-	yodb.Ensure[Post, PostField]("", nil,
+	yodb.Ensure[Post, PostField]("", nil, false,
 		yodb.ReadOnly[PostField]{PostBy, PostRepl},
 		yodb.Index[PostField]{PostBy, PostTo},
 	)
