@@ -22,7 +22,6 @@ const (
 	userAuth_pwdHashed UserField = "Auth.pwdHashed"
 )
 
-func (me UserField) Arr(a1 ...interface{}) q.Operand    { return ((q.F)(me)).Arr(a1...) }
 func (me UserField) ArrAll(a1 ...interface{}) q.Operand { return ((q.F)(me)).ArrAll(a1...) }
 func (me UserField) ArrAny(a1 ...interface{}) q.Operand { return ((q.F)(me)).ArrAny(a1...) }
 func (me UserField) Asc() q.OrderBy                     { return ((q.F)(me)).Asc() }
@@ -35,7 +34,7 @@ func (me UserField) F() q.F                                { return ((q.F)(me)).
 func (me UserField) GreaterOrEqual(a1 interface{}) q.Query { return ((q.F)(me)).GreaterOrEqual(a1) }
 func (me UserField) GreaterThan(a1 interface{}) q.Query    { return ((q.F)(me)).GreaterThan(a1) }
 func (me UserField) In(a1 ...interface{}) q.Query          { return ((q.F)(me)).In(a1...) }
-func (me UserField) Len(a1 ...interface{}) q.Operand       { return ((q.F)(me)).Len(a1...) }
+func (me UserField) ArrLen(a1 ...interface{}) q.Operand       { return ((q.F)(me)).ArrLen(a1...) }
 func (me UserField) LessOrEqual(a1 interface{}) q.Query    { return ((q.F)(me)).LessOrEqual(a1) }
 func (me UserField) LessThan(a1 interface{}) q.Query       { return ((q.F)(me)).LessThan(a1) }
 func (me UserField) Not() q.Query                          { return ((q.F)(me)).Not() }
@@ -73,7 +72,6 @@ const (
 	PostRepl_Repl    PostField = "Repl.Repl"
 )
 
-func (me PostField) Arr(a1 ...interface{}) q.Operand    { return ((q.F)(me)).Arr(a1...) }
 func (me PostField) ArrAll(a1 ...interface{}) q.Operand { return ((q.F)(me)).ArrAll(a1...) }
 func (me PostField) ArrAny(a1 ...interface{}) q.Operand { return ((q.F)(me)).ArrAny(a1...) }
 func (me PostField) Asc() q.OrderBy                     { return ((q.F)(me)).Asc() }
@@ -86,7 +84,7 @@ func (me PostField) F() q.F                                { return ((q.F)(me)).
 func (me PostField) GreaterOrEqual(a1 interface{}) q.Query { return ((q.F)(me)).GreaterOrEqual(a1) }
 func (me PostField) GreaterThan(a1 interface{}) q.Query    { return ((q.F)(me)).GreaterThan(a1) }
 func (me PostField) In(a1 ...interface{}) q.Query          { return ((q.F)(me)).In(a1...) }
-func (me PostField) Len(a1 ...interface{}) q.Operand       { return ((q.F)(me)).Len(a1...) }
+func (me PostField) ArrLen(a1 ...interface{}) q.Operand       { return ((q.F)(me)).ArrLen(a1...) }
 func (me PostField) LessOrEqual(a1 interface{}) q.Query    { return ((q.F)(me)).LessOrEqual(a1) }
 func (me PostField) LessThan(a1 interface{}) q.Query       { return ((q.F)(me)).LessThan(a1) }
 func (me PostField) Not() q.Query                          { return ((q.F)(me)).Not() }

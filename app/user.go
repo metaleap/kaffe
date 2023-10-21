@@ -47,7 +47,7 @@ type User struct {
 	PicFileId yodb.Text
 	Nick      yodb.Text
 	Btw       yodb.Text
-	Buddies   yodb.Arr[yodb.I64]
+	Buddies   yodb.JsonArr[yodb.I64]
 }
 
 var apiUserSignIn = api(func(this *ApiCtx[yoauth.ApiAccountPayload, Void]) {

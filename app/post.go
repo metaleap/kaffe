@@ -15,7 +15,7 @@ import (
 func init() {
 	Apis(ApiMethods{
 		"postNew": apiPostNew.Checks(
-			Fails{Err: "ExpectedNonEmptyPost", If: PostMd.Equal("").And(PostFiles.Len().Equal(0))},
+			Fails{Err: "ExpectedNonEmptyPost", If: PostMd.Equal("") /*.And(PostFiles.Len().Equal(0))*/},
 			Fails{Err: "RepliedToPostDoesNotExist", If: PostRepl.LessThan(0)},
 			Fails{Err: "InvalidItemInFiles", If: PostFiles.ArrAny(q.Equal, "").Equal(true)},
 			Fails{Err: "ExpectedOnlyBuddyRecipients", If: PostTo.ArrAny(q.LessOrEqual, 0).Equal(true)},
@@ -32,9 +32,9 @@ type Post struct {
 	DtMod  *yodb.DateTime
 
 	By    yodb.Ref[User, yodb.RefOnDelCascade]
-	To    yodb.Arr[yodb.I64]
+	To    yodb.JsonArr[yodb.I64]
 	Md    yodb.Text
-	Files yodb.Arr[FileRef]
+	Files yodb.JsonArr[FileRef]
 	Repl  yodb.Ref[Post, yodb.RefOnDelCascade]
 }
 
