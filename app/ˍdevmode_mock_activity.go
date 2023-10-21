@@ -23,7 +23,7 @@ import (
 var mockLiveActivity = true
 
 const mockNumReqsPerSecApprox = 44 // max ~111 in outside-vscode `go run`s, ~55 in vscode dlv debug runs (due to default Postgres container's conn-limits setup)
-const mockUsersNumTotal = 123
+const mockUsersNumTotal = 12345
 const mockFilesDirPath = "__static/mockfiles"
 
 var mockUsersNumMaxBuddies = 11 + rand.Intn(11)
@@ -193,7 +193,6 @@ func mockSomeActivityPostSomething(ctx *Ctx, user *User, client *http.Client) {
 
 	// in reply to some other post? (if so, changes `to` to NULL but apis/ux make it then effectively that post's `to`)
 	if (rand.Intn(11) <= 5) && len(user.Buddies) > 0 {
-		ctx.Db.PrintRawSqlInDevMode = true
 		if post := yodb.FindOne[Post](ctx,
 			PostRepl.Equal(nil).And(PostBy.In(user.Buddies.Anys()...)).And(q.ArrIsEmpty(PostTo).Or(q.ArrHas(PostTo, user.Id))),
 		); post != nil {
