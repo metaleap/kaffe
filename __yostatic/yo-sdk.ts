@@ -213,7 +213,7 @@ export type Post = {
 	By: I64
 	DtMade?: DateTime
 	DtMod?: DateTime
-	Files: string[]
+	Files: { [_:string]: string }
 	Id: I64
 	Md: string
 	Repl: I64

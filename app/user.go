@@ -47,7 +47,7 @@ type User struct {
 	PicFileId yodb.Text
 	Nick      yodb.Text
 	Btw       yodb.Text
-	Buddies   yodb.JsonArr[yodb.I64]
+	Buddies   yodb.Arr[yodb.I64]
 }
 
 var apiUserSignIn = api(func(this *ApiCtx[yoauth.ApiAccountPayload, Void]) {
@@ -93,7 +93,7 @@ func userUpdate(ctx *Ctx, upd *User, byCurUserInCtx bool, inclEmptyOrMissingFiel
 	ctx.DbTx()
 	upd.Btw.Do(str.Trim)
 	if (len(onlyFields) == 0) || sl.Has(onlyFields, UserBuddies) {
-		upd.Buddies.EnsureAllUnique()
+		upd.Buddies.EnsureAllUnique(nil)
 	}
 	if upd.Nick.Do(str.Trim); (upd.Nick != "") && ((len(onlyFields) == 0) || sl.Has(onlyFields, UserNick)) {
 		if yodb.Exists[User](ctx, UserNick.Equal(upd.Nick).And(UserId.NotEqual(upd.Id))) {

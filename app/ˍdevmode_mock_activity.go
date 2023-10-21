@@ -161,7 +161,7 @@ func mockSomeActivityChangeBuddy(ctx *Ctx, user *User, userEmailAddr string) {
 }
 
 func mockSomeActivityPostSomething(ctx *Ctx, user *User, client *http.Client) {
-	var files []FileRef
+	files := yodb.JsonMap[string]{}
 	var to []yodb.I64
 	var in_reply_to yodb.I64
 	md := mockGetFortune(0, false)
@@ -174,10 +174,10 @@ func mockSomeActivityPostSomething(ctx *Ctx, user *User, client *http.Client) {
 		num_files := If(rand.Intn(2) == 0, 1, 1+rand.Intn(11))
 		for i := 0; i < num_files; i++ {
 			var file_name string
-			for (file_name == "") || sl.Has(files, FileRef(file_name)) {
+			for (file_name == "") || (files[file_name] != "") {
 				file_name = mockPostFiles[rand.Intn(len(mockPostFiles))]
 			}
-			files = append(files, FileRef(file_name))
+			files[file_name] = file_name
 		}
 	}
 
@@ -193,7 +193,7 @@ func mockSomeActivityPostSomething(ctx *Ctx, user *User, client *http.Client) {
 	// in reply to some other post? (if so, changes `to` to NULL but apis/ux make it then effectively that post's `to`)
 	if (rand.Intn(11) <= 5) && len(user.Buddies) > 0 {
 		if post := yodb.FindOne[Post](ctx,
-			PostRepl.Equal(nil).And(PostBy.In(user.Buddies.It().Anys()...)), /*.And(q.JsonArrEmpty(PostTo))*/
+			PostRepl.Equal(nil).And(PostBy.In(user.Buddies.Anys()...)), /*.And(q.JsonArrEmpty(PostTo))*/
 		); post != nil {
 			to, in_reply_to = nil, post.Id
 		}
