@@ -5,6 +5,7 @@ import (
 
 	. "yo/ctx"
 	yodb "yo/db"
+	q "yo/db/query"
 	yoauth "yo/feat_auth"
 	. "yo/srv"
 	. "yo/util"
@@ -27,6 +28,7 @@ func init() {
 		).
 			FailIf(ErrUnauthorized, yoauth.CurrentlyNotLoggedIn),
 		"userUpdate": apiUserUpdate.Checks(
+			Fails{Err: "InvalidBuddyRef", If: q.ArrAreAnyIn(UserBuddies, q.OpLeq, 0)},
 			Fails{Err: ErrDbUpdExpectedIdGt0, If: UserUpdateId.LessOrEqual(0)},
 		).
 			FailIf(ErrUnauthorized, yoauth.CurrentlyNotLoggedIn).
