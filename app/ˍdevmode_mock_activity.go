@@ -22,7 +22,7 @@ import (
 
 var mockLiveActivity = true
 
-const mockNumReqsPerSecApprox = 123 // max ~111 for outside-vscode `go run`s, ~55 in vscode dlv debug runs (due to default Postgres container's conn-limits setup)
+const mockNumReqsPerSecApprox = 55 // max ~111 for outside-vscode `go run`s, ~55 in vscode dlv debug runs (due to default Postgres container's conn-limits setup)
 const mockUsersNumTotal = 12345
 const mockFilesDirPath = "__static/mockfiles"
 
