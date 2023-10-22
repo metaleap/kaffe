@@ -17,13 +17,14 @@ let loginDialog = () => {
                     await yo.apiUserSignIn({ EmailAddr: in_user_name.value, PasswordPlain: in_password.value })
                     alert("ok!")
                 } catch (err) {
-                    switch (err as yo.UserSignInErr) {
-                        case '___yo_authLogin_AccountDoesNotExist':
-                        case '___yo_authLogin_EmailInvalid':
-                        case '___yo_authLogin_WrongPassword':
-                            alert(err);
-                            return;
-                    }
+                    // alert(JSON.stringify(err))
+                    // switch ((err as yo.Err<yo.UserSignInErr>).knownErr) {
+                    //     case '___yo_authLogin_WrongPassword':
+                    //     case '___yo_authLogin_AccountDoesNotExist':
+                    //     case '___yo_authLogin_EmailInvalid':
+                    //         alert(err);
+                    //         return;
+                    // }
                     onErr(err)
                 }
                 return false

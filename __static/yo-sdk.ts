@@ -122,8 +122,9 @@ function qIn(x: QueryVal, ...set: QueryVal[]): QueryExpr { return { __yoQOp: 'IN
 const errsPostNew = ['PostNew_ExpectedNonEmptyPost', 'PostNew_ExpectedOnlyBuddyRecipients', 'PostNew_RepliedToPostDoesNotExist', 'TimedOut', 'Unauthorized'] as const
 export async function apiPostNew(payload: Post, query?: {[_:string]:string}): Promise<Return_yo_db_I64_> {
 	try {
-		return req<Post, Return_yo_db_I64_>('_/postNew', payload, query)
+		return await req<Post, Return_yo_db_I64_>('_/postNew', payload, query)
 	} catch(err: any) {
+		alert("HALLOOOOOOOOOOO"+err['body_text']+errsPostNew.indexOf(err.body_text)+JSON.stringify(errsPostNew))
 		if (err && err['body_text'] && (errsPostNew.indexOf(err.body_text) >= 0))
 			throw(new Err<PostNewErr>(err.body_text as PostNewErr))
 		throw(err)
@@ -134,8 +135,9 @@ export type PostNewErr = typeof errsPostNew[number]
 const errsRecentUpdates = ['TimedOut', 'Unauthorized'] as const
 export async function apiRecentUpdates(payload: recentUpdates_In, query?: {[_:string]:string}): Promise<RecentUpdates> {
 	try {
-		return req<recentUpdates_In, RecentUpdates>('_/recentUpdates', payload, query)
+		return await req<recentUpdates_In, RecentUpdates>('_/recentUpdates', payload, query)
 	} catch(err: any) {
+		alert("HALLOOOOOOOOOOO"+err['body_text']+errsRecentUpdates.indexOf(err.body_text)+JSON.stringify(errsRecentUpdates))
 		if (err && err['body_text'] && (errsRecentUpdates.indexOf(err.body_text) >= 0))
 			throw(new Err<RecentUpdatesErr>(err.body_text as RecentUpdatesErr))
 		throw(err)
@@ -146,8 +148,9 @@ export type RecentUpdatesErr = typeof errsRecentUpdates[number]
 const errsUserBy = ['TimedOut', 'Unauthorized', 'UserBy_ExpectedEitherNickNameOrEmailAddr'] as const
 export async function apiUserBy(payload: userBy_In, query?: {[_:string]:string}): Promise<User> {
 	try {
-		return req<userBy_In, User>('_/userBy', payload, query)
+		return await req<userBy_In, User>('_/userBy', payload, query)
 	} catch(err: any) {
+		alert("HALLOOOOOOOOOOO"+err['body_text']+errsUserBy.indexOf(err.body_text)+JSON.stringify(errsUserBy))
 		if (err && err['body_text'] && (errsUserBy.indexOf(err.body_text) >= 0))
 			throw(new Err<UserByErr>(err.body_text as UserByErr))
 		throw(err)
@@ -158,8 +161,9 @@ export type UserByErr = typeof errsUserBy[number]
 const errsUserSignIn = ['TimedOut', '___yo_authLogin_AccountDoesNotExist', '___yo_authLogin_EmailInvalid', '___yo_authLogin_EmailRequiredButMissing', '___yo_authLogin_OkButFailedToCreateSignedToken', '___yo_authLogin_WrongPassword'] as const
 export async function apiUserSignIn(payload: ApiAccountPayload, query?: {[_:string]:string}): Promise<Void> {
 	try {
-		return req<ApiAccountPayload, Void>('_/userSignIn', payload, query)
+		return await req<ApiAccountPayload, Void>('_/userSignIn', payload, query)
 	} catch(err: any) {
+		alert("HALLOOOOOOOOOOO"+err['body_text']+errsUserSignIn.indexOf(err.body_text)+JSON.stringify(errsUserSignIn))
 		if (err && err['body_text'] && (errsUserSignIn.indexOf(err.body_text) >= 0))
 			throw(new Err<UserSignInErr>(err.body_text as UserSignInErr))
 		throw(err)
@@ -170,8 +174,9 @@ export type UserSignInErr = typeof errsUserSignIn[number]
 const errsUserSignOut = ['TimedOut'] as const
 export async function apiUserSignOut(payload: Void, query?: {[_:string]:string}): Promise<Void> {
 	try {
-		return req<Void, Void>('_/userSignOut', payload, query)
+		return await req<Void, Void>('_/userSignOut', payload, query)
 	} catch(err: any) {
+		alert("HALLOOOOOOOOOOO"+err['body_text']+errsUserSignOut.indexOf(err.body_text)+JSON.stringify(errsUserSignOut))
 		if (err && err['body_text'] && (errsUserSignOut.indexOf(err.body_text) >= 0))
 			throw(new Err<UserSignOutErr>(err.body_text as UserSignOutErr))
 		throw(err)
@@ -182,8 +187,9 @@ export type UserSignOutErr = typeof errsUserSignOut[number]
 const errsUserSignUp = ['TimedOut', '___yo_authLogin_AccountDoesNotExist', '___yo_authLogin_EmailInvalid', '___yo_authLogin_EmailRequiredButMissing', '___yo_authLogin_OkButFailedToCreateSignedToken', '___yo_authLogin_WrongPassword', '___yo_authRegister_EmailAddrAlreadyExists', '___yo_authRegister_EmailInvalid', '___yo_authRegister_EmailRequiredButMissing', '___yo_authRegister_PasswordInvalid', '___yo_authRegister_PasswordTooLong', '___yo_authRegister_PasswordTooShort'] as const
 export async function apiUserSignUp(payload: ApiAccountPayload, query?: {[_:string]:string}): Promise<User> {
 	try {
-		return req<ApiAccountPayload, User>('_/userSignUp', payload, query)
+		return await req<ApiAccountPayload, User>('_/userSignUp', payload, query)
 	} catch(err: any) {
+		alert("HALLOOOOOOOOOOO"+err['body_text']+errsUserSignUp.indexOf(err.body_text)+JSON.stringify(errsUserSignUp))
 		if (err && err['body_text'] && (errsUserSignUp.indexOf(err.body_text) >= 0))
 			throw(new Err<UserSignUpErr>(err.body_text as UserSignUpErr))
 		throw(err)
@@ -194,8 +200,9 @@ export type UserSignUpErr = typeof errsUserSignUp[number]
 const errsUserUpdate = ['DbUpdExpectedIdGt0', 'DbUpdate_ExpectedChangesForUpdate', 'DbUpdate_ExpectedQueryForUpdate', 'TimedOut', 'Unauthorized', 'UserUpdate_NicknameAlreadyExists'] as const
 export async function apiUserUpdate(payload: ApiUpdateArgs_haxsh_app_User_haxsh_app_UserField_, query?: {[_:string]:string}): Promise<Void> {
 	try {
-		return req<ApiUpdateArgs_haxsh_app_User_haxsh_app_UserField_, Void>('_/userUpdate', payload, query)
+		return await req<ApiUpdateArgs_haxsh_app_User_haxsh_app_UserField_, Void>('_/userUpdate', payload, query)
 	} catch(err: any) {
+		alert("HALLOOOOOOOOOOO"+err['body_text']+errsUserUpdate.indexOf(err.body_text)+JSON.stringify(errsUserUpdate))
 		if (err && err['body_text'] && (errsUserUpdate.indexOf(err.body_text) >= 0))
 			throw(new Err<UserUpdateErr>(err.body_text as UserUpdateErr))
 		throw(err)
