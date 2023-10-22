@@ -203,10 +203,6 @@ export async function apiUserUpdate(payload: ApiUpdateArgs_haxsh_app_User_haxsh_
 }
 export type UserUpdateErr = typeof errsUserUpdate[number]
 
-export type PostField = 'Id' | 'DtMade' | 'DtMod' | 'By' | 'To' | 'Md' | 'Files' | 'Repl'
-
-export type UserField = 'Id' | 'DtMade' | 'DtMod' | 'LastSeen' | 'Auth' | 'PicFileId' | 'Nick' | 'Btw' | 'Buddies'
-
 export type UserAuthField = 'Id' | 'DtMade' | 'DtMod' | 'EmailAddr'
 
 export type Post = {
@@ -249,7 +245,7 @@ export type userBy_In = {
 }
 
 export type ApiUpdateArgs_haxsh_app_User_haxsh_app_UserField_ = {
-	ChangedFields: UserField[]
+	ChangedFields: string[]
 	Changes: User
 	Id: I64
 }
