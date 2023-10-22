@@ -32,7 +32,7 @@ let loginDialog = () => {
         }
     }
 
-    const in_user_name = htm.input({ 'value': 'foo1@bar.baz' })
+    const in_user_name = htm.input({ 'value': 'foo4874@bar.baz' })
     const in_password = htm.input({ 'type': 'password', 'value': 'foobar' })
     return htm.dialog({ 'open': true },
         htm.form({},
