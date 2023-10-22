@@ -4,6 +4,7 @@ import * as yo from './yo-sdk.js'
 const htm = van.tags
 
 let fetchRefreshSince: string | undefined
+let fetchRefreshIntervalMs = 1234 // TODO: higher on-tab-blur
 
 function onErr(err: any) { console.error(err) }
 
@@ -12,20 +13,19 @@ export function main() {
     van.add(document.body,
         login_dialog,
     )
-
-    setInterval(fetchRefresh, 12345)
+    setTimeout(fetchRefresh, 123)
 }
 
 async function fetchRefresh() {
     try {
         const recent_updates = await yo.apiRecentUpdates({ Since: fetchRefreshSince })
         fetchRefreshSince = recent_updates.Next
-        if (recent_updates.Buddies)
-            console.log(fetchRefreshSince, "buddiesRefreshDue")
-        if (recent_updates.Posts)
-            for (const post of recent_updates.Posts)
-                console.log(fetchRefreshSince, post)
+        if (recent_updates.Buddies || (recent_updates.Posts && recent_updates.Posts.length > 0))
+            console.log(fetchRefreshSince, recent_updates.Buddies, recent_updates.Posts.length)
+        // for (const post of recent_updates.Posts)
+        //     console.log(fetchRefreshSince, post)
     } catch (_) { }
+    setTimeout(fetchRefresh, fetchRefreshIntervalMs)
 }
 
 function loginDialog() {

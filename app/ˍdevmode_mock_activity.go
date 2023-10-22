@@ -22,11 +22,11 @@ import (
 
 var mockLiveActivity = true
 
-const mockNumReqsPerSecApprox = 44 // max ~111 in outside-vscode `go run`s, ~55 in vscode dlv debug runs (due to default Postgres container's conn-limits setup)
+const mockNumReqsPerSecApprox = 123 // max ~111 for outside-vscode `go run`s, ~55 in vscode dlv debug runs (due to default Postgres container's conn-limits setup)
 const mockUsersNumTotal = 12345
 const mockFilesDirPath = "__static/mockfiles"
 
-var mockUsersNumMaxBuddies = 11 + rand.Intn(11)
+var mockUsersNumMaxBuddies = 22 + rand.Intn(22)
 var mockUserPicFiles = []string{"user0.png", "user1.jpg", "user2.png", "user3.jpg", "user4.png", "user5.jpg", "user6.png", "user7.jpg"}
 var mockPostFiles = []string{"vid1.webm", "vid2.mp4", "vid3.mp4", "post1.jpg", "post10.png", "post11.jpg", "post12.jpg", "post13.png", "post14.jpg", "post15.jpg", "post16.png", "post17.png", "post18.png", "post19.jpg", "post2.jpg", "post20.png", "post21.webp", "post22.jpg", "post23.png", "post24.jpg", "post25.jpg", "post26.png", "post27.jpeg", "post28.jpg", "post29.jpg", "post3.jpg", "post30.jpg", "post31.webp", "post4.jpg", "post5.jpg", "post6.jpg", "post7.jpg", "post8.jpg", "post9.jpg"}
 var mockUsersAllById = map[yodb.I64]string{}

@@ -19,9 +19,9 @@ func init() {
 			Fails{Err: "RepliedToPostDoesNotExist", If: PostRepl.LessThan(0)},
 			Fails{Err: "ExpectedOnlyBuddyRecipients", If: q.ArrAreAnyIn(PostTo, q.OpLeq, 0)},
 		).
-			FailIf(ErrUnauthorized, yoauth.CurrentlyNotLoggedIn),
+			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
 		"recentUpdates": apiRecentUpdates.
-			FailIf(ErrUnauthorized, yoauth.CurrentlyNotLoggedIn),
+			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
 	})
 }
 
@@ -91,18 +91,22 @@ func postNew(ctx *Ctx, post *Post, byCurUserInCtx bool) yodb.I64 {
 }
 
 func getRecentUpdates(ctx *Ctx, forUser *User, since *yodb.DateTime) *RecentUpdates {
-	const max_posts_to_fetch = 123
-	if since == nil {
+	const max_posts_to_fetch_if_just_checked = 2
+	is_first_fetch_in_session, max_posts_to_fetch := (since == nil), max_posts_to_fetch_if_just_checked
+	if is_first_fetch_in_session {
 		if since = forUser.LastSeen; since == nil {
 			since = forUser.DtMod
 		}
 	}
-	since = forUser.DtMade // temporary
+	max_posts_to_fetch = If((since.SinceNow() > 11*time.Hour), 123,
+		If((since.SinceNow() > time.Hour), 44, If(is_first_fetch_in_session, 22, 2)))
 	buddy_ids := forUser.Buddies.Anys()
+
 	ret := &RecentUpdates{Since: since, Next: yodb.DtFrom(time.Now)} // the below outside the ctor to ensure Next is set before hitting the DB
-	ret.Buddies = yodb.Exists[User](ctx,
-		UserId.In(buddy_ids...).And(UserDtMod.GreaterOrEqual(since)))
-	ctx.Db.PrintRawSqlInDevMode = true
+	if (max_posts_to_fetch > max_posts_to_fetch_if_just_checked) || ((time.Now().UnixNano() % 2) == 0) {
+		ret.Buddies = yodb.Exists[User](ctx, // any buddies modified themselves?
+			UserId.In(buddy_ids...).And(UserDtMod.GreaterOrEqual(since)))
+	}
 	ret.Posts = yodb.FindMany[Post](ctx,
 		PostDtMod.GreaterOrEqual(since).
 			And(PostBy.In(buddy_ids...)).

@@ -25,12 +25,14 @@ func init() {
 		"userBy": apiUserBy.Checks(
 			Fails{Err: "ExpectedEitherNickNameOrEmailAddr", If: UserByEmailAddr.Equal("").And(UserByNickName.Equal(""))},
 		).
-			FailIf(ErrUnauthorized, yoauth.CurrentlyNotLoggedIn),
+			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
 		"userUpdate": apiUserUpdate.Checks(
 			Fails{Err: ErrDbUpdExpectedIdGt0, If: UserUpdateId.LessOrEqual(0)},
 		).
-			FailIf(ErrUnauthorized, yoauth.CurrentlyNotLoggedIn).
+			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized).
 			CouldFailWith(":"+yodb.ErrSetDbUpdate, "NicknameAlreadyExists"),
+		"userBuddies": apiUserBuddies.
+			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
 	})
 	PreApiHandling = append(PreApiHandling, Middleware{"userSetLastSeen", func(ctx *Ctx) {
 		go userSetLastSeen(ctx.Get(yoauth.CtxKeyAuthId, yodb.I64(0)).(yodb.I64))
@@ -89,6 +91,10 @@ var apiUserUpdate = api(func(this *ApiCtx[yodb.ApiUpdateArgs[User, UserField], V
 	userUpdate(this.Ctx, &this.Args.Changes, true, (len(this.Args.ChangedFields) > 0), this.Args.ChangedFields...)
 })
 
+var apiUserBuddies = api(func(this *ApiCtx[Void, Return[[]*User]]) {
+	this.Ret.Result = userBuddies(this.Ctx, userCur(this.Ctx))
+})
+
 func userUpdate(ctx *Ctx, upd *User, byCurUserInCtx bool, inclEmptyOrMissingFields bool, onlyFields ...UserField) {
 	ctx.DbTx()
 	upd.Btw.Do(str.Trim)
@@ -106,6 +112,10 @@ func userUpdate(ctx *Ctx, upd *User, byCurUserInCtx bool, inclEmptyOrMissingFiel
 	if 0 == yodb.Update[User](ctx, upd, nil, !inclEmptyOrMissingFields, sl.To(onlyFields, UserField.F)...) {
 		panic("nochanges in " + str.From(onlyFields) + "?" + str.From(upd) + "vs." + str.From(userCur(ctx)))
 	}
+}
+
+func userBuddies(ctx *Ctx, forUser *User) []*User {
+	return yodb.FindMany[User](ctx, UserId.In(forUser.Buddies.Anys()...), 0, UserDtMod.Desc())
 }
 
 func userByEmailAddr(ctx *Ctx, emailAddr string) *User {

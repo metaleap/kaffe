@@ -22,7 +22,7 @@ export async function req<TIn, TOut>(methodPath: string, payload: TIn, urlQueryA
     let rel_url = '/' + methodPath
     if (urlQueryArgs)
         rel_url += ('?' + new URLSearchParams(urlQueryArgs).toString())
-    console.log('callAPI:', rel_url, payload)
+    // console.log('callAPI:', rel_url, payload)
     const resp = await fetch(rel_url, {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
         cache: 'no-store', mode: 'same-origin', redirect: 'error', signal: AbortSignal.timeout(reqTimeoutMilliSec)
@@ -143,6 +143,18 @@ export async function apiRecentUpdates(payload: recentUpdates_In, query?: {[_:st
 }
 export type RecentUpdatesErr = typeof errsRecentUpdates[number]
 
+const errsUserBuddies = ['TimedOut', 'Unauthorized'] as const
+export async function apiUserBuddies(payload: Void, query?: {[_:string]:string}): Promise<Return____haxsh_app_User_> {
+	try {
+		return await req<Void, Return____haxsh_app_User_>('_/userBuddies', payload, query)
+	} catch(err: any) {
+		if (err && err['body_text'] && (errsUserBuddies.indexOf(err.body_text) >= 0))
+			throw(new Err<UserBuddiesErr>(err.body_text as UserBuddiesErr))
+		throw(err)
+	}
+}
+export type UserBuddiesErr = typeof errsUserBuddies[number]
+
 const errsUserBy = ['TimedOut', 'Unauthorized', 'UserBy_ExpectedEitherNickNameOrEmailAddr'] as const
 export async function apiUserBy(payload: userBy_In, query?: {[_:string]:string}): Promise<User> {
 	try {
@@ -254,6 +266,10 @@ export type DateTime = string
 export type ApiAccountPayload = {
 	EmailAddr: string
 	PasswordPlain: string
+}
+
+export type Return____haxsh_app_User_ = {
+	Result: User[]
 }
 
 export type Return_yo_db_I64_ = {
