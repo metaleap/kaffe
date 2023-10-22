@@ -148,11 +148,11 @@ func mockSomeActivity() {
 
 func mockSomeActivityChangeBuddy(ctx *Ctx, user *User, userEmailAddr string) {
 	if add_or_remove := rand.Intn(11); ((add_or_remove == 0) || (len(user.Buddies) > mockUsersNumMaxBuddies)) && (len(user.Buddies) > 0) {
-		user.Buddies = sl.WithoutIdx(user.Buddies, rand.Intn(len(user.Buddies)), true) // remove a buddy
+		user.Buddies = sl.WithoutIdx(rand.Intn(len(user.Buddies)), user.Buddies, true) // remove a buddy
 	} else { // add a buddy
 		var buddy_email_addr string
 		var buddy_id yodb.I64
-		for (buddy_id == 0) || (buddy_id == user.Id) || sl.Has(user.Buddies, buddy_id) || (buddy_email_addr == "") || (buddy_email_addr == userEmailAddr) {
+		for (buddy_id == 0) || (buddy_id == user.Id) || sl.Has(buddy_id, user.Buddies) || (buddy_email_addr == "") || (buddy_email_addr == userEmailAddr) {
 			if buddy_email_addr = str.Fmt("foo%d@bar.baz", 1+rand.Intn(mockUsersNumTotal)); buddy_email_addr != userEmailAddr {
 				buddy_id = userByEmailAddr(ctx, buddy_email_addr).Id
 			}
@@ -175,7 +175,7 @@ func mockSomeActivityPostSomething(ctx *Ctx, user *User, client *http.Client) {
 		num_files := If(rand.Intn(2) == 0, 1, 1+rand.Intn(11))
 		for i := 0; i < num_files; i++ {
 			var file_name yodb.Text
-			for (file_name == "") || sl.Has(files, file_name) {
+			for (file_name == "") || sl.Has(file_name, files) {
 				file_name = yodb.Text(mockPostFiles[rand.Intn(len(mockPostFiles))])
 			}
 			files = append(files, file_name)
@@ -185,7 +185,7 @@ func mockSomeActivityPostSomething(ctx *Ctx, user *User, client *http.Client) {
 	// addressing only some not all?
 	if max := len(user.Buddies) - 1; (rand.Intn(11) <= 4) && (max > 1) {
 		for to = make([]yodb.I64, 0, 1+rand.Intn(max-1)); len(to) < cap(to); {
-			if buddy_id := user.Buddies[rand.Intn(len(user.Buddies))]; !sl.Has(to, buddy_id) {
+			if buddy_id := user.Buddies[rand.Intn(len(user.Buddies))]; !sl.Has(buddy_id, to) {
 				to = append(to, buddy_id)
 			}
 		}

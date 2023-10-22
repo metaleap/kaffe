@@ -92,10 +92,10 @@ var apiUserUpdate = api(func(this *ApiCtx[yodb.ApiUpdateArgs[User, UserField], V
 func userUpdate(ctx *Ctx, upd *User, byCurUserInCtx bool, inclEmptyOrMissingFields bool, onlyFields ...UserField) {
 	ctx.DbTx()
 	upd.Btw.Do(str.Trim)
-	if (len(onlyFields) == 0) || sl.Has(onlyFields, UserBuddies) {
+	if (len(onlyFields) == 0) || sl.Has(UserBuddies, onlyFields) {
 		upd.Buddies.EnsureAllUnique(nil)
 	}
-	if upd.Nick.Do(str.Trim); (upd.Nick != "") && ((len(onlyFields) == 0) || sl.Has(onlyFields, UserNick)) {
+	if upd.Nick.Do(str.Trim); (upd.Nick != "") && ((len(onlyFields) == 0) || sl.Has(UserNick, onlyFields)) {
 		if yodb.Exists[User](ctx, UserNick.Equal(upd.Nick).And(UserId.NotEqual(upd.Id))) {
 			panic(ErrUserUpdate_NicknameAlreadyExists)
 		}

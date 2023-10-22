@@ -82,7 +82,7 @@ func postNew(ctx *Ctx, post *Post, byCurUserInCtx bool) yodb.I64 {
 	}
 
 	if len(post.To) > 0 {
-		if sl.Any(post.To, func(it yodb.I64) bool { return !sl.Has(user.Buddies, it) }) {
+		if sl.Any(post.To, func(it yodb.I64) bool { return !sl.Has(it, user.Buddies) }) {
 			panic(ErrPostNew_ExpectedOnlyBuddyRecipients)
 		}
 	}
@@ -106,7 +106,7 @@ func getRecentUpdates(ctx *Ctx, forUser *User, since *yodb.DateTime) *RecentUpda
 		PostDtMod.GreaterOrEqual(since).And(PostBy.In(buddy_ids...)),
 		max_posts_to_fetch, PostDtMade.Desc())
 	ret.Posts = sl.Where(ret.Posts, func(it *Post) bool {
-		return (len(it.To) == 0) || (sl.Has(it.To, forUser.Id))
+		return (len(it.To) == 0) || (sl.Has(forUser.Id, it.To))
 	})
 	return ret
 }
