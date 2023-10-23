@@ -8,9 +8,9 @@ const none = void 0
 const htm = van.tags
 
 let fetchRefreshSince: string | undefined
-let fetchRefreshIntervalMsWhenVisible = 2345
-let fetchRefreshIntervalMsWhenHidden = 4321
-let fetchRefreshIntervalMsWhenCur = fetchRefreshIntervalMsWhenVisible
+const fetchPostsIntervalMsWhenVisible = 2345
+const fetchPostsIntervalMsWhenHidden = 4321
+let fetchPostsIntervalMsCur = fetchPostsIntervalMsWhenVisible
 let fetchPaused = false // true while signed out
 
 let uiDialogLogin = newUiLoginDialog()
@@ -25,16 +25,25 @@ function knownErr<T extends string>(err: any, ifSo: (_: T) => boolean): boolean 
 
 export function main() {
     document.onvisibilitychange = () => {
-        fetchRefreshIntervalMsWhenCur = ((document.visibilityState == 'hidden') || (document.hidden))
-            ? fetchRefreshIntervalMsWhenHidden : fetchRefreshIntervalMsWhenVisible
-        document.title = fetchRefreshIntervalMsWhenCur.toString()
+        fetchPostsIntervalMsCur = ((document.visibilityState == 'hidden') || (document.hidden))
+            ? fetchPostsIntervalMsWhenHidden : fetchPostsIntervalMsWhenVisible
+        document.title = fetchPostsIntervalMsCur.toString()
     }
     van.add(document.body,
         uiFeedPosts,
         uiBuddies.DOM,
         uiDialogLogin,
     )
+    setTimeout(fetchBuddies, 234)
     setTimeout(fetchRefresh, 321)
+}
+
+async function fetchBuddies() {
+    if (fetchPaused)
+        return
+
+    if (!fetchPaused)
+        setTimeout(fetchBuddies, 12345)
 }
 
 async function fetchRefresh() {
@@ -44,15 +53,7 @@ async function fetchRefresh() {
         const recent_updates = await yo.apiRecentUpdates({ Since: fetchRefreshSince ? fetchRefreshSince : none })
         fetchRefreshSince = recent_updates.Next
 
-        if (recent_updates.Buddies)
-            console.log("B")
-
         if (recent_updates.Posts && recent_updates.Posts.length) { }
-
-        if (recent_updates.Buddies || !uiBuddies.buddies.length) {
-            const buddies = await yo.apiUserBuddies()
-            uiBuddies.update(buddies.Result)
-        }
     } catch (err) {
         if (!knownErr<yo.RecentUpdatesErr>(err, (err) => {
             switch (err) {
@@ -66,7 +67,7 @@ async function fetchRefresh() {
             onErr(err)
     }
     if (!fetchPaused)
-        setTimeout(fetchRefresh, fetchRefreshIntervalMsWhenCur)
+        setTimeout(fetchRefresh, fetchPostsIntervalMsCur)
 }
 
 function newUiLoginDialog() {

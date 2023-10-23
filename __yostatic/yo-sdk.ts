@@ -252,7 +252,6 @@ export type Post = {
 }
 
 export type RecentUpdates = {
-	Buddies: boolean
 	Next?: DateTime
 	Posts: Post[]
 	Since?: DateTime

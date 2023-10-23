@@ -46,13 +46,8 @@ func fetchRecentUpdates(ctx *Ctx, forUser *User, since *yodb.DateTime) *RecentUp
 	}
 	max_posts_to_fetch = If((since.SinceNow() > 11*time.Hour), 123,
 		If((since.SinceNow() > time.Hour), 44, If(is_first_fetch_in_session, 22, 2)))
-	buddy_ids := forUser.Buddies.Anys()
 
 	ret := &RecentUpdates{Since: since, Next: yodb.DtNow()} // the below outside the ctor to ensure Next is set before hitting the DB
-	if (max_posts_to_fetch > max_posts_to_fetch_if_just_checked) || ((time.Now().UnixNano() % 2) == 0) {
-		ret.Buddies = yodb.Exists[User](ctx, // any buddies updated?
-			UserId.In(buddy_ids...).And(UserDtMod.GreaterOrEqual(since)))
-	}
 	ret.Posts = yodb.FindMany[Post](ctx,
 		PostDtMod.GreaterOrEqual(since).And(dbQueryPostsForUser(forUser)),
 		max_posts_to_fetch, PostDtMade.Desc())

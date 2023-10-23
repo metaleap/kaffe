@@ -23,10 +23,9 @@ type Post struct {
 }
 
 type RecentUpdates struct {
-	Posts   []*Post
-	Buddies bool
-	Since   *yodb.DateTime
-	Next    *yodb.DateTime
+	Posts []*Post
+	Since *yodb.DateTime
+	Next  *yodb.DateTime
 }
 
 func postsFor(ctx *Ctx, forUser *User, dtFrom time.Time, dtUntil time.Time) (ret []*Post) {
