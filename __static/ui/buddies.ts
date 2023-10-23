@@ -21,6 +21,7 @@ export function create(): UiCtlBuddies {
     van.add(me.DOM, vanx.list(htm.ul, me.buddies, (it) => {
         const buddy = it.val
         return htm.li({
+            'class': '',
             'title': buddy.Nick,
             'style': `background-image: url('${buddy.PicFileId ? ("/__static/mockfiles/" + buddy.PicFileId) : util.emoIconDataHref('👤')}')`
         },)
