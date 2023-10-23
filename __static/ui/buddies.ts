@@ -19,18 +19,20 @@ export function create(): UiCtlBuddies {
     }
 
     van.add(me.DOM, vanx.list(htm.ul, me.buddies, (it) => {
-        const buddy = it.val, now = new Date().getTime()
-        if (!buddy.LastSeen)
-            buddy.LastSeen = buddy.DtMod!
-        const is_offline = (now - Date.parse(buddy.LastSeen)) > 77777
-        return htm.li({
-            'class': is_offline ? 'offline' : '',
-            'title': `${buddy.Nick}${(!buddy.Btw) ? '' : (' — ' + buddy.Btw)}`,
-            'style': `background-image: url('${buddy.PicFileId ? ("/__static/mockfiles/" + buddy.PicFileId) : util.emoIconDataHref('👤')}')`
-        },)
+        return htm.li(buddyDomAttrs(it.val, new Date().getTime()))
     }))
 
     return me
+}
+
+export function buddyDomAttrs(buddy: yo.User, now: number) {
+    const last_seen = Date.parse(buddy.LastSeen ?? (buddy.DtMod!))
+    const is_offline = (now - last_seen) > 77777
+    return {
+        'class': 'buddy-pic' + (is_offline ? ' offline' : ''),
+        'title': `${buddy.Nick}${((!buddy.Btw) ? '' : (' — ' + buddy.Btw))}`,
+        'style': `background-image: url('${buddy.PicFileId ? ("/__static/mockfiles/" + buddy.PicFileId) : util.emoIconDataHref('👤')}')`
+    }
 }
 
 function update(me: UiCtlBuddies, buddies: yo.User[]) {

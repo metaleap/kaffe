@@ -4,6 +4,7 @@ const htm = van.tags
 import * as yo from './yo-sdk.js'
 import * as youtil from '../__yostatic/util.js'
 import * as uibuddies from './ui/buddies.js'
+import * as uiposts from './ui/posts.js'
 
 const none = void 0
 
@@ -15,8 +16,8 @@ let fetchPostsIntervalMsCur = fetchPostsIntervalMsWhenVisible
 let fetchesPaused = false // true while signed out
 
 let uiDialogLogin = newUiLoginDialog()
-let uiFeedPosts = newUiPostsFeed()
 let uiBuddies: uibuddies.UiCtlBuddies = uibuddies.create()
+let uiPosts: uiposts.UiCtlPosts = uiposts.create((userId) => uiBuddies.buddies.find(_ => (_.Id === userId)))
 
 function onErr(err: any) { console.error(JSON.stringify(err)) }
 function knownErr<T extends string>(err: any, ifSo: (_: T) => boolean): boolean {
@@ -41,7 +42,7 @@ export function main() {
         document.title = fetchPostsIntervalMsCur.toString()
     }
     van.add(document.body,
-        uiFeedPosts,
+        uiPosts.DOM,
         uiBuddies.DOM,
         uiDialogLogin,
     )
@@ -55,8 +56,6 @@ async function fetchBuddies() {
 
     try {
         const buddies = await yo.apiUserBuddies()
-        console.log(Array.isArray(buddies.Result), Array.isArray(uiBuddies.buddies), buddies.Result.length, uiBuddies.buddies.length, youtil.deepEq(buddies.Result, uiBuddies.buddies, false), youtil.deepEq(buddies.Result, uiBuddies.buddies, true))
-        console.log(buddies.Result)
         if (!youtil.deepEq(buddies.Result, uiBuddies.buddies, false)) // cmp not-ignoring order by design (result always ordered by last-active)
             uiBuddies.update(buddies.Result)
     } catch (err) {
@@ -69,13 +68,16 @@ async function fetchBuddies() {
 }
 
 async function fetchRefresh() {
+    console.log(fetchesPaused, fetchPostsSinceDt)
     if (fetchesPaused)
         return
     try {
         const recent_updates = await yo.apiRecentUpdates({ Since: fetchPostsSinceDt ? fetchPostsSinceDt : none })
         fetchPostsSinceDt = recent_updates.Next
+        console.log(recent_updates)
 
-        if (recent_updates.Posts && recent_updates.Posts.length) { }
+        if (recent_updates.Posts && recent_updates.Posts.length)
+            uiPosts.update(recent_updates.Posts)
     } catch (err) {
         if (!knownErr<yo.RecentUpdatesErr>(err, handleKnownErrMaybe<yo.RecentUpdatesErr>))
             onErr(err)
@@ -112,14 +114,5 @@ function newUiLoginDialog() {
             in_password,
             htm.button({ 'onclick': on_btn_login, 'type': 'button' }, "Login"),
         ),
-    )
-}
-
-function newUiPostsFeed() {
-    return htm.ul({},
-        htm.li({}, "post 1"),
-        htm.li({}, "post 2"),
-        htm.li({}, "post 3"),
-        htm.li({}, "post 4"),
     )
 }

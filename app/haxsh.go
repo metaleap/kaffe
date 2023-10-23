@@ -44,6 +44,7 @@ func fetchRecentUpdates(ctx *Ctx, forUser *User, since *yodb.DateTime) *RecentUp
 			since = forUser.DtMod
 		}
 	}
+	since = forUser.DtMade
 	max_posts_to_fetch = If((since.SinceNow() > 11*time.Hour), 123,
 		If((since.SinceNow() > time.Hour), 44, If(is_first_fetch_in_session, 22, 2)))
 

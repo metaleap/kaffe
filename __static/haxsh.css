@@ -29,7 +29,7 @@ body {}
     padding: 0;
 }
 
-.haxsh-buddies>ul>li {
+.buddy-pic {
     display: block;
     padding: 0;
     margin: 0.25em;
@@ -39,15 +39,15 @@ body {}
     background-size: cover;
     background-position: center center;
     border-radius: 77em;
-    filter: sepia(0.44) grayscale(0);
+    filter: sepia(0.55) grayscale(0);
     transition: all 0.44s ease-in-out;
 }
 
-.haxsh-buddies>ul>li.offline {
+.buddy-pic.offline {
     filter: sepia(0) grayscale(1);
 }
 
-.haxsh-buddies>ul>li:hover,
-.haxsh-buddies>ul>li.offline:hover {
-    filter: sepia(0) grayscale(0);
+.buddy-pic:hover,
+.buddy-pic.offline:hover {
+    filter: sepia(0.11) grayscale(0);
 }
