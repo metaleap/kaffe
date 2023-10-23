@@ -17,7 +17,7 @@ let fetchesPaused = false // true while signed out
 
 let uiDialogLogin = newUiLoginDialog()
 let uiBuddies: uibuddies.UiCtlBuddies = uibuddies.create()
-let uiPosts: uiposts.UiCtlPosts = uiposts.create((userId) => uiBuddies.buddies.find(_ => (_.Id === userId)))
+let uiPosts: uiposts.UiCtlPosts = uiposts.create((userId: number) => uiBuddies.buddies.find(_ => (_.Id === userId)))
 
 function onErr(err: any) { console.error(JSON.stringify(err)) }
 function knownErr<T extends string>(err: any, ifSo: (_: T) => boolean): boolean {
@@ -68,13 +68,11 @@ async function fetchBuddies() {
 }
 
 async function fetchRefresh() {
-    console.log(fetchesPaused, fetchPostsSinceDt)
     if (fetchesPaused)
         return
     try {
         const recent_updates = await yo.apiRecentUpdates({ Since: fetchPostsSinceDt ? fetchPostsSinceDt : none })
         fetchPostsSinceDt = recent_updates.Next
-        console.log(recent_updates)
 
         if (recent_updates.Posts && recent_updates.Posts.length)
             uiPosts.update(recent_updates.Posts)

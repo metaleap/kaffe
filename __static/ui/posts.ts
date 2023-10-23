@@ -1,14 +1,14 @@
 import van from '../../__yostatic/vanjs/van-1.2.3.debug.js'
 import * as vanx from '../../__yostatic/vanjs/van-x.js'
+const htm = van.tags
+
 import * as yo from '../yo-sdk.js'
 import * as uibuddies from './buddies.js'
 
-const htm = van.tags
-
 export type UiCtlPosts = {
     DOM: HTMLElement
-    posts: vanx.Reactive<yo.Post[]>
     getUser: (id: number) => yo.User | undefined
+    posts: vanx.Reactive<yo.Post[]>
     update: (_: yo.Post[]) => void
 }
 
@@ -22,42 +22,24 @@ export function create(getUser: (id: number) => yo.User | undefined): UiCtlPosts
 
     van.add(me.DOM, vanx.list(htm.div, me.posts, (it) => {
         const post = it.val, now = new Date().getTime()
-        // const post_by = me.getUser(post.By)! // TODO
+        const post_by = me.getUser(post.By)! // TODO
         return htm.div({ 'class': 'post' },
-            // htm.div(uibuddies.buddyDomAttrs(post_by, now)),
+            htm.div(uibuddies.buddyDomAttrs(post_by, now)),
             htm.div({ 'class': 'post-content' }, post.Md),
         )
     }))
-
     return me
 }
 
 function update(me: UiCtlPosts, newOrUpdatedPosts: yo.Post[]) {
-    vanx.replace(me.posts, (_: yo.Post[]) => newOrUpdatedPosts)
-    // vanx.replace(me.posts, (oldPosts: yo.Post[]) => {
-    //     const ret = newOrUpdatedPosts
-    //         .filter(post_upd => !oldPosts.some(post_old => (post_old.Id === post_upd.Id)))
-    //         .concat(oldPosts.map(post_old => {
-    //             const post_upd = newOrUpdatedPosts.find(_ => (_.Id === post_old.Id))
-    //             return post_upd ?? post_old
-    //         }))
-    //     return ret
-    // })
+    vanx.replace(me.posts, (oldPosts: yo.Post[]) => {
+        const ret = newOrUpdatedPosts
+            .filter(post_upd => {
+                if (!post_upd.To)
+                    post_upd.To = []
+                return !oldPosts.some(post_old => (post_old.Id === post_upd.Id))
+            })
+            .concat(oldPosts.map(post_old => newOrUpdatedPosts.find(_ => (_.Id === post_old.Id)) ?? post_old))
+        return ret
+    })
 }
-/*
-
-{
-    "message":"Cannot read properties of null (reading 'Symbol()')",
-  "stack"  :"TypeError: Cannot read properties of null (reading 'Symbol()')
-    at toState (http://localhost:5252/__yostatic/vanjs/van-x.js:11:21)
-    at http://localhost:5252/__yostatic/vanjs/van-x.js:16:74
-    at Array.map (<anonymous>)
-    at reactive (http://localhost:5252/__yostatic/vanjs/van-x.js:16:54)
-    at toState (http://localhost:5252/__yostatic/vanjs/van-x.js:11:72)
-    at http://localhost:5252/__yostatic/vanjs/van-x.js:96:25
-    at Array.map (<anonymous>)
-    at Module.replace (http://localhost:5252/__yostatic/vanjs/van-x.js:94:38)
-    at update (http://localhost:5252/__static/ui/posts.js:26:8)
-    at Object.update (http://localhost:5252/__static/ui/posts.js:12:24)"
-}
-*/
