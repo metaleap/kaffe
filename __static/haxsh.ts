@@ -1,5 +1,4 @@
 import van from '../__yostatic/vanjs/van-1.2.3.debug.js'
-import vanx from '../__yostatic/vanjs/van-x.js'
 const htm = van.tags
 
 import * as yo from './yo-sdk.js'
@@ -8,7 +7,7 @@ import * as uibuddies from './ui/buddies.js'
 
 const none = void 0
 
-const fetchBuddiesIntervalMs = 1234
+const fetchBuddiesIntervalMs = 12345
 let fetchPostsSinceDt: string | undefined
 const fetchPostsIntervalMsWhenVisible = 2345
 const fetchPostsIntervalMsWhenHidden = 4321
@@ -57,6 +56,7 @@ async function fetchBuddies() {
     try {
         const buddies = await yo.apiUserBuddies()
         console.log(Array.isArray(buddies.Result), Array.isArray(uiBuddies.buddies), buddies.Result.length, uiBuddies.buddies.length, youtil.deepEq(buddies.Result, uiBuddies.buddies, false), youtil.deepEq(buddies.Result, uiBuddies.buddies, true))
+        console.log(buddies.Result)
         if (!youtil.deepEq(buddies.Result, uiBuddies.buddies, false)) // cmp not-ignoring order by design (result always ordered by last-active)
             uiBuddies.update(buddies.Result)
     } catch (err) {

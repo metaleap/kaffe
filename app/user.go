@@ -7,6 +7,7 @@ import (
 	yodb "yo/db"
 	yoauth "yo/feat_auth"
 	. "yo/srv"
+	. "yo/util"
 	"yo/util/sl"
 	"yo/util/str"
 )
@@ -51,8 +52,23 @@ func userUpdate(ctx *Ctx, upd *User, byCurUserInCtx bool, inclEmptyOrMissingFiel
 	}
 }
 
-func userBuddies(ctx *Ctx, forUser *User) []*User {
-	return yodb.FindMany[User](ctx, UserId.In(forUser.Buddies.Anys()...), 0, UserLastSeen.Desc())
+func userBuddies(ctx *Ctx, forUser *User, normalizeLastSeenByMinute bool) []*User {
+	buddies := yodb.FindMany[User](ctx, UserId.In(forUser.Buddies.Anys()...), 0, UserLastSeen.Desc())
+	if normalizeLastSeenByMinute {
+		for _, buddy := range buddies {
+			buddy.LastSeen.Set(DtAtZeroSecsUtc)
+		}
+		buddies = sl.SortedPer(buddies, func(lhs *User, rhs *User) int { // the negations for descending
+			if cmp := lhs.LastSeen.Time().Compare(*rhs.LastSeen.Time()); cmp != 0 {
+				return -cmp
+			}
+			if cmp := lhs.DtMod.Time().Compare(*rhs.DtMod.Time()); cmp != 0 {
+				return -cmp
+			}
+			return -lhs.DtMade.Time().Compare(*rhs.DtMade.Time())
+		})
+	}
+	return buddies
 }
 
 func userByEmailAddr(ctx *Ctx, emailAddr string) *User {

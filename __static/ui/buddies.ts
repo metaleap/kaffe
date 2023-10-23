@@ -17,12 +17,6 @@ export function create(): UiCtlBuddies {
         update: (buddies) => update(me, buddies),
     }
 
-    // setInterval(() => {
-    //     const idx = Math.floor(me.buddies.length * Math.random())
-    //     const buddy = me.buddies[idx]
-    //     buddy.Btw = new Date().toLocaleTimeString()
-    // }, 1234)
-
     van.add(me.DOM, vanx.list(htm.ul, me.buddies, (it) => {
         const buddy = it.val
         return htm.li({}, " Nick: ", buddy.Nick, " Last: ", buddy.LastSeen, " Btw: ", buddy.Btw)

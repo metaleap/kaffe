@@ -87,7 +87,7 @@ var apiUserUpdate = api(func(this *ApiCtx[yodb.ApiUpdateArgs[User, UserField], V
 })
 
 var apiUserBuddies = api(func(this *ApiCtx[Void, Return[[]*User]]) {
-	this.Ret.Result = userBuddies(this.Ctx, userCur(this.Ctx))
+	this.Ret.Result = userBuddies(this.Ctx, userCur(this.Ctx), true)
 })
 
 var apiRecentUpdates = api(func(this *ApiCtx[struct {
