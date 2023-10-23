@@ -1,1 +1,16 @@
 body {}
+
+.haxsh-buddies>ul {
+    display: block;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    overflow: hidden;
+    width: 4em;
+}
+
+.haxsh-buddies>ul img {
+    display: block;
+    width: 4em;
+}

@@ -19,7 +19,7 @@ export function create(): UiCtlBuddies {
 
     van.add(me.DOM, vanx.list(htm.ul, me.buddies, (it) => {
         const buddy = it.val
-        return htm.li({}, " Nick: ", buddy.Nick, " Last: ", buddy.LastSeen, " Btw: ", buddy.Btw)
+        return htm.li({}, htm.img({ 'src': '/__static/mockfiles/' + buddy.PicFileId }), " Nick: ", buddy.Nick, " Last: ", buddy.LastSeen, " Btw: ", buddy.Btw)
     }))
 
     return me
