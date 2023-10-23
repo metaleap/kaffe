@@ -19,10 +19,13 @@ export function create(): UiCtlBuddies {
     }
 
     van.add(me.DOM, vanx.list(htm.ul, me.buddies, (it) => {
-        const buddy = it.val
+        const buddy = it.val, now = new Date().getTime()
+        if (!buddy.LastSeen)
+            buddy.LastSeen = buddy.DtMod!
+        const is_offline = (now - Date.parse(buddy.LastSeen)) > 77777
         return htm.li({
-            'class': '',
-            'title': buddy.Nick,
+            'class': is_offline ? 'offline' : '',
+            'title': `${buddy.Nick}${(!buddy.Btw) ? '' : (' — ' + buddy.Btw)}`,
             'style': `background-image: url('${buddy.PicFileId ? ("/__static/mockfiles/" + buddy.PicFileId) : util.emoIconDataHref('👤')}')`
         },)
     }))
