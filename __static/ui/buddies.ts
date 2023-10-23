@@ -1,6 +1,7 @@
 import van from '../../__yostatic/vanjs/van-1.2.3.debug.js'
 import * as vanx from '../../__yostatic/vanjs/van-x.js'
 import * as yo from '../yo-sdk.js'
+import * as util from '../util.js'
 
 const htm = van.tags
 
@@ -19,7 +20,10 @@ export function create(): UiCtlBuddies {
 
     van.add(me.DOM, vanx.list(htm.ul, me.buddies, (it) => {
         const buddy = it.val
-        return htm.li({}, htm.img({ 'src': '/__static/mockfiles/' + buddy.PicFileId }), " Nick: ", buddy.Nick, " Last: ", buddy.LastSeen, " Btw: ", buddy.Btw)
+        return htm.li({
+            'title': buddy.Nick,
+            'style': `background-image: url('${buddy.PicFileId ? ("/__static/mockfiles/" + buddy.PicFileId) : util.emoIconDataHref('👤')}')`
+        },)
     }))
 
     return me

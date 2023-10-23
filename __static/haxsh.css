@@ -1,7 +1,6 @@
 body {}
 
-.haxsh-buddies>ul {
-    display: block;
+.haxsh-buddies {
     position: absolute;
     right: 0;
     top: 0;
@@ -10,7 +9,19 @@ body {}
     width: 4em;
 }
 
-.haxsh-buddies>ul img {
+.haxsh-buddies>ul {
     display: block;
-    width: 4em;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.haxsh-buddies>ul>li {
+    display: block;
+    margin: 0;
+    padding: 0;
+    height: 4em;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
 }
