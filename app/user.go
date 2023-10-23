@@ -7,7 +7,6 @@ import (
 	yodb "yo/db"
 	yoauth "yo/feat_auth"
 	. "yo/srv"
-	. "yo/util"
 	"yo/util/sl"
 	"yo/util/str"
 )
@@ -15,25 +14,6 @@ import (
 const ctxKeyCurUser = "haxshCurUser"
 
 func init() {
-	Apis(ApiMethods{
-		"userSignOut": apiUserSignOut.
-			CouldFailWith(":" + yoauth.MethodPathLogout),
-		"userSignUp": apiUserSignUp.
-			CouldFailWith(":"+yoauth.MethodPathRegister, ":userSignIn"),
-		"userSignIn": apiUserSignIn.
-			CouldFailWith(":" + yoauth.MethodPathLogin),
-		"userBy": apiUserBy.Checks(
-			Fails{Err: "ExpectedEitherNickNameOrEmailAddr", If: UserByEmailAddr.Equal("").And(UserByNickName.Equal(""))},
-		).
-			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
-		"userUpdate": apiUserUpdate.Checks(
-			Fails{Err: ErrDbUpdExpectedIdGt0, If: UserUpdateId.LessOrEqual(0)},
-		).
-			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized).
-			CouldFailWith(":"+yodb.ErrSetDbUpdate, "NicknameAlreadyExists"),
-		"userBuddies": apiUserBuddies.
-			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
-	})
 	PreApiHandling = append(PreApiHandling, Middleware{"userSetLastSeen", func(ctx *Ctx) {
 		go userSetLastSeen(ctx.Get(yoauth.CtxKeyAuthId, yodb.I64(0)).(yodb.I64))
 	}})
@@ -51,49 +31,6 @@ type User struct {
 	Btw       yodb.Text
 	Buddies   yodb.Arr[yodb.I64]
 }
-
-var apiUserSignIn = api(func(this *ApiCtx[yoauth.ApiAccountPayload, Void]) {
-	Do(yoauth.ApiUserLogin, this.Ctx, this.Args)
-})
-
-var apiUserSignUp = api(func(this *ApiCtx[yoauth.ApiAccountPayload, User]) {
-	this.Ctx.DbTx()
-
-	auth := Do(yoauth.ApiUserRegister, this.Ctx, this.Args)
-	user := User{LastSeen: yodb.DtNow()}
-	user.Auth.SetId(auth.Id)
-	user.Id = yodb.CreateOne(this.Ctx, &user)
-	// _ = Do(apiUserSignIn, this.Ctx, this.Args)
-	this.Ret = &user
-})
-
-var apiUserSignOut = api(func(this *ApiCtx[Void, Void]) {
-	_ = Do(yoauth.ApiUserLogout, this.Ctx, this.Args)
-})
-
-var apiUserBy = api(func(this *ApiCtx[struct {
-	EmailAddr string
-	NickName  string
-}, User]) {
-	if this.Args.NickName != "" {
-		this.Ret = userByNickName(this.Ctx, this.Args.NickName)
-	} else {
-		this.Ret = userByEmailAddr(this.Ctx, this.Args.EmailAddr)
-	}
-})
-
-var apiUserUpdate = api(func(this *ApiCtx[yodb.ApiUpdateArgs[User, UserField], Void]) {
-	_, user_auth_id := yoauth.CurrentlyLoggedInUser(this.Ctx)
-	this.Args.Changes.Id = this.Args.Id
-	if user_auth_id != this.Args.Changes.Auth.Id() {
-		panic(ErrUnauthorized)
-	}
-	userUpdate(this.Ctx, &this.Args.Changes, true, (len(this.Args.ChangedFields) > 0), this.Args.ChangedFields...)
-})
-
-var apiUserBuddies = api(func(this *ApiCtx[Void, Return[[]*User]]) {
-	this.Ret.Result = userBuddies(this.Ctx, userCur(this.Ctx))
-})
 
 func userUpdate(ctx *Ctx, upd *User, byCurUserInCtx bool, inclEmptyOrMissingFields bool, onlyFields ...UserField) {
 	ctx.DbTx()
