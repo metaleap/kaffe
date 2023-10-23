@@ -1,16 +1,17 @@
 import van from '../__yostatic/vanjs/van-1.2.3.debug.js'
+import vanx from '../__yostatic/vanjs/van-x.js'
 import * as yo from './yo-sdk.js'
 
 const htm = van.tags
 
 let fetchRefreshSince: string | undefined
-let fetchRefreshIntervalMsWhenActive = 1234
-let fetchRefreshIntervalMsWhenInactive = 4321 // TODO:
-let fetchRefreshIntervalMsWhenCur = fetchRefreshIntervalMsWhenActive
+let fetchRefreshIntervalMsWhenVisible = 2345
+let fetchRefreshIntervalMsWhenHidden = 4321
+let fetchRefreshIntervalMsWhenCur = fetchRefreshIntervalMsWhenVisible
 let fetchPaused = false // true while signed out
-let timeLastInteracted = new Date()
-let isActive = true
-let dialog_login = loginDialog()
+
+let dialog_login = uiLoginDialog()
+let feed_posts = uiPostsFeed()
 
 function onErr(err: any) { console.error(err) }
 function knownErr<T extends string>(err: any, ifSo: (_: T) => void): boolean {
@@ -18,18 +19,14 @@ function knownErr<T extends string>(err: any, ifSo: (_: T) => void): boolean {
     return (yo_err && yo_err.knownErr && (yo_err.knownErr.length > 0))
 }
 
-function onInteraction() {
-    if (isActive = (document.visibilityState === 'visible') && !document.hidden)
-        timeLastInteracted = new Date()
-}
-
 export function main() {
     document.onvisibilitychange = () => {
         fetchRefreshIntervalMsWhenCur = ((document.visibilityState == 'hidden') || (document.hidden))
-            ? fetchRefreshIntervalMsWhenInactive : fetchRefreshIntervalMsWhenActive
+            ? fetchRefreshIntervalMsWhenHidden : fetchRefreshIntervalMsWhenVisible
         document.title = fetchRefreshIntervalMsWhenCur.toString()
     }
     van.add(document.body,
+        feed_posts,
         dialog_login,
     )
     setTimeout(fetchRefresh, 321)
@@ -59,7 +56,7 @@ async function fetchRefresh() {
         setTimeout(fetchRefresh, fetchRefreshIntervalMsWhenCur)
 }
 
-function loginDialog() {
+function uiLoginDialog() {
     const on_btn_login = async () => {
         try {
             await yo.apiUserSignIn({ EmailAddr: in_user_name.value, PasswordPlain: in_password.value })
@@ -86,5 +83,14 @@ function loginDialog() {
             in_password,
             htm.button({ 'onclick': on_btn_login, 'type': 'button' }, "Login"),
         ),
+    )
+}
+
+function uiPostsFeed() {
+    return htm.ul({},
+        htm.li({}, "post 1"),
+        htm.li({}, "post 2"),
+        htm.li({}, "post 3"),
+        htm.li({}, "post 4"),
     )
 }

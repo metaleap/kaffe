@@ -22,7 +22,7 @@ import (
 
 var mockLiveActivity = true
 
-const mockNumReqsPerSecApprox = 55 // max ~111 for outside-vscode `go run`s, ~55 in vscode dlv debug runs (due to default Postgres container's conn-limits setup)
+const mockNumReqsPerSecApprox = 44 // max ~111 for outside-vscode `go run`s, ~44 in vscode dlv debug runs (due to default Postgres container's conn-limits setup)
 const mockUsersNumTotal = 12345
 const mockFilesDirPath = "__static/mockfiles"
 
@@ -32,6 +32,9 @@ var mockPostFiles = []string{"vid1.webm", "vid2.mp4", "vid3.mp4", "post1.jpg", "
 var mockUsersAllById = map[yodb.I64]string{}
 var mockUsersAllByEmail = map[string]yodb.I64{}
 var mockUsersLoggedIn = map[string]*http.Client{}
+var mockUsersNever = map[string]bool{
+	"foo4874@bar.baz": true,
+}
 
 func init() {
 	devModeInitMockUsers = func() {
@@ -75,7 +78,7 @@ func mockSomeActivity() {
 	var must_log_in_first bool
 	{
 		mockLock.Lock()
-		for (user_email_addr == "") || busy[user_email_addr] {
+		for (user_email_addr == "") || busy[user_email_addr] || mockUsersNever[user_email_addr] {
 			user_email_addr = str.Fmt("foo%d@bar.baz", 1+rand.Intn(mockUsersNumTotal))
 		}
 		user_client = mockUsersLoggedIn[user_email_addr]
