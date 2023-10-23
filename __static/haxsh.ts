@@ -2,6 +2,8 @@ import van from '../__yostatic/vanjs/van-1.2.3.debug.js'
 import vanx from '../__yostatic/vanjs/van-x.js'
 import * as yo from './yo-sdk.js'
 
+import * as uibuddies from './ui/buddies.js'
+
 const htm = van.tags
 
 let fetchRefreshSince: string | undefined
@@ -27,6 +29,7 @@ export function main() {
     }
     van.add(document.body,
         feed_posts,
+        uibuddies.create().DOM,
         dialog_login,
     )
     setTimeout(fetchRefresh, 321)
