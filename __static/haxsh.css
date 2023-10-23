@@ -6,7 +6,7 @@ body {}
     top: 0;
     bottom: 0;
     overflow: hidden;
-    width: 4em;
+    width: 3em;
     overflow-x: hidden;
     overflow-y: auto;
     scrollbar-width: none;
@@ -33,12 +33,12 @@ body {}
     display: block;
     padding: 0;
     margin: 0.25em;
-    height: 3.5em;
-    width: 3.5em;
+    height: 2.5em;
+    width: 2.5em;
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
-    border-radius: 3.5em;
+    border-radius: 77em;
     filter: sepia(0.44) grayscale(0);
     transition: all 0.44s ease-in-out;
 }
