@@ -21,6 +21,7 @@ func api[TIn any, TOut any](f func(*yosrv.ApiCtx[TIn, TOut]), failIfs ...yosrv.F
 const ErrPostNew_ExpectedNonEmptyPost util.Err = "PostNew_ExpectedNonEmptyPost"
 const ErrPostNew_ExpectedOnlyBuddyRecipients util.Err = "PostNew_ExpectedOnlyBuddyRecipients"
 const ErrPostNew_RepliedToPostDoesNotExist util.Err = "PostNew_RepliedToPostDoesNotExist"
+const ErrPostsForPeriod_ExpectedPeriodGreater0AndLess33Days util.Err = "PostsForPeriod_ExpectedPeriodGreater0AndLess33Days"
 const ErrUserBy_ExpectedEitherNickNameOrEmailAddr util.Err = "UserBy_ExpectedEitherNickNameOrEmailAddr"
 const Err___yo_authLogin_AccountDoesNotExist util.Err = "___yo_authLogin_AccountDoesNotExist"
 const Err___yo_authLogin_EmailInvalid util.Err = "___yo_authLogin_EmailInvalid"
@@ -44,6 +45,8 @@ const PostNewId = q.F("Id")
 const PostNewMd = q.F("Md")
 const PostNewRepl = q.F("Repl")
 const PostNewTo = q.F("To")
+const PostsForPeriodFrom = q.F("From")
+const PostsForPeriodUntil = q.F("Until")
 const RecentUpdatesSince = q.F("Since")
 const UserByEmailAddr = q.F("EmailAddr")
 const UserByNickName = q.F("NickName")

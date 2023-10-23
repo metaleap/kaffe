@@ -30,6 +30,10 @@ type RecentUpdates struct {
 }
 
 func postsFor(ctx *Ctx, forUser *User, dtFrom time.Time, dtUntil time.Time) (ret []*Post) {
+	if year := dtFrom.Year(); (year < 2023) || ((year == 2023) && (dtFrom.Month() < 10)) || (dtUntil.Equal(dtFrom)) ||
+		(dtUntil.Before(dtFrom)) || (dtUntil.Sub(dtFrom) > (time.Hour * 24 * 33)) {
+		panic(ErrPostsForPeriod_ExpectedPeriodGreater0AndLess33Days)
+	}
 	query := dbQueryPostsForUser(forUser).And(PostDtMade.GreaterOrEqual(dtFrom)).And(PostDtMade.LessOrEqual(dtUntil))
 	yodb.FindMany[Post](ctx, query, 0, PostDtMade.Desc())
 	return

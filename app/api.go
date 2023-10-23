@@ -1,6 +1,7 @@
 package haxsh
 
 import (
+	"time"
 	. "yo/ctx"
 	yodb "yo/db"
 	q "yo/db/query"
@@ -32,7 +33,9 @@ func init() {
 		"recentUpdates": apiRecentUpdates.
 			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
 
-		"postsForPeriod": apiPostsForPeriod.
+		"postsForPeriod": apiPostsForPeriod.Checks(
+			Fails{Err: "ExpectedPeriodGreater0AndLess33Days", If: PostsForPeriodUntil.LessOrEqual(PostsForPeriodFrom)},
+		).
 			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
 
 		"postNew": apiPostNew.Checks(
@@ -97,8 +100,13 @@ var apiRecentUpdates = api(func(this *ApiCtx[struct {
 	this.Ret = fetchRecentUpdates(this.Ctx, user_cur, this.Args.Since)
 })
 
-var apiPostsForPeriod = api(func(this *ApiCtx[Void, Void]) {
-	postsFor(this.Ctx, userCur(this.Ctx), *yodb.DtNow().Time(), *yodb.DtNow().Time())
+type Foo struct {
+	From  time.Time
+	Until time.Time
+}
+
+var apiPostsForPeriod = api(func(this *ApiCtx[Foo, Void]) {
+	postsFor(this.Ctx, userCur(this.Ctx), this.Args.From, this.Args.Until)
 })
 
 var apiPostNew = api(func(this *ApiCtx[Post, Return[yodb.I64]]) {

@@ -131,6 +131,18 @@ export async function apiPostNew(payload: Post, query?: {[_:string]:string}): Pr
 }
 export type PostNewErr = typeof errsPostNew[number]
 
+const errsPostsForPeriod = ['TimedOut', 'Unauthorized'] as const
+export async function apiPostsForPeriod(payload: Foo, query?: {[_:string]:string}): Promise<Void> {
+	try {
+		return await req<Foo, Void>('_/postsForPeriod', payload, query)
+	} catch(err: any) {
+		if (err && err['body_text'] && (errsPostsForPeriod.indexOf(err.body_text) >= 0))
+			throw(new Err<PostsForPeriodErr>(err.body_text as PostsForPeriodErr))
+		throw(err)
+	}
+}
+export type PostsForPeriodErr = typeof errsPostsForPeriod[number]
+
 const errsRecentUpdates = ['TimedOut', 'Unauthorized'] as const
 export async function apiRecentUpdates(payload: recentUpdates_In, query?: {[_:string]:string}): Promise<RecentUpdates> {
 	try {
@@ -215,7 +227,16 @@ export async function apiUserUpdate(payload: ApiUpdateArgs_haxsh_app_User_haxsh_
 }
 export type UserUpdateErr = typeof errsUserUpdate[number]
 
+export type PostField = 'Id' | 'DtMade' | 'DtMod' | 'By' | 'To' | 'Md' | 'Files' | 'Repl'
+
+export type UserField = 'Id' | 'DtMade' | 'DtMod' | 'LastSeen' | 'Auth' | 'PicFileId' | 'Nick' | 'Btw' | 'Buddies'
+
 export type UserAuthField = 'Id' | 'DtMade' | 'DtMod' | 'EmailAddr'
+
+export type Foo = {
+	From: Time
+	Until: Time
+}
 
 export type Post = {
 	By: I64
@@ -251,13 +272,14 @@ export type recentUpdates_In = {
 	Since?: DateTime
 }
 
+export type Time = string
 export type userBy_In = {
 	EmailAddr: string
 	NickName: string
 }
 
 export type ApiUpdateArgs_haxsh_app_User_haxsh_app_UserField_ = {
-	ChangedFields: string[]
+	ChangedFields: UserField[]
 	Changes: User
 	Id: I64
 }
