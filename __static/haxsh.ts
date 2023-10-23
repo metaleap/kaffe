@@ -4,6 +4,7 @@ import * as yo from './yo-sdk.js'
 
 import * as uibuddies from './ui/buddies.js'
 
+const none = void 0
 const htm = van.tags
 
 let fetchRefreshSince: string | undefined
@@ -12,13 +13,14 @@ let fetchRefreshIntervalMsWhenHidden = 4321
 let fetchRefreshIntervalMsWhenCur = fetchRefreshIntervalMsWhenVisible
 let fetchPaused = false // true while signed out
 
-let dialog_login = uiLoginDialog()
-let feed_posts = uiPostsFeed()
+let uiDialogLogin = newUiLoginDialog()
+let uiFeedPosts = newUiPostsFeed()
+let uiBuddies: uibuddies.UiCtlBuddies = uibuddies.create()
 
-function onErr(err: any) { console.error(err) }
-function knownErr<T extends string>(err: any, ifSo: (_: T) => void): boolean {
+function onErr(err: any) { console.error(JSON.stringify(err)) }
+function knownErr<T extends string>(err: any, ifSo: (_: T) => boolean): boolean {
     const yo_err = err as yo.Err<T>
-    return (yo_err && yo_err.knownErr && (yo_err.knownErr.length > 0))
+    return yo_err && yo_err.knownErr && (yo_err.knownErr.length > 0) && ifSo(yo_err.knownErr)
 }
 
 export function main() {
@@ -28,9 +30,9 @@ export function main() {
         document.title = fetchRefreshIntervalMsWhenCur.toString()
     }
     van.add(document.body,
-        feed_posts,
-        uibuddies.create().DOM,
-        dialog_login,
+        uiFeedPosts,
+        uiBuddies.DOM,
+        uiDialogLogin,
     )
     setTimeout(fetchRefresh, 321)
 }
@@ -39,19 +41,27 @@ async function fetchRefresh() {
     if (fetchPaused)
         return
     try {
-        const recent_updates = await yo.apiRecentUpdates({ Since: fetchRefreshSince })
+        const recent_updates = await yo.apiRecentUpdates({ Since: fetchRefreshSince ? fetchRefreshSince : none })
         fetchRefreshSince = recent_updates.Next
-        if (recent_updates.Buddies || (recent_updates.Posts && recent_updates.Posts.length > 0))
-            console.log(fetchRefreshSince, recent_updates.Buddies, recent_updates.Posts.length)
-        // for (const post of recent_updates.Posts)
-        //     console.log(fetchRefreshSince, post)
+
+        if (recent_updates.Buddies)
+            console.log("B")
+
+        if (recent_updates.Posts && recent_updates.Posts.length) { }
+
+        if (recent_updates.Buddies || !uiBuddies.buddies.length) {
+            const buddies = await yo.apiUserBuddies()
+            uiBuddies.update(buddies.Result)
+        }
     } catch (err) {
         if (!knownErr<yo.RecentUpdatesErr>(err, (err) => {
             switch (err) {
                 case 'Unauthorized':
                     fetchPaused = true
-                    dialog_login.showModal()
+                    uiDialogLogin.showModal()
+                    return true
             }
+            return false
         }))
             onErr(err)
     }
@@ -59,7 +69,7 @@ async function fetchRefresh() {
         setTimeout(fetchRefresh, fetchRefreshIntervalMsWhenCur)
 }
 
-function uiLoginDialog() {
+function newUiLoginDialog() {
     const on_btn_login = async () => {
         try {
             await yo.apiUserSignIn({ EmailAddr: in_user_name.value, PasswordPlain: in_password.value })
@@ -70,15 +80,16 @@ function uiLoginDialog() {
                     case '___yo_authLogin_WrongPassword':
                     case '___yo_authLogin_AccountDoesNotExist':
                     case '___yo_authLogin_EmailInvalid':
-                        alert(err);
-                        return;
+                        alert(err)
+                        return true
                 }
+                return false
             }))
                 onErr(err)
         }
     }
 
-    const in_user_name = htm.input({ 'value': 'foo4874@bar.baz' })
+    const in_user_name = htm.input({ 'value': 'foo16@bar.baz' })
     const in_password = htm.input({ 'type': 'password', 'value': 'foobar' })
     return htm.dialog({},
         htm.form({},
@@ -89,7 +100,7 @@ function uiLoginDialog() {
     )
 }
 
-function uiPostsFeed() {
+function newUiPostsFeed() {
     return htm.ul({},
         htm.li({}, "post 1"),
         htm.li({}, "post 2"),

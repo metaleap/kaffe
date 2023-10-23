@@ -69,8 +69,8 @@ func mockSomeActivity() {
 	const sec_half = time.Second / 2
 	defer time.AfterFunc(sec_half+time.Duration(rand.Intn(int(2*sec_half))), mockSomeActivity)
 
-	action := mockActions[0]              // default to the much-more-frequent-than-the-others-by-design action...
-	if rand.Intn(len(mockActions)) == 0 { // ...except there's still a (just much-lower) chance for another action
+	action := mockActions[0]                        // default to the much-more-frequent-than-the-others-by-design action...
+	if true || (rand.Intn(len(mockActions)) == 0) { // ...except there's still a (just much-lower) chance for another action
 		action = mockActions[rand.Intn(len(mockActions))]
 	}
 	var user_email_addr string

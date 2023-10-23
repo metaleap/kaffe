@@ -18,11 +18,13 @@ export function setReqTimeoutMilliSec(timeoutMs: number) {
     reqTimeoutMilliSec = timeoutMs
 }
 
-export async function req<TIn, TOut>(methodPath: string, payload: TIn, urlQueryArgs?: { [_: string]: string }): Promise<TOut> {
+export async function req<TIn, TOut>(methodPath: string, payload?: TIn | {}, urlQueryArgs?: { [_: string]: string }): Promise<TOut> {
     let rel_url = '/' + methodPath
     if (urlQueryArgs)
         rel_url += ('?' + new URLSearchParams(urlQueryArgs).toString())
     // console.log('callAPI:', rel_url, payload)
+    if (!payload)
+        payload = {}
     const resp = await fetch(rel_url, {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
         cache: 'no-store', mode: 'same-origin', redirect: 'error', signal: AbortSignal.timeout(reqTimeoutMilliSec)
@@ -120,7 +122,7 @@ function qGreaterOrEqual(x: QueryVal, y: QueryVal): QueryExpr { return { __yoQOp
 function qIn(x: QueryVal, ...set: QueryVal[]): QueryExpr { return { __yoQOp: 'IN', __yoQOperands: [x].concat(set) } as QueryExpr }
 
 const errsPostNew = ['PostNew_ExpectedNonEmptyPost', 'PostNew_ExpectedOnlyBuddyRecipients', 'PostNew_RepliedToPostDoesNotExist', 'TimedOut', 'Unauthorized'] as const
-export async function apiPostNew(payload: Post, query?: {[_:string]:string}): Promise<Return_yo_db_I64_> {
+export async function apiPostNew(payload?: Post, query?: {[_:string]:string}): Promise<Return_yo_db_I64_> {
 	try {
 		return await req<Post, Return_yo_db_I64_>('_/postNew', payload, query)
 	} catch(err: any) {
@@ -131,8 +133,8 @@ export async function apiPostNew(payload: Post, query?: {[_:string]:string}): Pr
 }
 export type PostNewErr = typeof errsPostNew[number]
 
-const errsPostsForPeriod = ['TimedOut', 'Unauthorized'] as const
-export async function apiPostsForPeriod(payload: Foo, query?: {[_:string]:string}): Promise<Void> {
+const errsPostsForPeriod = ['PostsForPeriod_ExpectedPeriodGreater0AndLess33Days', 'TimedOut', 'Unauthorized'] as const
+export async function apiPostsForPeriod(payload?: Foo, query?: {[_:string]:string}): Promise<Void> {
 	try {
 		return await req<Foo, Void>('_/postsForPeriod', payload, query)
 	} catch(err: any) {
@@ -144,7 +146,7 @@ export async function apiPostsForPeriod(payload: Foo, query?: {[_:string]:string
 export type PostsForPeriodErr = typeof errsPostsForPeriod[number]
 
 const errsRecentUpdates = ['TimedOut', 'Unauthorized'] as const
-export async function apiRecentUpdates(payload: recentUpdates_In, query?: {[_:string]:string}): Promise<RecentUpdates> {
+export async function apiRecentUpdates(payload?: recentUpdates_In, query?: {[_:string]:string}): Promise<RecentUpdates> {
 	try {
 		return await req<recentUpdates_In, RecentUpdates>('_/recentUpdates', payload, query)
 	} catch(err: any) {
@@ -156,7 +158,7 @@ export async function apiRecentUpdates(payload: recentUpdates_In, query?: {[_:st
 export type RecentUpdatesErr = typeof errsRecentUpdates[number]
 
 const errsUserBuddies = ['TimedOut', 'Unauthorized'] as const
-export async function apiUserBuddies(payload: Void, query?: {[_:string]:string}): Promise<Return____haxsh_app_User_> {
+export async function apiUserBuddies(payload?: Void, query?: {[_:string]:string}): Promise<Return____haxsh_app_User_> {
 	try {
 		return await req<Void, Return____haxsh_app_User_>('_/userBuddies', payload, query)
 	} catch(err: any) {
@@ -168,7 +170,7 @@ export async function apiUserBuddies(payload: Void, query?: {[_:string]:string})
 export type UserBuddiesErr = typeof errsUserBuddies[number]
 
 const errsUserBy = ['TimedOut', 'Unauthorized', 'UserBy_ExpectedEitherNickNameOrEmailAddr'] as const
-export async function apiUserBy(payload: userBy_In, query?: {[_:string]:string}): Promise<User> {
+export async function apiUserBy(payload?: userBy_In, query?: {[_:string]:string}): Promise<User> {
 	try {
 		return await req<userBy_In, User>('_/userBy', payload, query)
 	} catch(err: any) {
@@ -180,7 +182,7 @@ export async function apiUserBy(payload: userBy_In, query?: {[_:string]:string})
 export type UserByErr = typeof errsUserBy[number]
 
 const errsUserSignIn = ['TimedOut', '___yo_authLogin_AccountDoesNotExist', '___yo_authLogin_EmailInvalid', '___yo_authLogin_EmailRequiredButMissing', '___yo_authLogin_OkButFailedToCreateSignedToken', '___yo_authLogin_WrongPassword'] as const
-export async function apiUserSignIn(payload: ApiAccountPayload, query?: {[_:string]:string}): Promise<Void> {
+export async function apiUserSignIn(payload?: ApiAccountPayload, query?: {[_:string]:string}): Promise<Void> {
 	try {
 		return await req<ApiAccountPayload, Void>('_/userSignIn', payload, query)
 	} catch(err: any) {
@@ -192,7 +194,7 @@ export async function apiUserSignIn(payload: ApiAccountPayload, query?: {[_:stri
 export type UserSignInErr = typeof errsUserSignIn[number]
 
 const errsUserSignOut = ['TimedOut'] as const
-export async function apiUserSignOut(payload: Void, query?: {[_:string]:string}): Promise<Void> {
+export async function apiUserSignOut(payload?: Void, query?: {[_:string]:string}): Promise<Void> {
 	try {
 		return await req<Void, Void>('_/userSignOut', payload, query)
 	} catch(err: any) {
@@ -204,7 +206,7 @@ export async function apiUserSignOut(payload: Void, query?: {[_:string]:string})
 export type UserSignOutErr = typeof errsUserSignOut[number]
 
 const errsUserSignUp = ['TimedOut', '___yo_authLogin_AccountDoesNotExist', '___yo_authLogin_EmailInvalid', '___yo_authLogin_EmailRequiredButMissing', '___yo_authLogin_OkButFailedToCreateSignedToken', '___yo_authLogin_WrongPassword', '___yo_authRegister_EmailAddrAlreadyExists', '___yo_authRegister_EmailInvalid', '___yo_authRegister_EmailRequiredButMissing', '___yo_authRegister_PasswordInvalid', '___yo_authRegister_PasswordTooLong', '___yo_authRegister_PasswordTooShort'] as const
-export async function apiUserSignUp(payload: ApiAccountPayload, query?: {[_:string]:string}): Promise<User> {
+export async function apiUserSignUp(payload?: ApiAccountPayload, query?: {[_:string]:string}): Promise<User> {
 	try {
 		return await req<ApiAccountPayload, User>('_/userSignUp', payload, query)
 	} catch(err: any) {
@@ -216,7 +218,7 @@ export async function apiUserSignUp(payload: ApiAccountPayload, query?: {[_:stri
 export type UserSignUpErr = typeof errsUserSignUp[number]
 
 const errsUserUpdate = ['DbUpdExpectedIdGt0', 'DbUpdate_ExpectedChangesForUpdate', 'DbUpdate_ExpectedQueryForUpdate', 'TimedOut', 'Unauthorized', 'UserUpdate_NicknameAlreadyExists'] as const
-export async function apiUserUpdate(payload: ApiUpdateArgs_haxsh_app_User_haxsh_app_UserField_, query?: {[_:string]:string}): Promise<Void> {
+export async function apiUserUpdate(payload?: ApiUpdateArgs_haxsh_app_User_haxsh_app_UserField_, query?: {[_:string]:string}): Promise<Void> {
 	try {
 		return await req<ApiUpdateArgs_haxsh_app_User_haxsh_app_UserField_, Void>('_/userUpdate', payload, query)
 	} catch(err: any) {
