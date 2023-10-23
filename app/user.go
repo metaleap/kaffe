@@ -60,7 +60,7 @@ var apiUserSignUp = api(func(this *ApiCtx[yoauth.ApiAccountPayload, User]) {
 	this.Ctx.DbTx()
 
 	auth := Do(yoauth.ApiUserRegister, this.Ctx, this.Args)
-	user := User{LastSeen: yodb.DtFrom(time.Now)}
+	user := User{LastSeen: yodb.DtNow()}
 	user.Auth.SetId(auth.Id)
 	user.Id = yodb.CreateOne(this.Ctx, &user)
 	// _ = Do(apiUserSignIn, this.Ctx, this.Args)
@@ -107,7 +107,7 @@ func userUpdate(ctx *Ctx, upd *User, byCurUserInCtx bool, inclEmptyOrMissingFiel
 		}
 	}
 	if byCurUserInCtx {
-		upd.LastSeen = yodb.DtFrom(time.Now)
+		upd.LastSeen = yodb.DtNow()
 	}
 	if 0 == yodb.Update[User](ctx, upd, nil, !inclEmptyOrMissingFields, sl.To(onlyFields, UserField.F)...) {
 		panic("nochanges in " + str.From(onlyFields) + "?" + str.From(upd) + "vs." + str.From(userCur(ctx)))
@@ -152,7 +152,7 @@ func userSetLastSeen(auth_id yodb.I64) {
 	ctx := NewCtxNonHttp(time.Minute, "userSetLastSeen")
 	defer ctx.OnDone(nil)
 	ctx.TimingsNoPrintInDevMode = true
-	upd := &User{LastSeen: yodb.DtFrom(time.Now)}
+	upd := &User{LastSeen: yodb.DtNow()}
 	upd.Auth.SetId(auth_id)
 	userUpdate(ctx, upd, true, false, UserLastSeen)
 }
