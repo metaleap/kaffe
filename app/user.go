@@ -52,7 +52,7 @@ func userUpdate(ctx *Ctx, upd *User, byCurUserInCtx bool, inclEmptyOrMissingFiel
 }
 
 func userBuddies(ctx *Ctx, forUser *User) []*User {
-	return yodb.FindMany[User](ctx, UserId.In(forUser.Buddies.Anys()...), 0, UserDtMod.Desc())
+	return yodb.FindMany[User](ctx, UserId.In(forUser.Buddies.Anys()...), 0, UserLastSeen.Desc())
 }
 
 func userByEmailAddr(ctx *Ctx, emailAddr string) *User {

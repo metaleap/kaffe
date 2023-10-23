@@ -1,17 +1,19 @@
 import van from '../__yostatic/vanjs/van-1.2.3.debug.js'
 import vanx from '../__yostatic/vanjs/van-x.js'
-import * as yo from './yo-sdk.js'
+const htm = van.tags
 
+import * as yo from './yo-sdk.js'
+import * as youtil from '../__yostatic/util.js'
 import * as uibuddies from './ui/buddies.js'
 
 const none = void 0
-const htm = van.tags
 
-let fetchRefreshSince: string | undefined
+const fetchBuddiesIntervalMs = 1234
+let fetchPostsSinceDt: string | undefined
 const fetchPostsIntervalMsWhenVisible = 2345
 const fetchPostsIntervalMsWhenHidden = 4321
 let fetchPostsIntervalMsCur = fetchPostsIntervalMsWhenVisible
-let fetchPaused = false // true while signed out
+let fetchesPaused = false // true while signed out
 
 let uiDialogLogin = newUiLoginDialog()
 let uiFeedPosts = newUiPostsFeed()
@@ -21,6 +23,16 @@ function onErr(err: any) { console.error(JSON.stringify(err)) }
 function knownErr<T extends string>(err: any, ifSo: (_: T) => boolean): boolean {
     const yo_err = err as yo.Err<T>
     return yo_err && yo_err.knownErr && (yo_err.knownErr.length > 0) && ifSo(yo_err.knownErr)
+}
+
+function handleKnownErrMaybe<T extends string>(err: T): boolean {
+    switch (err) {
+        case 'Unauthorized':
+            fetchesPaused = true
+            uiDialogLogin.showModal()
+            return true
+    }
+    return false
 }
 
 export function main() {
@@ -39,34 +51,36 @@ export function main() {
 }
 
 async function fetchBuddies() {
-    if (fetchPaused)
+    if (fetchesPaused)
         return
 
-    if (!fetchPaused)
-        setTimeout(fetchBuddies, 12345)
+    try {
+        const buddies = await yo.apiUserBuddies()
+        console.log(Array.isArray(buddies.Result), Array.isArray(uiBuddies.buddies), buddies.Result.length, uiBuddies.buddies.length, youtil.deepEq(buddies.Result, uiBuddies.buddies, false), youtil.deepEq(buddies.Result, uiBuddies.buddies, true))
+        if (!youtil.deepEq(buddies.Result, uiBuddies.buddies, false)) // cmp not-ignoring order by design (result always ordered by last-active)
+            uiBuddies.update(buddies.Result)
+    } catch (err) {
+        if (!knownErr<yo.UserBuddiesErr>(err, handleKnownErrMaybe<yo.UserBuddiesErr>))
+            onErr(err)
+    }
+
+    if (!fetchesPaused)
+        setTimeout(fetchBuddies, fetchBuddiesIntervalMs)
 }
 
 async function fetchRefresh() {
-    if (fetchPaused)
+    if (fetchesPaused)
         return
     try {
-        const recent_updates = await yo.apiRecentUpdates({ Since: fetchRefreshSince ? fetchRefreshSince : none })
-        fetchRefreshSince = recent_updates.Next
+        const recent_updates = await yo.apiRecentUpdates({ Since: fetchPostsSinceDt ? fetchPostsSinceDt : none })
+        fetchPostsSinceDt = recent_updates.Next
 
         if (recent_updates.Posts && recent_updates.Posts.length) { }
     } catch (err) {
-        if (!knownErr<yo.RecentUpdatesErr>(err, (err) => {
-            switch (err) {
-                case 'Unauthorized':
-                    fetchPaused = true
-                    uiDialogLogin.showModal()
-                    return true
-            }
-            return false
-        }))
+        if (!knownErr<yo.RecentUpdatesErr>(err, handleKnownErrMaybe<yo.RecentUpdatesErr>))
             onErr(err)
     }
-    if (!fetchPaused)
+    if (!fetchesPaused)
         setTimeout(fetchRefresh, fetchPostsIntervalMsCur)
 }
 
