@@ -108,7 +108,7 @@ body {
     max-width: calc(32.1em + 3.88em);
     padding: 0.44em 0 1.23em 0;
     /* keep negated exactly from the positive one above */
-    margin-top: -4.88em;
+    margin-top: calc(-4.88em - 1.88em);
 }
 
 .haxsh-posts .post {
@@ -142,6 +142,8 @@ body {
 
 .self-post .post-buttons {
     margin-right: 2.66em;
+    padding-top: 0.22em;
+    overflow: hidden;
 }
 
 .haxsh-posts .post-buttons div.button {
@@ -153,8 +155,8 @@ body {
     overflow: hidden;
     line-height: 1.11em;
     font-size: 0.88em;
-    display: inline-block;
     margin-left: 0.44em;
+    padding: 0.11em;
 }
 
 .haxsh-posts .post-content {

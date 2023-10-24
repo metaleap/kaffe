@@ -27,7 +27,7 @@ export function create(getPostAuthor: (post: yo.Post) => yo.User | undefined): U
                         htm.div({ 'class': 'post-ago' }, ""),
                     ),
                     htm.div({ 'class': 'post-buttons' },
-                        htm.div({ 'class': 'button' }, "🖷"),
+                        htm.div({ 'class': 'button' }, "🖅"),
                     ),
                     htm.div({ 'class': 'post-content' }, ""),
                 ),
