@@ -19,9 +19,8 @@ body {
 }
 
 .haxsh-buddies {
-    z-index: 99999;
+    z-index: 9999;
     position: fixed;
-    padding-top: 4.88em;
     right: 0;
     top: 0;
     bottom: 0;
@@ -47,7 +46,7 @@ body {
 .haxsh-buddies>ul {
     display: block;
     list-style-type: none;
-    margin: 0;
+    margin: 4.88em 0 0 0;
     padding: 0;
 }
 
@@ -74,6 +73,18 @@ body {
     filter: sepia(0.11) grayscale(0);
 }
 
+div.buddy-pic.self {
+    z-index: 99999;
+    position: fixed;
+    margin-top: 0;
+    border-radius: 0em;
+    background-position-y: 0.55em;
+    height: 4.88em;
+    background-color: var(--bgoff1);
+    background-size: contain;
+    filter: none !important;
+}
+
 .haxsh-posts {
     margin-right: 3.88em;
     padding-bottom: 1.23em;
@@ -90,7 +101,7 @@ body {
 .haxsh-posts>div.self-post {
     background: linear-gradient(180deg, var(--bgcolor) 77%, transparent);
     position: fixed;
-    z-index: 9999;
+    z-index: 999;
     right: 0;
     left: 0;
     max-width: calc(32.1em + 3.88em);

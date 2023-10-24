@@ -14,7 +14,9 @@ export type UiCtlBuddies = {
 
 export function create(): UiCtlBuddies {
     const me: UiCtlBuddies = {
-        DOM: htm.div({ 'class': 'haxsh-buddies' }),
+        DOM: htm.div({ 'class': 'haxsh-buddies' },
+            htm.div(buddyDomAttrs(undefined, new Date().getTime(), true, "(loading...)")),
+        ),
         buddies: vanx.reactive([] as yo.User[]),
         update: (buddies) => update(me, buddies),
     }
@@ -25,11 +27,11 @@ export function create(): UiCtlBuddies {
     return me
 }
 
-export function buddyDomAttrs(buddy: yo.User | undefined, now: number) {
+export function buddyDomAttrs(buddy: yo.User | undefined, now: number, isSelf = false, noneText = "(ex-buddy)") {
     if (!buddy)
         return {
-            'class': 'buddy-pic' + ' offline',
-            'title': `(ex-buddy)`,
+            'class': 'buddy-pic' + (isSelf ? ' self' : ' offline'),
+            'title': noneText,
             'style': `background-image: url('${util.emoIconDataHref('🦜')}')`
         }
     if (!buddy.LastSeen)
