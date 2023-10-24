@@ -30,7 +30,7 @@ export function buddyDomAttrs(buddy: yo.User | undefined, now: number) {
         return {
             'class': 'buddy-pic' + ' offline',
             'title': `(buddy gone)`,
-            'style': `background-image: url('${util.emoIconDataHref('👤')}')`
+            'style': `background-image: url('${util.emoIconDataHref('🦜')}')`
         }
     const last_seen = Date.parse(buddy.LastSeen ?? (buddy.DtMod!))
     const is_offline = (now - last_seen) > 77777
