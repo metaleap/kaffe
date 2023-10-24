@@ -9,24 +9,24 @@ import * as util from '../util.js'
 
 export type UiCtlPosts = {
     DOM: HTMLElement
-    getUser: (id: number) => yo.User | undefined
+    getPostAuthor: (post: yo.Post) => yo.User | undefined
     posts: vanx.Reactive<PostAug[]>
     update: (_: yo.Post[]) => void
 }
 
 type PostAug = yo.Post & { _uxStrAgo: string }
 
-export function create(getUser: (id: number) => yo.User | undefined): UiCtlPosts {
+export function create(getPostAuthor: (post: yo.Post) => yo.User | undefined): UiCtlPosts {
     const me: UiCtlPosts = {
         DOM: htm.div({ 'class': 'haxsh-posts' }),
-        getUser: getUser,
+        getPostAuthor: getPostAuthor,
         posts: vanx.reactive([] as PostAug[]),
         update: (posts) => update(me, posts),
     }
 
     van.add(me.DOM, vanx.list(htm.div, me.posts, (it) => {
         const post = it.val, now = new Date().getTime()
-        const post_by = me.getUser(post.By)
+        const post_by = me.getPostAuthor(post)
         const dt = new Date(post.DtMade!)
         return htm.div({ 'class': 'post' },
             htm.div({ 'class': 'post-head' },
@@ -49,10 +49,7 @@ function update(me: UiCtlPosts, newOrUpdatedPosts: yo.Post[]) {
             let ago_str = util.timeAgoStr(new Date(post.DtMade!).getTime(), now, true, "")
             if (last_with_ago && (ago_str === last_with_ago._uxStrAgo))
                 ago_str = ""
-            const ret = {
-                ...post,
-                _uxStrAgo: ago_str
-            }
+            const ret = { ...post, _uxStrAgo: ago_str }
             if (ago_str)
                 last_with_ago = ret
             return ret

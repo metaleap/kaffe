@@ -17,7 +17,16 @@ let fetchedPostsEverYet = false
 
 let uiDialogLogin = newUiLoginDialog()
 let uiBuddies: uibuddies.UiCtlBuddies = uibuddies.create()
-let uiPosts: uiposts.UiCtlPosts = uiposts.create((userId: number) => uiBuddies.buddies.find(_ => (_.Id === userId)))
+let uiPosts: uiposts.UiCtlPosts = uiposts.create((post: yo.Post) => {
+    const buddy = uiBuddies.buddies.find(_ => (_.Id === post.By))
+    if (buddy) {
+        if (post.DtMade! > buddy.LastSeen!)
+            buddy.LastSeen = post.DtMade!
+        if (post.DtMod! > buddy.LastSeen!)
+            buddy.LastSeen = post.DtMod!
+    }
+    return buddy
+})
 
 export function main() {
     document.onvisibilitychange = () => {
