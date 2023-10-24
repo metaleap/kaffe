@@ -30,7 +30,7 @@ func init() {
 		"userBuddies": apiUserBuddies.
 			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
 
-		"recentUpdates": apiRecentUpdates.
+		"postsRecent": apiPostsRecent.
 			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
 
 		"postsForPeriod": apiPostsForPeriod.Checks(
@@ -90,14 +90,14 @@ var apiUserBuddies = api(func(this *ApiCtx[Void, Return[[]*User]]) {
 	this.Ret.Result = userBuddies(this.Ctx, userCur(this.Ctx), true)
 })
 
-var apiRecentUpdates = api(func(this *ApiCtx[struct {
+var apiPostsRecent = api(func(this *ApiCtx[struct {
 	Since *yodb.DateTime
 }, RecentUpdates]) {
 	user_cur := userCur(this.Ctx)
 	if user_cur == nil {
 		panic(ErrUnauthorized)
 	}
-	this.Ret = fetchRecentUpdates(this.Ctx, user_cur, this.Args.Since)
+	this.Ret = postsRecent(this.Ctx, user_cur, this.Args.Since)
 })
 
 type Foo struct {

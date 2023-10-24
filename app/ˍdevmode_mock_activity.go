@@ -124,7 +124,7 @@ func mockSomeActivity() {
 	case "changePic":
 		orig := user.PicFileId
 		mockUpdEnsureChange(&user.PicFileId, func() yodb.Text { return yodb.Text(mockUserPicFiles[rand.Intn(len(mockUserPicFiles))]) }, nil)
-		if (orig != "") && (rand.Intn(22) == 0) {
+		if (orig != "") && (rand.Intn(11) == 0) {
 			user.PicFileId = ""
 		}
 		do_update(user, &User{PicFileId: user.PicFileId}, UserPicFileId)

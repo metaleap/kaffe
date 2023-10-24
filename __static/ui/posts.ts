@@ -25,7 +25,7 @@ export function create(getUser: (id: number) => yo.User | undefined): UiCtlPosts
         const post_by = me.getUser(post.By)! // TODO
         return htm.div({ 'class': 'post' },
             htm.div(uibuddies.buddyDomAttrs(post_by, now)),
-            htm.div({ 'class': 'post-content' }, post.Md),
+            htm.div({ 'class': 'post-content' }, post.DtMade, post.Md),
         )
     }))
     return me
@@ -34,11 +34,7 @@ export function create(getUser: (id: number) => yo.User | undefined): UiCtlPosts
 function update(me: UiCtlPosts, newOrUpdatedPosts: yo.Post[]) {
     vanx.replace(me.posts, (oldPosts: yo.Post[]) => {
         const ret = newOrUpdatedPosts
-            .filter(post_upd => {
-                if (!post_upd.To)
-                    post_upd.To = []
-                return !oldPosts.some(post_old => (post_old.Id === post_upd.Id))
-            })
+            .filter(post_upd => !oldPosts.some(post_old => (post_old.Id === post_upd.Id)))
             .concat(oldPosts.map(post_old => newOrUpdatedPosts.find(_ => (_.Id === post_old.Id)) ?? post_old))
         return ret
     })

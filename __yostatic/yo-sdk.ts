@@ -145,17 +145,17 @@ export async function apiPostsForPeriod(payload?: Foo, query?: {[_:string]:strin
 }
 export type PostsForPeriodErr = typeof errsPostsForPeriod[number]
 
-const errsRecentUpdates = ['TimedOut', 'Unauthorized'] as const
-export async function apiRecentUpdates(payload?: recentUpdates_In, query?: {[_:string]:string}): Promise<RecentUpdates> {
+const errsPostsRecent = ['TimedOut', 'Unauthorized'] as const
+export async function apiPostsRecent(payload?: postsRecent_In, query?: {[_:string]:string}): Promise<RecentUpdates> {
 	try {
-		return await req<recentUpdates_In, RecentUpdates>('_/recentUpdates', payload, query)
+		return await req<postsRecent_In, RecentUpdates>('_/postsRecent', payload, query)
 	} catch(err: any) {
-		if (err && err['body_text'] && (errsRecentUpdates.indexOf(err.body_text) >= 0))
-			throw(new Err<RecentUpdatesErr>(err.body_text as RecentUpdatesErr))
+		if (err && err['body_text'] && (errsPostsRecent.indexOf(err.body_text) >= 0))
+			throw(new Err<PostsRecentErr>(err.body_text as PostsRecentErr))
 		throw(err)
 	}
 }
-export type RecentUpdatesErr = typeof errsRecentUpdates[number]
+export type PostsRecentErr = typeof errsPostsRecent[number]
 
 const errsUserBuddies = ['TimedOut', 'Unauthorized'] as const
 export async function apiUserBuddies(payload?: Void, query?: {[_:string]:string}): Promise<Return____haxsh_app_User_> {
@@ -269,7 +269,7 @@ export type User = {
 	PicFileId: string
 }
 
-export type recentUpdates_In = {
+export type postsRecent_In = {
 	Since?: DateTime
 }
 

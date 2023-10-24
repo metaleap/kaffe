@@ -71,13 +71,13 @@ async function fetchRefresh() {
     if (fetchesPaused)
         return
     try {
-        const recent_updates = await yo.apiRecentUpdates({ Since: fetchPostsSinceDt ? fetchPostsSinceDt : none })
+        const recent_updates = await yo.apiPostsRecent({ Since: fetchPostsSinceDt ? fetchPostsSinceDt : none })
         fetchPostsSinceDt = recent_updates.Next
 
-        if (recent_updates.Posts && recent_updates.Posts.length)
+        if (recent_updates.Posts && recent_updates.Posts.length && !youtil.deepEq(recent_updates.Posts, uiPosts.posts))
             uiPosts.update(recent_updates.Posts)
     } catch (err) {
-        if (!knownErr<yo.RecentUpdatesErr>(err, handleKnownErrMaybe<yo.RecentUpdatesErr>))
+        if (!knownErr<yo.PostsRecentErr>(err, handleKnownErrMaybe<yo.PostsRecentErr>))
             onErr(err)
     }
     if (!fetchesPaused)
