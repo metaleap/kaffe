@@ -13,26 +13,11 @@ const fetchPostsIntervalMsWhenVisible = 2345
 const fetchPostsIntervalMsWhenHidden = 4321
 let fetchPostsIntervalMsCur = fetchPostsIntervalMsWhenVisible
 let fetchesPaused = false // true while signed out
+let fetchedPostsEverYet = false
 
 let uiDialogLogin = newUiLoginDialog()
 let uiBuddies: uibuddies.UiCtlBuddies = uibuddies.create()
 let uiPosts: uiposts.UiCtlPosts = uiposts.create((userId: number) => uiBuddies.buddies.find(_ => (_.Id === userId)))
-
-function onErr(err: any) { console.error(JSON.stringify(err)) }
-function knownErr<T extends string>(err: any, ifSo: (_: T) => boolean): boolean {
-    const yo_err = err as yo.Err<T>
-    return yo_err && yo_err.knownErr && (yo_err.knownErr.length > 0) && ifSo(yo_err.knownErr)
-}
-
-function handleKnownErrMaybe<T extends string>(err: T): boolean {
-    switch (err) {
-        case 'Unauthorized':
-            fetchesPaused = true
-            uiDialogLogin.showModal()
-            return true
-    }
-    return false
-}
 
 export function main() {
     document.onvisibilitychange = () => {
@@ -46,7 +31,6 @@ export function main() {
         uiDialogLogin,
     )
     setTimeout(fetchBuddies, 234)
-    setTimeout(fetchRefresh, 321)
 }
 
 async function fetchBuddies() {
@@ -55,8 +39,11 @@ async function fetchBuddies() {
 
     try {
         const buddies = await yo.apiUserBuddies()
-        if (buddies && buddies.Result)
+        if (buddies && buddies.Result) {
             uiBuddies.update(buddies.Result)
+            if (!fetchedPostsEverYet)
+                setTimeout(fetchPosts, 123)
+        }
     } catch (err) {
         if (!knownErr<yo.UserBuddiesErr>(err, handleKnownErrMaybe<yo.UserBuddiesErr>))
             onErr(err)
@@ -66,11 +53,12 @@ async function fetchBuddies() {
         setTimeout(fetchBuddies, fetchBuddiesIntervalMs)
 }
 
-async function fetchRefresh() {
+async function fetchPosts() {
     if (fetchesPaused)
         return
     try {
         const recent_updates = await yo.apiPostsRecent({ Since: fetchPostsSinceDt ? fetchPostsSinceDt : none })
+        fetchedPostsEverYet = true // even if empty, we have a non-error outcome and so set this
         fetchPostsSinceDt = recent_updates.Next
 
         if (recent_updates.Posts && recent_updates.Posts.length)
@@ -80,14 +68,14 @@ async function fetchRefresh() {
             onErr(err)
     }
     if (!fetchesPaused)
-        setTimeout(fetchRefresh, fetchPostsIntervalMsCur)
+        setTimeout(fetchPosts, fetchPostsIntervalMsCur)
 }
 
 function newUiLoginDialog() {
     const on_btn_login = async () => {
         try {
             await yo.apiUserSignIn({ EmailAddr: in_user_name.value, PasswordPlain: in_password.value })
-            alert("ok!")
+            location.reload()
         } catch (err) {
             if (!knownErr<yo.UserSignInErr>(err, (err) => {
                 switch (err) {
@@ -112,4 +100,20 @@ function newUiLoginDialog() {
             htm.button({ 'onclick': on_btn_login, 'type': 'button' }, "Login"),
         ),
     )
+}
+
+
+function onErr(err: any) { console.error(JSON.stringify(err)) }
+function knownErr<T extends string>(err: any, ifSo: (_: T) => boolean): boolean {
+    const yo_err = err as yo.Err<T>
+    return yo_err && yo_err.knownErr && (yo_err.knownErr.length > 0) && ifSo(yo_err.knownErr)
+}
+function handleKnownErrMaybe<T extends string>(err: T): boolean {
+    switch (err) {
+        case 'Unauthorized':
+            fetchesPaused = true
+            uiDialogLogin.showModal()
+            return true
+    }
+    return false
 }

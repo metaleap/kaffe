@@ -55,7 +55,7 @@ body {
 }
 
 .haxsh-posts {
-    margin-right: 3.45em;
+    margin-right: 3.88em;
 }
 
 .haxsh-posts>div {
@@ -65,29 +65,35 @@ body {
 }
 
 .haxsh-posts .post {
+    clear: left;
     margin-top: 2.34em;
 }
 
 .haxsh-posts .post-head {
+    float: left;
     overflow: hidden;
     white-space: nowrap;
     text-wrap: nowrap;
+    width: 1.23em;
 }
 
-.haxsh-posts .post-by,
+.haxsh-posts .post-content {
+    margin-left: 1.4em;
+}
+
 .haxsh-posts .post-ago {
-    display: inline-block;
-    margin-left: 1em;
-    margin-right: 1em;
-}
-
-.haxsh-posts .post-by {
-    display: none;
+    float: left;
+    color: #b0b0b0;
+    width: 1.23em;
+    margin-top: 0.22em;
+    font-size: 0.77em;
+    writing-mode: vertical-lr;
+    transform: rotate(180deg);
 }
 
 .haxsh-posts .buddy-pic {
     display: inline-block;
     margin: 0;
-    width: 1em;
-    height: 1em;
+    width: 1.23em;
+    height: 1.23em;
 }

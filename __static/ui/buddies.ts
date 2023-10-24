@@ -25,7 +25,13 @@ export function create(): UiCtlBuddies {
     return me
 }
 
-export function buddyDomAttrs(buddy: yo.User, now: number) {
+export function buddyDomAttrs(buddy: yo.User | undefined, now: number) {
+    if (!buddy)
+        return {
+            'class': 'buddy-pic' + ' offline',
+            'title': `(buddy gone)`,
+            'style': `background-image: url('${util.emoIconDataHref('👤')}')`
+        }
     const last_seen = Date.parse(buddy.LastSeen ?? (buddy.DtMod!))
     const is_offline = (now - last_seen) > 77777
     return {

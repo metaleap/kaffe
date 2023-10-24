@@ -24,10 +24,13 @@ export function create(getUser: (id: number) => yo.User | undefined): UiCtlPosts
 
     van.add(me.DOM, vanx.list(htm.div, me.posts, (it) => {
         const post = it.val, now = new Date().getTime()
-        const post_by = me.getUser(post.By)! // TODO
+        const post_by = me.getUser(post.By)
         return htm.div({ 'class': 'post' },
-            htm.div({ 'class': 'post-head' }, htm.div(uibuddies.buddyDomAttrs(post_by, now)), htm.div({ 'class': 'post-by' }, post_by.Nick), htm.div({ 'class': 'post-ago' }, util.timeAgoStr(Date.parse(post.DtMade!), now, false))),
-            htm.div({ 'class': 'post-content' }, post.Md),
+            htm.div({ 'class': 'post-head' },
+                htm.div(uibuddies.buddyDomAttrs(post_by, now)),
+                htm.div({ 'class': 'post-ago' }, util.timeAgoStr(Date.parse(post.DtMade!), now, false, "")),
+            ),
+            htm.div({ 'class': 'post-content' }, post.Md || `(files: ${post.Files.join(", ")})`),
         )
     }))
     return me
