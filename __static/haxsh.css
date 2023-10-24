@@ -2,10 +2,12 @@
     --liteness: 88%;
     --bgcolor: hsl(0, 0%, calc(var(--liteness)));
     --fgcolor: hsl(0, 0%, calc(100% - var(--liteness)));
-    --bgplus10: hsl(0, 0%, calc(10% + var(--liteness)));
+    --bgadd10: hsl(0, 0%, calc(10% + var(--liteness)));
+    --bgsub10: hsl(0, 0%, calc(var(--liteness) - 10%));
     --bgoff1: color-mix(in hsl, var(--bgcolor) calc((90% - var(--liteness)) + var(--liteness)), var(--fgcolor) calc(110% - var(--liteness)));
     --bgoff2: color-mix(in hsl, var(--bgcolor), var(--fgcolor) 90%);
     --bgoff3: color-mix(in hsl, var(--bgcolor), var(--fgcolor) 50%);
+    --bgoff4: hsl(0, 0%, calc(var(--liteness) - 22%));
 }
 
 body {
@@ -92,7 +94,10 @@ body {
 }
 
 .haxsh-posts .post-content {
-    background-color: var(--bgplus10);
+    background-color: var(--bgadd10);
+    border-left: 1px solid red;
+    border-top: 1px solid var(--bgoff4);
+    border-left-color: var(--bgoff4);
     padding: 0 0.22em 0.22em 0.44em;
     border-radius: 0.77em;
     border-top-left-radius: 0;
