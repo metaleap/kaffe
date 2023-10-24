@@ -17,8 +17,19 @@ export type UiCtlPosts = {
 type PostAug = yo.Post & { _uxStrAgo: string }
 
 export function create(getPostAuthor: (post: yo.Post) => yo.User | undefined): UiCtlPosts {
+    const now = new Date().getTime()
     const me: UiCtlPosts = {
-        DOM: htm.div({ 'class': 'haxsh-posts' }),
+        DOM: htm.div({ 'class': 'haxsh-posts' },
+            htm.div({ 'class': 'self-post' },
+                htm.div({ 'class': 'post' },
+                    htm.div({ 'class': 'post-head' },
+                        htm.div(uibuddies.buddyDomAttrs(undefined, now)),
+                        htm.div({ 'class': 'post-ago' }, "now"),
+                    ),
+                    htm.div({ 'class': 'post-content' }, "your post here"),
+                ),
+            ),
+        ),
         getPostAuthor: getPostAuthor,
         posts: vanx.reactive([] as PostAug[]),
         update: (posts) => update(me, posts),
