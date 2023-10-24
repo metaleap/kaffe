@@ -19,7 +19,9 @@ body {
 }
 
 .haxsh-buddies {
+    z-index: 99999;
     position: fixed;
+    padding-top: 4.88em;
     right: 0;
     top: 0;
     bottom: 0;
@@ -87,11 +89,12 @@ body {
 .haxsh-posts>div.self-post {
     background: linear-gradient(180deg, var(--bgcolor) 77%, transparent);
     position: fixed;
-    z-index: 99999;
-    right: 3.88em;
+    z-index: 9999;
+    right: 0;
     left: 0;
+    max-width: calc(32.1em + 3.88em);
     padding: 0.44em 0 1.23em 0;
-    /* keep inverted with the positive one above */
+    /* keep negated exactly from the positive one above */
     margin-top: -4.88em;
 }
 
@@ -107,6 +110,8 @@ body {
 
 .haxsh-posts>div.self-post .post-content {
     min-height: 2.34em;
+    max-height: 12.34em;
+    margin-right: 3.88em;
 }
 
 .haxsh-posts .post-head {
@@ -125,6 +130,13 @@ body {
     border-radius: 0.77em;
     border-top-left-radius: 0;
     margin-left: 1.4em;
+    overflow: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.haxsh-posts .post-content::-webkit-scrollbar {
+    display: none;
 }
 
 .haxsh-posts .post-ago {
