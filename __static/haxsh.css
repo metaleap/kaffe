@@ -76,6 +76,7 @@ body {
 
 .haxsh-posts {
     margin-right: 3.88em;
+    padding-bottom: 1.23em;
 }
 
 .haxsh-posts>div {
@@ -102,6 +103,7 @@ body {
     clear: left;
     margin-top: 1.88em;
     margin-left: 0.44em;
+    padding-right: 1.77em;
 }
 
 .haxsh-posts>div.self-post .post {
