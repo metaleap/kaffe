@@ -10,7 +10,7 @@ import * as util from '../util.js'
 export type UiCtlPosts = {
     DOM: HTMLElement
     getUser: (id: number) => yo.User | undefined
-    posts: vanx.Reactive<yo.Post[]>
+    posts: vanx.Reactive<(yo.Post & { _uxStrAgo: string })[]>
     update: (_: yo.Post[]) => void
 }
 
@@ -18,7 +18,7 @@ export function create(getUser: (id: number) => yo.User | undefined): UiCtlPosts
     const me: UiCtlPosts = {
         DOM: htm.div({ 'class': 'haxsh-posts' }),
         getUser: getUser,
-        posts: vanx.reactive([] as yo.Post[]),
+        posts: vanx.reactive([] as (yo.Post & { _uxStrAgo: string })[]),
         update: (posts) => update(me, posts),
     }
 
@@ -28,7 +28,7 @@ export function create(getUser: (id: number) => yo.User | undefined): UiCtlPosts
         return htm.div({ 'class': 'post' },
             htm.div({ 'class': 'post-head' },
                 htm.div(uibuddies.buddyDomAttrs(post_by, now)),
-                htm.div({ 'class': 'post-ago' }, util.timeAgoStr(Date.parse(post.DtMade!), now, false, "")),
+                htm.div({ 'class': 'post-ago' }, post._uxStrAgo),
             ),
             htm.div({ 'class': 'post-content' }, post.Md || `(files: ${post.Files.join(", ")})`),
         )
@@ -37,9 +37,14 @@ export function create(getUser: (id: number) => yo.User | undefined): UiCtlPosts
 }
 
 function update(me: UiCtlPosts, newOrUpdatedPosts: yo.Post[]) {
+    const now = new Date().getTime()
     const fresh_feed = newOrUpdatedPosts
         .filter(post_upd => !me.posts.some(post_old => (post_old.Id === post_upd.Id)))
         .concat(me.posts.map(post_old => newOrUpdatedPosts.find(_ => (_.Id === post_old.Id)) ?? post_old))
+        .map((_: yo.Post): (yo.Post & { _uxStrAgo: string }) => ({
+            ..._,
+            _uxStrAgo: util.timeAgoStr(Date.parse(_.DtMade!), now, true, "")
+        }))
     if (!youtil.deepEq(me.posts, fresh_feed, true, false))
-        vanx.replace(me.posts, (_: yo.Post[]) => fresh_feed)
+        vanx.replace(me.posts, (_: (yo.Post & { _uxStrAgo: string })[]) => fresh_feed)
 }
