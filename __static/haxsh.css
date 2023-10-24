@@ -85,7 +85,7 @@ body {
 }
 
 .haxsh-posts>div.self-post {
-    background-color: var(--bgcolor);
+    background: linear-gradient(180deg, var(--bgcolor) 44%, transparent);
     position: fixed;
     z-index: 99999;
     right: 3.88em;
@@ -132,6 +132,7 @@ body {
     font-size: 0.77em;
     writing-mode: vertical-lr;
     transform: rotate(180deg);
+    text-shadow: -0.1em 0px var(--bgcolor);
 }
 
 .haxsh-posts .buddy-pic {
