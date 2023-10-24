@@ -41,7 +41,7 @@ export function create(getUser: (id: number) => yo.User | undefined): UiCtlPosts
 
 function update(me: UiCtlPosts, newOrUpdatedPosts: yo.Post[]) {
     const now = new Date().getTime()
-    let prev: PostAug | undefined, last_with_ago: PostAug | undefined
+    let last_with_ago: PostAug | undefined
     const fresh_feed = newOrUpdatedPosts
         .filter(post_upd => !me.posts.some(post_old => (post_old.Id === post_upd.Id)))
         .concat(me.posts.map(post_old => newOrUpdatedPosts.find(_ => (_.Id === post_old.Id)) ?? post_old))
@@ -49,13 +49,13 @@ function update(me: UiCtlPosts, newOrUpdatedPosts: yo.Post[]) {
             let ago_str = util.timeAgoStr(new Date(post.DtMade!).getTime(), now, true, "")
             if (last_with_ago && (ago_str === last_with_ago._uxStrAgo))
                 ago_str = ""
-            prev = {
+            const ret = {
                 ...post,
                 _uxStrAgo: ago_str
             }
             if (ago_str)
-                last_with_ago = prev
-            return prev
+                last_with_ago = ret
+            return ret
         })
     if (!youtil.deepEq(me.posts, fresh_feed, true, false))
         vanx.replace(me.posts, (_: PostAug[]) => fresh_feed)
