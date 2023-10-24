@@ -1,4 +1,6 @@
-body {}
+body {
+    font-family: system-ui;
+}
 
 .haxsh-buddies {
     position: fixed;
@@ -53,11 +55,39 @@ body {}
 }
 
 .haxsh-posts {
-    margin-right: 3em;
+    margin-right: 3.45em;
 }
 
 .haxsh-posts>div {
     margin-left: auto;
     margin-right: auto;
     max-width: 32.1em;
+}
+
+.haxsh-posts .post {
+    margin-top: 2.34em;
+}
+
+.haxsh-posts .post-head {
+    overflow: hidden;
+    white-space: nowrap;
+    text-wrap: nowrap;
+}
+
+.haxsh-posts .post-by,
+.haxsh-posts .post-ago {
+    display: inline-block;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+.haxsh-posts .post-by {
+    display: none;
+}
+
+.haxsh-posts .buddy-pic {
+    display: inline-block;
+    margin: 0;
+    width: 1em;
+    height: 1em;
 }

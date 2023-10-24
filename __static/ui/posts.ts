@@ -5,6 +5,7 @@ const htm = van.tags
 import * as yo from '../yo-sdk.js'
 import * as youtil from '../../__yostatic/util.js'
 import * as uibuddies from './buddies.js'
+import * as util from '../util.js'
 
 export type UiCtlPosts = {
     DOM: HTMLElement
@@ -25,8 +26,8 @@ export function create(getUser: (id: number) => yo.User | undefined): UiCtlPosts
         const post = it.val, now = new Date().getTime()
         const post_by = me.getUser(post.By)! // TODO
         return htm.div({ 'class': 'post' },
-            htm.div(uibuddies.buddyDomAttrs(post_by, now)),
-            htm.div({ 'class': 'post-content' }, post.DtMade, post.Md),
+            htm.div({ 'class': 'post-head' }, htm.div(uibuddies.buddyDomAttrs(post_by, now)), htm.div({ 'class': 'post-by' }, post_by.Nick), htm.div({ 'class': 'post-ago' }, util.timeAgoStr(Date.parse(post.DtMade!), now, false))),
+            htm.div({ 'class': 'post-content' }, post.Md),
         )
     }))
     return me
