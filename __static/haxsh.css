@@ -1,9 +1,10 @@
 :root {
-    --liteness: 11%;
+    --liteness: 88%;
     --bgcolor: hsl(0, 0%, calc(var(--liteness)));
     --fgcolor: hsl(0, 0%, calc(100% - var(--liteness)));
-    --bgoff1: color-mix(in hsl, var(--bgcolor) var(--liteness), var(--fgcolor) calc(100% - var(--liteness)));
-    --bgoff2: color-mix(in hsl, var(--bgcolor) calc(100% - var(--liteness)), var(--fgcolor) var(--liteness));
+    --bgoff1: color-mix(in hsl, var(--bgcolor) calc((100% - var(--liteness)) + var(--liteness)), var(--fgcolor) calc(100% - var(--liteness)));
+    --bgoff2: color-mix(in hsl, var(--bgcolor), var(--fgcolor) 90%);
+    --bgoff3: color-mix(in hsl, var(--bgcolor), var(--fgcolor) 50%);
 }
 
 body {
@@ -24,7 +25,7 @@ body {
     scrollbar-width: none;
     -ms-overflow-style: none;
     background-color: var(--bgoff1);
-    box-shadow: 0 0 0.44em 0 black;
+    box-shadow: 0 0 0.44em 0 var(--bgoff2);
 }
 
 .haxsh-buddies:hover {
@@ -78,7 +79,7 @@ body {
 
 .haxsh-posts .post {
     clear: left;
-    margin-top: 1.23em;
+    margin-top: 1.88em;
 }
 
 .haxsh-posts .post-head {
@@ -95,7 +96,7 @@ body {
 
 .haxsh-posts .post-ago {
     float: left;
-    color: #b0b0b0;
+    color: var(--bgoff3);
     width: 1.23em;
     margin-top: 0.22em;
     font-size: 0.77em;
