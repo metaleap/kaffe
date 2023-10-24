@@ -32,7 +32,7 @@ export function buddyDomAttrs(buddy: yo.User | undefined, now: number, isSelf = 
         return {
             'class': 'buddy-pic' + (isSelf ? ' self' : ' offline'),
             'title': isSelf ? "" : "(ex-buddy)",
-            'style': `background-image: url('${util.emoIconDataHref(isSelf ? '👤' : '🦜')}')`
+            'style': `background-image: url('${util.emoIconDataHref('👤')}')`
         }
     if (!buddy.LastSeen)
         buddy.LastSeen = buddy.DtMod

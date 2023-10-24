@@ -115,11 +115,11 @@ body {
     clear: left;
     margin-top: 1.88em;
     margin-left: 0.44em;
-    padding-right: 1.77em;
+    padding-right: 1.22em;
 }
 
 .haxsh-posts>div.self-post .post {
-    margin-top: 0;
+    padding-right: 2.44em;
 }
 
 .haxsh-posts>div.self-post .post-content {
@@ -134,6 +134,27 @@ body {
     white-space: nowrap;
     text-wrap: nowrap;
     width: 1.23em;
+}
+
+.haxsh-posts .post-buttons {
+    float: right;
+}
+
+.self-post .post-buttons {
+    margin-right: 2.66em;
+}
+
+.haxsh-posts .post-buttons div.button {
+    cursor: pointer;
+    border-radius: 77em;
+    width: 1.23em;
+    height: 1.23em;
+    text-align: center;
+    overflow: hidden;
+    line-height: 1.11em;
+    font-size: 0.88em;
+    display: inline-block;
+    margin-left: 0.44em;
 }
 
 .haxsh-posts .post-content {
