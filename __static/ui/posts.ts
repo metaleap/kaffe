@@ -10,15 +10,17 @@ import * as util from '../util.js'
 export type UiCtlPosts = {
     DOM: HTMLElement
     getUser: (id: number) => yo.User | undefined
-    posts: vanx.Reactive<(yo.Post & { _uxStrAgo: string })[]>
+    posts: vanx.Reactive<PostAug[]>
     update: (_: yo.Post[]) => void
 }
+
+type PostAug = yo.Post & { _uxStrAgo: string }
 
 export function create(getUser: (id: number) => yo.User | undefined): UiCtlPosts {
     const me: UiCtlPosts = {
         DOM: htm.div({ 'class': 'haxsh-posts' }),
         getUser: getUser,
-        posts: vanx.reactive([] as (yo.Post & { _uxStrAgo: string })[]),
+        posts: vanx.reactive([] as PostAug[]),
         update: (posts) => update(me, posts),
     }
 
@@ -39,13 +41,22 @@ export function create(getUser: (id: number) => yo.User | undefined): UiCtlPosts
 
 function update(me: UiCtlPosts, newOrUpdatedPosts: yo.Post[]) {
     const now = new Date().getTime()
+    let prev: PostAug | undefined, last_with_ago: PostAug | undefined
     const fresh_feed = newOrUpdatedPosts
         .filter(post_upd => !me.posts.some(post_old => (post_old.Id === post_upd.Id)))
         .concat(me.posts.map(post_old => newOrUpdatedPosts.find(_ => (_.Id === post_old.Id)) ?? post_old))
-        .map((_: yo.Post): (yo.Post & { _uxStrAgo: string }) => ({
-            ..._,
-            _uxStrAgo: util.timeAgoStr(new Date(_.DtMade!).getTime(), now, true, "")
-        }))
+        .map((post: yo.Post): PostAug => {
+            let ago_str = util.timeAgoStr(new Date(post.DtMade!).getTime(), now, true, "")
+            if (last_with_ago && (ago_str === last_with_ago._uxStrAgo))
+                ago_str = ""
+            prev = {
+                ...post,
+                _uxStrAgo: ago_str
+            }
+            if (ago_str)
+                last_with_ago = prev
+            return prev
+        })
     if (!youtil.deepEq(me.posts, fresh_feed, true, false))
-        vanx.replace(me.posts, (_: (yo.Post & { _uxStrAgo: string })[]) => fresh_feed)
+        vanx.replace(me.posts, (_: PostAug[]) => fresh_feed)
 }

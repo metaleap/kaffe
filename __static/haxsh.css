@@ -2,7 +2,7 @@
     --liteness: 88%;
     --bgcolor: hsl(0, 0%, calc(var(--liteness)));
     --fgcolor: hsl(0, 0%, calc(100% - var(--liteness)));
-    --bgoff1: color-mix(in hsl, var(--bgcolor) calc((100% - var(--liteness)) + var(--liteness)), var(--fgcolor) calc(100% - var(--liteness)));
+    --bgoff1: color-mix(in hsl, var(--bgcolor) calc((90% - var(--liteness)) + var(--liteness)), var(--fgcolor) calc(110% - var(--liteness)));
     --bgoff2: color-mix(in hsl, var(--bgcolor), var(--fgcolor) 90%);
     --bgoff3: color-mix(in hsl, var(--bgcolor), var(--fgcolor) 50%);
 }
