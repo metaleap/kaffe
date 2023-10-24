@@ -15,7 +15,7 @@ export type UiCtlBuddies = {
 export function create(): UiCtlBuddies {
     const me: UiCtlBuddies = {
         DOM: htm.div({ 'class': 'haxsh-buddies' },
-            htm.div(buddyDomAttrs(undefined, new Date().getTime(), true, "(loading...)")),
+            htm.div(buddyDomAttrs(undefined, new Date().getTime(), true)),
         ),
         buddies: vanx.reactive([] as yo.User[]),
         update: (buddies) => update(me, buddies),
@@ -27,12 +27,12 @@ export function create(): UiCtlBuddies {
     return me
 }
 
-export function buddyDomAttrs(buddy: yo.User | undefined, now: number, isSelf = false, noneText = "(ex-buddy)") {
+export function buddyDomAttrs(buddy: yo.User | undefined, now: number, isSelf = false) {
     if (!buddy)
         return {
             'class': 'buddy-pic' + (isSelf ? ' self' : ' offline'),
-            'title': noneText,
-            'style': `background-image: url('${util.emoIconDataHref('🦜')}')`
+            'title': isSelf ? "" : "(ex-buddy)",
+            'style': `background-image: url('${util.emoIconDataHref(isSelf ? '👤' : '🦜')}')`
         }
     if (!buddy.LastSeen)
         buddy.LastSeen = buddy.DtMod
