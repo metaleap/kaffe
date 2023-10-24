@@ -1,7 +1,7 @@
 body {}
 
 .haxsh-buddies {
-    position: absolute;
+    position: fixed;
     right: 0;
     top: 0;
     bottom: 0;
@@ -50,4 +50,14 @@ body {}
 .buddy-pic:hover,
 .buddy-pic.offline:hover {
     filter: sepia(0.11) grayscale(0);
+}
+
+.haxsh-posts {
+    margin-right: 3em;
+}
+
+.haxsh-posts>div {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 32.1em;
 }
