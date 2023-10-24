@@ -2,7 +2,6 @@ import van from '../__yostatic/vanjs/van-1.2.3.debug.js'
 const htm = van.tags
 
 import * as yo from './yo-sdk.js'
-import * as youtil from '../__yostatic/util.js'
 import * as uibuddies from './ui/buddies.js'
 import * as uiposts from './ui/posts.js'
 
@@ -56,7 +55,7 @@ async function fetchBuddies() {
 
     try {
         const buddies = await yo.apiUserBuddies()
-        if (!youtil.deepEq(buddies.Result, uiBuddies.buddies, false)) // cmp not-ignoring order by design (result always ordered by last-active)
+        if (buddies && buddies.Result)
             uiBuddies.update(buddies.Result)
     } catch (err) {
         if (!knownErr<yo.UserBuddiesErr>(err, handleKnownErrMaybe<yo.UserBuddiesErr>))

@@ -33,14 +33,9 @@ export function create(getUser: (id: number) => yo.User | undefined): UiCtlPosts
 }
 
 function update(me: UiCtlPosts, newOrUpdatedPosts: yo.Post[]) {
-    const posts = newOrUpdatedPosts
+    const fresh_feed = newOrUpdatedPosts
         .filter(post_upd => !me.posts.some(post_old => (post_old.Id === post_upd.Id)))
         .concat(me.posts.map(post_old => newOrUpdatedPosts.find(_ => (_.Id === post_old.Id)) ?? post_old))
-    console.log(youtil.deepEq(me.posts, posts, true, true))
-    vanx.replace(me.posts, (oldPosts: yo.Post[]) => {
-        const ret = newOrUpdatedPosts
-            .filter(post_upd => !oldPosts.some(post_old => (post_old.Id === post_upd.Id)))
-            .concat(oldPosts.map(post_old => newOrUpdatedPosts.find(_ => (_.Id === post_old.Id)) ?? post_old))
-        return ret
-    })
+    if (!youtil.deepEq(me.posts, fresh_feed, true, false))
+        vanx.replace(me.posts, (_: yo.Post[]) => fresh_feed)
 }

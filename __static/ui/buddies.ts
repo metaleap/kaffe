@@ -1,9 +1,10 @@
 import van from '../../__yostatic/vanjs/van-1.2.3.debug.js'
 import * as vanx from '../../__yostatic/vanjs/van-x.js'
-import * as yo from '../yo-sdk.js'
-import * as util from '../util.js'
-
 const htm = van.tags
+
+import * as yo from '../yo-sdk.js'
+import * as youtil from '../../__yostatic/util.js'
+import * as util from '../util.js'
 
 export type UiCtlBuddies = {
     DOM: HTMLElement
@@ -21,7 +22,6 @@ export function create(): UiCtlBuddies {
     van.add(me.DOM, vanx.list(htm.ul, me.buddies, (it) => {
         return htm.li(buddyDomAttrs(it.val, new Date().getTime()))
     }))
-
     return me
 }
 
@@ -36,5 +36,6 @@ export function buddyDomAttrs(buddy: yo.User, now: number) {
 }
 
 function update(me: UiCtlBuddies, buddies: yo.User[]) {
-    vanx.replace(me.buddies, (_: yo.User[]) => buddies)
+    if (!youtil.deepEq(buddies, me.buddies, false))
+        vanx.replace(me.buddies, (_: yo.User[]) => buddies)
 }
