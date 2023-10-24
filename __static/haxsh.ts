@@ -39,13 +39,12 @@ async function fetchBuddies() {
         return
 
     try {
-        if (!userSelf)
-            userSelf = await yo.apiUserBy({ EmailAddr: yo.userEmailAddr })
-
         const buddies = await yo.apiUserBuddies()
         uiBuddies.update(buddies.Result ?? [])
         if (!fetchedPostsEverYet)
             setTimeout(fetchPosts, 123)
+        if (!userSelf)
+            userSelf = await yo.apiUserBy({ EmailAddr: yo.userEmailAddr })
     } catch (err) {
         if (!knownErr<yo.UserBuddiesErr>(err, handleKnownErrMaybe<yo.UserBuddiesErr>))
             onErrOther(err)
@@ -117,7 +116,7 @@ function getBuddyWhoPostedThis(post: yo.Post) {
 }
 
 
-function onErrOther(err: any) { console.error(err) }
+function onErrOther(err: any) { console.error(`${err}`, err, JSON.stringify(err)) }
 function knownErr<T extends string>(err: any, ifSo: (_: T) => boolean): boolean {
     const yo_err = err as yo.Err<T>
     return yo_err && yo_err.knownErr && (yo_err.knownErr.length > 0) && ifSo(yo_err.knownErr)

@@ -72,8 +72,10 @@ var apiUserBy = api(func(this *ApiCtx[struct {
 }, User]) {
 	if this.Args.NickName != "" {
 		this.Ret = userByNickName(this.Ctx, this.Args.NickName)
-	} else {
+	} else if this.Args.EmailAddr != "" {
 		this.Ret = userByEmailAddr(this.Ctx, this.Args.EmailAddr)
+	} else {
+		panic(ErrUserBy_ExpectedEitherNickNameOrEmailAddr)
 	}
 })
 
