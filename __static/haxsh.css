@@ -1,8 +1,9 @@
 :root {
-    --liteness: 94%;
+    --liteness: 11%;
     --bgcolor: hsl(0, 0%, calc(var(--liteness)));
     --fgcolor: hsl(0, 0%, calc(100% - var(--liteness)));
-    --bgoff: hsl(0, 0%, calc(0.88 * var(--liteness)));
+    --bgoff1: color-mix(in hsl, var(--bgcolor) var(--liteness), var(--fgcolor) calc(100% - var(--liteness)));
+    --bgoff2: color-mix(in hsl, var(--bgcolor) calc(100% - var(--liteness)), var(--fgcolor) var(--liteness));
 }
 
 body {
@@ -22,7 +23,7 @@ body {
     overflow-y: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    background-color: var(--bgoff);
+    background-color: var(--bgoff1);
     box-shadow: 0 0 0.44em 0 black;
 }
 
