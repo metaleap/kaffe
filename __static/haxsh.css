@@ -140,9 +140,17 @@ body {
     float: right;
 }
 
+.haxsh-posts .feed .post-buttons {
+    visibility: hidden;
+}
+
+.haxsh-posts .feed .post:hover .post-buttons {
+    visibility: visible;
+}
+
 .self-post .post-buttons {
+    visibility: visible;
     margin-right: 2.66em;
-    padding-top: 0.22em;
     overflow: hidden;
 }
 

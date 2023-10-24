@@ -38,7 +38,7 @@ export function create(getPostAuthor: (post: yo.Post) => yo.User | undefined): U
         update: (posts) => update(me, posts),
     }
 
-    van.add(me.DOM, vanx.list(htm.div, me.posts, (it) => {
+    van.add(me.DOM, vanx.list(() => htm.div({ 'class': 'feed' }), me.posts, (it) => {
         const post = it.val, now = new Date().getTime()
         const post_by = me.getPostAuthor(post)
         const dt = new Date(post.DtMade!)
@@ -48,7 +48,7 @@ export function create(getPostAuthor: (post: yo.Post) => yo.User | undefined): U
                 htm.div({ 'class': 'post-ago', 'title': dt.toLocaleDateString() + " @ " + dt.toLocaleTimeString() }, post._uxStrAgo),
             ),
             htm.div({ 'class': 'post-buttons' },
-                htm.div({ 'class': 'button' }, "🗩"),
+                htm.div({ 'class': 'button' }, "🦜"),
             ),
             htm.div({ 'class': 'post-content' }, post.Md || `(files: ${post.Files.join(", ")})`),
         )

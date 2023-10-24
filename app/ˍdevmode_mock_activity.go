@@ -12,7 +12,6 @@ import (
 
 	. "yo/ctx"
 	yodb "yo/db"
-	q "yo/db/query"
 	yoauth "yo/feat_auth"
 	. "yo/srv"
 	. "yo/util"
@@ -167,7 +166,6 @@ func mockSomeActivityChangeBuddy(ctx *Ctx, user *User, userEmailAddr string) {
 func mockSomeActivityPostSomething(ctx *Ctx, user *User, client *http.Client) {
 	files := yodb.Arr[yodb.Text]{}
 	var to []yodb.I64
-	var in_reply_to yodb.I64
 	md := mockGetFortune(0, false)
 
 	// add one or more files?
@@ -194,18 +192,8 @@ func mockSomeActivityPostSomething(ctx *Ctx, user *User, client *http.Client) {
 		}
 	}
 
-	// in reply to some other post? (if so, changes `to` to NULL but apis/ux make it then effectively that post's `to`)
-	if (rand.Intn(11) <= 5) && len(user.Buddies) > 0 {
-		if post := yodb.FindOne[Post](ctx,
-			PostRepl.Equal(nil).And(PostBy.In(user.Buddies.Anys()...)).And(q.ArrIsEmpty(PostTo).Or(q.ArrHas(PostTo, user.Id))),
-		); post != nil {
-			to, in_reply_to = nil, post.Id
-		}
-	}
-
 	new_post := &Post{Md: yodb.Text(md), Files: files, To: to}
 	new_post.By.SetId(user.Id)
-	new_post.Repl.SetId(in_reply_to)
 	ViaHttp[Post, Return[yodb.I64]](apiPostNew, ctx, new_post, client)
 }
 

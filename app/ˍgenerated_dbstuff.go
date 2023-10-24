@@ -52,7 +52,6 @@ const (
 	PostTo           PostField = "To"
 	PostMd           PostField = "Md"
 	PostFiles        PostField = "Files"
-	PostRepl         PostField = "Repl"
 	PostBy_Id        PostField = "By.Id"
 	PostBy_DtMade    PostField = "By.DtMade"
 	PostBy_DtMod     PostField = "By.DtMod"
@@ -62,14 +61,6 @@ const (
 	PostBy_Nick      PostField = "By.Nick"
 	PostBy_Btw       PostField = "By.Btw"
 	PostBy_Buddies   PostField = "By.Buddies"
-	PostRepl_Id      PostField = "Repl.Id"
-	PostRepl_DtMade  PostField = "Repl.DtMade"
-	PostRepl_DtMod   PostField = "Repl.DtMod"
-	PostRepl_By      PostField = "Repl.By"
-	PostRepl_To      PostField = "Repl.To"
-	PostRepl_Md      PostField = "Repl.Md"
-	PostRepl_Files   PostField = "Repl.Files"
-	PostRepl_Repl    PostField = "Repl.Repl"
 )
 
 func (me PostField) ArrLen(a1 ...interface{}) q.Operand { return ((q.F)(me)).ArrLen(a1...) }

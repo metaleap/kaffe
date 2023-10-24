@@ -19,7 +19,6 @@ type Post struct {
 	To    yodb.Arr[yodb.I64]
 	Md    yodb.Text
 	Files yodb.Arr[yodb.Text]
-	Repl  yodb.Ref[Post, yodb.RefOnDelCascade]
 }
 
 type RecentUpdates struct {
@@ -73,10 +72,6 @@ func postNew(ctx *Ctx, post *Post, byCurUserInCtx bool) yodb.I64 {
 		}
 	}
 
-	if in_reply_to := post.Repl.Id(); (in_reply_to > 0) && !yodb.Exists[Post](ctx, PostId.Equal(in_reply_to)) {
-		panic(ErrPostNew_RepliedToPostDoesNotExist)
-	}
-
 	if len(post.To) > 0 {
 		if sl.Any(post.To, func(it yodb.I64) bool { return !sl.Has(it, user.Buddies) }) {
 			panic(ErrPostNew_ExpectedOnlyBuddyRecipients)
@@ -89,6 +84,5 @@ func postNew(ctx *Ctx, post *Post, byCurUserInCtx bool) yodb.I64 {
 func dbQueryPostsForUser(forUser *User) q.Query {
 	buddy_ids := forUser.Buddies.Anys()
 	return PostBy.In(buddy_ids...).
-		And(q.ArrIsEmpty(PostTo).Or(q.ArrHas(PostTo, forUser.Id))).
-		And(PostRepl.Equal(nil).Or(PostRepl_By.In(append(buddy_ids, forUser.Id)...)))
+		And(q.ArrIsEmpty(PostTo).Or(q.ArrHas(PostTo, forUser.Id)))
 }

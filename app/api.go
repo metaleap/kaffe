@@ -40,7 +40,6 @@ func init() {
 
 		"postNew": apiPostNew.Checks(
 			Fails{Err: "ExpectedNonEmptyPost", If: PostMd.Equal("").And(q.ArrIsEmpty(PostFiles))},
-			Fails{Err: "RepliedToPostDoesNotExist", If: PostRepl.LessThan(0)},
 			Fails{Err: "ExpectedOnlyBuddyRecipients", If: q.ArrAreAnyIn(PostTo, q.OpLeq, 0)},
 		).
 			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),

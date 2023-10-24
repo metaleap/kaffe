@@ -21,7 +21,7 @@ func Init() {
 		yodb.NoUpdTrigger[UserField]{UserLastSeen},
 	)
 	yodb.Ensure[Post, PostField]("", nil, false,
-		yodb.ReadOnly[PostField]{PostBy, PostRepl},
+		yodb.ReadOnly[PostField]{PostBy},
 		yodb.Index[PostField]{PostBy, PostTo},
 	)
 }
