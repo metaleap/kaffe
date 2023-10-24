@@ -1,5 +1,14 @@
+:root {
+    --liteness: 94%;
+    --bgcolor: hsl(0, 0%, calc(var(--liteness)));
+    --fgcolor: hsl(0, 0%, calc(100% - var(--liteness)));
+    --bgoff: hsl(0, 0%, calc(0.88 * var(--liteness)));
+}
+
 body {
     font-family: system-ui;
+    background-color: var(--bgcolor);
+    color: var(--fgcolor);
 }
 
 .haxsh-buddies {
@@ -13,7 +22,7 @@ body {
     overflow-y: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    background-color: buttonface;
+    background-color: var(--bgoff);
     box-shadow: 0 0 0.44em 0 black;
 }
 
