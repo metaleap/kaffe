@@ -55,7 +55,7 @@ async function fetchBuddies() {
         }
     } catch (err) {
         if (!knownErr<yo.UserBuddiesErr>(err, handleKnownErrMaybe<yo.UserBuddiesErr>))
-            onErr(err)
+            onErrOther(err)
     }
 
     if (!fetchesPaused)
@@ -74,7 +74,7 @@ async function fetchPosts() {
             uiPosts.update(recent_updates.Posts)
     } catch (err) {
         if (!knownErr<yo.PostsRecentErr>(err, handleKnownErrMaybe<yo.PostsRecentErr>))
-            onErr(err)
+            onErrOther(err)
     }
     if (!fetchesPaused)
         setTimeout(fetchPosts, fetchPostsIntervalMsCur)
@@ -96,7 +96,7 @@ function newUiLoginDialog() {
                 }
                 return false
             }))
-                onErr(err)
+                onErrOther(err)
         }
     }
 
@@ -112,7 +112,7 @@ function newUiLoginDialog() {
 }
 
 
-function onErr(err: any) { console.error(JSON.stringify(err)) }
+function onErrOther(err: any) { console.error(err) }
 function knownErr<T extends string>(err: any, ifSo: (_: T) => boolean): boolean {
     const yo_err = err as yo.Err<T>
     return yo_err && yo_err.knownErr && (yo_err.knownErr.length > 0) && ifSo(yo_err.knownErr)
