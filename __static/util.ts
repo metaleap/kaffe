@@ -9,7 +9,7 @@ export function timeAgoStr(when: number, now: number, noSecs: boolean, suffix = 
     const day = 24 * hour
     const diff = now - when
     if ((diff <= 1000) || ((diff <= minute) && noSecs))
-        return "just now"
+        return "now"
     if (diff <= minute)
         return `${Math.floor(diff / second)}s${suffix}`
     if (diff <= hour)
