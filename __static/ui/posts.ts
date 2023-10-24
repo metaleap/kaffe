@@ -25,10 +25,11 @@ export function create(getUser: (id: number) => yo.User | undefined): UiCtlPosts
     van.add(me.DOM, vanx.list(htm.div, me.posts, (it) => {
         const post = it.val, now = new Date().getTime()
         const post_by = me.getUser(post.By)
+        const dt = new Date(post.DtMade!)
         return htm.div({ 'class': 'post' },
             htm.div({ 'class': 'post-head' },
                 htm.div(uibuddies.buddyDomAttrs(post_by, now)),
-                htm.div({ 'class': 'post-ago' }, post._uxStrAgo),
+                htm.div({ 'class': 'post-ago', 'title': dt.toLocaleDateString() + " @ " + dt.toLocaleTimeString() }, post._uxStrAgo),
             ),
             htm.div({ 'class': 'post-content' }, post.Md || `(files: ${post.Files.join(", ")})`),
         )
@@ -43,7 +44,7 @@ function update(me: UiCtlPosts, newOrUpdatedPosts: yo.Post[]) {
         .concat(me.posts.map(post_old => newOrUpdatedPosts.find(_ => (_.Id === post_old.Id)) ?? post_old))
         .map((_: yo.Post): (yo.Post & { _uxStrAgo: string }) => ({
             ..._,
-            _uxStrAgo: util.timeAgoStr(Date.parse(_.DtMade!), now, true, "")
+            _uxStrAgo: util.timeAgoStr(new Date(_.DtMade!).getTime(), now, true, "")
         }))
     if (!youtil.deepEq(me.posts, fresh_feed, true, false))
         vanx.replace(me.posts, (_: (yo.Post & { _uxStrAgo: string })[]) => fresh_feed)
