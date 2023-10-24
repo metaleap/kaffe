@@ -14,19 +14,11 @@ const fetchPostsIntervalMsWhenHidden = 4321
 let fetchPostsIntervalMsCur = fetchPostsIntervalMsWhenVisible
 let fetchesPaused = false // true while signed out
 let fetchedPostsEverYet = false
+let userSelf: yo.User | undefined
 
 let uiDialogLogin = newUiLoginDialog()
 let uiBuddies: uibuddies.UiCtlBuddies = uibuddies.create()
-let uiPosts: uiposts.UiCtlPosts = uiposts.create((post: yo.Post) => {
-    const buddy = uiBuddies.buddies.find(_ => (_.Id === post.By))
-    if (buddy) {
-        if (post.DtMade! > buddy.LastSeen!)
-            buddy.LastSeen = post.DtMade!
-        if (post.DtMod! > buddy.LastSeen!)
-            buddy.LastSeen = post.DtMod!
-    }
-    return buddy
-})
+let uiPosts: uiposts.UiCtlPosts = uiposts.create(getBuddyWhoPostedThis)
 
 export function main() {
     document.onvisibilitychange = () => {
@@ -47,12 +39,13 @@ async function fetchBuddies() {
         return
 
     try {
+        if (!userSelf)
+            userSelf = await yo.apiUserBy({ EmailAddr: yo.userEmailAddr })
+
         const buddies = await yo.apiUserBuddies()
-        if (buddies && buddies.Result) {
-            uiBuddies.update(buddies.Result)
-            if (!fetchedPostsEverYet)
-                setTimeout(fetchPosts, 123)
-        }
+        uiBuddies.update(buddies.Result ?? [])
+        if (!fetchedPostsEverYet)
+            setTimeout(fetchPosts, 123)
     } catch (err) {
         if (!knownErr<yo.UserBuddiesErr>(err, handleKnownErrMaybe<yo.UserBuddiesErr>))
             onErrOther(err)
@@ -109,6 +102,18 @@ function newUiLoginDialog() {
             htm.button({ 'onclick': on_btn_login, 'type': 'button' }, "Login"),
         ),
     )
+}
+
+
+function getBuddyWhoPostedThis(post: yo.Post) {
+    const buddy = uiBuddies.buddies.find(_ => (_.Id === post.By))
+    if (buddy) {
+        if (post.DtMade! > buddy.LastSeen!)
+            buddy.LastSeen = post.DtMade!
+        if (post.DtMod! > buddy.LastSeen!)
+            buddy.LastSeen = post.DtMod!
+    }
+    return buddy
 }
 
 

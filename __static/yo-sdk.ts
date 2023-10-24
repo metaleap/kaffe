@@ -134,9 +134,9 @@ export async function apiPostNew(payload?: Post, query?: {[_:string]:string}): P
 export type PostNewErr = typeof errsPostNew[number]
 
 const errsPostsForPeriod = ['PostsForPeriod_ExpectedPeriodGreater0AndLess33Days', 'TimedOut', 'Unauthorized'] as const
-export async function apiPostsForPeriod(payload?: Foo, query?: {[_:string]:string}): Promise<Void> {
+export async function apiPostsForPeriod(payload?: ApiArgPeriod, query?: {[_:string]:string}): Promise<Void> {
 	try {
-		return await req<Foo, Void>('_/postsForPeriod', payload, query)
+		return await req<ApiArgPeriod, Void>('_/postsForPeriod', payload, query)
 	} catch(err: any) {
 		if (err && err['body_text'] && (errsPostsForPeriod.indexOf(err.body_text) >= 0))
 			throw(new Err<PostsForPeriodErr>(err.body_text as PostsForPeriodErr))
@@ -235,19 +235,19 @@ export type UserField = 'Id' | 'DtMade' | 'DtMod' | 'LastSeen' | 'Auth' | 'PicFi
 
 export type UserAuthField = 'Id' | 'DtMade' | 'DtMod' | 'EmailAddr'
 
-export type Foo = {
-	From: Time
-	Until: Time
+export type ApiArgPeriod = {
+	From?: Time
+	Until?: Time
 }
 
 export type Post = {
-	By: I64
+	By?: I64
 	DtMade?: DateTime
 	DtMod?: DateTime
 	Files: string[]
-	Id: I64
-	Md: string
-	Repl: I64
+	Id?: I64
+	Md?: string
+	Repl?: I64
 	To: I64[]
 }
 
@@ -275,20 +275,20 @@ export type postsRecent_In = {
 
 export type Time = string
 export type userBy_In = {
-	EmailAddr: string
-	NickName: string
+	EmailAddr?: string
+	NickName?: string
 }
 
 export type ApiUpdateArgs_haxsh_app_User_haxsh_app_UserField_ = {
 	ChangedFields: UserField[]
 	Changes: User
-	Id: I64
+	Id?: I64
 }
 
 export type DateTime = string
 export type ApiAccountPayload = {
-	EmailAddr: string
-	PasswordPlain: string
+	EmailAddr?: string
+	PasswordPlain?: string
 }
 
 export type Return____haxsh_app_User_ = {

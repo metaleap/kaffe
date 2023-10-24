@@ -34,7 +34,7 @@ func init() {
 			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
 
 		"postsForPeriod": apiPostsForPeriod.Checks(
-			Fails{Err: "ExpectedPeriodGreater0AndLess33Days", If: PostsForPeriodUntil.LessOrEqual(PostsForPeriodFrom)},
+			Fails{Err: "ExpectedPeriodGreater0AndLess33Days", If: PostsForPeriodFrom.Equal(nil).Or(PostsForPeriodUntil.Equal(nil)).Or(PostsForPeriodUntil.LessOrEqual(PostsForPeriodFrom))},
 		).
 			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
 
@@ -100,13 +100,16 @@ var apiPostsRecent = api(func(this *ApiCtx[struct {
 	this.Ret = postsRecent(this.Ctx, user_cur, this.Args.Since)
 })
 
-type Foo struct {
-	From  time.Time
-	Until time.Time
+type ApiArgPeriod struct {
+	From  *time.Time
+	Until *time.Time
 }
 
-var apiPostsForPeriod = api(func(this *ApiCtx[Foo, Void]) {
-	postsFor(this.Ctx, userCur(this.Ctx), this.Args.From, this.Args.Until)
+var apiPostsForPeriod = api(func(this *ApiCtx[ApiArgPeriod, Void]) {
+	if (this.Args.From == nil) || (this.Args.Until == nil) {
+		panic(ErrPostsForPeriod_ExpectedPeriodGreater0AndLess33Days)
+	}
+	postsFor(this.Ctx, userCur(this.Ctx), *this.Args.From, *this.Args.Until)
 })
 
 var apiPostNew = api(func(this *ApiCtx[Post, Return[yodb.I64]]) {

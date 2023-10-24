@@ -29,7 +29,7 @@ export function buddyDomAttrs(buddy: yo.User | undefined, now: number) {
     if (!buddy)
         return {
             'class': 'buddy-pic' + ' offline',
-            'title': `(buddy gone)`,
+            'title': `(ex-buddy)`,
             'style': `background-image: url('${util.emoIconDataHref('🦜')}')`
         }
     if (!buddy.LastSeen)
