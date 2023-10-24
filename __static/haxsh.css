@@ -81,18 +81,18 @@ body {
     margin-left: auto;
     margin-right: auto;
     max-width: 32.1em;
-    margin-top: 4.44em;
+    margin-top: 4.88em;
 }
 
 .haxsh-posts>div.self-post {
-    background: linear-gradient(180deg, var(--bgcolor) 44%, transparent);
+    background: linear-gradient(180deg, var(--bgcolor) 77%, transparent);
     position: fixed;
     z-index: 99999;
     right: 3.88em;
     left: 0;
     padding: 0.44em 0 1.23em 0;
     /* keep inverted with the positive one above */
-    margin-top: -4.44em;
+    margin-top: -4.88em;
 }
 
 .haxsh-posts .post {
@@ -105,6 +105,10 @@ body {
     margin-top: 0;
 }
 
+.haxsh-posts>div.self-post .post-content {
+    min-height: 2.34em;
+}
+
 .haxsh-posts .post-head {
     float: left;
     overflow: hidden;
@@ -115,9 +119,8 @@ body {
 
 .haxsh-posts .post-content {
     background-color: var(--bgadd10);
-    border-left: 1px solid red;
+    border-left: 1px solid var(--bgoff4);
     border-top: 1px solid var(--bgoff4);
-    border-left-color: var(--bgoff4);
     padding: 0 0.22em 0.22em 0.44em;
     border-radius: 0.77em;
     border-top-left-radius: 0;
@@ -132,7 +135,6 @@ body {
     font-size: 0.77em;
     writing-mode: vertical-lr;
     transform: rotate(180deg);
-    text-shadow: -0.1em 0px var(--bgcolor);
 }
 
 .haxsh-posts .buddy-pic {
