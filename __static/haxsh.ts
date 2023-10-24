@@ -61,9 +61,7 @@ async function fetchPosts() {
         const recent_updates = await yo.apiPostsRecent({ Since: fetchPostsSinceDt ? fetchPostsSinceDt : none })
         fetchedPostsEverYet = true // even if empty, we have a non-error outcome and so set this
         fetchPostsSinceDt = recent_updates.Next
-
-        if (recent_updates.Posts && recent_updates.Posts.length)
-            uiPosts.update(recent_updates.Posts)
+        uiPosts.update(recent_updates?.Posts ?? [])
     } catch (err) {
         if (!knownErr<yo.PostsRecentErr>(err, handleKnownErrMaybe<yo.PostsRecentErr>))
             onErrOther(err)

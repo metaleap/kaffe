@@ -73,7 +73,7 @@ body {
     filter: sepia(0.11) grayscale(0);
 }
 
-div.buddy-pic.self {
+.haxsh-buddies div.buddy-pic.self {
     z-index: 99999;
     position: fixed;
     margin-top: 0;
