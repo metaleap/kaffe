@@ -13,6 +13,8 @@ body {
     overflow-y: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
+    background-color: buttonface;
+    box-shadow: 0 0 0.44em 0 black;
 }
 
 .haxsh-buddies:hover {
@@ -66,7 +68,7 @@ body {
 
 .haxsh-posts .post {
     clear: left;
-    margin-top: 2.34em;
+    margin-top: 1.23em;
 }
 
 .haxsh-posts .post-head {
