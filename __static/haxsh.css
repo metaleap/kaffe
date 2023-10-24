@@ -79,8 +79,8 @@ div.buddy-pic.self {
     margin-top: 0;
     border-radius: 0em;
     background-position-y: 0.55em;
-    height: 4.88em;
-    background-color: var(--bgoff1);
+    height: 4.22em;
+    background-color: color-mix(in hsl, var(--bgoff1), transparent 22%);
     background-size: contain;
     filter: none !important;
 }
@@ -99,7 +99,8 @@ div.buddy-pic.self {
 }
 
 .haxsh-posts>div.self-post {
-    background: linear-gradient(180deg, var(--bgcolor) 77%, transparent);
+    /* background: linear-gradient(180deg, var(--bgcolor) 77%, transparent); */
+    background-color: color-mix(in hsl, var(--bgcolor), transparent 22%);
     position: fixed;
     z-index: 999;
     right: 0;

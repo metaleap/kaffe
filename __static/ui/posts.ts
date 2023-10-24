@@ -24,7 +24,7 @@ export function create(getPostAuthor: (post: yo.Post) => yo.User | undefined): U
                 htm.div({ 'class': 'post' },
                     htm.div({ 'class': 'post-head' },
                         htm.div(uibuddies.buddyDomAttrs(undefined, now)),
-                        htm.div({ 'class': 'post-ago' }, "now"),
+                        htm.div({ 'class': 'post-ago' }, ""),
                     ),
                     htm.div({ 'class': 'post-content' }, ""),
                 ),
