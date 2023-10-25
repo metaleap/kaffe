@@ -10,6 +10,11 @@
     --bgoff4: hsl(0, 0%, calc(var(--liteness) - 22%));
 }
 
+@font-face {
+    font-family: 'fontello';
+    src: url('data:application/octet-stream;base64,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') format('woff');
+}
+
 body {
     font-family: system-ui;
     background-color: var(--bgcolor);
@@ -139,14 +144,7 @@ body {
 .haxsh-posts .post-buttons {
     float: right;
     margin-left: 0.44em;
-}
-
-.haxsh-posts .feed .post-buttons {
-    visibility: hidden;
-}
-
-.haxsh-posts .feed .post:hover .post-buttons {
-    visibility: visible;
+    margin-top: 0.11em;
 }
 
 .self-post .post-buttons {
@@ -156,6 +154,7 @@ body {
 }
 
 .button {
+    font-family: "fontello";
     cursor: pointer;
     display: block;
     border: none 0px var(--bgoff1);
@@ -163,27 +162,26 @@ body {
     text-align: center;
     overflow: hidden;
     font-size: 0.77em;
+    line-height: 0em;
     margin: 0 0 0.22em 0;
-    width: 1.23em;
-    height: 1.23em;
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: 77%;
+    width: 1.44em;
+    height: 1.44em;
     border-radius: 77em !important;
+    padding: 0.22em;
     background-color: var(--bgcolor);
-    color: red;
+    color: var(--fgcolor);
 }
 
-.button.send {
-    background-image: url('/__static/ico/send.svg');
+.button.send:before {
+    content: '\e802';
 }
 
-.button.attach {
-    background-image: url('/__static/ico/clip.svg');
+.button.attach:before {
+    content: '\e801';
 }
 
-.button.edit {
-    background-image: url('/__static/ico/pencil.svg');
+.button.edit:before {
+    content: '\e800';
 }
 
 .button:hover,

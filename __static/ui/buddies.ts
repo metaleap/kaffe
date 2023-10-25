@@ -16,7 +16,9 @@ export type UiCtlBuddies = {
 export function create(): UiCtlBuddies {
     const me: UiCtlBuddies = {
         DOM: htm.div({ 'class': 'haxsh-buddies' },
-            htm.div(userDomAttrsSelf()),
+            htm.div({ 'class': 'buddy-self' },
+                htm.div(userDomAttrsSelf()),
+            ),
         ),
         buddies: vanx.reactive([] as yo.User[]),
         update: (buddies) => update(me, buddies),

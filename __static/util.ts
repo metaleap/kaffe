@@ -12,7 +12,7 @@ export function timeAgoStr(when: number, now: number, noSecs: boolean, suffix = 
         return "now"
     if (diff <= minute)
         return `${Math.floor(diff / second)}s${suffix}`
-    if (diff < (hour + (40 * minute)))
+    if (diff < hour)
         return `${Math.floor(diff / minute)}m${suffix}`
     if (diff <= day)
         return `${Math.floor(diff / hour)}h${suffix}`

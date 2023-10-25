@@ -68,7 +68,9 @@ export function create(
                 htm.div({ 'class': 'post-ago', 'title': post_dt.toLocaleDateString() + " — " + post_dt.toLocaleTimeString() }, post._uxStrAgo),
             ),
             htm.div({ 'class': 'post-buttons' },
-                htm.button({ 'type': 'button', 'class': 'button edit', 'title': "Edit" }),
+                htm.button({
+                    'type': 'button', 'class': 'button edit', 'title': "Edit", 'style': `visibility:${is_own_post ? 'visible' : 'hidden'}`
+                }),
             ),
             htm_post,
         )
@@ -78,6 +80,7 @@ export function create(
 
 async function sendPost(me: UiCtlPosts) {
     const post_html = me._htmPostInput.innerHTML.trim()
+    console.log(post_html.length, JSON.stringify(post_html))
     if (post_html.length === 0)
         return
     me._htmPostInput.contentEditable = 'false'
@@ -85,8 +88,10 @@ async function sendPost(me: UiCtlPosts) {
     const ok = await me.doSendPost(post_html)
     me._htmPostInput.classList.remove('sending')
     me._htmPostInput.contentEditable = 'true'
-    if (ok)
+    if (ok) {
         me._htmPostInput.innerHTML = ''
+        window.scrollTo(0, 0)
+    }
     me._htmPostInput.focus()
 }
 
@@ -108,7 +113,7 @@ function update(me: UiCtlPosts, newOrUpdatedPosts: yo.Post[]) {
                 last_ago_str = post_ago_str
             return ret
         })
-    if (!youtil.deepEq(me.posts, fresh_feed, true, true))
+    if (!youtil.deepEq(me.posts, fresh_feed, true, false))
         vanx.replace(me.posts, (_: PostAug[]) => fresh_feed)
     if (fresh_feed.length > 0)
         return fresh_feed[0]
