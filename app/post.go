@@ -7,6 +7,7 @@ import (
 	yodb "yo/db"
 	q "yo/db/query"
 	. "yo/srv"
+	. "yo/util"
 	"yo/util/sl"
 )
 
@@ -46,7 +47,8 @@ func postsRecent(ctx *Ctx, forUser *User, since *yodb.DateTime) *RecentUpdates {
 	if since == nil {
 		since = yodb.DtFrom(time.Now().AddDate(0, 0, -1))
 	}
-	ret.Posts = yodb.FindMany[Post](ctx, query_posts_for_user.And(PostDtMod.GreaterOrEqual(since)), 0, PostDtMade.Desc())
+	ret.Posts = yodb.FindMany[Post](ctx, query_posts_for_user.And(PostDtMod.GreaterOrEqual(since)),
+		If(time.Since(*since.Time()) > (23*time.Hour), 11, 0), PostDtMade.Desc())
 	if (since == nil) && (len(ret.Posts) == 0) {
 		ret.Posts = yodb.FindMany[Post](ctx, dbQueryPostsForUser(forUser), 11, PostDtMade.Desc())
 	}
