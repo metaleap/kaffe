@@ -25,9 +25,7 @@ export function main() {
     document.onvisibilitychange = () => {
         const is_hidden = ((document.visibilityState === 'hidden') || document.hidden), now = new Date().getTime()
         const became_visible = (!is_hidden) && (browserTabInvisibleSince !== 0)
-        console.log("OVC1", is_hidden, browserTabInvisibleSince)
         browserTabInvisibleSince = (!is_hidden) ? 0 : ((browserTabInvisibleSince === 0) ? now : browserTabInvisibleSince)
-        console.log("OVC2", is_hidden, browserTabInvisibleSince)
         fetchPostsIntervalMsCur = is_hidden ? fetchPostsIntervalMsWhenHidden : fetchPostsIntervalMsWhenVisible
         if (became_visible)
             fetchPosts(true)
@@ -50,9 +48,7 @@ async function fetchBuddies() {
         let user_self = userSelf.val
         if (!user_self)
             userSelf.val = (user_self = await yo.apiUserBy({ EmailAddr: yo.userEmailAddr }))
-        const browser_tab_title = buddies.concat([user_self]).map(_ => _.Nick).join(', ')
-        if (browser_tab_title != document.title)
-            document.title = browser_tab_title
+        browserTabTitleRefresh()
         if (!fetchedPostsEverYet)
             setTimeout(fetchPosts, 123)
     } catch (err) {
@@ -71,9 +67,8 @@ async function fetchPosts(oneOff?: boolean) {
         const recent_updates = await yo.apiPostsRecent({ Since: fetchPostsSinceDt ? fetchPostsSinceDt : none })
         fetchedPostsEverYet = true // even if empty, we have a non-error outcome and so set this
         fetchPostsSinceDt = recent_updates.Next
-        const latest_post = uiPosts.update(recent_updates?.Posts ?? [])
-        if (latest_post)
-            (document.getElementById('favicon') as HTMLLinkElement).href = uibuddies.userPicFileUrl(getUserByPost(latest_post), '☕')
+        uiPosts.update(recent_updates?.Posts ?? [])
+        browserTabTitleRefresh()
     } catch (err) {
         if (!knownErr<yo.PostsRecentErr>(err, handleKnownErrMaybe<yo.PostsRecentErr>))
             onErrOther(err)
@@ -135,6 +130,19 @@ async function sendPost(html: string, files?: string[]) {
     if (ok)
         fetchPosts(true) // async but here we dont care to await
     return ok
+}
+
+function browserTabTitleRefresh() {
+    const num_fresh_posts = uiPosts.posts.filter(_ => _._isFresh).length
+    const user_self = userSelf.val
+    const buddies_and_self = uiBuddies.buddies.concat(user_self ? [user_self] : [])
+    const new_title = (((num_fresh_posts === 0) ? '' : `(${num_fresh_posts}) `) + buddies_and_self.map(_ => _.Nick).join(', ') || '...')
+    if (new_title !== document.title)
+        document.title = new_title
+    const fav_icon_user = buddies_and_self.find(_ => (_.PicFileId !== ''))
+    const fav_icon_href = uibuddies.userPicFileUrl(fav_icon_user, '☕'), htm_favicon = document.getElementById('favicon') as HTMLLinkElement
+    if (htm_favicon && htm_favicon.href && (htm_favicon.href !== fav_icon_href))
+        htm_favicon.href = fav_icon_href
 }
 
 
