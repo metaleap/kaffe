@@ -199,6 +199,13 @@ body {
     font-size: 1em !important;
 }
 
+.haxsh-posts .post-content img,
+.haxsh-posts .post-content video,
+.haxsh-posts .post-content svg {
+    display: block;
+    max-width: 77% !important;
+}
+
 .haxsh-posts .post-content::-webkit-scrollbar {
     display: none;
 }

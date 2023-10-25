@@ -82,7 +82,7 @@ func postNew(ctx *Ctx, post *Post, byCurUserInCtx bool) yodb.I64 {
 }
 
 func dbQueryPostsForUser(forUser *User) q.Query {
-	buddy_ids := forUser.Buddies.Anys()
-	return PostBy.In(buddy_ids...).
+	post_author_ids := append(forUser.Buddies.ToAnys(), forUser.Id)
+	return PostBy.In(post_author_ids...).
 		And(q.ArrIsEmpty(PostTo).Or(q.ArrHas(PostTo, forUser.Id)))
 }

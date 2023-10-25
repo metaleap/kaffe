@@ -9,16 +9,31 @@ import * as util from '../util.js'
 
 export type UiCtlPosts = {
     DOM: HTMLElement
-    getPostAuthor: (post: yo.Post) => yo.User | undefined
+    _htmPostInput: HTMLElement
     posts: vanx.Reactive<PostAug[]>
+    getPostAuthor: (post?: yo.Post) => yo.User | undefined
     update: (_: yo.Post[]) => void
+    sendPost: (html: string, files?: string[]) => Promise<boolean>
 }
 
 type PostAug = yo.Post & { _uxStrAgo: string }
 
-export function create(getPostAuthor: (post: yo.Post) => yo.User | undefined): UiCtlPosts {
+export function create(
+    getPostAuthor: (post?: yo.Post) => yo.User | undefined,
+    sendPost: (html: string, files?: string[]) => Promise<boolean>,
+): UiCtlPosts {
     const now = new Date().getTime()
+    const htm_post = htm.div({
+        'class': 'post-content', 'contenteditable': 'true', 'autofocus': true, 'spellcheck': false,
+        'autocorrect': 'off', 'onkeydown': (evt: KeyboardEvent) => {
+            if (['Enter', 'NumpadEnter'].includes(evt.code))
+                doSendPost(me)
+        },
+    }, "")
     const me: UiCtlPosts = {
+        _htmPostInput: htm_post,
+        getPostAuthor: getPostAuthor,
+        sendPost: sendPost,
         DOM: htm.div({ 'class': 'haxsh-posts' },
             htm.div({ 'class': 'self-post' },
                 htm.div({ 'class': 'post' },
@@ -27,14 +42,15 @@ export function create(getPostAuthor: (post: yo.Post) => yo.User | undefined): U
                         htm.div({ 'class': 'post-ago' }, ""),
                     ),
                     htm.div({ 'class': 'post-buttons' },
-                        htm.button({ 'type': 'button', 'class': 'button send' }, "📨"),
-                        htm.button({ 'type': 'button', 'class': 'button trash' }, "🗑️"),
+                        htm.button({ 'type': 'button', 'class': 'button send', 'onclick': () => doSendPost(me) },
+                            "📨"),
+                        htm.button({ 'type': 'button', 'class': 'button trash', 'onclick': () => htm_post.innerHTML = '' },
+                            "🗑️"),
                     ),
-                    htm.div({ 'class': 'post-content', 'contenteditable': 'true', 'autofocus': true, 'spellcheck': false, 'autocorrect': 'off' }, ""),
+                    htm_post,
                 ),
             ),
         ),
-        getPostAuthor: getPostAuthor,
         posts: vanx.reactive([] as PostAug[]),
         update: (posts) => update(me, posts),
     }
@@ -56,6 +72,20 @@ export function create(getPostAuthor: (post: yo.Post) => yo.User | undefined): U
         )
     }))
     return me
+}
+
+async function doSendPost(me: UiCtlPosts) {
+    const post_html = me._htmPostInput.innerHTML.trim()
+    if (post_html.length === 0)
+        return
+    me._htmPostInput.contentEditable = 'false'
+    me._htmPostInput.classList.add('sending')
+    const ok = await me.sendPost(post_html)
+    me._htmPostInput.classList.remove('sending')
+    me._htmPostInput.contentEditable = 'true'
+    if (ok)
+        me._htmPostInput.innerHTML = ''
+    me._htmPostInput.focus()
 }
 
 function update(me: UiCtlPosts, newOrUpdatedPosts: yo.Post[]) {

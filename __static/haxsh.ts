@@ -18,7 +18,7 @@ let userSelf: yo.User | undefined
 
 let uiDialogLogin = newUiLoginDialog()
 let uiBuddies: uibuddies.UiCtlBuddies = uibuddies.create()
-let uiPosts: uiposts.UiCtlPosts = uiposts.create(getBuddyWhoPostedThis)
+let uiPosts: uiposts.UiCtlPosts = uiposts.create(getUserByPost, sendPost)
 
 export function main() {
     document.onvisibilitychange = () => {
@@ -54,8 +54,8 @@ async function fetchBuddies() {
         setTimeout(fetchBuddies, fetchBuddiesIntervalMs)
 }
 
-async function fetchPosts() {
-    if (fetchesPaused)
+async function fetchPosts(oneOff?: boolean) {
+    if (fetchesPaused && !oneOff)
         return
     try {
         const recent_updates = await yo.apiPostsRecent({ Since: fetchPostsSinceDt ? fetchPostsSinceDt : none })
@@ -66,7 +66,7 @@ async function fetchPosts() {
         if (!knownErr<yo.PostsRecentErr>(err, handleKnownErrMaybe<yo.PostsRecentErr>))
             onErrOther(err)
     }
-    if (!fetchesPaused)
+    if ((!fetchesPaused) && !oneOff)
         setTimeout(fetchPosts, fetchPostsIntervalMsCur)
 }
 
@@ -102,7 +102,9 @@ function newUiLoginDialog() {
 }
 
 
-function getBuddyWhoPostedThis(post: yo.Post) {
+function getUserByPost(post?: yo.Post) {
+    if (!post)
+        return userSelf
     const buddy = uiBuddies.buddies.find(_ => (_.Id === post.By))
     if (buddy) {
         if (post.DtMade! > buddy.LastSeen!)
@@ -111,6 +113,22 @@ function getBuddyWhoPostedThis(post: yo.Post) {
             buddy.LastSeen = post.DtMod!
     }
     return buddy
+}
+
+async function sendPost(html: string, files?: string[]) {
+    if (!userSelf)
+        return false
+    const resp = await yo.apiPostNew({
+        By: userSelf.Id,
+        To: [],
+        Files: files ?? [],
+        Htm: html,
+    })
+    console.log(resp)
+    const ok = (resp.Result > 0)
+    if (ok)
+        fetchPosts(true) // async but here we dont care to await
+    return ok
 }
 
 
