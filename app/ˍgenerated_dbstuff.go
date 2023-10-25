@@ -50,7 +50,7 @@ const (
 	PostDtMod        PostField = "DtMod"
 	PostBy           PostField = "By"
 	PostTo           PostField = "To"
-	PostMd           PostField = "Md"
+	PostHtm          PostField = "Htm"
 	PostFiles        PostField = "Files"
 	PostBy_Id        PostField = "By.Id"
 	PostBy_DtMade    PostField = "By.DtMade"

@@ -192,7 +192,7 @@ func mockSomeActivityPostSomething(ctx *Ctx, user *User, client *http.Client) {
 		}
 	}
 
-	new_post := &Post{Md: yodb.Text(md), Files: files, To: to}
+	new_post := &Post{Htm: yodb.Text(md), Files: files, To: to}
 	new_post.By.SetId(user.Id)
 	ViaHttp[Post, Return[yodb.I64]](apiPostNew, ctx, new_post, client)
 }

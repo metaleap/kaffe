@@ -39,7 +39,7 @@ func init() {
 			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
 
 		"postNew": apiPostNew.Checks(
-			Fails{Err: "ExpectedNonEmptyPost", If: PostMd.Equal("").And(q.ArrIsEmpty(PostFiles))},
+			Fails{Err: "ExpectedNonEmptyPost", If: PostHtm.Equal("").And(q.ArrIsEmpty(PostFiles))},
 			Fails{Err: "ExpectedOnlyBuddyRecipients", If: q.ArrAreAnyIn(PostTo, q.OpLeq, 0)},
 		).
 			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),

@@ -17,7 +17,7 @@ type Post struct {
 
 	By    yodb.Ref[User, yodb.RefOnDelCascade]
 	To    yodb.Arr[yodb.I64]
-	Md    yodb.Text
+	Htm   yodb.Text
 	Files yodb.Arr[yodb.Text]
 }
 

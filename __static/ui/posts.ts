@@ -27,9 +27,10 @@ export function create(getPostAuthor: (post: yo.Post) => yo.User | undefined): U
                         htm.div({ 'class': 'post-ago' }, ""),
                     ),
                     htm.div({ 'class': 'post-buttons' },
-                        htm.div({ 'class': 'button' }, "🖅"),
+                        htm.div({ 'class': 'button send' }, "📨"),
+                        htm.div({ 'class': 'button trash' }, "🗑️"),
                     ),
-                    htm.div({ 'class': 'post-content' }, ""),
+                    htm.div({ 'class': 'post-content', 'contenteditable': 'true', 'autofocus': true, 'spellcheck': false, 'autocorrect': 'off' }, ""),
                 ),
             ),
         ),
@@ -40,17 +41,18 @@ export function create(getPostAuthor: (post: yo.Post) => yo.User | undefined): U
 
     van.add(me.DOM, vanx.list(() => htm.div({ 'class': 'feed' }), me.posts, (it) => {
         const post = it.val, now = new Date().getTime()
-        const post_by = me.getPostAuthor(post)
-        const dt = new Date(post.DtMade!)
+        const htm_post = htm.div({ 'class': 'post-content' })
+        htm_post.innerHTML = post.Htm || `(files: ${post.Files.join(", ")})`
+        const post_by = me.getPostAuthor(post), post_dt = new Date(post.DtMade!)
         return htm.div({ 'class': 'post' },
             htm.div({ 'class': 'post-head' },
                 htm.div(uibuddies.buddyDomAttrs(post_by, now)),
-                htm.div({ 'class': 'post-ago', 'title': dt.toLocaleDateString() + " @ " + dt.toLocaleTimeString() }, post._uxStrAgo),
+                htm.div({ 'class': 'post-ago', 'title': post_dt.toLocaleDateString() + " @ " + post_dt.toLocaleTimeString() }, post._uxStrAgo),
             ),
             htm.div({ 'class': 'post-buttons' },
                 htm.div({ 'class': 'button' }, "🦜"),
             ),
-            htm.div({ 'class': 'post-content' }, post.Md || `(files: ${post.Files.join(", ")})`),
+            htm_post,
         )
     }))
     return me

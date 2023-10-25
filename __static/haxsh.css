@@ -167,7 +167,13 @@ body {
     padding: 0.11em;
 }
 
+.haxsh-posts .post-buttons div.button.trash {
+    margin-left: 0.66em;
+    font-size: 0.77em;
+}
+
 .haxsh-posts .post-content {
+    font-size: 1em !important;
     background-color: var(--bgadd10);
     border-left: 1px solid var(--bgoff4);
     border-top: 1px solid var(--bgoff4);
@@ -178,6 +184,11 @@ body {
     overflow: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
+    resize: none;
+}
+
+.haxsh-posts .post-content * {
+    font-size: 1em !important;
 }
 
 .haxsh-posts .post-content::-webkit-scrollbar {
