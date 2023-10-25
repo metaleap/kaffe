@@ -32,7 +32,7 @@ var mockUsersAllById = map[yodb.I64]string{}
 var mockUsersAllByEmail = map[string]yodb.I64{}
 var mockUsersLoggedIn = map[string]*http.Client{}
 var mockUsersNever = map[string]bool{
-	"foo4874@bar.baz": true,
+	"foo789@bar.baz": true,
 }
 
 func init() {

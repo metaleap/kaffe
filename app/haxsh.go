@@ -12,6 +12,7 @@ func init() {
 	AppSideStaticRePathFor = func(requestPath string) string {
 		return "__static/haxsh.html"
 	}
+	ApiMaxRequestContentLength = 11 * (1024 * 2024)
 }
 
 func Init() {

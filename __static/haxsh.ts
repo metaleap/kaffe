@@ -90,7 +90,7 @@ function newUiLoginDialog() {
         }
     }
 
-    const in_user_name = htm.input({ 'value': 'foo16@bar.baz' })
+    const in_user_name = htm.input({ 'value': 'foo789@bar.baz' })
     const in_password = htm.input({ 'type': 'password', 'value': 'foobar' })
     return htm.dialog({},
         htm.form({},
