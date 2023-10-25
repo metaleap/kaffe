@@ -4,6 +4,7 @@ const htm = van.tags
 
 import * as yo from '../yo-sdk.js'
 import * as youtil from '../../__yostatic/util.js'
+import * as haxsh from '../haxsh.js'
 import * as util from '../util.js'
 
 export type UiCtlBuddies = {
@@ -15,33 +16,49 @@ export type UiCtlBuddies = {
 export function create(): UiCtlBuddies {
     const me: UiCtlBuddies = {
         DOM: htm.div({ 'class': 'haxsh-buddies' },
-            htm.div(buddyDomAttrs(undefined, new Date().getTime(), true)),
+            htm.div(userDomAttrsSelf()),
         ),
         buddies: vanx.reactive([] as yo.User[]),
         update: (buddies) => update(me, buddies),
     }
 
     van.add(me.DOM, vanx.list(htm.ul, me.buddies, (it) => {
-        return htm.li(buddyDomAttrs(it.val, new Date().getTime()))
+        return htm.li(userDomAttrsBuddy(it.val, new Date().getTime()))
     }))
     return me
 }
 
-export function buddyDomAttrs(buddy: yo.User | undefined, now: number, isSelf = false) {
-    if (!buddy)
+export function userDomAttrsBuddy(user: yo.User | undefined, now: number) {
+    if (!user)
         return {
-            'class': 'buddy-pic' + (isSelf ? ' self' : ' offline'),
-            'title': isSelf ? "" : "(ex-buddy)",
-            'style': `background-image: url('${util.emoIconDataHref('👤')}')`
+            'class': 'buddy-pic offline',
+            'title': "(ex-buddy — or bug)",
+            'style': `background-image: url('${util.svgTextIconDataHref('👤')}')`
         }
-    if (!buddy.LastSeen)
-        buddy.LastSeen = buddy.DtMod
-    const last_seen = new Date(buddy.LastSeen!).getTime()
-    const is_offline = (now - last_seen) > 77777
+    if (!user.LastSeen)
+        user.LastSeen = user.DtMod
+    const last_seen = new Date(user.LastSeen!).getTime()
+    const is_offline = ((now - last_seen) > 77777)
     return {
         'class': 'buddy-pic' + (is_offline ? ' offline' : ''),
-        'title': `${buddy.Nick}${((!buddy.Btw) ? '' : (' — ' + buddy.Btw))}`,
-        'style': `background-image: url('${buddy.PicFileId ? ("/__static/mockfiles/" + buddy.PicFileId) : util.emoIconDataHref('👤')}')`
+        'title': `${user.Nick}${((!user.Btw) ? '' : (' — ' + user.Btw))}`,
+        'style': `background-image: url('${user.PicFileId ? ("/__static/mockfiles/" + user.PicFileId) : util.svgTextIconDataHref('👤')}')`
+    }
+}
+
+export function userDomAttrsSelf() {
+    return {
+        'class': 'buddy-pic self',
+        'title': van.derive(() => {
+            const user_self = haxsh.userSelf.val
+            return (!user_self) ? "(you)" : `${user_self.Nick}${((!user_self.Btw) ? '' : (' — ' + user_self.Btw))}`
+        }),
+        'style': van.derive(() => {
+            const user_self = haxsh.userSelf.val
+            return (user_self && user_self.PicFileId)
+                ? `background-image: url('/__static/mockfiles/${user_self.PicFileId}')`
+                : `background-image: url('${util.svgTextIconDataHref('👤')}')`
+        }),
     }
 }
 

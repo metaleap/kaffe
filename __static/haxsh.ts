@@ -14,7 +14,7 @@ const fetchPostsIntervalMsWhenHidden = 4321
 let fetchPostsIntervalMsCur = fetchPostsIntervalMsWhenVisible
 let fetchesPaused = false // true while signed out
 let fetchedPostsEverYet = false
-let userSelf: yo.User | undefined
+export let userSelf = van.state(undefined as (yo.User | undefined))
 
 let uiDialogLogin = newUiLoginDialog()
 let uiBuddies: uibuddies.UiCtlBuddies = uibuddies.create()
@@ -43,8 +43,8 @@ async function fetchBuddies() {
         uiBuddies.update(buddies.Result ?? [])
         if (!fetchedPostsEverYet)
             setTimeout(fetchPosts, 123)
-        if (!userSelf)
-            userSelf = await yo.apiUserBy({ EmailAddr: yo.userEmailAddr })
+        if (!userSelf.val)
+            userSelf.val = await yo.apiUserBy({ EmailAddr: yo.userEmailAddr })
     } catch (err) {
         if (!knownErr<yo.UserBuddiesErr>(err, handleKnownErrMaybe<yo.UserBuddiesErr>))
             onErrOther(err)
@@ -103,8 +103,9 @@ function newUiLoginDialog() {
 
 
 function getUserByPost(post?: yo.Post) {
-    if ((!post) || (userSelf && (userSelf.Id === post.By)))
-        return userSelf
+    const user_self = userSelf.val
+    if ((!post) || (user_self && (user_self.Id === post.By)))
+        return user_self
     const buddy = uiBuddies.buddies.find(_ => (_.Id === post.By))
     if (buddy) {
         if (post.DtMade! > buddy.LastSeen!)
@@ -116,10 +117,11 @@ function getUserByPost(post?: yo.Post) {
 }
 
 async function sendPost(html: string, files?: string[]) {
-    if (!userSelf)
+    const user_self = userSelf.val
+    if (!user_self)
         return false
     const resp = await yo.apiPostNew({
-        By: userSelf.Id,
+        By: user_self.Id,
         To: [],
         Files: files ?? [],
         Htm: html,

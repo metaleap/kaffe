@@ -4,6 +4,7 @@ const htm = van.tags
 
 import * as yo from '../yo-sdk.js'
 import * as youtil from '../../__yostatic/util.js'
+import * as haxsh from '../haxsh.js'
 import * as uibuddies from './buddies.js'
 import * as util from '../util.js'
 
@@ -13,38 +14,37 @@ export type UiCtlPosts = {
     posts: vanx.Reactive<PostAug[]>
     getPostAuthor: (post?: yo.Post) => yo.User | undefined
     update: (_: yo.Post[]) => void
-    sendPost: (html: string, files?: string[]) => Promise<boolean>
+    doSendPost: (html: string, files?: string[]) => Promise<boolean>
 }
 
 type PostAug = yo.Post & { _uxStrAgo: string }
 
 export function create(
     getPostAuthor: (post?: yo.Post) => yo.User | undefined,
-    sendPost: (html: string, files?: string[]) => Promise<boolean>,
+    doSendPost: (html: string, files?: string[]) => Promise<boolean>,
 ): UiCtlPosts {
-    const now = new Date().getTime()
     const htm_post = htm.div({
         'class': 'post-content', 'contenteditable': 'true', 'autofocus': true, 'spellcheck': false,
-        'autocorrect': 'off', 'onkeydown': (evt: KeyboardEvent) => {
+        'autocorrect': 'off', 'tabindex': 1, 'onkeydown': (evt: KeyboardEvent) => {
             if (['Enter', 'NumpadEnter'].includes(evt.code))
-                doSendPost(me)
+                sendPost(me)
         },
     }, "")
     const me: UiCtlPosts = {
         _htmPostInput: htm_post,
+        doSendPost: doSendPost,
         getPostAuthor: getPostAuthor,
-        sendPost: sendPost,
         DOM: htm.div({ 'class': 'haxsh-posts' },
             htm.div({ 'class': 'self-post' },
                 htm.div({ 'class': 'post' },
                     htm.div({ 'class': 'post-head' },
-                        htm.div(uibuddies.buddyDomAttrs(undefined, now, true)),
+                        htm.div(uibuddies.userDomAttrsSelf()),
                         htm.div({ 'class': 'post-ago' }, ""),
                     ),
                     htm.div({ 'class': 'post-buttons' },
-                        htm.button({ 'type': 'button', 'class': 'button send', 'onclick': () => doSendPost(me) },
+                        htm.button({ 'type': 'button', 'class': 'button send', 'title': "Send", 'tabindex': 2, 'onclick': () => sendPost(me) },
                             "📨"),
-                        htm.button({ 'type': 'button', 'class': 'button trash', 'onclick': () => htm_post.innerHTML = '' },
+                        htm.button({ 'type': 'button', 'class': 'button trash', 'title': 'Clear', 'tabindex': 3, 'onclick': () => clearPostInput(me) },
                             "🗑️"),
                     ),
                     htm_post,
@@ -60,13 +60,14 @@ export function create(
         const htm_post = htm.div({ 'class': 'post-content' })
         htm_post.innerHTML = post.Htm || `(files: ${post.Files.join(", ")})`
         const post_by = me.getPostAuthor(post), post_dt = new Date(post.DtMade!)
+        const is_own_post = (post_by?.Id === haxsh.userSelf.val?.Id) || false
         return htm.div({ 'class': 'post' },
             htm.div({ 'class': 'post-head' },
-                htm.div(uibuddies.buddyDomAttrs(post_by, now)),
+                htm.div(is_own_post ? uibuddies.userDomAttrsSelf() : uibuddies.userDomAttrsBuddy(post_by, now)),
                 htm.div({ 'class': 'post-ago', 'title': post_dt.toLocaleDateString() + " @ " + post_dt.toLocaleTimeString() }, post._uxStrAgo),
             ),
             htm.div({ 'class': 'post-buttons' },
-                htm.button({ 'type': 'button', 'class': 'button' }, "🦜"),
+                htm.button({ 'type': 'button', 'class': 'button', 'title': "Quote" }, "🦜"),
             ),
             htm_post,
         )
@@ -74,17 +75,22 @@ export function create(
     return me
 }
 
-async function doSendPost(me: UiCtlPosts) {
+async function sendPost(me: UiCtlPosts) {
     const post_html = me._htmPostInput.innerHTML.trim()
     if (post_html.length === 0)
         return
     me._htmPostInput.contentEditable = 'false'
     me._htmPostInput.classList.add('sending')
-    const ok = await me.sendPost(post_html)
+    const ok = await me.doSendPost(post_html)
     me._htmPostInput.classList.remove('sending')
     me._htmPostInput.contentEditable = 'true'
     if (ok)
         me._htmPostInput.innerHTML = ''
+    me._htmPostInput.focus()
+}
+
+function clearPostInput(me: UiCtlPosts) {
+    me._htmPostInput.innerHTML = ''
     me._htmPostInput.focus()
 }
 
