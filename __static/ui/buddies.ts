@@ -63,14 +63,14 @@ export function userDomAttrsSelf() {
         }),
         'style': van.derive(() => {
             const user_self = haxsh.userSelf.val
-            return userPicFileUrl(user_self)
+            return `background-image: url('${userPicFileUrl(user_self)}')`
         }),
     }
 }
 
 function update(me: UiCtlBuddies, buddies: yo.User[]): number {
     const now = new Date().getTime()
-    if (!youtil.deepEq(buddies, me.buddies, false, true))
+    if (!youtil.deepEq(buddies, me.buddies, false, false))
         vanx.replace(me.buddies, (_: yo.User[]) => buddies)
     return buddies.filter(_ => !isOffline(_, now)).length
 }

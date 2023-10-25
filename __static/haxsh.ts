@@ -43,7 +43,6 @@ async function fetchBuddies() {
         let user_self = userSelf.val
         if (!user_self)
             userSelf.val = (user_self = await yo.apiUserBy({ EmailAddr: yo.userEmailAddr }))
-        document.title = buddies.concat([user_self]).map(_ => _.Nick).join(", ")
         if (!fetchedPostsEverYet)
             setTimeout(fetchPosts, 123)
     } catch (err) {
