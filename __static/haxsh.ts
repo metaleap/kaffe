@@ -59,7 +59,6 @@ async function fetchPosts(oneOff?: boolean) {
         return
     try {
         const recent_updates = await yo.apiPostsRecent({ Since: fetchPostsSinceDt ? fetchPostsSinceDt : none })
-        console.log(recent_updates)
         fetchedPostsEverYet = true // even if empty, we have a non-error outcome and so set this
         fetchPostsSinceDt = recent_updates.Next
         uiPosts.update(recent_updates?.Posts ?? [])
@@ -125,7 +124,6 @@ async function sendPost(html: string, files?: string[]) {
         Files: files ?? [],
         Htm: html,
     })
-    console.log(resp)
     const ok = (resp.Result > 0)
     if (ok)
         fetchPosts(true) // async but here we dont care to await
