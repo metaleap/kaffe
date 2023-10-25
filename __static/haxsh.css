@@ -115,11 +115,11 @@ body {
     clear: left;
     margin-top: 1.88em;
     margin-left: 0.44em;
-    padding-right: 1.22em;
+    padding-right: 0.22em;
 }
 
 .haxsh-posts>div.self-post .post {
-    padding-right: 2.44em;
+    padding-right: 1.44em;
 }
 
 .haxsh-posts>div.self-post .post-content {
