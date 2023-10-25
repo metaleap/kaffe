@@ -13,6 +13,7 @@ func init() {
 		return "__static/haxsh.html"
 	}
 	ApiMaxRequestContentLength = 11 * (1024 * 2024)
+	StaticFileFilters["picRounded"] = imageRoundedSvgOfPng
 }
 
 func Init() {
