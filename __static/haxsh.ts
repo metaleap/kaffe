@@ -9,7 +9,7 @@ const none = void 0
 
 const fetchBuddiesIntervalMs = 4321
 let fetchPostsSinceDt: string | undefined
-const fetchPostsIntervalMsWhenVisible = 4321 // 2345
+const fetchPostsIntervalMsWhenVisible = 2345
 const fetchPostsIntervalMsWhenHidden = 4321
 let fetchPostsIntervalMsCur = fetchPostsIntervalMsWhenVisible
 let fetchesPaused = false // true while signed out
@@ -43,6 +43,9 @@ async function fetchBuddies() {
         let user_self = userSelf.val
         if (!user_self)
             userSelf.val = (user_self = await yo.apiUserBy({ EmailAddr: yo.userEmailAddr }))
+        const browser_tab_title = buddies.concat([user_self]).map(_ => _.Nick).join(', ')
+        if (browser_tab_title != document.title)
+            document.title = browser_tab_title
         if (!fetchedPostsEverYet)
             setTimeout(fetchPosts, 123)
     } catch (err) {
