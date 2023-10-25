@@ -17,7 +17,10 @@ export type UiCtlPosts = {
     doSendPost: (html: string, files?: string[]) => Promise<boolean>
 }
 
-type PostAug = yo.Post & { _uxStrAgo: string }
+type PostAug = yo.Post & {
+    _uxStrAgo: string
+    _isFresh: boolean
+}
 
 export function create(
     getPostAuthor: (post?: yo.Post) => yo.User | undefined,
@@ -42,10 +45,8 @@ export function create(
                         htm.div({ 'class': 'post-ago' }, ""),
                     ),
                     htm.div({ 'class': 'post-buttons' },
-                        htm.button({ 'type': 'button', 'class': 'button send', 'title': "Send", 'tabindex': 2, 'onclick': () => sendPost(me) },
-                            "📨"),
-                        htm.button({ 'type': 'button', 'class': 'button attach', 'title': "Add Files", 'tabindex': 3, 'onclick': () => { } },
-                            "📎"),
+                        htm.button({ 'type': 'button', 'class': 'button send', 'title': "Send", 'tabindex': 2, 'onclick': () => sendPost(me) }),
+                        htm.button({ 'type': 'button', 'class': 'button attach', 'title': "Add Files", 'tabindex': 3, 'onclick': () => { } }),
                     ),
                     htm_post,
                 ),
@@ -57,17 +58,17 @@ export function create(
 
     van.add(me.DOM, vanx.list(() => htm.div({ 'class': 'feed' }), me.posts, (it) => {
         const post = it.val, now = new Date().getTime()
-        const htm_post = htm.div({ 'class': 'post-content' })
+        const htm_post = htm.div({ 'class': 'post-content' + (post._isFresh ? ' fresh' : '') })
         htm_post.innerHTML = post.Htm || `(files: ${post.Files.join(", ")})`
         const post_by = me.getPostAuthor(post), post_dt = new Date(post.DtMade!)
         const is_own_post = (post_by?.Id === haxsh.userSelf.val?.Id) || false
         return htm.div({ 'class': 'post' },
             htm.div({ 'class': 'post-head' },
                 htm.div(is_own_post ? uibuddies.userDomAttrsSelf() : uibuddies.userDomAttrsBuddy(post_by, now)),
-                htm.div({ 'class': 'post-ago', 'title': post_dt.toLocaleDateString() + " @ " + post_dt.toLocaleTimeString() }, post._uxStrAgo),
+                htm.div({ 'class': 'post-ago', 'title': post_dt.toLocaleDateString() + " — " + post_dt.toLocaleTimeString() }, post._uxStrAgo),
             ),
             htm.div({ 'class': 'post-buttons' },
-                htm.button({ 'type': 'button', 'class': 'button', 'title': "Actions" }, "☰"),
+                htm.button({ 'type': 'button', 'class': 'button edit', 'title': "Edit" }),
             ),
             htm_post,
         )
@@ -92,21 +93,23 @@ async function sendPost(me: UiCtlPosts) {
 function update(me: UiCtlPosts, newOrUpdatedPosts: yo.Post[]) {
     const now = new Date().getTime()
     let last_ago_str = ""
-    const fresh_feed = newOrUpdatedPosts
-        .filter(post_upd => !me.posts.some(post_old => (post_old.Id === post_upd.Id)))
-        .concat(me.posts.map(post_old => newOrUpdatedPosts.find(_ => (_.Id === post_old.Id)) ?? post_old))
+    const all_new_posts: yo.Post[] = newOrUpdatedPosts.filter(post_upd => !me.posts.some(post_old => (post_old.Id === post_upd.Id)))
+    const fresh_feed = all_new_posts
+        .concat(me.posts.map(post_old => {
+            post_old._isFresh = false
+            return (newOrUpdatedPosts.find(_ => (_.Id === post_old.Id))) ?? post_old
+        }))
         .map((post: yo.Post): PostAug => {
             let post_ago_str = util.timeAgoStr(new Date(post.DtMade!).getTime(), now, true, "")
             if (post_ago_str === last_ago_str)
                 post_ago_str = ""
-            const ret = { ...post, _uxStrAgo: post_ago_str }
+            const ret = { ...post, _uxStrAgo: post_ago_str, _isFresh: all_new_posts.find((_) => ((_.Id === post.Id) && (me.posts.length > 0))) ? true : false }
             if (post_ago_str !== "")
                 last_ago_str = post_ago_str
             return ret
         })
-    if (!youtil.deepEq(me.posts, fresh_feed, true, true)) {
+    if (!youtil.deepEq(me.posts, fresh_feed, true, true))
         vanx.replace(me.posts, (_: PostAug[]) => fresh_feed)
-    }
     if (fresh_feed.length > 0)
         return fresh_feed[0]
     return undefined

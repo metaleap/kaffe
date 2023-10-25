@@ -164,8 +164,26 @@ body {
     overflow: hidden;
     font-size: 0.77em;
     margin: 0 0 0.22em 0;
-    padding: 0.22em;
+    width: 1.23em;
+    height: 1.23em;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 77%;
     border-radius: 77em !important;
+    background-color: var(--bgcolor);
+    color: red;
+}
+
+.button.send {
+    background-image: url('/__static/ico/send.svg');
+}
+
+.button.attach {
+    background-image: url('/__static/ico/clip.svg');
+}
+
+.button.edit {
+    background-image: url('/__static/ico/pencil.svg');
 }
 
 .button:hover,
@@ -183,10 +201,15 @@ body {
     border-radius: 0.77em;
     border-top-left-radius: 0;
     margin-left: 1.4em;
+    outline: none;
     overflow: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
     resize: none;
+}
+
+.haxsh-posts .feed .post-content.fresh {
+    background-color: gold;
 }
 
 .haxsh-posts .post-content * {
