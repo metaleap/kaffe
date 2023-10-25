@@ -15,6 +15,7 @@ let fetchPostsIntervalMsCur = fetchPostsIntervalMsWhenVisible
 let fetchesPaused = false // true while signed out
 let fetchedPostsEverYet = false
 export let userSelf = van.state(undefined as (yo.User | undefined))
+export let browserTabInvisibleSince = 0
 
 let uiDialogLogin = newUiLoginDialog()
 let uiBuddies: uibuddies.UiCtlBuddies = uibuddies.create()
@@ -22,8 +23,14 @@ let uiPosts: uiposts.UiCtlPosts = uiposts.create(getUserByPost, sendPost)
 
 export function main() {
     document.onvisibilitychange = () => {
-        fetchPostsIntervalMsCur = ((document.visibilityState == 'hidden') || (document.hidden))
-            ? fetchPostsIntervalMsWhenHidden : fetchPostsIntervalMsWhenVisible
+        const is_hidden = ((document.visibilityState === 'hidden') || document.hidden), now = new Date().getTime()
+        const became_visible = (!is_hidden) && (browserTabInvisibleSince !== 0)
+        console.log("OVC1", is_hidden, browserTabInvisibleSince)
+        browserTabInvisibleSince = (!is_hidden) ? 0 : ((browserTabInvisibleSince === 0) ? now : browserTabInvisibleSince)
+        console.log("OVC2", is_hidden, browserTabInvisibleSince)
+        fetchPostsIntervalMsCur = is_hidden ? fetchPostsIntervalMsWhenHidden : fetchPostsIntervalMsWhenVisible
+        if (became_visible)
+            fetchPosts(true)
     }
     van.add(document.body,
         uiPosts.DOM,

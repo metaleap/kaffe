@@ -8,6 +8,8 @@ import * as haxsh from '../haxsh.js'
 import * as uibuddies from './buddies.js'
 import * as util from '../util.js'
 
+const freshnessDurationMsWhenVisible = 3456
+
 export type UiCtlPosts = {
     DOM: HTMLElement
     _htmPostInput: HTMLElement
@@ -29,8 +31,11 @@ export function create(
     const htm_post = htm.div({
         'class': 'post-content', 'contenteditable': 'true', 'autofocus': true, 'spellcheck': false,
         'autocorrect': 'off', 'tabindex': 1, 'onkeydown': (evt: KeyboardEvent) => {
-            if (['Enter', 'NumpadEnter'].includes(evt.code))
-                sendPost(me)
+            if (['Enter', 'NumpadEnter'].includes(evt.code) && !(evt.shiftKey || evt.ctrlKey || evt.altKey || evt.metaKey)) {
+                evt.preventDefault()
+                evt.stopPropagation()
+                return sendPost(me)
+            }
         },
     }, "")
     const me: UiCtlPosts = {
@@ -79,10 +84,14 @@ export function create(
 }
 
 async function sendPost(me: UiCtlPosts) {
-    const post_html = me._htmPostInput.innerHTML.trim()
-    console.log(post_html.length, JSON.stringify(post_html))
-    if (post_html.length === 0)
-        return
+    let post_html = me._htmPostInput.innerHTML.trim()
+    while (post_html.startsWith('<br>'))
+        post_html = post_html.substring('<br>'.length)
+    while (post_html.endsWith('<br>'))
+        post_html = post_html.substring(0, post_html.length - '<br>'.length)
+    if ((post_html.length === 0) || (post_html.replaceAll('<br>', '').replaceAll('<p></p>', '').length === 0))
+        return false
+
     me._htmPostInput.contentEditable = 'false'
     me._htmPostInput.classList.add('sending')
     const ok = await me.doSendPost(post_html)
@@ -93,22 +102,28 @@ async function sendPost(me: UiCtlPosts) {
         window.scrollTo(0, 0)
     }
     me._htmPostInput.focus()
+    return false
 }
 
 function update(me: UiCtlPosts, newOrUpdatedPosts: yo.Post[]) {
     const now = new Date().getTime()
     let last_ago_str = ""
-    const all_new_posts: yo.Post[] = newOrUpdatedPosts.filter(post_upd => !me.posts.some(post_old => (post_old.Id === post_upd.Id)))
-    const fresh_feed = all_new_posts
-        .concat(me.posts.map(post_old => {
-            post_old._isFresh = false
-            return (newOrUpdatedPosts.find(_ => (_.Id === post_old.Id))) ?? post_old
-        }))
+    const all_new_posts: yo.Post[] = newOrUpdatedPosts.filter(post_upd =>
+        !me.posts.some(post_old => (post_old.Id === post_upd.Id)))
+    const merged_with_others = all_new_posts.concat(me.posts.map(post_old => {
+        post_old._isFresh = false
+        return (newOrUpdatedPosts.find(_ => (_.Id === post_old.Id))) ?? post_old
+    }))
+    const fresh_feed = merged_with_others
         .map((post: yo.Post): PostAug => {
-            let post_ago_str = util.timeAgoStr(new Date(post.DtMade!).getTime(), now, true, "")
+            const post_time = new Date(post.DtMod ?? (post.DtMade!)).getTime()
+            let post_ago_str = util.timeAgoStr(post_time, now, true, "")
             if (post_ago_str === last_ago_str)
                 post_ago_str = ""
-            const ret = { ...post, _uxStrAgo: post_ago_str, _isFresh: all_new_posts.find((_) => ((_.Id === post.Id) && (me.posts.length > 0))) ? true : false }
+            const is_fresh = (me.posts.length > 0) && ((haxsh.browserTabInvisibleSince === 0)
+                ? ((now - post_time) < freshnessDurationMsWhenVisible)
+                : (post_time >= haxsh.browserTabInvisibleSince))
+            const ret = { ...post, _uxStrAgo: post_ago_str, _isFresh: is_fresh }
             if (post_ago_str !== "")
                 last_ago_str = post_ago_str
             return ret
