@@ -35,10 +35,10 @@ function isOffline(user: yo.User, now: number) {
     return ((now - last_seen) > 77777)
 }
 
-export function userPicFileUrl(user?: yo.User, fallBackToEmoji = '👤') {
-    return (user && user.PicFileId) ?
-        ('/__static/mockfiles/' + user.PicFileId) :
-        util.svgTextIconDataHref(fallBackToEmoji)
+export function userPicFileUrl(user?: yo.User, fallBackToEmoji = '👤', toRoundedSvgFavIcon = false) {
+    if (!(user && user.PicFileId))
+        return util.svgTextIconDataHref(fallBackToEmoji)
+    return '/__static/mockfiles/' + user.PicFileId + (toRoundedSvgFavIcon ? '?picRounded=true' : '')
 }
 
 export function userDomAttrsBuddy(user: yo.User | undefined, now: number) {

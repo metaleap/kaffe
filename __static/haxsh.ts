@@ -139,7 +139,7 @@ function browserTabTitleRefresh() {
     if (new_title !== document.title)
         document.title = new_title
     const fav_icon_user = buddies_and_self.find(_ => (_.PicFileId !== ''))
-    const fav_icon_href = uibuddies.userPicFileUrl(fav_icon_user, '☕'), htm_favicon = document.getElementById('favicon') as HTMLLinkElement
+    const fav_icon_href = uibuddies.userPicFileUrl(fav_icon_user, '☕', true), htm_favicon = document.getElementById('favicon') as HTMLLinkElement
     if (htm_favicon && htm_favicon.href && (htm_favicon.href !== fav_icon_href))
         htm_favicon.href = fav_icon_href
 }
