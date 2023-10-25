@@ -17,6 +17,7 @@ export type UiCtlPosts = {
     getPostAuthor: (post?: yo.Post) => yo.User | undefined
     update: (_: yo.Post[]) => yo.Post | undefined
     doSendPost: (html: string, files?: string[]) => Promise<boolean>
+    numFreshPosts: number
 }
 
 type PostAug = yo.Post & {
@@ -57,6 +58,7 @@ export function create(
                 ),
             ),
         ),
+        numFreshPosts: 0,
         posts: vanx.reactive([] as PostAug[]),
         update: (posts) => update(me, posts),
     }
@@ -114,6 +116,7 @@ function update(me: UiCtlPosts, newOrUpdatedPosts: yo.Post[]) {
         post_old._isFresh = false
         return (newOrUpdatedPosts.find(_ => (_.Id === post_old.Id))) ?? post_old
     }))
+    let num_fresh = 0
     const fresh_feed = merged_with_others
         .map((post: yo.Post): PostAug => {
             const post_time = new Date(post.DtMod ?? (post.DtMade!)).getTime()
@@ -123,11 +126,14 @@ function update(me: UiCtlPosts, newOrUpdatedPosts: yo.Post[]) {
             const is_fresh = (me.posts.length > 0) && ((haxsh.browserTabInvisibleSince === 0)
                 ? ((now - post_time) < freshnessDurationMsWhenVisible)
                 : (post_time >= haxsh.browserTabInvisibleSince))
+            if (is_fresh)
+                num_fresh++
             const ret = { ...post, _uxStrAgo: post_ago_str, _isFresh: is_fresh }
             if (post_ago_str !== "")
                 last_ago_str = post_ago_str
             return ret
         })
+    me.numFreshPosts = num_fresh
     if (!youtil.deepEq(me.posts, fresh_feed, true, false))
         vanx.replace(me.posts, (_: PostAug[]) => fresh_feed)
     if (fresh_feed.length > 0)

@@ -27,7 +27,7 @@ export function main() {
         const became_visible = (!is_hidden) && (browserTabInvisibleSince !== 0)
         browserTabInvisibleSince = (!is_hidden) ? 0 : ((browserTabInvisibleSince === 0) ? now : browserTabInvisibleSince)
         fetchPostsIntervalMsCur = is_hidden ? fetchPostsIntervalMsWhenHidden : fetchPostsIntervalMsWhenVisible
-        if (became_visible)
+        if (became_visible && (uiPosts.numFreshPosts === 0))
             fetchPosts(true)
     }
     van.add(document.body,
@@ -133,10 +133,9 @@ async function sendPost(html: string, files?: string[]) {
 }
 
 function browserTabTitleRefresh() {
-    const num_fresh_posts = uiPosts.posts.filter(_ => _._isFresh).length
     const user_self = userSelf.val
     const buddies_and_self = uiBuddies.buddies.concat(user_self ? [user_self] : [])
-    const new_title = (((num_fresh_posts === 0) ? '' : `(${num_fresh_posts}) `) + buddies_and_self.map(_ => _.Nick).join(', ') || '...')
+    const new_title = (((uiPosts.numFreshPosts === 0) ? '' : `(${uiPosts.numFreshPosts}) `) + buddies_and_self.map(_ => _.Nick).join(', ') || '...')
     if (new_title !== document.title)
         document.title = new_title
     const fav_icon_user = buddies_and_self.find(_ => (_.PicFileId !== ''))
