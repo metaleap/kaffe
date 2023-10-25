@@ -53,20 +53,13 @@ func userUpdate(ctx *Ctx, upd *User, byCurUserInCtx bool, inclEmptyOrMissingFiel
 }
 
 func userBuddies(ctx *Ctx, forUser *User, normalizeLastSeenByMinute bool) []*User {
-	buddies := yodb.FindMany[User](ctx, UserId.In(forUser.Buddies.ToAnys()...), 0, UserLastSeen.Desc())
+	buddies := yodb.FindMany[User](ctx, UserId.In(forUser.Buddies.ToAnys()...), 0, UserLastSeen.Desc(), UserDtMod.Desc())
 	if normalizeLastSeenByMinute {
 		for _, buddy := range buddies {
-			buddy.LastSeen.Set(DtAtZeroSecsUtc)
+			if buddy.LastSeen != nil {
+				buddy.LastSeen.Set(DtAtZeroSecsUtc)
+			}
 		}
-		buddies = sl.SortedPer(buddies, func(lhs *User, rhs *User) int { // the negations for descending
-			if cmp := lhs.LastSeen.Time().Compare(*rhs.LastSeen.Time()); cmp != 0 {
-				return -cmp
-			}
-			if cmp := lhs.DtMod.Time().Compare(*rhs.DtMod.Time()); cmp != 0 {
-				return -cmp
-			}
-			return -lhs.DtMade.Time().Compare(*rhs.DtMade.Time())
-		})
 	}
 	return buddies
 }

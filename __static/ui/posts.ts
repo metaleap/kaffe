@@ -69,7 +69,7 @@ export function create(
                 htm.div({ 'class': 'post-ago', 'title': post_dt.toLocaleDateString() + " @ " + post_dt.toLocaleTimeString() }, post._uxStrAgo),
             ),
             htm.div({ 'class': 'post-buttons' },
-                htm.button({ 'type': 'button', 'class': 'button', 'title': "Quote" }, "🦜"),
+                htm.button({ 'type': 'button', 'class': 'button', 'title': "Actions" }, "☰"),
             ),
             htm_post,
         )

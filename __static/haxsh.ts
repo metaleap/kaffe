@@ -7,7 +7,7 @@ import * as uiposts from './ui/posts.js'
 
 const none = void 0
 
-const fetchBuddiesIntervalMs = 12345
+const fetchBuddiesIntervalMs = 4321
 let fetchPostsSinceDt: string | undefined
 const fetchPostsIntervalMsWhenVisible = 2345
 const fetchPostsIntervalMsWhenHidden = 4321
@@ -24,7 +24,6 @@ export function main() {
     document.onvisibilitychange = () => {
         fetchPostsIntervalMsCur = ((document.visibilityState == 'hidden') || (document.hidden))
             ? fetchPostsIntervalMsWhenHidden : fetchPostsIntervalMsWhenVisible
-        document.title = fetchPostsIntervalMsCur.toString()
     }
     van.add(document.body,
         uiPosts.DOM,
@@ -39,12 +38,14 @@ async function fetchBuddies() {
         return
 
     try {
-        const buddies = await yo.apiUserBuddies()
-        uiBuddies.update(buddies.Result ?? [])
+        const buddies = (await yo.apiUserBuddies())!.Result ?? []
+        uiBuddies.update(buddies)
+        let user_self = userSelf.val
+        if (!user_self)
+            userSelf.val = (user_self = await yo.apiUserBy({ EmailAddr: yo.userEmailAddr }))
+        document.title = buddies.concat([user_self]).map(_ => _.Nick).join(", ")
         if (!fetchedPostsEverYet)
             setTimeout(fetchPosts, 123)
-        if (!userSelf.val)
-            userSelf.val = await yo.apiUserBy({ EmailAddr: yo.userEmailAddr })
     } catch (err) {
         if (!knownErr<yo.UserBuddiesErr>(err, handleKnownErrMaybe<yo.UserBuddiesErr>))
             onErrOther(err)
@@ -106,14 +107,7 @@ function getUserByPost(post?: yo.Post) {
     const user_self = userSelf.val
     if ((!post) || (user_self && (user_self.Id === post.By)))
         return user_self
-    const buddy = uiBuddies.buddies.find(_ => (_.Id === post.By))
-    if (buddy) {
-        if (post.DtMade! > buddy.LastSeen!)
-            buddy.LastSeen = post.DtMade!
-        if (post.DtMod! > buddy.LastSeen!)
-            buddy.LastSeen = post.DtMod!
-    }
-    return buddy
+    return uiBuddies.buddies.find(_ => (_.Id === post.By))
 }
 
 async function sendPost(html: string, files?: string[]) {

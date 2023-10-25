@@ -10,7 +10,7 @@ import * as util from '../util.js'
 export type UiCtlBuddies = {
     DOM: HTMLElement
     buddies: vanx.Reactive<yo.User[]>
-    update: (_: yo.User[]) => void
+    update: (_: yo.User[]) => number
 }
 
 export function create(): UiCtlBuddies {
@@ -28,6 +28,11 @@ export function create(): UiCtlBuddies {
     return me
 }
 
+function isOffline(user: yo.User, now: number) {
+    const last_seen = new Date(user.LastSeen ?? (user.DtMod!)).getTime()
+    return ((now - last_seen) > 77777)
+}
+
 export function userDomAttrsBuddy(user: yo.User | undefined, now: number) {
     if (!user)
         return {
@@ -35,10 +40,7 @@ export function userDomAttrsBuddy(user: yo.User | undefined, now: number) {
             'title': "(ex-buddy — or bug)",
             'style': `background-image: url('${util.svgTextIconDataHref('👤')}')`
         }
-    if (!user.LastSeen)
-        user.LastSeen = user.DtMod
-    const last_seen = new Date(user.LastSeen!).getTime()
-    const is_offline = ((now - last_seen) > 77777)
+    const is_offline = isOffline(user, now)
     return {
         'class': 'buddy-pic' + (is_offline ? ' offline' : ''),
         'title': `${user.Nick}${((!user.Btw) ? '' : (' — ' + user.Btw))}`,
@@ -62,7 +64,9 @@ export function userDomAttrsSelf() {
     }
 }
 
-function update(me: UiCtlBuddies, buddies: yo.User[]) {
-    if (!youtil.deepEq(buddies, me.buddies, false))
+function update(me: UiCtlBuddies, buddies: yo.User[]): number {
+    const now = new Date().getTime()
+    if (!youtil.deepEq(buddies, me.buddies, false, true))
         vanx.replace(me.buddies, (_: yo.User[]) => buddies)
+    return buddies.filter(_ => !isOffline(_, now)).length
 }
