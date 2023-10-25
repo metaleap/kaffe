@@ -59,6 +59,7 @@ async function fetchPosts(oneOff?: boolean) {
         return
     try {
         const recent_updates = await yo.apiPostsRecent({ Since: fetchPostsSinceDt ? fetchPostsSinceDt : none })
+        console.log(recent_updates)
         fetchedPostsEverYet = true // even if empty, we have a non-error outcome and so set this
         fetchPostsSinceDt = recent_updates.Next
         uiPosts.update(recent_updates?.Posts ?? [])
@@ -103,7 +104,7 @@ function newUiLoginDialog() {
 
 
 function getUserByPost(post?: yo.Post) {
-    if (!post)
+    if ((!post) || (userSelf && (userSelf.Id === post.By)))
         return userSelf
     const buddy = uiBuddies.buddies.find(_ => (_.Id === post.By))
     if (buddy) {
