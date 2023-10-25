@@ -138,6 +138,7 @@ body {
 
 .haxsh-posts .post-buttons {
     float: right;
+    margin-left: 0.44em;
 }
 
 .haxsh-posts .feed .post-buttons {
@@ -154,21 +155,28 @@ body {
     overflow: hidden;
 }
 
-.haxsh-posts .post-buttons div.button {
+.button {
     cursor: pointer;
-    border-radius: 77em;
-    width: 1.23em;
-    height: 1.23em;
+    display: block;
+    border: none 0 transparent;
+    background-color: var(--bgcolor);
     text-align: center;
     overflow: hidden;
     line-height: 1.11em;
     font-size: 0.88em;
-    margin-left: 0.44em;
-    padding: 0.11em;
+    margin: 0;
+    padding: 0.22em;
 }
 
-.haxsh-posts .post-buttons div.button.trash {
-    margin-left: 0.66em;
+.button:hover,
+.button:focus,
+.button:active {
+    border-radius: 77em;
+    background-color: var(--bgoff1);
+}
+
+.button.trash {
+    margin-left: 0.22em;
     font-size: 0.77em;
 }
 
