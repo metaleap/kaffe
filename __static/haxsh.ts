@@ -9,7 +9,7 @@ const none = void 0
 
 const fetchBuddiesIntervalMs = 4321
 let fetchPostsSinceDt: string | undefined
-const fetchPostsIntervalMsWhenVisible = 2345
+const fetchPostsIntervalMsWhenVisible = 4321 // 2345
 const fetchPostsIntervalMsWhenHidden = 4321
 let fetchPostsIntervalMsCur = fetchPostsIntervalMsWhenVisible
 let fetchesPaused = false // true while signed out
