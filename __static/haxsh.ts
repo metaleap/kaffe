@@ -62,7 +62,9 @@ async function fetchPosts(oneOff?: boolean) {
         const recent_updates = await yo.apiPostsRecent({ Since: fetchPostsSinceDt ? fetchPostsSinceDt : none })
         fetchedPostsEverYet = true // even if empty, we have a non-error outcome and so set this
         fetchPostsSinceDt = recent_updates.Next
-        uiPosts.update(recent_updates?.Posts ?? [])
+        const latest_post = uiPosts.update(recent_updates?.Posts ?? [])
+        if (latest_post)
+            (document.getElementById('favicon') as HTMLLinkElement).href = uibuddies.userPicFileUrl(getUserByPost(latest_post), '☕')
     } catch (err) {
         if (!knownErr<yo.PostsRecentErr>(err, handleKnownErrMaybe<yo.PostsRecentErr>))
             onErrOther(err)

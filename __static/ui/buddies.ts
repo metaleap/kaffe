@@ -33,18 +33,24 @@ function isOffline(user: yo.User, now: number) {
     return ((now - last_seen) > 77777)
 }
 
+export function userPicFileUrl(user?: yo.User, fallBackToEmoji = '👤') {
+    return (user && user.PicFileId) ?
+        ('/__static/mockfiles/' + user.PicFileId) :
+        util.svgTextIconDataHref(fallBackToEmoji)
+}
+
 export function userDomAttrsBuddy(user: yo.User | undefined, now: number) {
     if (!user)
         return {
             'class': 'buddy-pic offline',
             'title': "(ex-buddy — or bug)",
-            'style': `background-image: url('${util.svgTextIconDataHref('👤')}')`
+            'style': `background-image: url('${userPicFileUrl()}')`
         }
     const is_offline = isOffline(user, now)
     return {
         'class': 'buddy-pic' + (is_offline ? ' offline' : ''),
         'title': `${user.Nick}${((!user.Btw) ? '' : (' — ' + user.Btw))}`,
-        'style': `background-image: url('${user.PicFileId ? ("/__static/mockfiles/" + user.PicFileId) : util.svgTextIconDataHref('👤')}')`
+        'style': `background-image: url('${userPicFileUrl(user)}')`
     }
 }
 
@@ -57,9 +63,7 @@ export function userDomAttrsSelf() {
         }),
         'style': van.derive(() => {
             const user_self = haxsh.userSelf.val
-            return (user_self && user_self.PicFileId)
-                ? `background-image: url('/__static/mockfiles/${user_self.PicFileId}')`
-                : `background-image: url('${util.svgTextIconDataHref('👤')}')`
+            return userPicFileUrl(user_self)
         }),
     }
 }

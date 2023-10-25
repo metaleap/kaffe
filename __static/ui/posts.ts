@@ -13,7 +13,7 @@ export type UiCtlPosts = {
     _htmPostInput: HTMLElement
     posts: vanx.Reactive<PostAug[]>
     getPostAuthor: (post?: yo.Post) => yo.User | undefined
-    update: (_: yo.Post[]) => void
+    update: (_: yo.Post[]) => yo.Post | undefined
     doSendPost: (html: string, files?: string[]) => Promise<boolean>
 }
 
@@ -111,6 +111,10 @@ function update(me: UiCtlPosts, newOrUpdatedPosts: yo.Post[]) {
                 last_with_ago = ret
             return ret
         })
-    if (!youtil.deepEq(me.posts, fresh_feed, true, false))
+    if (!youtil.deepEq(me.posts, fresh_feed, true, false)) {
         vanx.replace(me.posts, (_: PostAug[]) => fresh_feed)
+        if (fresh_feed.length > 0)
+            return fresh_feed[0]
+    }
+    return undefined
 }
