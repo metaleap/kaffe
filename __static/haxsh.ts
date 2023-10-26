@@ -19,7 +19,7 @@ export let isSeeminglyOffline = van.state(false)
 
 let uiDialogLogin = newUiLoginDialog()
 let uiBuddies: uibuddies.UiCtlBuddies = uibuddies.create()
-let uiPosts: uiposts.UiCtlPosts = uiposts.create(getUserByPost, sendPost)
+let uiPosts: uiposts.UiCtlPosts = uiposts.create()
 
 export function main() {
     document.onvisibilitychange = () => {
@@ -62,17 +62,15 @@ async function fetchBuddies() {
 }
 
 async function fetchPosts(oneOff?: boolean) {
-    if (uiPosts.isEditing.val || (fetchesPaused && !oneOff))
+    if (fetchesPaused && !oneOff)
         return
     try {
         const recent_updates = await yo.apiPostsRecent({ Since: fetchPostsSinceDt ? fetchPostsSinceDt : undefined })
         isSeeminglyOffline.val = false
         fetchedPostsEverYet = true // even if empty, we have a non-error outcome and so set this
-        if (!uiPosts.isEditing.val) {
-            fetchPostsSinceDt = recent_updates.Next
-            uiPosts.update(recent_updates?.Posts ?? [])
-            browserTabTitleRefresh()
-        }
+        fetchPostsSinceDt = recent_updates.Next
+        uiPosts.update(recent_updates?.Posts ?? [])
+        browserTabTitleRefresh()
     } catch (err) {
         if (!knownErr<yo.PostsRecentErr>(err, handleKnownErrMaybe<yo.PostsRecentErr>))
             onErrOther(err)
@@ -114,14 +112,14 @@ function newUiLoginDialog() {
 }
 
 
-function getUserByPost(post?: yo.Post) {
+export function getUserByPost(post?: yo.Post) {
     const user_self = userSelf.val
     if ((!post) || (user_self && (user_self.Id === post.By)))
         return user_self
     return uiBuddies.buddies.find(_ => (_.Id === post.By))
 }
 
-async function sendPost(html: string, files?: string[]) {
+export async function sendNewPost(html: string, files?: string[]) {
     const user_self = userSelf.val
     if (!user_self)
         return false
@@ -138,6 +136,18 @@ async function sendPost(html: string, files?: string[]) {
     } catch (err) {
         if (!knownErr<yo.PostNewErr>(err, handleKnownErrMaybe<yo.PostNewErr>))
             onErrOther(err)
+    }
+    if (ok)
+        fetchPosts(true) // async but here we dont care to await
+    return ok
+}
+
+export async function deletePost() {
+    let ok = false
+    try {
+
+    } catch (err) {
+
     }
     if (ok)
         fetchPosts(true) // async but here we dont care to await

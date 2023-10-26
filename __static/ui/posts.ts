@@ -14,12 +14,10 @@ export type UiCtlPosts = {
     DOM: HTMLElement
     _htmPostInput: HTMLElement
     posts: vanx.Reactive<PostAug[]>
-    getPostAuthor: (post?: yo.Post) => yo.User | undefined
     update: (_: yo.Post[]) => yo.Post | undefined
-    doSendPost: (html: string, files?: string[]) => Promise<boolean>
     numFreshPosts: number
     isSending: State<boolean>
-    isEditing: State<PostAug | undefined>
+    isDeleting: State<number>
 }
 
 type PostAug = yo.Post & {
@@ -27,10 +25,7 @@ type PostAug = yo.Post & {
     _isFresh: boolean
 }
 
-export function create(
-    getPostAuthor: (post?: yo.Post) => yo.User | undefined,
-    doSendPost: (html: string, files?: string[]) => Promise<boolean>,
-): UiCtlPosts {
+export function create(): UiCtlPosts {
     let me: UiCtlPosts
     const htm_post = htm.div({
         'class': depends(() => 'post-content' + (haxsh.isSeeminglyOffline.val ? ' offline' : '') + ((me && me.isSending.val) ? ' sending' : '')),
@@ -39,17 +34,15 @@ export function create(
             if (['Enter', 'NumpadEnter'].includes(evt.code) && !(evt.shiftKey || evt.ctrlKey || evt.altKey || evt.metaKey)) {
                 evt.preventDefault()
                 evt.stopPropagation()
-                return sendPost(me)
+                return postSendNew(me)
             }
         },
     }, "")
     const button_disabled = () => (haxsh.isSeeminglyOffline.val || (me?.isSending.val) || false /* falsy madness sometimes bites =) */)
     me = {
         _htmPostInput: htm_post,
-        doSendPost: doSendPost,
-        getPostAuthor: getPostAuthor,
         isSending: van.state(false),
-        isEditing: van.state(undefined),
+        isDeleting: van.state(0),
         DOM: htm.div({ 'class': 'haxsh-posts' },
             htm.div({ 'class': 'self-post' },
                 htm.div({ 'class': 'post' },
@@ -60,7 +53,7 @@ export function create(
                     htm.div({ 'class': 'post-buttons' },
                         htm.button({
                             'type': 'button', 'class': 'button send', 'title': "Send", 'tabindex': 2,
-                            'disabled': depends(button_disabled), 'onclick': (() => sendPost(me)),
+                            'disabled': depends(button_disabled), 'onclick': (() => postSendNew(me)),
                         }),
                         htm.button({
                             'type': 'button', 'class': 'button attach', 'title': "Add Files", 'tabindex': 3,
@@ -78,12 +71,9 @@ export function create(
 
     van.add(me.DOM, vanx.list(() => htm.div({ 'class': 'feed' }), me.posts, (it) => {
         const post = it.val
-        const htm_post = htm.div({
-            'class': 'post-content' + (post._isFresh ? ' fresh' : ''), 'spellcheck': false, 'autocorrect': 'off',
-            'contenteditable': depends(() => ((me.isEditing.val && (me.isEditing.val.Id === post.Id)) ? 'true' : 'false')),
-        })
+        const htm_post = htm.div({ 'class': depends(() => ('post-content' + ((me.isDeleting.val === (post.Id!)) ? ' deleting' : (post._isFresh ? ' fresh' : '')))) })
         htm_post.innerHTML = post.Htm || `(files: ${post.Files.join(", ")})`
-        const post_by = me.getPostAuthor(post), post_dt = new Date(post.DtMade!)
+        const post_by = haxsh.getUserByPost(post), post_dt = new Date(post.DtMade!)
         const is_own_post = (post_by?.Id === haxsh.userSelf.val?.Id) || false
         return htm.div({ 'class': 'post' },
             htm.div({ 'class': 'post-head' },
@@ -92,9 +82,11 @@ export function create(
             ),
             htm.div({ 'class': 'post-buttons' },
                 htm.button({
-                    'type': 'button', 'class': 'button edit', 'title': "Edit", 'style': `visibility:${is_own_post ? 'visible' : 'hidden'}`,
-                    'disabled': depends(() => me.isEditing.val ? true : button_disabled()),
-                    'onclick': () => { me.isEditing.val = post },
+                    'type': 'button', 'class': 'button delete', 'title': "Delete", 'style': `visibility:${is_own_post ? 'visible' : 'hidden'}`,
+                    'disabled': depends(() => button_disabled() || (me.isDeleting.val === (post.Id!))),
+                    'onclick': () => {
+                        me.isDeleting.val = post.Id!
+                    },
                 }),
             ),
             htm_post,
@@ -103,7 +95,7 @@ export function create(
     return me
 }
 
-async function sendPost(me: UiCtlPosts) {
+async function postSendNew(me: UiCtlPosts) {
     if (haxsh.isSeeminglyOffline.val)
         return false
     me.isSending.val = true
@@ -115,7 +107,7 @@ async function sendPost(me: UiCtlPosts) {
     if ((post_html.length === 0) || (post_html.replaceAll('<br>', '').replaceAll('<p></p>', '').length === 0))
         return false
 
-    const ok = await me.doSendPost(post_html)
+    const ok = await haxsh.sendNewPost(post_html)
     me.isSending.val = false
     if (ok) {
         me._htmPostInput.innerHTML = ''
