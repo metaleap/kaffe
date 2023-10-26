@@ -243,6 +243,8 @@ body {
 .haxsh-posts .post-content video,
 .haxsh-posts .post-content svg {
     display: block;
+    margin-left: auto;
+    margin-right: auto;
     max-width: 77% !important;
 }
 
@@ -265,4 +267,8 @@ body {
     margin: 0;
     width: 1.23em;
     height: 1.23em;
+}
+
+ul.haxsh-post-files {
+    padding-left: 0;
 }

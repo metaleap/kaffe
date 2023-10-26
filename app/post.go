@@ -20,13 +20,14 @@ type Post struct {
 	To    yodb.Arr[yodb.I64]
 	Htm   yodb.Text
 	Files yodb.Arr[yodb.Text]
+
+	FileContentTypes []string
 }
 
 type PostsListResult struct {
-	Posts            []*Post
-	Since            *yodb.DateTime
-	Next             *yodb.DateTime
-	FileContentTypes map[string]string
+	Posts []*Post
+	Since *yodb.DateTime
+	Next  *yodb.DateTime
 }
 
 func postsFor(ctx *Ctx, forUser *User, dtFrom time.Time, dtUntil time.Time, onlyThoseBy []yodb.I64) (ret []*Post) {

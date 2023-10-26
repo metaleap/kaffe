@@ -269,6 +269,7 @@ export type Post = {
 	By?: I64
 	DtMade?: DateTime
 	DtMod?: DateTime
+	FileContentTypes: string[]
 	Files: string[]
 	Htm?: string
 	Id?: I64
@@ -276,7 +277,6 @@ export type Post = {
 }
 
 export type PostsListResult = {
-	FileContentTypes: { [_:string]: string }
 	Next?: DateTime
 	Posts: Post[]
 	Since?: DateTime

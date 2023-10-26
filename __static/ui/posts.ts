@@ -73,8 +73,29 @@ export function create(): UiCtlPosts {
 
     van.add(me.DOM, vanx.list(() => htm.div({ 'class': 'feed' }), me.posts, (it) => {
         const post = it.val
+        let inner_html = post.Htm ?? ''
+        if (post.Htm && post.Files && post.Files.length)
+            inner_html += '<hr class="haxsh-post-files">'
+        if (post.Files && post.Files.length) {
+            inner_html += `<ul class="haxsh-post-files" style="${(post.Files.length === 1) ? 'list-style-type:none;' : ''}">`
+            for (let i = 0; i < post.Files.length; i++) {
+                const file_id = post.Files[i], content_type = post.FileContentTypes[i]
+                const file_url = `/__static/mockfiles/${encodeURIComponent(file_id)}`
+                inner_html += `<li><a target="_blank" href="${file_url}">${htm.span(file_id).innerHTML}</a>`
+                if (content_type && content_type.length) {
+                    inner_html += `&nbsp;<span>&nbsp;&mdash;&nbsp;${content_type}</span>`
+                    if (content_type.startsWith("image/"))
+                        inner_html += `<img alt="${file_id}" title="${file_id}" src="${file_url}">`
+                    else if (content_type.startsWith("video/"))
+                        inner_html += `<video alt="${file_id}" title="${file_id}" src="${file_url}" preload="metadata" controls="true">`
+                }
+                inner_html += '</li>'
+            }
+            inner_html += '</ul>'
+        }
+
         const htm_post = htm.div({ 'class': depends(() => ('post-content' + ((me.isDeleting.val === (post.Id!)) ? ' deleting' : (post._isFresh ? ' fresh' : '')))) })
-        htm_post.innerHTML = post.Htm || `(files: ${post.Files.join(", ")})`
+        htm_post.innerHTML = inner_html
         const post_by = haxsh.getUserByPost(post), post_dt = new Date(post.DtMade!)
         const is_own_post = (post_by?.Id === haxsh.userSelf.val?.Id) || false
         return htm.div({ 'class': 'post' },

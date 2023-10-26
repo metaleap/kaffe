@@ -151,13 +151,10 @@ var apiPostDelete = api(func(this *ApiCtx[struct {
 })
 
 func (me *PostsListResult) augmentWithFileContentTypes() {
-	me.FileContentTypes = map[string]string{}
 	for _, post := range me.Posts {
-		for _, file_id := range post.Files {
-			file_ext := filepath.Ext(string(file_id))
-			if content_type := mime.TypeByExtension(file_ext); content_type != "" {
-				me.FileContentTypes[string(file_id)] = content_type
-			}
+		post.FileContentTypes = make([]string, len(post.Files))
+		for i, file_id := range post.Files {
+			post.FileContentTypes[i] = mime.TypeByExtension(filepath.Ext(string(file_id)))
 		}
 	}
 }
