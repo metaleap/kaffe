@@ -56,12 +56,10 @@ func postsRecent(ctx *Ctx, forUser *User, since *yodb.DateTime) *RecentUpdates {
 }
 
 func postDelete(ctx *Ctx, postId yodb.I64) bool {
-	time.Sleep(time.Second)
 	return (yodb.Delete[Post](ctx, PostId.Equal(postId)) > 0)
 }
 
 func postNew(ctx *Ctx, post *Post, byCurUserInCtx bool) yodb.I64 {
-	time.Sleep(time.Second)
 	ctx.DbTx()
 
 	var user *User

@@ -98,19 +98,14 @@ export function create(): UiCtlPosts {
 
 async function postDelete(me: UiCtlPosts, postId: number) {
     const post_idx = me.posts.findIndex(_ => (_ && (_.Id === postId)))
-    console.log("pidx", post_idx)
     if (post_idx < 0)
         return
     me.isDeleting.val = postId
-    console.log("dv1", me.isDeleting.val)
     const post = me.posts[post_idx]
     post._isDel = true
     await haxsh.deletePost(postId)
-    console.log("dv2", me.isDeleting.val)
     update(me, me.posts)
-    console.log("dv3", me.isDeleting.val)
     me.isDeleting.val = 0
-    console.log("dv4", me.isDeleting.val)
 }
 
 async function postSendNew(me: UiCtlPosts) {
@@ -125,7 +120,6 @@ async function postSendNew(me: UiCtlPosts) {
     if ((post_html.length === 0) || (post_html.replaceAll('<br>', '').replaceAll('<p></p>', '').trim().length === 0))
         return false
 
-    console.log(JSON.stringify(post_html))
     me.isSending.val = true
     const ok = await haxsh.sendNewPost(post_html)
     me.isSending.val = false
