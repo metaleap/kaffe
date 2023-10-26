@@ -66,12 +66,15 @@ async function fetchPosts(oneOff?: boolean) {
     if ((uiPosts.isDeleting.val > 0) || (fetchesPaused && !oneOff))
         return
     try {
-        const recent_updates = await yo.apiPostsRecent({ Since: fetchPostsSinceDt ? fetchPostsSinceDt : undefined })
+        const recent_updates = await yo.apiPostsRecent({
+            Since: fetchPostsSinceDt ? fetchPostsSinceDt : undefined,
+            OnlyBy: selectedBuddies.map(_ => _.Id),
+        })
         isSeeminglyOffline.val = false
         fetchedPostsEverYet = true // even if empty, we have a non-error outcome and so set this
         if (uiPosts.isDeleting.val === 0) {
             fetchPostsSinceDt = recent_updates.Next
-            uiPosts.update(recent_updates?.Posts ?? [])
+            uiposts.update(uiPosts, recent_updates?.Posts ?? [])
             browserTabTitleRefresh()
         }
     } catch (err) {
@@ -174,6 +177,7 @@ function browserTabTitleRefresh() {
 }
 
 export function buddySelected(user: yo.User, toggleIsSelected?: boolean): boolean {
+    // 2878 7025 2966 3803 10294
     let is_selected = selectedBuddies.some(_ => (_.Id === user.Id))
     if (toggleIsSelected) {
         if (is_selected)
@@ -181,6 +185,8 @@ export function buddySelected(user: yo.User, toggleIsSelected?: boolean): boolea
         else
             selectedBuddies.push(user)
         is_selected = !is_selected
+        uiposts.update(uiPosts, [], true)
+        fetchPosts(true)
     }
     return is_selected
 }

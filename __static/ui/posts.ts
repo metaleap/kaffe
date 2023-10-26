@@ -14,7 +14,6 @@ export type UiCtlPosts = {
     DOM: HTMLElement
     _htmPostInput: HTMLElement
     posts: vanx.Reactive<PostAug[]>
-    update: (_: yo.Post[]) => yo.Post | undefined
     numFreshPosts: number
     isSending: State<boolean>
     isDeleting: State<number>
@@ -36,7 +35,7 @@ export function create(): UiCtlPosts {
             if (['Enter', 'NumpadEnter'].includes(evt.code) && !(evt.shiftKey || evt.ctrlKey || evt.altKey || evt.metaKey)) {
                 evt.preventDefault()
                 evt.stopPropagation()
-                return postSendNew(me)
+                return sendNew(me)
             }
         },
     }, "")
@@ -57,7 +56,7 @@ export function create(): UiCtlPosts {
                     htm.div({ 'class': 'post-buttons' },
                         htm.button({
                             'type': 'button', 'class': 'button send', 'title': "Send", 'tabindex': 2,
-                            'disabled': depends(button_disabled), 'onclick': (() => postSendNew(me)),
+                            'disabled': depends(button_disabled), 'onclick': (() => sendNew(me)),
                         }),
                         htm.button({
                             'type': 'button', 'class': 'button attach', 'title': "Add Files", 'tabindex': 3,
@@ -70,7 +69,6 @@ export function create(): UiCtlPosts {
         ),
         numFreshPosts: 0,
         posts: vanx.reactive([] as PostAug[]),
-        update: (posts) => update(me, posts),
     }
 
     van.add(me.DOM, vanx.list(() => htm.div({ 'class': 'feed' }), me.posts, (it) => {
@@ -87,7 +85,7 @@ export function create(): UiCtlPosts {
             htm.div({ 'class': 'post-buttons' },
                 htm.button({
                     'type': 'button', 'class': 'button delete', 'title': "Delete", 'style': `visibility:${is_own_post ? 'visible' : 'hidden'}`,
-                    'disabled': depends(button_disabled), 'onclick': () => postDelete(me, post.Id!),
+                    'disabled': depends(button_disabled), 'onclick': () => deletePost(me, post.Id!),
                 }),
             ),
             htm_post,
@@ -96,7 +94,7 @@ export function create(): UiCtlPosts {
     return me
 }
 
-async function postDelete(me: UiCtlPosts, postId: number) {
+async function deletePost(me: UiCtlPosts, postId: number) {
     const post_idx = me.posts.findIndex(_ => (_ && (_.Id === postId)))
     if (post_idx < 0)
         return
@@ -108,7 +106,7 @@ async function postDelete(me: UiCtlPosts, postId: number) {
     me.isDeleting.val = 0
 }
 
-async function postSendNew(me: UiCtlPosts) {
+async function sendNew(me: UiCtlPosts) {
     if (haxsh.isSeeminglyOffline.val)
         return false
     let post_html = me._htmPostInput.innerHTML.replaceAll('&nbsp;', ' ').trim()
@@ -131,12 +129,12 @@ async function postSendNew(me: UiCtlPosts) {
     return false
 }
 
-function update(me: UiCtlPosts, newOrUpdatedPosts: yo.Post[]) {
+export function update(me: UiCtlPosts, newOrUpdatedPosts: yo.Post[], clearOld?: boolean) {
     let num_fresh = 0, last_ago_str = ""
     const now = new Date().getTime()
     const all_new_posts: yo.Post[] = newOrUpdatedPosts.filter(post_upd =>
         !me.posts.some(post_old => (post_old.Id === post_upd.Id)))
-    const new_posts_merged_with_old = all_new_posts.concat(me.posts.filter(_ => (!_._isDel)).map(post_old => {
+    const new_posts_merged_with_old = clearOld ? all_new_posts : all_new_posts.concat(me.posts.filter(_ => (!_._isDel)).map(post_old => {
         post_old._isFresh = false
         return (newOrUpdatedPosts.find(_ => (_.Id === post_old.Id))) ?? post_old
     }))
