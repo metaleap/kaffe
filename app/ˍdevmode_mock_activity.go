@@ -21,7 +21,7 @@ import (
 
 var mockLiveActivity = true
 
-const mockNumReqsPerSecApprox = 44 // max ~111 for outside-vscode `go run`s, ~44 in vscode dlv debug runs (due to default Postgres container's conn-limits setup)
+const mockNumReqsPerSecApprox = 11 // max ~111 for outside-vscode `go run`s, ~44 in vscode dlv debug runs (due to default Postgres container's conn-limits setup)
 const mockUsersNumTotal = 12345
 const mockFilesDirPath = "__static/mockfiles"
 
@@ -32,7 +32,9 @@ var mockUsersAllById = map[yodb.I64]string{}
 var mockUsersAllByEmail = map[string]yodb.I64{}
 var mockUsersLoggedIn = map[string]*http.Client{}
 var mockUsersNever = map[string]bool{
-	"foo789@bar.baz": true,
+	"foo123@bar.baz": true,
+	"foo234@bar.baz": true,
+	"foo321@bar.baz": true,
 }
 
 func init() {
