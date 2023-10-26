@@ -82,6 +82,7 @@ func postNew(ctx *Ctx, post *Post, byCurUserInCtx bool) yodb.I64 {
 		if sl.Any(post.To, func(it yodb.I64) bool { return !sl.Has(it, user.Buddies) }) {
 			panic(ErrPostNew_ExpectedOnlyBuddyRecipients)
 		}
+		post.To = sl.Sorted(sl.With(post.To, user.Id))
 	}
 
 	return yodb.CreateOne(ctx, post)
@@ -93,10 +94,9 @@ func dbQueryPostsForUser(forUser *User, onlyThoseBy sl.Slice[yodb.I64]) q.Query 
 		onlyThoseBy = (sl.Slice[yodb.I64])(forUser.Buddies)
 	}
 	post_author_ids := append(onlyThoseBy.ToAnys(), forUser.Id)
-
 	ret := PostBy.In(post_author_ids...).And(If(is_room,
-		q.ArrHas(PostTo, forUser.Id),
-		q.ArrIsEmpty(PostTo).Or(q.ArrHas(PostTo, forUser.Id)),
+		PostTo.Equal(sl.Sorted(append(onlyThoseBy, forUser.Id))),
+		q.ArrIsEmpty(PostTo),
 	))
 	return ret
 }
