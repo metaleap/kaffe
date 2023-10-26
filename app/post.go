@@ -28,29 +28,29 @@ type RecentUpdates struct {
 	Next  *yodb.DateTime
 }
 
-func postsFor(ctx *Ctx, forUser *User, dtFrom time.Time, dtUntil time.Time) (ret []*Post) {
+func postsFor(ctx *Ctx, forUser *User, dtFrom time.Time, dtUntil time.Time, onlyThoseBy []yodb.I64) (ret []*Post) {
 	year := dtFrom.Year()
 	if (year < 2023) || ((year == 2023) && (dtFrom.Month() < 10)) || (dtUntil.Equal(dtFrom)) || (dtUntil.Before(dtFrom)) || (dtUntil.Sub(dtFrom) > (time.Hour * 24 * 33)) {
 		panic(ErrPostsForPeriod_ExpectedPeriodGreater0AndLess33Days)
 	}
-	query := dbQueryPostsForUser(forUser).And(PostDtMade.GreaterOrEqual(dtFrom)).And(PostDtMade.LessOrEqual(dtUntil))
+	query := dbQueryPostsForUser(forUser, onlyThoseBy).And(PostDtMade.GreaterOrEqual(dtFrom)).And(PostDtMade.LessOrEqual(dtUntil))
 	return yodb.FindMany[Post](ctx, query, 0, PostDtMade.Desc())
 }
 
-func postsRecent(ctx *Ctx, forUser *User, since *yodb.DateTime) *RecentUpdates {
+func postsRecent(ctx *Ctx, forUser *User, since *yodb.DateTime, onlyThoseBy []yodb.I64) *RecentUpdates {
 	if (since != nil) && (since.Time().After(time.Now()) || since.Time().Before(*forUser.DtMade.Time())) {
 		since = nil
 	}
 
 	ret := &RecentUpdates{Since: forUser.DtMade, Next: yodb.DtNow()} // the below outside the ctor to ensure Next is set before hitting the DB
-	query_posts_for_user := dbQueryPostsForUser(forUser)
+	query_posts_for_user := dbQueryPostsForUser(forUser, onlyThoseBy)
 	if since == nil {
 		since = yodb.DtFrom(time.Now().AddDate(0, 0, -1))
 	}
 	ret.Posts = yodb.FindMany[Post](ctx, query_posts_for_user.And(PostDtMod.GreaterOrEqual(since)),
 		If(time.Since(*since.Time()) > (23*time.Hour), 11, 0), PostDtMade.Desc())
 	if (since == nil) && (len(ret.Posts) == 0) {
-		ret.Posts = yodb.FindMany[Post](ctx, dbQueryPostsForUser(forUser), 11, PostDtMade.Desc())
+		ret.Posts = yodb.FindMany[Post](ctx, query_posts_for_user, 11, PostDtMade.Desc())
 	}
 	return ret
 }
@@ -87,8 +87,16 @@ func postNew(ctx *Ctx, post *Post, byCurUserInCtx bool) yodb.I64 {
 	return yodb.CreateOne(ctx, post)
 }
 
-func dbQueryPostsForUser(forUser *User) q.Query {
-	post_author_ids := append(forUser.Buddies.ToAnys(), forUser.Id)
-	return PostBy.In(post_author_ids...).
-		And(q.ArrIsEmpty(PostTo).Or(q.ArrHas(PostTo, forUser.Id)))
+func dbQueryPostsForUser(forUser *User, onlyThoseBy sl.Slice[yodb.I64]) q.Query {
+	is_room := (len(onlyThoseBy) > 0)
+	if !is_room {
+		onlyThoseBy = (sl.Slice[yodb.I64])(forUser.Buddies)
+	}
+	post_author_ids := append(onlyThoseBy.ToAnys(), forUser.Id)
+
+	ret := PostBy.In(post_author_ids...).And(If(is_room,
+		q.ArrHas(PostTo, forUser.Id),
+		q.ArrIsEmpty(PostTo).Or(q.ArrHas(PostTo, forUser.Id)),
+	))
+	return ret
 }

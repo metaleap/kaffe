@@ -249,6 +249,7 @@ export type UserAuthField = 'Id' | 'DtMade' | 'DtMod' | 'EmailAddr'
 
 export type ApiArgPeriod = {
 	From?: Time
+	OnlyBy: I64[]
 	Until?: Time
 }
 
@@ -285,6 +286,7 @@ export type postDelete_In = {
 }
 
 export type postsRecent_In = {
+	OnlyBy: I64[]
 	Since?: DateTime
 }
 

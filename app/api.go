@@ -96,25 +96,27 @@ var apiUserBuddies = api(func(this *ApiCtx[Void, Return[[]*User]]) {
 })
 
 var apiPostsRecent = api(func(this *ApiCtx[struct {
-	Since *yodb.DateTime
+	Since  *yodb.DateTime
+	OnlyBy []yodb.I64
 }, RecentUpdates]) {
 	user_cur := userCur(this.Ctx)
 	if user_cur == nil {
 		panic(ErrUnauthorized)
 	}
-	this.Ret = postsRecent(this.Ctx, user_cur, this.Args.Since)
+	this.Ret = postsRecent(this.Ctx, user_cur, this.Args.Since, this.Args.OnlyBy)
 })
 
 type ApiArgPeriod struct {
-	From  *time.Time
-	Until *time.Time
+	From   *time.Time
+	Until  *time.Time
+	OnlyBy []yodb.I64
 }
 
 var apiPostsForPeriod = api(func(this *ApiCtx[ApiArgPeriod, Void]) {
 	if (this.Args.From == nil) || (this.Args.Until == nil) {
 		panic(ErrPostsForPeriod_ExpectedPeriodGreater0AndLess33Days)
 	}
-	postsFor(this.Ctx, userCur(this.Ctx), *this.Args.From, *this.Args.Until)
+	postsFor(this.Ctx, userCur(this.Ctx), *this.Args.From, *this.Args.Until, this.Args.OnlyBy)
 })
 
 var apiPostNew = api(func(this *ApiCtx[Post, Return[yodb.I64]]) {
