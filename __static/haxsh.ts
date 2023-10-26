@@ -148,6 +148,7 @@ export async function deletePost(id: number) {
     let ok = false
     try {
         await yo.apiPostDelete({ Id: id })
+        isSeeminglyOffline.val = false
         ok = true
     } catch (err) {
         if (!knownErr<yo.PostNewErr>(err, handleKnownErrMaybe<yo.PostNewErr>))
@@ -161,10 +162,11 @@ export async function deletePost(id: number) {
 function browserTabTitleRefresh() {
     const user_self = userSelf.val
     const buddies_and_self = uiBuddies.buddies.concat(user_self ? [user_self] : [])
-    const new_title = (((uiPosts.numFreshPosts === 0) ? '' : `(${uiPosts.numFreshPosts}) `) + buddies_and_self.map(_ => _.Nick).join(', ') || '...')
+    const new_title = ((isSeeminglyOffline.val ? '(disconnected)' : ((uiPosts.numFreshPosts === 0) ? '' : `(${uiPosts.numFreshPosts})`))
+        + ' ' + (buddies_and_self.map(_ => _.Nick).join(', '))).trim()
     if (new_title !== document.title)
         document.title = new_title
-    const fav_icon_user = buddies_and_self.find(_ => (_.PicFileId !== ''))
+    const fav_icon_user = isSeeminglyOffline.val ? undefined : buddies_and_self.find(_ => (_.PicFileId !== ''))
     const fav_icon_href = uibuddies.userPicFileUrl(fav_icon_user, '☕', true), htm_favicon = document.getElementById('favicon') as HTMLLinkElement
     if (htm_favicon && htm_favicon.href && (htm_favicon.href !== fav_icon_href))
         htm_favicon.href = fav_icon_href
@@ -173,6 +175,7 @@ function browserTabTitleRefresh() {
 
 function onErrOther(err: any) {
     isSeeminglyOffline.val = true
+    browserTabTitleRefresh()
     console.warn(`${err}`, err, JSON.stringify(err))
 }
 function knownErr<T extends string>(err: any, ifSo: (_: T) => boolean): boolean {
