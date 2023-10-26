@@ -67,7 +67,7 @@ async function fetchPosts(oneOff?: boolean) {
         return
     try {
         const recent_updates = await yo.apiPostsRecent({
-            Since: fetchPostsSinceDt ? fetchPostsSinceDt : undefined,
+            Since: fetchPostsSinceDt,
             OnlyBy: selectedBuddies.map(_ => _.Id),
         })
         isSeeminglyOffline.val = false
@@ -133,7 +133,7 @@ export async function sendNewPost(html: string, files?: string[]) {
     try {
         const resp = await yo.apiPostNew({
             By: user_self.Id,
-            To: [],
+            To: selectedBuddies.map(_ => _.Id),
             Files: files ?? [],
             Htm: html,
         })
@@ -177,7 +177,6 @@ function browserTabTitleRefresh() {
 }
 
 export function buddySelected(user: yo.User, toggleIsSelected?: boolean): boolean {
-    // 2878 7025 2966 3803 10294
     let is_selected = selectedBuddies.some(_ => (_.Id === user.Id))
     if (toggleIsSelected) {
         if (is_selected)
@@ -186,6 +185,7 @@ export function buddySelected(user: yo.User, toggleIsSelected?: boolean): boolea
             selectedBuddies.push(user)
         is_selected = !is_selected
         uiposts.update(uiPosts, [], true)
+        fetchPostsSinceDt = undefined
         fetchPosts(true)
     }
     return is_selected
