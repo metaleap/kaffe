@@ -146,9 +146,10 @@ function update(me: UiCtlPosts, newOrUpdatedPosts: yo.Post[]) {
             let post_ago_str = util.timeAgoStr(post_time, now, true, "")
             if (post_ago_str === last_ago_str)
                 post_ago_str = ""
+            const user_cur = haxsh.userSelf
             const is_fresh = (me.posts.length > 0) && ((haxsh.browserTabInvisibleSince === 0)
                 ? ((now - post_time) < freshnessDurationMsWhenVisible)
-                : (post_time >= haxsh.browserTabInvisibleSince))
+                : (post_time >= haxsh.browserTabInvisibleSince)) && ((!user_cur.val) || (post.By!) != (user_cur.val.Id))
             if (is_fresh)
                 num_fresh++
             const ret: PostAug = { ...post, _uxStrAgo: post_ago_str, _isDel: false, _isFresh: is_fresh }

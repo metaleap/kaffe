@@ -24,8 +24,13 @@ export function create(): UiCtlBuddies {
         update: (buddies) => update(me, buddies),
     }
 
-    van.add(me.DOM, vanx.list(htm.ul, me.buddies, (it) => {
-        return htm.li(userDomAttrsBuddy(it.val, new Date().getTime()))
+    van.add(me.DOM, vanx.list(() => htm.div({ 'class': 'buddies' }), me.buddies, (it) => {
+        const item = htm.div({ 'class': 'buddy' }, htm.div(userDomAttrsBuddy(it.val, new Date().getTime())))
+        item.onclick = () => {
+            item.classList.toggle('selected')
+            console.log(item.className, item.classList)
+        }
+        return item
     }))
     return me
 }

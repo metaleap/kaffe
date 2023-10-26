@@ -48,15 +48,17 @@ body {
     display: none;
 }
 
-.haxsh-buddies>ul {
-    display: block;
-    list-style-type: none;
+.haxsh-buddies>div.buddies {
     margin: 4.88em 0 0 0;
     padding: 0;
 }
 
+.buddy {
+    cursor: pointer;
+    padding: 0.5em 0;
+}
+
 .buddy-pic {
-    display: block;
     padding: 0;
     margin: 0.25em;
     height: 2.5em;
@@ -67,6 +69,10 @@ body {
     border-radius: 77em;
     filter: sepia(0.55) grayscale(0);
     transition: all 0.44s ease-in-out;
+}
+
+.buddy.selected {
+    background-color: var(--bgcolor);
 }
 
 .buddy-pic.offline {
