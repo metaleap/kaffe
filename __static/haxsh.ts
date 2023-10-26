@@ -92,11 +92,9 @@ async function fetchPostsDeleted() {
     if (fetchesPaused)
         return
     const post_ids = uiPosts.posts.filter(_ => true).map(_ => _.Id!)
-    console.log("PF", post_ids)
     if (post_ids.length) try {
         const post_ids_deleted = (await yo.apiPostsDeleted({ OutOfPostIds: post_ids })).DeletedPostIds
         isSeeminglyOffline.val = false
-        console.log("PD:", post_ids_deleted)
         if (post_ids_deleted && post_ids_deleted.length)
             uiposts.update(uiPosts, uiPosts.posts.filter(_ => !post_ids_deleted.includes(_.Id!)), false, post_ids_deleted)
     } catch (err) {
