@@ -83,16 +83,19 @@ export function create(): UiCtlPosts {
             htm.div({ 'class': 'post-buttons' },
                 htm.button({
                     'type': 'button', 'class': 'button delete', 'title': "Delete", 'style': `visibility:${is_own_post ? 'visible' : 'hidden'}`,
-                    'disabled': depends(() => button_disabled() || (me.isDeleting.val === (post.Id!))),
-                    'onclick': () => {
-                        me.isDeleting.val = post.Id!
-                    },
+                    'disabled': depends(() => button_disabled() || (me.isDeleting.val === (post.Id!))), 'onclick': () => postDelete(me, post.Id!),
                 }),
             ),
             htm_post,
         )
     }))
     return me
+}
+
+async function postDelete(me: UiCtlPosts, postId: number) {
+    me.isDeleting.val = postId
+    await haxsh.deletePost(postId)
+    me.isDeleting.val = 0
 }
 
 async function postSendNew(me: UiCtlPosts) {

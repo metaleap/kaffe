@@ -43,6 +43,10 @@ func init() {
 			Fails{Err: "ExpectedOnlyBuddyRecipients", If: q.ArrAreAnyIn(PostTo, q.OpLeq, 0)},
 		).
 			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
+		"postDelete": apiPostDelete.Checks(
+			Fails{Err: "InvalidPostId", If: PostDeleteId.LessOrEqual(0)},
+		).
+			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
 	})
 }
 
@@ -115,4 +119,10 @@ var apiPostsForPeriod = api(func(this *ApiCtx[ApiArgPeriod, Void]) {
 
 var apiPostNew = api(func(this *ApiCtx[Post, Return[yodb.I64]]) {
 	this.Ret.Result = postNew(this.Ctx, this.Args, true)
+})
+
+var apiPostDelete = api(func(this *ApiCtx[struct {
+	Id yodb.I64
+}, Void]) {
+	_ = postDelete(this.Ctx, this.Args.Id)
 })

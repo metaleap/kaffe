@@ -62,15 +62,17 @@ async function fetchBuddies() {
 }
 
 async function fetchPosts(oneOff?: boolean) {
-    if (fetchesPaused && !oneOff)
+    if ((uiPosts.isDeleting.val > 0) || (fetchesPaused && !oneOff))
         return
     try {
         const recent_updates = await yo.apiPostsRecent({ Since: fetchPostsSinceDt ? fetchPostsSinceDt : undefined })
         isSeeminglyOffline.val = false
         fetchedPostsEverYet = true // even if empty, we have a non-error outcome and so set this
-        fetchPostsSinceDt = recent_updates.Next
-        uiPosts.update(recent_updates?.Posts ?? [])
-        browserTabTitleRefresh()
+        if (uiPosts.isDeleting.val === 0) {
+            fetchPostsSinceDt = recent_updates.Next
+            uiPosts.update(recent_updates?.Posts ?? [])
+            browserTabTitleRefresh()
+        }
     } catch (err) {
         if (!knownErr<yo.PostsRecentErr>(err, handleKnownErrMaybe<yo.PostsRecentErr>))
             onErrOther(err)
@@ -142,12 +144,14 @@ export async function sendNewPost(html: string, files?: string[]) {
     return ok
 }
 
-export async function deletePost() {
+export async function deletePost(id: number) {
     let ok = false
     try {
-
+        await yo.apiPostDelete({ Id: id })
+        ok = true
     } catch (err) {
-
+        if (!knownErr<yo.PostNewErr>(err, handleKnownErrMaybe<yo.PostNewErr>))
+            onErrOther(err)
     }
     if (ok)
         fetchPosts(true) // async but here we dont care to await

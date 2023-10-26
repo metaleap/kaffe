@@ -18,6 +18,7 @@ func api[TIn any, TOut any](f func(*yosrv.ApiCtx[TIn, TOut]), failIfs ...yosrv.F
 	return yosrv.Api[TIn, TOut](f, failIfs...).From(haxshPkg)
 }
 
+const ErrPostDelete_InvalidPostId util.Err = "PostDelete_InvalidPostId"
 const ErrPostNew_ExpectedNonEmptyPost util.Err = "PostNew_ExpectedNonEmptyPost"
 const ErrPostNew_ExpectedOnlyBuddyRecipients util.Err = "PostNew_ExpectedOnlyBuddyRecipients"
 const ErrPostsForPeriod_ExpectedPeriodGreater0AndLess33Days util.Err = "PostsForPeriod_ExpectedPeriodGreater0AndLess33Days"
@@ -36,6 +37,7 @@ const Err___yo_authRegister_PasswordTooShort util.Err = "___yo_authRegister_Pass
 const ErrDbUpdate_ExpectedChangesForUpdate util.Err = "DbUpdate_ExpectedChangesForUpdate"
 const ErrDbUpdate_ExpectedQueryForUpdate util.Err = "DbUpdate_ExpectedQueryForUpdate"
 const ErrUserUpdate_NicknameAlreadyExists util.Err = "UserUpdate_NicknameAlreadyExists"
+const PostDeleteId = q.F("Id")
 const PostNewBy = q.F("By")
 const PostNewDtMade = q.F("DtMade")
 const PostNewDtMod = q.F("DtMod")

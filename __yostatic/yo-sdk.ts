@@ -121,6 +121,18 @@ function qGreaterThan(x: QueryVal, y: QueryVal): QueryExpr { return { __yoQOp: '
 function qGreaterOrEqual(x: QueryVal, y: QueryVal): QueryExpr { return { __yoQOp: 'GE', __yoQOperands: [x, y] } as QueryExpr }
 function qIn(x: QueryVal, ...set: QueryVal[]): QueryExpr { return { __yoQOp: 'IN', __yoQOperands: [x].concat(set) } as QueryExpr }
 
+const errsPostDelete = ['MissingOrExcessiveContentLength', 'PostDelete_InvalidPostId', 'TimedOut', 'Unauthorized'] as const
+export async function apiPostDelete(payload?: postDelete_In, query?: {[_:string]:string}): Promise<Void> {
+	try {
+		return await req<postDelete_In, Void>('_/postDelete', payload, query)
+	} catch(err: any) {
+		if (err && err['body_text'] && (errsPostDelete.indexOf(err.body_text) >= 0))
+			throw(new Err<PostDeleteErr>(err.body_text as PostDeleteErr))
+		throw(err)
+	}
+}
+export type PostDeleteErr = typeof errsPostDelete[number]
+
 const errsPostNew = ['MissingOrExcessiveContentLength', 'PostNew_ExpectedNonEmptyPost', 'PostNew_ExpectedOnlyBuddyRecipients', 'TimedOut', 'Unauthorized'] as const
 export async function apiPostNew(payload?: Post, query?: {[_:string]:string}): Promise<Return_yo_db_I64_> {
 	try {
@@ -266,6 +278,10 @@ export type User = {
 	LastSeen?: DateTime
 	Nick: string
 	PicFileId: string
+}
+
+export type postDelete_In = {
+	Id?: I64
 }
 
 export type postsRecent_In = {

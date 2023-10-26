@@ -217,6 +217,10 @@ body {
     color: MarkText !important;
 }
 
+.haxsh-posts .feed .post-content.deleting {
+    text-decoration: line-through;
+}
+
 .haxsh-posts .post-content * {
     font-size: 1em !important;
 }
