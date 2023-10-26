@@ -23,13 +23,15 @@ export type UiCtlPosts = {
 type PostAug = yo.Post & {
     _uxStrAgo: string
     _isFresh: boolean
+    _isDel: boolean
 }
 
 export function create(): UiCtlPosts {
+    const is_sending = van.state(false), is_deleting = van.state(0)
     let me: UiCtlPosts
     const htm_post = htm.div({
-        'class': depends(() => 'post-content' + (haxsh.isSeeminglyOffline.val ? ' offline' : '') + ((me && me.isSending.val) ? ' sending' : '')),
-        'contenteditable': depends(() => ((me && me.isSending.val) ? 'false' : 'true')),
+        'class': depends(() => 'post-content' + (haxsh.isSeeminglyOffline.val ? ' offline' : '') + (is_sending.val ? ' sending' : '')),
+        'contenteditable': depends(() => (is_sending.val ? 'false' : 'true')),
         'autofocus': true, 'spellcheck': false, 'autocorrect': 'off', 'tabindex': 1, 'onkeydown': (evt: KeyboardEvent) => {
             if (['Enter', 'NumpadEnter'].includes(evt.code) && !(evt.shiftKey || evt.ctrlKey || evt.altKey || evt.metaKey)) {
                 evt.preventDefault()
@@ -38,11 +40,13 @@ export function create(): UiCtlPosts {
             }
         },
     }, "")
-    const button_disabled = () => (haxsh.isSeeminglyOffline.val || (me?.isSending.val) || false /* falsy madness sometimes bites =) */)
+    const button_disabled = () => {
+        return (haxsh.isSeeminglyOffline.val || (is_deleting.val > 0) || is_sending.val)
+    }
     me = {
         _htmPostInput: htm_post,
-        isSending: van.state(false),
-        isDeleting: van.state(0),
+        isSending: is_sending,
+        isDeleting: is_deleting,
         DOM: htm.div({ 'class': 'haxsh-posts' },
             htm.div({ 'class': 'self-post' },
                 htm.div({ 'class': 'post' },
@@ -53,7 +57,7 @@ export function create(): UiCtlPosts {
                     htm.div({ 'class': 'post-buttons' },
                         htm.button({
                             'type': 'button', 'class': 'button send', 'title': "Send", 'tabindex': 2,
-                            'disabled': depends(button_disabled), 'onclick': (() => postSendNew(me)),
+                            'disabled': depends(button_disabled), 'onclick': (async () => await postSendNew(me)),
                         }),
                         htm.button({
                             'type': 'button', 'class': 'button attach', 'title': "Add Files", 'tabindex': 3,
@@ -83,7 +87,7 @@ export function create(): UiCtlPosts {
             htm.div({ 'class': 'post-buttons' },
                 htm.button({
                     'type': 'button', 'class': 'button delete', 'title': "Delete", 'style': `visibility:${is_own_post ? 'visible' : 'hidden'}`,
-                    'disabled': depends(() => button_disabled() || (me.isDeleting.val === (post.Id!))), 'onclick': () => postDelete(me, post.Id!),
+                    'disabled': depends(button_disabled), 'onclick': () => postDelete(me, post.Id!),
                 }),
             ),
             htm_post,
@@ -93,9 +97,20 @@ export function create(): UiCtlPosts {
 }
 
 async function postDelete(me: UiCtlPosts, postId: number) {
+    const post_idx = me.posts.findIndex(_ => (_ && (_.Id === postId)))
+    console.log("pidx", post_idx)
+    if (post_idx < 0)
+        return
     me.isDeleting.val = postId
+    console.log("dv1", me.isDeleting.val)
+    const post = me.posts[post_idx]
+    post._isDel = true
     await haxsh.deletePost(postId)
+    console.log("dv2", me.isDeleting.val)
+    update(me, me.posts)
+    console.log("dv3", me.isDeleting.val)
     me.isDeleting.val = 0
+    console.log("dv4", me.isDeleting.val)
 }
 
 async function postSendNew(me: UiCtlPosts) {
@@ -125,11 +140,11 @@ function update(me: UiCtlPosts, newOrUpdatedPosts: yo.Post[]) {
     const now = new Date().getTime()
     const all_new_posts: yo.Post[] = newOrUpdatedPosts.filter(post_upd =>
         !me.posts.some(post_old => (post_old.Id === post_upd.Id)))
-    const merged_with_others = all_new_posts.concat(me.posts.map(post_old => {
+    const new_posts_merged_with_old = all_new_posts.concat(me.posts.filter(_ => (!_._isDel)).map(post_old => {
         post_old._isFresh = false
         return (newOrUpdatedPosts.find(_ => (_.Id === post_old.Id))) ?? post_old
     }))
-    const fresh_feed = merged_with_others
+    const fresh_feed = new_posts_merged_with_old
         .map((post: yo.Post): PostAug => {
             const post_time = new Date(post.DtMod ?? (post.DtMade!)).getTime()
             let post_ago_str = util.timeAgoStr(post_time, now, true, "")
@@ -140,7 +155,7 @@ function update(me: UiCtlPosts, newOrUpdatedPosts: yo.Post[]) {
                 : (post_time >= haxsh.browserTabInvisibleSince))
             if (is_fresh)
                 num_fresh++
-            const ret = { ...post, _uxStrAgo: post_ago_str, _isFresh: is_fresh }
+            const ret: PostAug = { ...post, _uxStrAgo: post_ago_str, _isDel: false, _isFresh: is_fresh }
             if (post_ago_str !== "")
                 last_ago_str = post_ago_str
             return ret

@@ -61,6 +61,7 @@ func postDelete(ctx *Ctx, postId yodb.I64) bool {
 }
 
 func postNew(ctx *Ctx, post *Post, byCurUserInCtx bool) yodb.I64 {
+	time.Sleep(time.Second)
 	ctx.DbTx()
 
 	var user *User
