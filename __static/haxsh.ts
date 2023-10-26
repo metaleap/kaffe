@@ -73,6 +73,7 @@ async function fetchPostsRecent(oneOff?: boolean) {
             Since: fetchPostsSinceDt,
             OnlyBy: selectedBuddy.val ? [selectedBuddy.val] : [],
         })
+        console.log(recent_updates.FileContentTypes)
         isSeeminglyOffline.val = false
         fetchedPostsEverYet = true // even if empty, we have a non-error outcome and so set this
         if (uiPosts.isDeleting.val === 0) {

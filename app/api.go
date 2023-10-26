@@ -1,6 +1,8 @@
 package haxsh
 
 import (
+	"mime"
+	"path/filepath"
 	"time"
 	. "yo/ctx"
 	yodb "yo/db"
@@ -104,15 +106,30 @@ var apiUserBuddies = api(func(this *ApiCtx[Void, Return[[]*User]]) {
 	this.Ret.Result = userBuddies(this.Ctx, userCur(this.Ctx), true)
 })
 
+type ApiArgPeriod struct {
+	From   *time.Time
+	Until  *time.Time
+	OnlyBy []yodb.I64
+}
+
+var apiPostsForPeriod = api(func(this *ApiCtx[ApiArgPeriod, PostsListResult]) {
+	if (this.Args.From == nil) || (this.Args.Until == nil) {
+		panic(ErrPostsForPeriod_ExpectedPeriodGreater0AndLess33Days)
+	}
+	this.Ret.Posts = postsFor(this.Ctx, userCur(this.Ctx), *this.Args.From, *this.Args.Until, this.Args.OnlyBy)
+	this.Ret.augmentWithFileContentTypes()
+})
+
 var apiPostsRecent = api(func(this *ApiCtx[struct {
 	Since  *yodb.DateTime
 	OnlyBy []yodb.I64
-}, RecentUpdates]) {
+}, PostsListResult]) {
 	user_cur := userCur(this.Ctx)
 	if user_cur == nil {
 		panic(ErrUnauthorized)
 	}
 	this.Ret = postsRecent(this.Ctx, user_cur, this.Args.Since, this.Args.OnlyBy)
+	this.Ret.augmentWithFileContentTypes()
 })
 
 var apiPostsDeleted = api(func(this *ApiCtx[struct {
@@ -121,19 +138,6 @@ var apiPostsDeleted = api(func(this *ApiCtx[struct {
 	DeletedPostIds []yodb.I64
 }]) {
 	this.Ret.DeletedPostIds = postsDeleted(this.Ctx, this.Args.OutOfPostIds)
-})
-
-type ApiArgPeriod struct {
-	From   *time.Time
-	Until  *time.Time
-	OnlyBy []yodb.I64
-}
-
-var apiPostsForPeriod = api(func(this *ApiCtx[ApiArgPeriod, Void]) {
-	if (this.Args.From == nil) || (this.Args.Until == nil) {
-		panic(ErrPostsForPeriod_ExpectedPeriodGreater0AndLess33Days)
-	}
-	postsFor(this.Ctx, userCur(this.Ctx), *this.Args.From, *this.Args.Until, this.Args.OnlyBy)
 })
 
 var apiPostNew = api(func(this *ApiCtx[Post, Return[yodb.I64]]) {
@@ -145,3 +149,15 @@ var apiPostDelete = api(func(this *ApiCtx[struct {
 }, Void]) {
 	_ = postDelete(this.Ctx, this.Args.Id)
 })
+
+func (me *PostsListResult) augmentWithFileContentTypes() {
+	me.FileContentTypes = map[string]string{}
+	for _, post := range me.Posts {
+		for _, file_id := range post.Files {
+			file_ext := filepath.Ext(string(file_id))
+			if content_type := mime.TypeByExtension(file_ext); content_type != "" {
+				me.FileContentTypes[string(file_id)] = content_type
+			}
+		}
+	}
+}

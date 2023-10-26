@@ -22,10 +22,11 @@ type Post struct {
 	Files yodb.Arr[yodb.Text]
 }
 
-type RecentUpdates struct {
-	Posts []*Post
-	Since *yodb.DateTime
-	Next  *yodb.DateTime
+type PostsListResult struct {
+	Posts            []*Post
+	Since            *yodb.DateTime
+	Next             *yodb.DateTime
+	FileContentTypes map[string]string
 }
 
 func postsFor(ctx *Ctx, forUser *User, dtFrom time.Time, dtUntil time.Time, onlyThoseBy []yodb.I64) (ret []*Post) {
@@ -37,12 +38,12 @@ func postsFor(ctx *Ctx, forUser *User, dtFrom time.Time, dtUntil time.Time, only
 	return yodb.FindMany[Post](ctx, query, 0, nil, PostDtMade.Desc())
 }
 
-func postsRecent(ctx *Ctx, forUser *User, since *yodb.DateTime, onlyThoseBy []yodb.I64) *RecentUpdates {
+func postsRecent(ctx *Ctx, forUser *User, since *yodb.DateTime, onlyThoseBy []yodb.I64) *PostsListResult {
 	if (since != nil) && (since.Time().After(time.Now()) || since.Time().Before(*forUser.DtMade.Time())) {
 		since = nil
 	}
 
-	ret := &RecentUpdates{Since: forUser.DtMade, Next: yodb.DtNow()} // the below outside the ctor to ensure Next is set before hitting the DB
+	ret := &PostsListResult{Since: forUser.DtMade, Next: yodb.DtNow()} // the below outside the ctor to ensure Next is set before hitting the DB
 	query_posts_for_user := dbQueryPostsForUser(forUser, onlyThoseBy)
 	if since == nil {
 		since = yodb.DtFrom(time.Now().AddDate(0, 0, -1))
