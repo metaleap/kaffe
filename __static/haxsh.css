@@ -58,6 +58,10 @@ body {
     padding: 0.25em 0;
 }
 
+.buddy.offline {
+    cursor: default;
+}
+
 .buddy-pic {
     padding: 0;
     margin: 0.25em;

@@ -16,7 +16,7 @@ export type UiCtlBuddies = {
 export function create(): UiCtlBuddies {
     const me: UiCtlBuddies = {
         DOM: htm.div({ 'class': 'haxsh-buddies' },
-            htm.div({ 'class': depends(() => 'buddy-self' + (haxsh.haveAnySelected.val ? ' selected' : '')) },
+            htm.div({ 'class': depends(() => 'buddy-self' + (haxsh.selectedBuddy.val ? ' selected' : '')) },
                 htm.div(userDomAttrsSelf()),
             ),
         ),
@@ -25,10 +25,13 @@ export function create(): UiCtlBuddies {
     }
 
     van.add(me.DOM, vanx.list(() => htm.div({ 'class': 'buddies' }), me.buddies, (it) => {
-        const item = htm.div({ 'class': 'buddy' + (haxsh.buddySelected(it.val) ? ' selected' : '') }, htm.div(userDomAttrsBuddy(it.val, new Date().getTime())))
+        const item = htm.div({ 'class': depends(() => 'buddy' + (haxsh.isSeeminglyOffline.val ? ' offline' : '') + (haxsh.buddySelected(it.val) ? ' selected' : '')) },
+            htm.div(userDomAttrsBuddy(it.val, new Date().getTime())))
         item.onclick = () => {
-            item.classList.toggle('selected')
-            haxsh.buddySelected(it.val, true)
+            if (!haxsh.isSeeminglyOffline.val) {
+                item.classList.toggle('selected')
+                haxsh.buddySelected(it.val, true)
+            }
         }
         return item
     }))

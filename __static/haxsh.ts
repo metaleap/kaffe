@@ -1,4 +1,4 @@
-import van from '../__yostatic/vanjs/van-1.2.3.debug.js'
+import van, { State } from '../__yostatic/vanjs/van-1.2.3.debug.js'
 const htm = van.tags
 
 import * as yo from './yo-sdk.js'
@@ -17,8 +17,7 @@ let fetchedPostsEverYet = false
 export let userSelf = van.state(undefined as (yo.User | undefined))
 export let browserTabInvisibleSince = 0
 export let isSeeminglyOffline = van.state(false)
-export let selectedBuddies: yo.User[] = []
-export let haveAnySelected = van.state(false)
+export let selectedBuddy: State<number> = van.state(0)
 
 let uiDialogLogin = newUiLoginDialog()
 let uiBuddies: uibuddies.UiCtlBuddies = uibuddies.create()
@@ -72,7 +71,7 @@ async function fetchPostsRecent(oneOff?: boolean) {
     try {
         const recent_updates = await yo.apiPostsRecent({
             Since: fetchPostsSinceDt,
-            OnlyBy: selectedBuddies.map(_ => _.Id),
+            OnlyBy: selectedBuddy.val ? [selectedBuddy.val] : [],
         })
         isSeeminglyOffline.val = false
         fetchedPostsEverYet = true // even if empty, we have a non-error outcome and so set this
@@ -154,7 +153,7 @@ export async function sendNewPost(html: string, files?: string[]) {
     try {
         const resp = await yo.apiPostNew({
             By: user_self.Id,
-            To: selectedBuddies.map(_ => _.Id),
+            To: [selectedBuddy.val],
             Files: files ?? [],
             Htm: html,
         })
@@ -198,13 +197,12 @@ function browserTabTitleRefresh() {
 }
 
 export function buddySelected(user: yo.User, toggleIsSelected?: boolean): boolean {
-    let is_selected = selectedBuddies.some(_ => (_.Id === user.Id))
+    let is_selected = (selectedBuddy.val === user.Id)
     if (toggleIsSelected) {
         if (is_selected)
-            selectedBuddies = selectedBuddies.filter(_ => (_.Id !== user.Id))
+            selectedBuddy.val = 0
         else
-            selectedBuddies.push(user)
-        haveAnySelected.val = (selectedBuddies.length > 0)
+            selectedBuddy.val = user.Id
         is_selected = !is_selected
         uiposts.update(uiPosts, [], true)
         fetchPostsSinceDt = undefined
