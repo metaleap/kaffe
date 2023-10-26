@@ -19,6 +19,7 @@ export type UiCtlPosts = {
     doSendPost: (html: string, files?: string[]) => Promise<boolean>
     numFreshPosts: number
     isSending: State<boolean>
+    isEditing: State<PostAug | undefined>
 }
 
 type PostAug = yo.Post & {
@@ -42,12 +43,13 @@ export function create(
             }
         },
     }, "")
-    const button_state = () => (haxsh.isSeeminglyOffline.val || (me?.isSending.val) || false /* falsy madness sometimes bites =) */)
+    const button_disabled = () => (haxsh.isSeeminglyOffline.val || (me?.isSending.val) || false /* falsy madness sometimes bites =) */)
     me = {
         _htmPostInput: htm_post,
         doSendPost: doSendPost,
         getPostAuthor: getPostAuthor,
         isSending: van.state(false),
+        isEditing: van.state(undefined),
         DOM: htm.div({ 'class': 'haxsh-posts' },
             htm.div({ 'class': 'self-post' },
                 htm.div({ 'class': 'post' },
@@ -58,11 +60,11 @@ export function create(
                     htm.div({ 'class': 'post-buttons' },
                         htm.button({
                             'type': 'button', 'class': 'button send', 'title': "Send", 'tabindex': 2,
-                            'disabled': depends(button_state), 'onclick': (() => sendPost(me)),
+                            'disabled': depends(button_disabled), 'onclick': (() => sendPost(me)),
                         }),
                         htm.button({
                             'type': 'button', 'class': 'button attach', 'title': "Add Files", 'tabindex': 3,
-                            'disabled': depends(button_state), 'onclick': () => { },
+                            'disabled': depends(button_disabled), 'onclick': () => { },
                         }),
                     ),
                     htm_post,
@@ -76,7 +78,10 @@ export function create(
 
     van.add(me.DOM, vanx.list(() => htm.div({ 'class': 'feed' }), me.posts, (it) => {
         const post = it.val
-        const htm_post = htm.div({ 'class': 'post-content' + (post._isFresh ? ' fresh' : '') })
+        const htm_post = htm.div({
+            'class': 'post-content' + (post._isFresh ? ' fresh' : ''), 'spellcheck': false, 'autocorrect': 'off',
+            'contenteditable': depends(() => ((me.isEditing.val && (me.isEditing.val.Id === post.Id)) ? 'true' : 'false')),
+        })
         htm_post.innerHTML = post.Htm || `(files: ${post.Files.join(", ")})`
         const post_by = me.getPostAuthor(post), post_dt = new Date(post.DtMade!)
         const is_own_post = (post_by?.Id === haxsh.userSelf.val?.Id) || false
@@ -88,7 +93,8 @@ export function create(
             htm.div({ 'class': 'post-buttons' },
                 htm.button({
                     'type': 'button', 'class': 'button edit', 'title': "Edit", 'style': `visibility:${is_own_post ? 'visible' : 'hidden'}`,
-                    'disabled': depends(button_state), 'onclick': () => { },
+                    'disabled': depends(() => me.isEditing.val ? true : button_disabled()),
+                    'onclick': () => { me.isEditing.val = post },
                 }),
             ),
             htm_post,

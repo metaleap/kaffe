@@ -5,7 +5,6 @@ import * as yo from './yo-sdk.js'
 import * as uibuddies from './ui/buddies.js'
 import * as uiposts from './ui/posts.js'
 
-const none = void 0
 
 const fetchBuddiesIntervalMs = 4321
 let fetchPostsSinceDt: string | undefined
@@ -63,15 +62,17 @@ async function fetchBuddies() {
 }
 
 async function fetchPosts(oneOff?: boolean) {
-    if (fetchesPaused && !oneOff)
+    if (uiPosts.isEditing.val || (fetchesPaused && !oneOff))
         return
     try {
-        const recent_updates = await yo.apiPostsRecent({ Since: fetchPostsSinceDt ? fetchPostsSinceDt : none })
+        const recent_updates = await yo.apiPostsRecent({ Since: fetchPostsSinceDt ? fetchPostsSinceDt : undefined })
         isSeeminglyOffline.val = false
         fetchedPostsEverYet = true // even if empty, we have a non-error outcome and so set this
-        fetchPostsSinceDt = recent_updates.Next
-        uiPosts.update(recent_updates?.Posts ?? [])
-        browserTabTitleRefresh()
+        if (!uiPosts.isEditing.val) {
+            fetchPostsSinceDt = recent_updates.Next
+            uiPosts.update(recent_updates?.Posts ?? [])
+            browserTabTitleRefresh()
+        }
     } catch (err) {
         if (!knownErr<yo.PostsRecentErr>(err, handleKnownErrMaybe<yo.PostsRecentErr>))
             onErrOther(err)
