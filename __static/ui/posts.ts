@@ -57,7 +57,7 @@ export function create(): UiCtlPosts {
                     htm.div({ 'class': 'post-buttons' },
                         htm.button({
                             'type': 'button', 'class': 'button send', 'title': "Send", 'tabindex': 2,
-                            'disabled': depends(button_disabled), 'onclick': (async () => await postSendNew(me)),
+                            'disabled': depends(button_disabled), 'onclick': (() => postSendNew(me)),
                         }),
                         htm.button({
                             'type': 'button', 'class': 'button attach', 'title': "Add Files", 'tabindex': 3,
@@ -116,15 +116,17 @@ async function postDelete(me: UiCtlPosts, postId: number) {
 async function postSendNew(me: UiCtlPosts) {
     if (haxsh.isSeeminglyOffline.val)
         return false
-    me.isSending.val = true
-    let post_html = me._htmPostInput.innerHTML.trim()
+    let post_html = me._htmPostInput.innerHTML.replaceAll('&nbsp;', ' ').trim()
     while (post_html.startsWith('<br>'))
         post_html = post_html.substring('<br>'.length)
     while (post_html.endsWith('<br>'))
         post_html = post_html.substring(0, post_html.length - '<br>'.length)
-    if ((post_html.length === 0) || (post_html.replaceAll('<br>', '').replaceAll('<p></p>', '').length === 0))
+    post_html = me._htmPostInput.innerHTML.replaceAll('&nbsp;', ' ').trim() //
+    if ((post_html.length === 0) || (post_html.replaceAll('<br>', '').replaceAll('<p></p>', '').trim().length === 0))
         return false
 
+    console.log(JSON.stringify(post_html))
+    me.isSending.val = true
     const ok = await haxsh.sendNewPost(post_html)
     me.isSending.val = false
     if (ok) {
