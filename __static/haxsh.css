@@ -130,6 +130,10 @@ body {
     margin-right: 3.88em;
 }
 
+.haxsh-posts>div.self-post .post-content.offline {
+    background-color: coral;
+}
+
 .haxsh-posts .post-head {
     float: left;
     overflow: hidden;

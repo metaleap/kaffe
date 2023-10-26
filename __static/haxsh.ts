@@ -16,6 +16,7 @@ let fetchesPaused = false // true while signed out
 let fetchedPostsEverYet = false
 export let userSelf = van.state(undefined as (yo.User | undefined))
 export let browserTabInvisibleSince = 0
+export let seemsOffline = van.state(false)
 
 let uiDialogLogin = newUiLoginDialog()
 let uiBuddies: uibuddies.UiCtlBuddies = uibuddies.create()
@@ -48,6 +49,7 @@ async function fetchBuddies() {
         let user_self = userSelf.val
         if (!user_self)
             userSelf.val = (user_self = await yo.apiUserBy({ EmailAddr: yo.userEmailAddr }))
+        seemsOffline.val = false
         browserTabTitleRefresh()
         if (!fetchedPostsEverYet)
             setTimeout(fetchPosts, 123)
@@ -65,6 +67,7 @@ async function fetchPosts(oneOff?: boolean) {
         return
     try {
         const recent_updates = await yo.apiPostsRecent({ Since: fetchPostsSinceDt ? fetchPostsSinceDt : none })
+        seemsOffline.val = false
         fetchedPostsEverYet = true // even if empty, we have a non-error outcome and so set this
         fetchPostsSinceDt = recent_updates.Next
         uiPosts.update(recent_updates?.Posts ?? [])
@@ -81,6 +84,7 @@ function newUiLoginDialog() {
     const on_btn_login = async () => {
         try {
             await yo.apiUserSignIn({ EmailAddr: in_user_name.value, PasswordPlain: in_password.value })
+            seemsOffline.val = false
             location.reload()
         } catch (err) {
             if (!knownErr<yo.UserSignInErr>(err, (err) => {
@@ -126,6 +130,7 @@ async function sendPost(html: string, files?: string[]) {
         Files: files ?? [],
         Htm: html,
     })
+    seemsOffline.val = false
     const ok = (resp.Result > 0)
     if (ok)
         fetchPosts(true) // async but here we dont care to await
@@ -145,7 +150,10 @@ function browserTabTitleRefresh() {
 }
 
 
-function onErrOther(err: any) { console.error(`${err}`, err, JSON.stringify(err)) }
+function onErrOther(err: any) {
+    seemsOffline.val = true
+    console.error(`${err}`, err, JSON.stringify(err))
+}
 function knownErr<T extends string>(err: any, ifSo: (_: T) => boolean): boolean {
     const yo_err = err as yo.Err<T>
     return yo_err && yo_err.knownErr && (yo_err.knownErr.length > 0) && ifSo(yo_err.knownErr)

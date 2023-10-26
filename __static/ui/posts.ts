@@ -30,8 +30,8 @@ export function create(
     doSendPost: (html: string, files?: string[]) => Promise<boolean>,
 ): UiCtlPosts {
     const htm_post = htm.div({
-        'class': 'post-content', 'contenteditable': 'true', 'autofocus': true, 'spellcheck': false,
-        'autocorrect': 'off', 'tabindex': 1, 'onkeydown': (evt: KeyboardEvent) => {
+        'class': van.derive(() => 'post-content' + (haxsh.seemsOffline.val ? ' offline' : '')),
+        'contenteditable': 'true', 'autofocus': true, 'spellcheck': false, 'autocorrect': 'off', 'tabindex': 1, 'onkeydown': (evt: KeyboardEvent) => {
             if (['Enter', 'NumpadEnter'].includes(evt.code) && !(evt.shiftKey || evt.ctrlKey || evt.altKey || evt.metaKey)) {
                 evt.preventDefault()
                 evt.stopPropagation()
@@ -108,15 +108,14 @@ async function sendPost(me: UiCtlPosts) {
 }
 
 function update(me: UiCtlPosts, newOrUpdatedPosts: yo.Post[]) {
+    let num_fresh = 0, last_ago_str = ""
     const now = new Date().getTime()
-    let last_ago_str = ""
     const all_new_posts: yo.Post[] = newOrUpdatedPosts.filter(post_upd =>
         !me.posts.some(post_old => (post_old.Id === post_upd.Id)))
     const merged_with_others = all_new_posts.concat(me.posts.map(post_old => {
         post_old._isFresh = false
         return (newOrUpdatedPosts.find(_ => (_.Id === post_old.Id))) ?? post_old
     }))
-    let num_fresh = 0
     const fresh_feed = merged_with_others
         .map((post: yo.Post): PostAug => {
             const post_time = new Date(post.DtMod ?? (post.DtMade!)).getTime()
