@@ -53,7 +53,7 @@ func userUpdate(ctx *Ctx, upd *User, byCurUserInCtx bool, inclEmptyOrMissingFiel
 }
 
 func userBuddies(ctx *Ctx, forUser *User, normalizeLastSeenByMinute bool) []*User {
-	buddies := yodb.FindMany[User](ctx, UserId.In(forUser.Buddies.ToAnys()...), 0, UserLastSeen.Desc(), UserDtMod.Desc())
+	buddies := yodb.FindMany[User](ctx, UserId.In(forUser.Buddies.ToAnys()...), 0, nil, UserLastSeen.Desc(), UserDtMod.Desc())
 	if normalizeLastSeenByMinute {
 		for _, buddy := range buddies {
 			if buddy.LastSeen != nil {

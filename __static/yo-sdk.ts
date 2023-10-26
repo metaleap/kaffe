@@ -145,6 +145,18 @@ export async function apiPostNew(payload?: Post, query?: {[_:string]:string}): P
 }
 export type PostNewErr = typeof errsPostNew[number]
 
+const errsPostsDeleted = ['MissingOrExcessiveContentLength', 'TimedOut', 'Unauthorized'] as const
+export async function apiPostsDeleted(payload?: postsDeleted_In, query?: {[_:string]:string}): Promise<postsDeleted_Out> {
+	try {
+		return await req<postsDeleted_In, postsDeleted_Out>('_/postsDeleted', payload, query)
+	} catch(err: any) {
+		if (err && err['body_text'] && (errsPostsDeleted.indexOf(err.body_text) >= 0))
+			throw(new Err<PostsDeletedErr>(err.body_text as PostsDeletedErr))
+		throw(err)
+	}
+}
+export type PostsDeletedErr = typeof errsPostsDeleted[number]
+
 const errsPostsForPeriod = ['MissingOrExcessiveContentLength', 'PostsForPeriod_ExpectedPeriodGreater0AndLess33Days', 'TimedOut', 'Unauthorized'] as const
 export async function apiPostsForPeriod(payload?: ApiArgPeriod, query?: {[_:string]:string}): Promise<Void> {
 	try {
@@ -283,6 +295,14 @@ export type User = {
 
 export type postDelete_In = {
 	Id?: I64
+}
+
+export type postsDeleted_In = {
+	OutOfPostIds: I64[]
+}
+
+export type postsDeleted_Out = {
+	DeletedPostIds: I64[]
 }
 
 export type postsRecent_In = {

@@ -34,7 +34,7 @@ func postsFor(ctx *Ctx, forUser *User, dtFrom time.Time, dtUntil time.Time, only
 		panic(ErrPostsForPeriod_ExpectedPeriodGreater0AndLess33Days)
 	}
 	query := dbQueryPostsForUser(forUser, onlyThoseBy).And(PostDtMade.GreaterOrEqual(dtFrom)).And(PostDtMade.LessOrEqual(dtUntil))
-	return yodb.FindMany[Post](ctx, query, 0, PostDtMade.Desc())
+	return yodb.FindMany[Post](ctx, query, 0, nil, PostDtMade.Desc())
 }
 
 func postsRecent(ctx *Ctx, forUser *User, since *yodb.DateTime, onlyThoseBy []yodb.I64) *RecentUpdates {
@@ -48,11 +48,21 @@ func postsRecent(ctx *Ctx, forUser *User, since *yodb.DateTime, onlyThoseBy []yo
 		since = yodb.DtFrom(time.Now().AddDate(0, 0, -1))
 	}
 	ret.Posts = yodb.FindMany[Post](ctx, query_posts_for_user.And(PostDtMod.GreaterOrEqual(since)),
-		If(time.Since(*since.Time()) > (23*time.Hour), 11, 0), PostDtMade.Desc())
+		If(time.Since(*since.Time()) > (23*time.Hour), 11, 0), nil, PostDtMade.Desc())
 	if (since == nil) && (len(ret.Posts) == 0) {
-		ret.Posts = yodb.FindMany[Post](ctx, query_posts_for_user, 11, PostDtMade.Desc())
+		ret.Posts = yodb.FindMany[Post](ctx, query_posts_for_user, 11, nil, PostDtMade.Desc())
 	}
 	return ret
+}
+
+func postsDeleted(ctx *Ctx, postIds []yodb.I64) (ret []yodb.I64) {
+	existing_posts := yodb.FindMany[Post](ctx, PostId.In(sl.ToAnys(postIds)...), 0, []q.F{PostId.F()})
+	for _, post_id := range postIds {
+		if !sl.HasWhere(existing_posts, func(it *Post) bool { return it.Id == post_id }) {
+			ret = append(ret, post_id)
+		}
+	}
+	return
 }
 
 func postDelete(ctx *Ctx, postId yodb.I64) bool {

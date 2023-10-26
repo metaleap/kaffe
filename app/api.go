@@ -14,19 +14,24 @@ func init() {
 	Apis(ApiMethods{
 		"userSignOut": apiUserSignOut.
 			CouldFailWith(":" + yoauth.MethodPathLogout),
+
 		"userSignUp": apiUserSignUp.
 			CouldFailWith(":"+yoauth.MethodPathRegister, ":userSignIn"),
+
 		"userSignIn": apiUserSignIn.
 			CouldFailWith(":" + yoauth.MethodPathLogin),
+
 		"userBy": apiUserBy.Checks(
 			Fails{Err: "ExpectedEitherNickNameOrEmailAddr", If: UserByEmailAddr.Equal("").And(UserByNickName.Equal(""))},
 		).
 			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
+
 		"userUpdate": apiUserUpdate.Checks(
 			Fails{Err: ErrDbUpdExpectedIdGt0, If: UserUpdateId.LessOrEqual(0)},
 		).
 			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized).
 			CouldFailWith(":"+yodb.ErrSetDbUpdate, "NicknameAlreadyExists"),
+
 		"userBuddies": apiUserBuddies.
 			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
 
@@ -38,11 +43,15 @@ func init() {
 		).
 			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
 
+		"postsDeleted": apiPostsDeleted.
+			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
+
 		"postNew": apiPostNew.Checks(
 			Fails{Err: "ExpectedNonEmptyPost", If: PostHtm.Equal("").And(q.ArrIsEmpty(PostFiles))},
 			Fails{Err: "ExpectedOnlyBuddyRecipients", If: q.ArrAreAnyIn(PostTo, q.OpLeq, 0)},
 		).
 			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
+
 		"postDelete": apiPostDelete.Checks(
 			Fails{Err: "InvalidPostId", If: PostDeleteId.LessOrEqual(0)},
 		).
@@ -104,6 +113,14 @@ var apiPostsRecent = api(func(this *ApiCtx[struct {
 		panic(ErrUnauthorized)
 	}
 	this.Ret = postsRecent(this.Ctx, user_cur, this.Args.Since, this.Args.OnlyBy)
+})
+
+var apiPostsDeleted = api(func(this *ApiCtx[struct {
+	OutOfPostIds []yodb.I64
+}, struct {
+	DeletedPostIds []yodb.I64
+}]) {
+	this.Ret.DeletedPostIds = postsDeleted(this.Ctx, this.Args.OutOfPostIds)
 })
 
 type ApiArgPeriod struct {
