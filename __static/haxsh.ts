@@ -18,6 +18,7 @@ export let userSelf = van.state(undefined as (yo.User | undefined))
 export let browserTabInvisibleSince = 0
 export let isSeeminglyOffline = van.state(false)
 export let selectedBuddies: yo.User[] = []
+export let haveAnySelected = van.state(false)
 
 let uiDialogLogin = newUiLoginDialog()
 let uiBuddies: uibuddies.UiCtlBuddies = uibuddies.create()
@@ -203,6 +204,7 @@ export function buddySelected(user: yo.User, toggleIsSelected?: boolean): boolea
             selectedBuddies = selectedBuddies.filter(_ => (_.Id !== user.Id))
         else
             selectedBuddies.push(user)
+        haveAnySelected.val = (selectedBuddies.length > 0)
         is_selected = !is_selected
         uiposts.update(uiPosts, [], true)
         fetchPostsSinceDt = undefined

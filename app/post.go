@@ -9,7 +9,6 @@ import (
 	. "yo/srv"
 	. "yo/util"
 	"yo/util/sl"
-	"yo/util/str"
 )
 
 type Post struct {
@@ -57,15 +56,12 @@ func postsRecent(ctx *Ctx, forUser *User, since *yodb.DateTime, onlyThoseBy []yo
 }
 
 func postsDeleted(ctx *Ctx, postIds []yodb.I64) (ret []yodb.I64) {
-	println("????????????????", str.Fmt("%v", postIds))
 	existing_posts := yodb.FindMany[Post](ctx, PostId.In(sl.ToAnys(postIds)...), 0, []q.F{PostId.F()})
-	println(">>>>>>>>>>>>>>>>", str.Fmt("%v", sl.To(existing_posts, func(it *Post) yodb.I64 { return it.Id })))
 	for _, post_id := range postIds {
 		if !sl.HasWhere(existing_posts, func(it *Post) bool { return it.Id == post_id }) {
 			ret = append(ret, post_id)
 		}
 	}
-	println("<<<<<<<<<<<<<<<<", str.Fmt("%v", ret))
 	return
 }
 

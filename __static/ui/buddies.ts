@@ -16,7 +16,7 @@ export type UiCtlBuddies = {
 export function create(): UiCtlBuddies {
     const me: UiCtlBuddies = {
         DOM: htm.div({ 'class': 'haxsh-buddies' },
-            htm.div({ 'class': 'buddy-self' },
+            htm.div({ 'class': depends(() => 'buddy-self' + (haxsh.haveAnySelected.val ? ' selected' : '')) },
                 htm.div(userDomAttrsSelf()),
             ),
         ),
