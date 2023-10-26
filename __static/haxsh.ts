@@ -7,10 +7,11 @@ import * as uiposts from './ui/posts.js'
 
 
 const fetchBuddiesIntervalMs = 4321
-let fetchPostsSinceDt: string | undefined
+const fetchPostsDeletedIntervalMs = 6789
 const fetchPostsIntervalMsWhenVisible = 2345
 const fetchPostsIntervalMsWhenHidden = 4321
 let fetchPostsIntervalMsCur = fetchPostsIntervalMsWhenVisible
+let fetchPostsSinceDt: string | undefined
 let fetchesPaused = false // true while signed out
 let fetchedPostsEverYet = false
 export let userSelf = van.state(undefined as (yo.User | undefined))
@@ -29,7 +30,7 @@ export function main() {
         browserTabInvisibleSince = (!is_hidden) ? 0 : ((browserTabInvisibleSince === 0) ? now : browserTabInvisibleSince)
         fetchPostsIntervalMsCur = is_hidden ? fetchPostsIntervalMsWhenHidden : fetchPostsIntervalMsWhenVisible
         if (became_visible && (uiPosts.numFreshPosts === 0))
-            fetchPosts(true)
+            fetchPostsRecent(true)
     }
     van.add(document.body,
         uiPosts.DOM,
@@ -51,8 +52,10 @@ async function fetchBuddies() {
             userSelf.val = (user_self = await yo.apiUserBy({ EmailAddr: yo.userEmailAddr }))
         isSeeminglyOffline.val = false
         browserTabTitleRefresh()
-        if (!fetchedPostsEverYet)
-            setTimeout(fetchPosts, 123)
+        if (!fetchedPostsEverYet) {
+            setTimeout(fetchPostsRecent, 123)
+            setTimeout(fetchPostsDeleted, fetchPostsDeletedIntervalMs)
+        }
     } catch (err) {
         if (!knownErr<yo.UserBuddiesErr>(err, handleKnownErrMaybe<yo.UserBuddiesErr>))
             onErrOther(err)
@@ -62,7 +65,7 @@ async function fetchBuddies() {
         setTimeout(fetchBuddies, fetchBuddiesIntervalMs)
 }
 
-async function fetchPosts(oneOff?: boolean) {
+async function fetchPostsRecent(oneOff?: boolean) {
     if ((uiPosts.isDeleting.val > 0) || (fetchesPaused && !oneOff))
         return
     try {
@@ -82,7 +85,26 @@ async function fetchPosts(oneOff?: boolean) {
             onErrOther(err)
     }
     if ((!fetchesPaused) && !oneOff)
-        setTimeout(fetchPosts, fetchPostsIntervalMsCur)
+        setTimeout(fetchPostsRecent, fetchPostsIntervalMsCur)
+}
+
+async function fetchPostsDeleted() {
+    if (fetchesPaused)
+        return
+    const post_ids = uiPosts.posts.filter(_ => true).map(_ => _.Id!)
+    console.log("PF", post_ids)
+    if (post_ids.length) try {
+        const post_ids_deleted = (await yo.apiPostsDeleted({ OutOfPostIds: post_ids })).DeletedPostIds
+        isSeeminglyOffline.val = false
+        console.log("PD:", post_ids_deleted)
+        if (post_ids_deleted && post_ids_deleted.length)
+            uiposts.update(uiPosts, uiPosts.posts.filter(_ => !post_ids_deleted.includes(_.Id!)), true)
+    } catch (err) {
+        if (!knownErr<yo.PostsDeletedErr>(err, handleKnownErrMaybe<yo.PostsDeletedErr>))
+            onErrOther(err)
+    }
+    if (!fetchesPaused)
+        setTimeout(fetchPostsDeleted, fetchPostsDeletedIntervalMs)
 }
 
 function newUiLoginDialog() {
@@ -144,7 +166,7 @@ export async function sendNewPost(html: string, files?: string[]) {
             onErrOther(err)
     }
     if (ok)
-        fetchPosts(true) // async but here we dont care to await
+        fetchPostsRecent(true) // async but here we dont care to await
     return ok
 }
 
@@ -155,11 +177,11 @@ export async function deletePost(id: number) {
         isSeeminglyOffline.val = false
         ok = true
     } catch (err) {
-        if (!knownErr<yo.PostNewErr>(err, handleKnownErrMaybe<yo.PostNewErr>))
+        if (!knownErr<yo.PostDeleteErr>(err, handleKnownErrMaybe<yo.PostDeleteErr>))
             onErrOther(err)
     }
     if (ok)
-        fetchPosts(true) // async but here we dont care to await
+        fetchPostsRecent(true) // async but here we dont care to await
     return ok
 }
 
@@ -186,7 +208,7 @@ export function buddySelected(user: yo.User, toggleIsSelected?: boolean): boolea
         is_selected = !is_selected
         uiposts.update(uiPosts, [], true)
         fetchPostsSinceDt = undefined
-        fetchPosts(true)
+        fetchPostsRecent(true)
     }
     return is_selected
 }

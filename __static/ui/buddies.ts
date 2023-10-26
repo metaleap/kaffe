@@ -91,7 +91,7 @@ function update(me: UiCtlBuddies, buddies: yo.User[]): number {
             }
         }
     }
-    if (!youtil.deepEq(buddies, me.buddies, false, false))
+    if (!youtil.deepEq(buddies, me.buddies.filter(_ => true), false, false))
         vanx.replace(me.buddies, (_: yo.User[]) => buddies)
     return buddies.filter(_ => !isOffline(_, now)).length
 }

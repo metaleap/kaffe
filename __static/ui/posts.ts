@@ -131,10 +131,10 @@ async function sendNew(me: UiCtlPosts) {
 
 export function update(me: UiCtlPosts, newOrUpdatedPosts: yo.Post[], clearOld?: boolean) {
     let num_fresh = 0, last_ago_str = ""
-    const now = new Date().getTime()
+    const now = new Date().getTime(), old_posts = me.posts.filter(_ => true)
     const all_new_posts: yo.Post[] = newOrUpdatedPosts.filter(post_upd =>
-        !me.posts.some(post_old => (post_old.Id === post_upd.Id)))
-    const new_posts_merged_with_old = clearOld ? all_new_posts : all_new_posts.concat(me.posts.filter(_ => (!_._isDel)).map(post_old => {
+        !old_posts.some(post_old => (post_old.Id === post_upd.Id)))
+    const new_posts_merged_with_old = clearOld ? all_new_posts : all_new_posts.concat(old_posts.filter(_ => (!_._isDel)).map(post_old => {
         post_old._isFresh = false
         return (newOrUpdatedPosts.find(_ => (_.Id === post_old.Id))) ?? post_old
     }))
@@ -145,7 +145,7 @@ export function update(me: UiCtlPosts, newOrUpdatedPosts: yo.Post[], clearOld?: 
             if (post_ago_str === last_ago_str)
                 post_ago_str = ""
             const user_cur = haxsh.userSelf
-            const is_fresh = (me.posts.length > 0) && ((haxsh.browserTabInvisibleSince === 0)
+            const is_fresh = (old_posts.length > 0) && ((haxsh.browserTabInvisibleSince === 0)
                 ? ((now - post_time) < freshnessDurationMsWhenVisible)
                 : (post_time >= haxsh.browserTabInvisibleSince)) && ((!user_cur.val) || (post.By!) != (user_cur.val.Id))
             if (is_fresh)
@@ -156,7 +156,7 @@ export function update(me: UiCtlPosts, newOrUpdatedPosts: yo.Post[], clearOld?: 
             return ret
         })
     me.numFreshPosts = num_fresh
-    if (!youtil.deepEq(me.posts, fresh_feed, true, false))
+    if (!youtil.deepEq(old_posts, fresh_feed, true, false))
         vanx.replace(me.posts, (_: PostAug[]) => fresh_feed)
     if (fresh_feed.length > 0)
         return fresh_feed[0]
