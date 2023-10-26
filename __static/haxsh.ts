@@ -16,6 +16,7 @@ let fetchedPostsEverYet = false
 export let userSelf = van.state(undefined as (yo.User | undefined))
 export let browserTabInvisibleSince = 0
 export let isSeeminglyOffline = van.state(false)
+export let selectedBuddies: yo.User[] = []
 
 let uiDialogLogin = newUiLoginDialog()
 let uiBuddies: uibuddies.UiCtlBuddies = uibuddies.create()
@@ -170,6 +171,18 @@ function browserTabTitleRefresh() {
     const fav_icon_href = uibuddies.userPicFileUrl(fav_icon_user, '☕', true), htm_favicon = document.getElementById('favicon') as HTMLLinkElement
     if (htm_favicon && htm_favicon.href && (htm_favicon.href !== fav_icon_href))
         htm_favicon.href = fav_icon_href
+}
+
+export function buddySelected(user: yo.User, toggleIsSelected?: boolean): boolean {
+    let is_selected = selectedBuddies.some(_ => (_.Id === user.Id))
+    if (toggleIsSelected) {
+        if (is_selected)
+            selectedBuddies = selectedBuddies.filter(_ => (_.Id !== user.Id))
+        else
+            selectedBuddies.push(user)
+        is_selected = !is_selected
+    }
+    return is_selected
 }
 
 

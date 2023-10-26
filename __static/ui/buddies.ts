@@ -25,10 +25,10 @@ export function create(): UiCtlBuddies {
     }
 
     van.add(me.DOM, vanx.list(() => htm.div({ 'class': 'buddies' }), me.buddies, (it) => {
-        const item = htm.div({ 'class': 'buddy' }, htm.div(userDomAttrsBuddy(it.val, new Date().getTime())))
+        const item = htm.div({ 'class': 'buddy' + (haxsh.buddySelected(it.val) ? ' selected' : '') }, htm.div(userDomAttrsBuddy(it.val, new Date().getTime())))
         item.onclick = () => {
             item.classList.toggle('selected')
-            console.log(item.className, item.classList)
+            haxsh.buddySelected(it.val, true)
         }
         return item
     }))
@@ -76,6 +76,21 @@ export function userDomAttrsSelf() {
 
 function update(me: UiCtlBuddies, buddies: yo.User[]): number {
     const now = new Date().getTime()
+    const is_selected: { [_: number]: boolean } = {}
+    for (let i = 0; i < buddies.length; i++) {
+        const buddy = buddies[i]
+        is_selected[buddy.Id] = haxsh.buddySelected(buddy)
+        if ((i > 0) && (is_selected[buddy.Id])) {
+            for (let j = 0; j < i; j++) {
+                const earlier = buddies[j]
+                if (!is_selected[earlier.Id]) {
+                    buddies[j] = buddy
+                    buddies[i] = earlier
+                    break
+                }
+            }
+        }
+    }
     if (!youtil.deepEq(buddies, me.buddies, false, false))
         vanx.replace(me.buddies, (_: yo.User[]) => buddies)
     return buddies.filter(_ => !isOffline(_, now)).length
