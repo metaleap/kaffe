@@ -129,15 +129,18 @@ async function sendNew(me: UiCtlPosts) {
     return false
 }
 
-export function update(me: UiCtlPosts, newOrUpdatedPosts: yo.Post[], clearOld?: boolean) {
+export function update(me: UiCtlPosts, newOrUpdatedPosts: yo.Post[], clearOld?: boolean, sansIds: number[] = []) {
     let num_fresh = 0, last_ago_str = ""
     const now = new Date().getTime(), old_posts = me.posts.filter(_ => true)
     const all_new_posts: yo.Post[] = newOrUpdatedPosts.filter(post_upd =>
         !old_posts.some(post_old => (post_old.Id === post_upd.Id)))
-    const new_posts_merged_with_old = clearOld ? all_new_posts : all_new_posts.concat(old_posts.filter(_ => (!_._isDel)).map(post_old => {
-        post_old._isFresh = false
-        return (newOrUpdatedPosts.find(_ => (_.Id === post_old.Id))) ?? post_old
-    }))
+    const new_posts_merged_with_old = clearOld ? all_new_posts : all_new_posts.concat(old_posts
+        .filter(_ => (!_._isDel) && ((!sansIds.length) || !sansIds.includes(_.Id!)))
+        .map(post_old => {
+            post_old._isFresh = false
+            return (newOrUpdatedPosts.find(_ => (_.Id === post_old.Id))) ?? post_old
+        })
+    )
     const fresh_feed = new_posts_merged_with_old
         .map((post: yo.Post): PostAug => {
             const post_time = new Date(post.DtMod ?? (post.DtMade!)).getTime()

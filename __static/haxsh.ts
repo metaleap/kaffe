@@ -98,7 +98,7 @@ async function fetchPostsDeleted() {
         isSeeminglyOffline.val = false
         console.log("PD:", post_ids_deleted)
         if (post_ids_deleted && post_ids_deleted.length)
-            uiposts.update(uiPosts, uiPosts.posts.filter(_ => !post_ids_deleted.includes(_.Id!)), true)
+            uiposts.update(uiPosts, uiPosts.posts.filter(_ => !post_ids_deleted.includes(_.Id!)), false, post_ids_deleted)
     } catch (err) {
         if (!knownErr<yo.PostsDeletedErr>(err, handleKnownErrMaybe<yo.PostsDeletedErr>))
             onErrOther(err)
