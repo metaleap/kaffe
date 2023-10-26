@@ -75,14 +75,14 @@ export function create(
     }
 
     van.add(me.DOM, vanx.list(() => htm.div({ 'class': 'feed' }), me.posts, (it) => {
-        const post = it.val, now = new Date().getTime()
+        const post = it.val
         const htm_post = htm.div({ 'class': 'post-content' + (post._isFresh ? ' fresh' : '') })
         htm_post.innerHTML = post.Htm || `(files: ${post.Files.join(", ")})`
         const post_by = me.getPostAuthor(post), post_dt = new Date(post.DtMade!)
         const is_own_post = (post_by?.Id === haxsh.userSelf.val?.Id) || false
         return htm.div({ 'class': 'post' },
             htm.div({ 'class': 'post-head' },
-                htm.div(is_own_post ? uibuddies.userDomAttrsSelf() : uibuddies.userDomAttrsBuddy(post_by, now)),
+                htm.div(is_own_post ? uibuddies.userDomAttrsSelf() : uibuddies.userDomAttrsBuddy(post_by)),
                 htm.div({ 'class': 'post-ago', 'title': post_dt.toLocaleDateString() + " — " + post_dt.toLocaleTimeString() }, post._uxStrAgo),
             ),
             htm.div({ 'class': 'post-buttons' },

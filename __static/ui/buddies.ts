@@ -30,9 +30,9 @@ export function create(): UiCtlBuddies {
     return me
 }
 
-function isOffline(user: yo.User, now: number) {
+function isOffline(user: yo.User, now?: number) {
     const last_seen = new Date(user.LastSeen ?? (user.DtMod!)).getTime()
-    return ((now - last_seen) > 77777)
+    return (((now ?? youtil.dtNow()) - last_seen) > 77777)
 }
 
 export function userPicFileUrl(user?: yo.User, fallBackToEmoji = '👤', toRoundedSvgFavIcon = false) {
@@ -41,16 +41,15 @@ export function userPicFileUrl(user?: yo.User, fallBackToEmoji = '👤', toRound
     return '/__static/mockfiles/' + user.PicFileId + (toRoundedSvgFavIcon ? '?picRounded=true' : '')
 }
 
-export function userDomAttrsBuddy(user: yo.User | undefined, now: number) {
+export function userDomAttrsBuddy(user?: yo.User, now?: number) {
     if (!user)
         return {
             'class': 'buddy-pic offline',
             'title': "(ex-buddy — or bug)",
             'style': `background-image: url('${userPicFileUrl()}')`
         }
-    const is_offline = isOffline(user, now)
     return {
-        'class': 'buddy-pic' + (is_offline ? ' offline' : ''),
+        'class': depends(() => 'buddy-pic' + ((haxsh.isSeeminglyOffline.val || isOffline(user, now)) ? ' offline' : '')),
         'title': `${user.Nick}${((!user.Btw) ? '' : (' — ' + user.Btw))}`,
         'style': `background-image: url('${userPicFileUrl(user)}')`
     }
@@ -58,7 +57,7 @@ export function userDomAttrsBuddy(user: yo.User | undefined, now: number) {
 
 export function userDomAttrsSelf() {
     return {
-        'class': 'buddy-pic self',
+        'class': depends(() => 'buddy-pic self' + (haxsh.isSeeminglyOffline.val ? ' offline' : '')),
         'title': depends(() => {
             const user_self = haxsh.userSelf.val
             return (!user_self) ? "(you)" : `${user_self.Nick}${((!user_self.Btw) ? '' : (' — ' + user_self.Btw))}`
