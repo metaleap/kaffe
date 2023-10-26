@@ -16,7 +16,7 @@ let fetchesPaused = false // true while signed out
 let fetchedPostsEverYet = false
 export let userSelf = van.state(undefined as (yo.User | undefined))
 export let browserTabInvisibleSince = 0
-export let seemsOffline = van.state(false)
+export let isSeeminglyOffline = van.state(false)
 
 let uiDialogLogin = newUiLoginDialog()
 let uiBuddies: uibuddies.UiCtlBuddies = uibuddies.create()
@@ -49,7 +49,7 @@ async function fetchBuddies() {
         let user_self = userSelf.val
         if (!user_self)
             userSelf.val = (user_self = await yo.apiUserBy({ EmailAddr: yo.userEmailAddr }))
-        seemsOffline.val = false
+        isSeeminglyOffline.val = false
         browserTabTitleRefresh()
         if (!fetchedPostsEverYet)
             setTimeout(fetchPosts, 123)
@@ -67,7 +67,7 @@ async function fetchPosts(oneOff?: boolean) {
         return
     try {
         const recent_updates = await yo.apiPostsRecent({ Since: fetchPostsSinceDt ? fetchPostsSinceDt : none })
-        seemsOffline.val = false
+        isSeeminglyOffline.val = false
         fetchedPostsEverYet = true // even if empty, we have a non-error outcome and so set this
         fetchPostsSinceDt = recent_updates.Next
         uiPosts.update(recent_updates?.Posts ?? [])
@@ -84,7 +84,7 @@ function newUiLoginDialog() {
     const on_btn_login = async () => {
         try {
             await yo.apiUserSignIn({ EmailAddr: in_user_name.value, PasswordPlain: in_password.value })
-            seemsOffline.val = false
+            isSeeminglyOffline.val = false
             location.reload()
         } catch (err) {
             if (!knownErr<yo.UserSignInErr>(err, (err) => {
@@ -124,14 +124,20 @@ async function sendPost(html: string, files?: string[]) {
     const user_self = userSelf.val
     if (!user_self)
         return false
-    const resp = await yo.apiPostNew({
-        By: user_self.Id,
-        To: [],
-        Files: files ?? [],
-        Htm: html,
-    })
-    seemsOffline.val = false
-    const ok = (resp.Result > 0)
+    let ok = false
+    try {
+        const resp = await yo.apiPostNew({
+            By: user_self.Id,
+            To: [],
+            Files: files ?? [],
+            Htm: html,
+        })
+        isSeeminglyOffline.val = false
+        ok = (resp.Result > 0)
+    } catch (err) {
+        if (!knownErr<yo.PostNewErr>(err, handleKnownErrMaybe<yo.PostNewErr>))
+            onErrOther(err)
+    }
     if (ok)
         fetchPosts(true) // async but here we dont care to await
     return ok
@@ -151,7 +157,7 @@ function browserTabTitleRefresh() {
 
 
 function onErrOther(err: any) {
-    seemsOffline.val = true
+    isSeeminglyOffline.val = true
     console.error(`${err}`, err, JSON.stringify(err))
 }
 function knownErr<T extends string>(err: any, ifSo: (_: T) => boolean): boolean {
@@ -163,6 +169,9 @@ function handleKnownErrMaybe<T extends string>(err: T): boolean {
         case 'Unauthorized':
             fetchesPaused = true
             uiDialogLogin.showModal()
+            return true
+        case 'MissingOrExcessiveContentLength':
+            alert("Your input has exceeded the server's maximum permissible payload size.")
             return true
     }
     return false

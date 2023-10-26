@@ -1,4 +1,4 @@
-import van from '../../__yostatic/vanjs/van-1.2.3.debug.js'
+import van, { State } from '../../__yostatic/vanjs/van-1.2.3.debug.js'
 import * as vanx from '../../__yostatic/vanjs/van-x.js'
 const htm = van.tags
 
@@ -18,6 +18,7 @@ export type UiCtlPosts = {
     update: (_: yo.Post[]) => yo.Post | undefined
     doSendPost: (html: string, files?: string[]) => Promise<boolean>
     numFreshPosts: number
+    isSending: State<boolean>
 }
 
 type PostAug = yo.Post & {
@@ -30,8 +31,9 @@ export function create(
     doSendPost: (html: string, files?: string[]) => Promise<boolean>,
 ): UiCtlPosts {
     const htm_post = htm.div({
-        'class': van.derive(() => 'post-content' + (haxsh.seemsOffline.val ? ' offline' : '')),
-        'contenteditable': 'true', 'autofocus': true, 'spellcheck': false, 'autocorrect': 'off', 'tabindex': 1, 'onkeydown': (evt: KeyboardEvent) => {
+        'class': van.derive(() => 'post-content' + (haxsh.isSeeminglyOffline.val ? ' offline' : '') + (me.isSending.val ? ' sending' : '')),
+        'contenteditable': van.derive(() => (haxsh.isSeeminglyOffline.val || me.isSending.val) ? 'false' : 'true'),
+        'autofocus': true, 'spellcheck': false, 'autocorrect': 'off', 'tabindex': 1, 'onkeydown': (evt: KeyboardEvent) => {
             if (['Enter', 'NumpadEnter'].includes(evt.code) && !(evt.shiftKey || evt.ctrlKey || evt.altKey || evt.metaKey)) {
                 evt.preventDefault()
                 evt.stopPropagation()
@@ -43,6 +45,7 @@ export function create(
         _htmPostInput: htm_post,
         doSendPost: doSendPost,
         getPostAuthor: getPostAuthor,
+        isSending: van.state(false),
         DOM: htm.div({ 'class': 'haxsh-posts' },
             htm.div({ 'class': 'self-post' },
                 htm.div({ 'class': 'post' },
@@ -94,11 +97,7 @@ async function sendPost(me: UiCtlPosts) {
     if ((post_html.length === 0) || (post_html.replaceAll('<br>', '').replaceAll('<p></p>', '').length === 0))
         return false
 
-    me._htmPostInput.contentEditable = 'false'
-    me._htmPostInput.classList.add('sending')
     const ok = await me.doSendPost(post_html)
-    me._htmPostInput.classList.remove('sending')
-    me._htmPostInput.contentEditable = 'true'
     if (ok) {
         me._htmPostInput.innerHTML = ''
         window.scrollTo(0, 0)
