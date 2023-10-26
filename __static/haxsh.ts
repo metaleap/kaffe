@@ -158,7 +158,7 @@ function browserTabTitleRefresh() {
 
 function onErrOther(err: any) {
     isSeeminglyOffline.val = true
-    console.error(`${err}`, err, JSON.stringify(err))
+    console.warn(`${err}`, err, JSON.stringify(err))
 }
 function knownErr<T extends string>(err: any, ifSo: (_: T) => boolean): boolean {
     const yo_err = err as yo.Err<T>

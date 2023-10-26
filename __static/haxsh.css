@@ -131,7 +131,7 @@ body {
 }
 
 .haxsh-posts>div.self-post .post-content.offline {
-    background-color: coral;
+    background-color: var(--bgsub10);
 }
 
 .haxsh-posts .post-head {
@@ -185,9 +185,14 @@ body {
     content: '\e800';
 }
 
-.button:hover,
-.button:focus,
-.button:active {
+.button:disabled {
+    opacity: 0.44;
+    cursor: default;
+}
+
+.button:hover:enabled,
+.button:focus:enabled,
+.button:active:enabled {
     background-color: var(--bgoff1);
 }
 

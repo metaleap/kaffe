@@ -1,6 +1,6 @@
 import van from '../../__yostatic/vanjs/van-1.2.3.debug.js'
 import * as vanx from '../../__yostatic/vanjs/van-x.js'
-const htm = van.tags
+const htm = van.tags, depends = van.derive
 
 import * as yo from '../yo-sdk.js'
 import * as youtil from '../../__yostatic/util.js'
@@ -59,11 +59,11 @@ export function userDomAttrsBuddy(user: yo.User | undefined, now: number) {
 export function userDomAttrsSelf() {
     return {
         'class': 'buddy-pic self',
-        'title': van.derive(() => {
+        'title': depends(() => {
             const user_self = haxsh.userSelf.val
             return (!user_self) ? "(you)" : `${user_self.Nick}${((!user_self.Btw) ? '' : (' — ' + user_self.Btw))}`
         }),
-        'style': van.derive(() => {
+        'style': depends(() => {
             const user_self = haxsh.userSelf.val
             return `background-image: url('${userPicFileUrl(user_self)}')`
         }),

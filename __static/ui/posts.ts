@@ -1,6 +1,6 @@
 import van, { State } from '../../__yostatic/vanjs/van-1.2.3.debug.js'
 import * as vanx from '../../__yostatic/vanjs/van-x.js'
-const htm = van.tags
+const htm = van.tags, depends = van.derive
 
 import * as yo from '../yo-sdk.js'
 import * as youtil from '../../__yostatic/util.js'
@@ -30,9 +30,10 @@ export function create(
     getPostAuthor: (post?: yo.Post) => yo.User | undefined,
     doSendPost: (html: string, files?: string[]) => Promise<boolean>,
 ): UiCtlPosts {
+    let me: UiCtlPosts
     const htm_post = htm.div({
-        'class': van.derive(() => 'post-content' + (haxsh.isSeeminglyOffline.val ? ' offline' : '') + (me.isSending.val ? ' sending' : '')),
-        'contenteditable': van.derive(() => (haxsh.isSeeminglyOffline.val || me.isSending.val) ? 'false' : 'true'),
+        'class': depends(() => 'post-content' + (haxsh.isSeeminglyOffline.val ? ' offline' : '') + ((me && me.isSending.val) ? ' sending' : '')),
+        'contenteditable': depends(() => ((me && me.isSending.val) ? 'false' : 'true')),
         'autofocus': true, 'spellcheck': false, 'autocorrect': 'off', 'tabindex': 1, 'onkeydown': (evt: KeyboardEvent) => {
             if (['Enter', 'NumpadEnter'].includes(evt.code) && !(evt.shiftKey || evt.ctrlKey || evt.altKey || evt.metaKey)) {
                 evt.preventDefault()
@@ -41,7 +42,8 @@ export function create(
             }
         },
     }, "")
-    const me: UiCtlPosts = {
+    const button_state = () => (haxsh.isSeeminglyOffline.val || (me?.isSending.val) || false /* falsy madness sometimes bites =) */)
+    me = {
         _htmPostInput: htm_post,
         doSendPost: doSendPost,
         getPostAuthor: getPostAuthor,
@@ -54,8 +56,14 @@ export function create(
                         htm.div({ 'class': 'post-ago' }, ""),
                     ),
                     htm.div({ 'class': 'post-buttons' },
-                        htm.button({ 'type': 'button', 'class': 'button send', 'title': "Send", 'tabindex': 2, 'onclick': () => sendPost(me) }),
-                        htm.button({ 'type': 'button', 'class': 'button attach', 'title': "Add Files", 'tabindex': 3, 'onclick': () => { } }),
+                        htm.button({
+                            'type': 'button', 'class': 'button send', 'title': "Send", 'tabindex': 2,
+                            'disabled': depends(button_state), 'onclick': (() => sendPost(me)),
+                        }),
+                        htm.button({
+                            'type': 'button', 'class': 'button attach', 'title': "Add Files", 'tabindex': 3,
+                            'disabled': depends(button_state), 'onclick': () => { },
+                        }),
                     ),
                     htm_post,
                 ),
@@ -79,7 +87,8 @@ export function create(
             ),
             htm.div({ 'class': 'post-buttons' },
                 htm.button({
-                    'type': 'button', 'class': 'button edit', 'title': "Edit", 'style': `visibility:${is_own_post ? 'visible' : 'hidden'}`
+                    'type': 'button', 'class': 'button edit', 'title': "Edit", 'style': `visibility:${is_own_post ? 'visible' : 'hidden'}`,
+                    'disabled': depends(button_state), 'onclick': () => { },
                 }),
             ),
             htm_post,
@@ -89,6 +98,9 @@ export function create(
 }
 
 async function sendPost(me: UiCtlPosts) {
+    if (haxsh.isSeeminglyOffline.val)
+        return false
+    me.isSending.val = true
     let post_html = me._htmPostInput.innerHTML.trim()
     while (post_html.startsWith('<br>'))
         post_html = post_html.substring('<br>'.length)
@@ -98,6 +110,7 @@ async function sendPost(me: UiCtlPosts) {
         return false
 
     const ok = await me.doSendPost(post_html)
+    me.isSending.val = false
     if (ok) {
         me._htmPostInput.innerHTML = ''
         window.scrollTo(0, 0)
