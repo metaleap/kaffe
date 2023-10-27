@@ -69,7 +69,11 @@ export function create(): UiCtlPosts {
                     htm.div({},
                         htm_post_entry,
                         vanx.list(() => { return htm.div({ 'class': 'haxsh-post-files' }) }, files_to_post, (_) => {
+                            const icon = _.val.type.includes('/') ? (fileContentTypeIcons[_.val.type.substring(0, _.val.type.indexOf('/'))]) : ""
+                            // van.add(htm_file, (icon !== fileContentTypeIcons['image']) ? htm.div({}, icon)
+                            //     : htm.div({ 'class': 'image', 'style': `background-image:url('${file_url}')` }))
                             return htm.a({ 'class': 'haxsh-post-file', 'title': `${_.val.name + '\n'}${(_.val.size / (1024 * 1024)).toFixed(3)}MB` },
+                                (icon ? htm.div({}, icon) : undefined),
                                 htm.span({}, _.val.name,
                                     htm.span({}, _.val.type || '(unknown type)',
                                         htm.button({
@@ -249,5 +253,5 @@ const fileContentTypeIcons: { [_: string]: string } = {
     'video': "🎥",
     'image': "🖼️",
     'text': "📝",
-    'application': "📦",
+    'application': "⚙️", // 📦 ⚙️ 🧰 🛠️ 🔧
 }

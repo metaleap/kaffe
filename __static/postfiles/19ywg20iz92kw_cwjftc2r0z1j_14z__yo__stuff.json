@@ -1,0 +1,72 @@
+{
+    "Pencils": {
+        "orig_stock": 1260,
+        "consumptions": {
+            "2021-06-06": 1
+        }
+    },
+    "China Ink": {
+        "orig_stock": 30000,
+        "consumptions": {
+            "2021-08-23": 10,
+            "2021-07-23": 20,
+            "2021-06-06": 20
+        }
+    },
+    "Nib Holder: S": {
+        "orig_stock": 280,
+        "consumptions": {
+            "2021-04-01": 1
+        }
+    },
+    "Nib Holder: T": {
+        "orig_stock": 89,
+        "consumptions": {
+            "2021-07-22": 1,
+            "2021-07-21": 1,
+            "2021-07-16": 1,
+            "2021-02-15": 1
+        }
+    },
+    "Paper: Deko 50x": {
+        "orig_stock": 27,
+        "consumptions": {
+            "2021-09-10": 1
+        }
+    },
+    "Nibs: G-Pen": {
+        "orig_stock": 5754,
+        "z": 7500,
+        "consumptions": {
+            "2021-08-25": 1,
+            "2021-08-17": 1,
+            "2021-08-04": 1,
+            "2021-07-25": 1,
+            "2021-07-13": 1,
+            "2021-06-06": 1
+        }
+    },
+    "Nibs: LH.R": {
+        "orig_stock": 415,
+        "consumptions": {
+            "2021-07-16": 1,
+            "2021-06-06": 1
+        }
+    },
+    "Nibs: LH.Z": {
+        "orig_stock": 899,
+        "consumptions": {
+        }
+    },
+    "Nibs: Brause": {
+        "orig_stock": 110,
+        "consumptions": {
+        }
+    },
+    "Eraser": {
+        "orig_stock": 39,
+        "consumptions": {
+            "2021-05-01": 1
+        }
+    }
+}

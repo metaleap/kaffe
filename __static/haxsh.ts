@@ -231,7 +231,7 @@ function handleKnownErrMaybe<T extends string>(err: T): boolean {
             uiDialogLogin.showModal()
             return true
         case 'MissingOrExcessiveContentLength':
-            alert("Your input has exceeded the server's maximum permissible payload size.")
+            alert("Your input has exceeded the server's maximum permissible (total after encoding) payload size of 22MB.")
             return true
     }
     return false
