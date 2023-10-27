@@ -5,6 +5,7 @@ import (
 	"math"
 	"math/rand"
 	"mime"
+	"net/url"
 	"path/filepath"
 	"time"
 
@@ -149,20 +150,41 @@ var apiPostsDeleted = api(func(this *ApiCtx[struct {
 
 var apiPostNew = api(func(this *ApiCtx[Post, Return[yodb.I64]]) {
 	files := this.Ctx.Http.Req.MultipartForm.File["files"]
-	dst_dir_path := Cfg.STATIC_FILE_STORAGE_DIRS["_postfiles"]
-	for _, file := range files {
-		multipart_file, err := file.Open()
-		if err != nil {
-			panic(err)
+	if len(files) > 0 {
+		defer this.Ctx.Http.Req.MultipartForm.RemoveAll()
+		dst_dir_path := Cfg.STATIC_FILE_STORAGE_DIRS["_postfiles"]
+		for _, file := range files {
+			multipart_file, err := file.Open()
+			if multipart_file != nil {
+				defer multipart_file.Close()
+			}
+			if err != nil {
+				panic(err)
+			}
+			data, err := io.ReadAll(multipart_file)
+			if err != nil {
+				panic(err)
+			}
+			dst_file_name := str.FromI64(rand.Int63n(math.MaxInt64), 36) + "_" + str.FromI64(time.Now().UnixNano(), 36) + "_" + str.FromI64(file.Size, 36) + "__yo__" + file.Filename
+			WriteFile(filepath.Join(dst_dir_path, dst_file_name), data)
+			this.Args.Files = append(this.Args.Files, yodb.Text(dst_file_name))
 		}
-		data, err := io.ReadAll(multipart_file)
-		if err != nil {
-			panic(err)
-		}
-		dst_file_name := str.FromI64(rand.Int63n(math.MaxInt64), 36) + "_" + str.FromI64(time.Now().UnixNano(), 36) + "_" + str.FromI64(file.Size, 36) + "__yo__" + file.Filename
-		WriteFile(filepath.Join(dst_dir_path, dst_file_name), data)
-		this.Args.Files = append(this.Args.Files, yodb.Text(dst_file_name))
 	}
+
+	{
+		uris, toks := str.Dict{}, str.Split(string(this.Args.Htm), " ")
+		for _, tok := range toks {
+			if !str.Has(tok, "://") {
+				continue
+			}
+			if uri, err := url.Parse(tok); err == nil {
+				uri_str := uri.String()
+				uris[" "+uri_str+" "] = " <a target='_blank' href='" + uri_str + "'>" + uri_str + "</a> "
+			}
+		}
+		this.Args.Htm = yodb.Text(str.Trim(str.Replace(string(" "+this.Args.Htm+" "), uris)))
+	}
+
 	this.Ret.Result = postNew(this.Ctx, this.Args, true)
 })
 

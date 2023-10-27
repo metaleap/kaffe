@@ -201,12 +201,14 @@ async function sendNew(me: UiCtlPosts, upFilesOwn: vanx.Reactive<UpFile[]>) {
 function htmlToSend(me: UiCtlPosts) {
     if (haxsh.isSeeminglyOffline.val)
         return ""
-    let post_html = me._htmPostInput.innerHTML.replaceAll('&nbsp;', ' ').trim()
-    while (post_html.startsWith('<br>'))
-        post_html = post_html.substring('<br>'.length)
-    while (post_html.endsWith('<br>'))
-        post_html = post_html.substring(0, post_html.length - '<br>'.length)
-    post_html = me._htmPostInput.innerHTML.replaceAll('&nbsp;', ' ').trim() //
+    let post_html = me._htmPostInput.innerHTML
+    {   // firefox-only (seemingly) quirks:
+        post_html = post_html.replaceAll('&nbsp;', ' ').trim()
+        while (post_html.startsWith('<br>'))
+            post_html = post_html.substring('<br>'.length).trim()
+        while (post_html.endsWith('<br>'))
+            post_html = post_html.substring(0, post_html.length - '<br>'.length).trim()
+    }
     return ((post_html.length === 0) || (post_html.replaceAll('<br>', '').replaceAll('<p></p>', '').trim().length === 0))
         ? "" : post_html
 }
