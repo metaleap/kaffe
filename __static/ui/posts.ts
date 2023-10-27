@@ -89,20 +89,22 @@ export function create(): UiCtlPosts {
         let inner_html = post.Htm ?? ''
         if (post.Files && post.Files.length) {
             const htm_files = htm.div({ 'class': 'haxsh-post-files' },
-                ...post.Files.map((file_id, idx) => {
+                ...post.Files.map((file_name_full, idx) => {
+                    const idx_sep = file_name_full.indexOf("__yo__")
+                    const file_name_show = (idx_sep < 0) ? file_name_full : file_name_full.substring(idx_sep + "__yo__".length)
                     const file_content_type = post.FileContentTypes![idx],
-                        file_url = `/_postfiles/${encodeURIComponent(file_id)}`
+                        file_url = `/_postfiles/${encodeURIComponent(file_name_full)}`
                     const htm_file = htm.a({ 'class': 'haxsh-post-file', 'target': '_blank', 'href': file_url })
                     if (file_content_type !== "") {
                         if (file_content_type.startsWith('image/'))
-                            htm_file.setAttribute('onclick', `mvd.innerHTML="<img alt='${file_id}' title='${file_id}' src='${file_url}'>";mvd.showModal();return false`)
+                            htm_file.setAttribute('onclick', `mvd.innerHTML="<img alt='${file_name_show}' title='${file_name_show}' src='${file_url}'>";mvd.showModal();return false`)
                         else if (file_content_type.startsWith('video/'))
-                            htm_file.setAttribute('onclick', `mvd.innerHTML="<video controls='true' loop='true' playsinline='true' title='${file_id}' src='${file_url}'>";mvd.showModal();return false`)
+                            htm_file.setAttribute('onclick', `mvd.innerHTML="<video controls='true' loop='true' playsinline='true' title='${file_name_show}' src='${file_url}'>";mvd.showModal();return false`)
                         const icon = fileContentTypeIcons[file_content_type.substring(0, file_content_type.indexOf('/'))]
                         van.add(htm_file, (icon !== fileContentTypeIcons['image']) ? htm.div({}, icon)
                             : htm.div({ 'class': 'image', 'style': `background-image:url('${file_url}')` }))
                     }
-                    van.add(htm_file, htm.span({}, file_id, (file_content_type === "") ? undefined : htm.span({}, file_content_type)))
+                    van.add(htm_file, htm.span({}, file_name_show, (file_content_type === "") ? undefined : htm.span({}, file_content_type)))
                     return htm_file
                 })
             )
