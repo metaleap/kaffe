@@ -141,6 +141,7 @@ var apiPostsDeleted = api(func(this *ApiCtx[struct {
 })
 
 var apiPostNew = api(func(this *ApiCtx[Post, Return[yodb.I64]]) {
+
 	this.Ret.Result = postNew(this.Ctx, this.Args, true)
 })
 
