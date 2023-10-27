@@ -75,22 +75,25 @@ export function create(): UiCtlPosts {
         const post = it.val
         let inner_html = post.Htm ?? ''
         if (post.Files && post.Files.length) {
-            inner_html += `<div class="haxsh-post-files">`
-            for (let i = 0; i < post.Files.length; i++) {
-                const file_id = post.Files[i], file_content_type = post.FileContentTypes[i]
-                const file_url = `/__static/mockfiles/${encodeURIComponent(file_id)}`
-                inner_html += `<a class="haxsh-post-file" target="_blank" href="${file_url}">`
-                if (file_content_type !== "") {
-                    const icon = fileContentTypeIcons[file_content_type.substring(0, file_content_type.indexOf('/'))]
-                    if (icon && icon.length)
-                        inner_html += (icon === fileContentTypeIcons['image']) ? `<div class="image" style="background-image:url('${file_url}')">&nbsp;</div>` : `<div>${icon}</div>`
-                }
-                inner_html += '<span>' + htm.span(file_id).innerHTML
-                if (file_content_type !== "")
-                    inner_html += `<span>${file_content_type}</span>`
-                inner_html += '</span></a>'
-            }
-            inner_html += '</div>'
+            const htm_files = htm.div({ 'class': 'haxsh-post-files' },
+                ...post.Files.map((file_id, idx) => {
+                    const file_content_type = post.FileContentTypes[idx],
+                        file_url = `/__static/mockfiles/${encodeURIComponent(file_id)}`
+                    const htm_file = htm.a({ 'class': 'haxsh-post-file', 'target': '_blank', 'href': file_url })
+                    if (file_content_type !== "") {
+                        if (file_content_type.startsWith('image/'))
+                            htm_file.setAttribute('onclick', `mvd.innerHTML="<img alt='${file_id}' title='${file_id}' src='${file_url}'>";mvd.showModal();return false`)
+                        else if (file_content_type.startsWith('video/'))
+                            htm_file.setAttribute('onclick', `mvd.innerHTML="<video controls='true' loop='true' playsinline='true' title='${file_id}' src='${file_url}'>";mvd.showModal();return false`)
+                        const icon = fileContentTypeIcons[file_content_type.substring(0, file_content_type.indexOf('/'))]
+                        van.add(htm_file, (icon !== fileContentTypeIcons['image']) ? htm.div({}, icon)
+                            : htm.div({ 'class': 'image', 'style': `background-image:url('${file_url}')` }))
+                    }
+                    van.add(htm_file, htm.span({}, file_id, (file_content_type === "") ? undefined : htm.span({}, file_content_type)))
+                    return htm_file
+                })
+            )
+            inner_html += htm_files.outerHTML
         }
 
         const htm_post = htm.div({ 'class': depends(() => ('post-content' + ((me.isDeleting.val === (post.Id!)) ? ' deleting' : (post._isFresh ? ' fresh' : '')))) })

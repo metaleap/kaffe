@@ -313,3 +313,17 @@ body {
     color: var(--bgoff3);
     font-weight: normal;
 }
+
+dialog#mvd {
+    background-color: color-mix(in hsl, var(--bgoff3), transparent 22%);
+    border: 1px solid var(--bgoff2);
+    border-radius: 1.23em;
+    text-align: center;
+}
+
+dialog#mvd img,
+dialog#mvd video {
+    display: inline-block;
+    max-height: 99%;
+    max-width: 99%;
+}
