@@ -129,17 +129,22 @@ export function create(): UiCtlPosts {
     return me
 }
 
-type UpFile = { name: string, type: string, idx: number, size: number }
+type UpFile = { name: string, type: string, idx: number, size: number, lastModified: number }
 function onFilesAdded(me: UiCtlPosts, filesToPost: vanx.Reactive<UpFile[]>, htmInputFile: HTMLInputElement) {
     vanx.replace(filesToPost, (prevFiles: UpFile[]) => {
         const ret = prevFiles.filter(_ => true)
+        const likely_dupls: string[] = []
         for (let i = 0; i < htmInputFile.files!.length; i++) {
             const file = htmInputFile.files!.item(i)
             if (file) {
-                ret.push({ name: file.name, type: file.type, size: file.size, idx: me.upFiles.length })
+                if (ret.some(_ => (_.name === file.name) && (_.type === file.type) && (youtil.fEq(_.size, file.size)) && (youtil.fEq(_.lastModified, file.lastModified))))
+                    likely_dupls.push(file.name)
+                ret.push({ idx: me.upFiles.length, name: file.name, type: file.type, size: file.size, lastModified: file.lastModified })
                 me.upFiles.push(file)
             }
         }
+        if (likely_dupls.length)
+            alert("Detected probable (but not byte-by-byte-compared) duplicate files, please double-check and remove any duplicates:\n\n· " + likely_dupls.join('\n· '))
         return ret
     })
 }
