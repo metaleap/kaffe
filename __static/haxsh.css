@@ -3,6 +3,7 @@
     --bgcolor: hsl(0, 0%, calc(var(--liteness)));
     --fgcolor: hsl(0, 0%, calc(100% - var(--liteness)));
     --bgadd10: hsl(0, 0%, calc(10% + var(--liteness)));
+    --bgadd40: hsl(0, 0%, calc(40% + var(--liteness)));
     --bgsub10: hsl(0, 0%, calc(var(--liteness) - 10%));
     --bgoff1: color-mix(in hsl, var(--bgcolor) calc((90% - var(--liteness)) + var(--liteness)), var(--fgcolor) calc(110% - var(--liteness)));
     --bgoff2: color-mix(in hsl, var(--bgcolor), var(--fgcolor) 90%);
@@ -227,8 +228,7 @@ body {
 }
 
 .haxsh-posts .feed .post-content.fresh {
-    background-color: Mark !important;
-    color: MarkText !important;
+    background-color: darkgoldenrod !important;
 }
 
 .haxsh-posts .feed .post-content.deleting {

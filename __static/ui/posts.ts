@@ -109,9 +109,9 @@ export function create(): UiCtlPosts {
             inner_html += htm_files.outerHTML
         }
 
+        const post_by = haxsh.getUserByPost(post), post_dt = new Date(post.DtMade!)
         const htm_post = htm.div({ 'class': depends(() => ('post-content' + ((me.isDeleting.val === (post.Id!)) ? ' deleting' : (post._isFresh ? ' fresh' : '')))) })
         htm_post.innerHTML = inner_html
-        const post_by = haxsh.getUserByPost(post), post_dt = new Date(post.DtMade!)
         const is_own_post = (post_by?.Id === haxsh.userSelf.val?.Id) || false
         return htm.div({ 'class': 'post' },
             htm.div({ 'class': 'post-head' },
