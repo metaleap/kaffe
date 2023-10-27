@@ -42,6 +42,7 @@ export function create(): UiCtlPosts {
     const button_disabled = () => {
         return (haxsh.isSeeminglyOffline.val || (is_deleting.val > 0) || is_sending.val)
     }
+    const htm_input_file = htm.input({ 'type': 'file', 'multiple': true })
     me = {
         _htmPostInput: htm_post,
         isSending: is_sending,
@@ -60,10 +61,15 @@ export function create(): UiCtlPosts {
                         }),
                         htm.button({
                             'type': 'button', 'class': 'button attach', 'title': "Add Files", 'tabindex': 3,
-                            'disabled': depends(button_disabled), 'onclick': () => { },
+                            'disabled': depends(button_disabled), 'onclick': () => onAddFiles(me, htm_input_file),
                         }),
                     ),
-                    htm_post,
+                    htm.div({},
+                        htm_post,
+                        htm.div({ 'class': 'haxsh-post-files', 'style': 'background:gold' },
+                            htm_input_file,
+                        )
+                    ),
                 ),
             ),
         ),
@@ -115,6 +121,10 @@ export function create(): UiCtlPosts {
         )
     }))
     return me
+}
+
+function onAddFiles(me: UiCtlPosts, htmFileInput: HTMLInputElement) {
+    htmFileInput.click()
 }
 
 async function deletePost(me: UiCtlPosts, postId: number) {

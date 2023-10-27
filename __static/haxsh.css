@@ -274,7 +274,10 @@ body {
     flex-direction: row;
     justify-content: center;
     flex-wrap: wrap;
+}
 
+.haxsh-post-files input {
+    display: none;
 }
 
 .haxsh-post-file {
