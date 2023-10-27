@@ -276,11 +276,21 @@ body {
     flex-wrap: wrap;
 }
 
-.haxsh-post-files input {
+.self-post .haxsh-post-files {
+    margin-right: 1.44em;
+}
+
+.self-post .haxsh-post-files button {
+    display: inline-block;
+}
+
+.self-post input {
     display: none;
 }
 
 .haxsh-post-file {
+    max-width: 88%;
+    overflow: hidden;
     text-align: center;
     font-size: 0.88em !important;
     margin: 0.44em;

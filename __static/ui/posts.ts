@@ -28,7 +28,7 @@ type PostAug = yo.Post & {
 export function create(): UiCtlPosts {
     const is_sending = van.state(false), is_deleting = van.state(0)
     let me: UiCtlPosts
-    const htm_post = htm.div({
+    const htm_post_entry = htm.div({
         'class': depends(() => 'post-content' + (haxsh.isSeeminglyOffline.val ? ' offline' : '') + (is_sending.val ? ' sending' : '')),
         'contenteditable': depends(() => (is_sending.val ? 'false' : 'true')),
         'autofocus': true, 'spellcheck': false, 'autocorrect': 'off', 'tabindex': 1, 'onkeydown': (evt: KeyboardEvent) => {
@@ -42,9 +42,10 @@ export function create(): UiCtlPosts {
     const button_disabled = () => {
         return (haxsh.isSeeminglyOffline.val || (is_deleting.val > 0) || is_sending.val)
     }
-    const htm_input_file = htm.input({ 'type': 'file', 'multiple': true })
+    const files_to_post: vanx.Reactive<UploadFile[]> = vanx.reactive([] as UploadFile[])
+    const htm_input_file = htm.input({ 'type': 'file', 'multiple': true, 'onchange': () => onFilesAdded(files_to_post, htm_input_file) })
     me = {
-        _htmPostInput: htm_post,
+        _htmPostInput: htm_post_entry,
         isSending: is_sending,
         isDeleting: is_deleting,
         DOM: htm.div({ 'class': 'haxsh-posts' },
@@ -61,14 +62,17 @@ export function create(): UiCtlPosts {
                         }),
                         htm.button({
                             'type': 'button', 'class': 'button attach', 'title': "Add Files", 'tabindex': 3,
-                            'disabled': depends(button_disabled), 'onclick': () => onAddFiles(me, htm_input_file),
+                            'disabled': depends(button_disabled), 'onclick': () => htm_input_file.click(),
                         }),
                     ),
+                    htm_input_file,
                     htm.div({},
-                        htm_post,
-                        htm.div({ 'class': 'haxsh-post-files', 'style': 'background:gold' },
-                            htm_input_file,
-                        )
+                        htm_post_entry,
+                        vanx.list(() => { return htm.div({ 'class': 'haxsh-post-files' }) }, files_to_post, (_) => {
+                            return htm.a({ 'class': 'haxsh-post-file' },
+                                htm.span({}, _.val.name,
+                                    htm.span({}, _.val.contentType || '(unknown type)', htm.button({ 'class': 'button delete', 'type': 'button', 'title': 'Remove' }))))
+                        }),
                     ),
                 ),
             ),
@@ -123,8 +127,17 @@ export function create(): UiCtlPosts {
     return me
 }
 
-function onAddFiles(me: UiCtlPosts, htmFileInput: HTMLInputElement) {
-    htmFileInput.click()
+type UploadFile = { idx: number, name: string, contentType: string }
+function onFilesAdded(filesToPost: vanx.Reactive<UploadFile[]>, htmInputFile: HTMLInputElement) {
+    vanx.replace(filesToPost, (_) => {
+        const ret: UploadFile[] = []
+        for (let i = 0; i < htmInputFile.files!.length; i++) {
+            const file = htmInputFile.files!.item(i)
+            if (file)
+                ret.push({ idx: i, name: file.name, contentType: file.type })
+        }
+        return ret
+    })
 }
 
 async function deletePost(me: UiCtlPosts, postId: number) {
