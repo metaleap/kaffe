@@ -19,6 +19,7 @@ func api[TIn any, TOut any](f func(*yosrv.ApiCtx[TIn, TOut]), failIfs ...yosrv.F
 }
 
 const ErrPostDelete_InvalidPostId util.Err = "PostDelete_InvalidPostId"
+const ErrPostNew_ExpectedEmptyFilesFieldWithUploadedFilesInMultipartForm util.Err = "PostNew_ExpectedEmptyFilesFieldWithUploadedFilesInMultipartForm"
 const ErrPostNew_ExpectedNonEmptyPost util.Err = "PostNew_ExpectedNonEmptyPost"
 const ErrPostNew_ExpectedOnlyBuddyRecipients util.Err = "PostNew_ExpectedOnlyBuddyRecipients"
 const ErrPostsForPeriod_ExpectedPeriodGreater0AndLess33Days util.Err = "PostsForPeriod_ExpectedPeriodGreater0AndLess33Days"

@@ -56,6 +56,7 @@ func init() {
 
 		"postNew": apiPostNew.IsMultipartForm().Checks(
 			Fails{Err: "ExpectedOnlyBuddyRecipients", If: q.ArrAreAnyIn(PostTo, q.OpLeq, 0)},
+			Fails{Err: "ExpectedEmptyFilesFieldWithUploadedFilesInMultipartForm", If: PostFiles.ArrLen().NotEqual(0)},
 		).
 			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized).
 			CouldFailWith("ExpectedNonEmptyPost"),
@@ -158,7 +159,7 @@ var apiPostNew = api(func(this *ApiCtx[Post, Return[yodb.I64]]) {
 		if err != nil {
 			panic(err)
 		}
-		dst_file_name := str.FromI64(rand.Int63n(math.MaxInt64), 36) + str.FromI64(time.Now().UnixNano(), 36) + str.FromI64(file.Size, 36) + "__yo__" + file.Filename
+		dst_file_name := str.FromI64(rand.Int63n(math.MaxInt64), 36) + "_" + str.FromI64(time.Now().UnixNano(), 36) + "_" + str.FromI64(file.Size, 36) + "__yo__" + file.Filename
 		WriteFile(filepath.Join(dst_dir_path, dst_file_name), data)
 		this.Args.Files = append(this.Args.Files, yodb.Text(dst_file_name))
 	}

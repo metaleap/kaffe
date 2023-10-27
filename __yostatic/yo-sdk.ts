@@ -136,7 +136,7 @@ export async function apiPostDelete(payload?: postDelete_In, formData?: FormData
 }
 export type PostDeleteErr = typeof errsPostDelete[number]
 
-const errsPostNew = ['MissingOrExcessiveContentLength', 'PostNew_ExpectedNonEmptyPost', 'PostNew_ExpectedOnlyBuddyRecipients', 'TimedOut', 'Unauthorized'] as const
+const errsPostNew = ['MissingOrExcessiveContentLength', 'PostNew_ExpectedEmptyFilesFieldWithUploadedFilesInMultipartForm', 'PostNew_ExpectedNonEmptyPost', 'PostNew_ExpectedOnlyBuddyRecipients', 'TimedOut', 'Unauthorized'] as const
 export async function apiPostNew(payload?: Post, formData?: FormData, query?: {[_:string]:string}): Promise<Return_yo_db_I64_> {
 	try {
 		return await req<Post, Return_yo_db_I64_>('_/postNew', payload, formData, query)

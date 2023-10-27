@@ -17,7 +17,7 @@ export type UiCtlPosts = {
     numFreshPosts: number
     isSending: State<boolean>
     isDeleting: State<number>
-    upFiles: (File | null)[]
+    upFilesNative: (File | null)[]
 }
 
 type PostAug = yo.Post & {
@@ -29,6 +29,7 @@ type PostAug = yo.Post & {
 export function create(): UiCtlPosts {
     const is_sending = van.state(false), is_deleting = van.state(0)
     let me: UiCtlPosts
+    const files_to_post: vanx.Reactive<UpFile[]> = vanx.reactive([] as UpFile[])
     const htm_post_entry = htm.div({
         'class': depends(() => 'post-content' + (haxsh.isSeeminglyOffline.val ? ' offline' : '') + (is_sending.val ? ' sending' : '')),
         'contenteditable': depends(() => (is_sending.val ? 'false' : 'true')),
@@ -36,18 +37,17 @@ export function create(): UiCtlPosts {
             if (['Enter', 'NumpadEnter'].includes(evt.code) && !(evt.shiftKey || evt.ctrlKey || evt.altKey || evt.metaKey)) {
                 evt.preventDefault()
                 evt.stopPropagation()
-                return sendNew(me)
+                return sendNew(me, files_to_post)
             }
         },
     }, "")
     const button_disabled = () => (haxsh.isSeeminglyOffline.val || (is_deleting.val > 0) || is_sending.val)
-    const files_to_post: vanx.Reactive<UpFile[]> = vanx.reactive([] as UpFile[])
     const htm_input_file = htm.input({ 'type': 'file', 'multiple': true, 'onchange': () => onFilesAdded(me, files_to_post, htm_input_file) })
     me = {
         _htmPostInput: htm_post_entry,
         isSending: is_sending,
         isDeleting: is_deleting,
-        upFiles: [],
+        upFilesNative: [],
         DOM: htm.div({ 'class': 'haxsh-posts' },
             htm.div({ 'class': 'self-post' },
                 htm.div({ 'class': 'post' },
@@ -58,7 +58,7 @@ export function create(): UiCtlPosts {
                     htm.div({ 'class': 'post-buttons' },
                         htm.button({
                             'type': 'button', 'class': 'button send', 'title': "Send", 'tabindex': 2,
-                            'disabled': depends(button_disabled), 'onclick': (() => sendNew(me)),
+                            'disabled': depends(button_disabled), 'onclick': (() => sendNew(me, files_to_post)),
                         }),
                         htm.button({
                             'type': 'button', 'class': 'button attach', 'title': "Add Files", 'tabindex': 3,
@@ -131,12 +131,13 @@ export function create(): UiCtlPosts {
 }
 
 function hasUpFiles(me: UiCtlPosts) {
-    return me.upFiles.some(_ => _ !== null)
+    return me.upFilesNative.some(_ => _ !== null)
 }
 
 type UpFile = { name: string, type: string, idx: number, size: number, lastModified: number }
-function onFilesAdded(me: UiCtlPosts, filesToPost: vanx.Reactive<UpFile[]>, htmInputFile: HTMLInputElement) {
-    vanx.replace(filesToPost, (prevFiles: UpFile[]) => {
+
+function onFilesAdded(me: UiCtlPosts, upFilesOwn: vanx.Reactive<UpFile[]>, htmInputFile: HTMLInputElement) {
+    vanx.replace(upFilesOwn, (prevFiles: UpFile[]) => {
         const ret = prevFiles.filter(_ => true)
         const likely_dupls: string[] = []
         for (let i = 0; i < htmInputFile.files!.length; i++) {
@@ -144,8 +145,8 @@ function onFilesAdded(me: UiCtlPosts, filesToPost: vanx.Reactive<UpFile[]>, htmI
             if (file) {
                 if (ret.some(_ => (_.name === file.name) && (_.type === file.type) && (youtil.fEq(_.size, file.size)) && (youtil.fEq(_.lastModified, file.lastModified))))
                     likely_dupls.push(file.name)
-                ret.push({ idx: me.upFiles.length, name: file.name, type: file.type, size: file.size, lastModified: file.lastModified })
-                me.upFiles.push(file)
+                ret.push({ idx: me.upFilesNative.length, name: file.name, type: file.type, size: file.size, lastModified: file.lastModified })
+                me.upFilesNative.push(file)
             }
         }
         if (likely_dupls.length)
@@ -154,9 +155,9 @@ function onFilesAdded(me: UiCtlPosts, filesToPost: vanx.Reactive<UpFile[]>, htmI
     })
 }
 
-function removeUpFile(me: UiCtlPosts, filesToPost: vanx.Reactive<UpFile[]>, upFile: UpFile) {
-    me.upFiles[upFile.idx] = null
-    vanx.replace(filesToPost, (prevFiles: UpFile[]) => {
+function removeUpFile(me: UiCtlPosts, upFilesOwn: vanx.Reactive<UpFile[]>, upFile: UpFile) {
+    me.upFilesNative[upFile.idx] = null
+    vanx.replace(upFilesOwn, (prevFiles: UpFile[]) => {
         return prevFiles.filter(_ => (_.idx !== upFile.idx))
     })
 }
@@ -173,20 +174,18 @@ async function deletePost(me: UiCtlPosts, postId: number) {
     me.isDeleting.val = 0
 }
 
-async function sendNew(me: UiCtlPosts) {
+async function sendNew(me: UiCtlPosts, upFilesOwn: vanx.Reactive<UpFile[]>) {
     const post_html = htmlToSend(me)
     if ((!(post_html && post_html.length)) && !hasUpFiles(me))
         return false
 
-    if (hasUpFiles(me)) {
-        //TODO
-    }
-
     me.isSending.val = true
-    const ok = await haxsh.sendNewPost(post_html, me.upFiles.filter(_ => (_ ? true : false)).map(_ => (_ as File)))
+    const ok = await haxsh.sendNewPost(post_html, me.upFilesNative.filter(_ => (_ ? true : false)).map(_ => (_ as File)))
     me.isSending.val = false
     if (ok) {
         me._htmPostInput.innerHTML = ''
+        me.upFilesNative = []
+        vanx.replace(upFilesOwn, () => [])
         window.scrollTo(0, 0)
     }
     me._htmPostInput.focus()
