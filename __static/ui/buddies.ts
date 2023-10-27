@@ -46,7 +46,7 @@ function isOffline(user: yo.User, now?: number) {
 export function userPicFileUrl(user?: yo.User, fallBackToEmoji = '👤', toRoundedSvgFavIcon = false) {
     if (!(user && user.PicFileId))
         return util.svgTextIconDataHref(fallBackToEmoji)
-    return '/__static/mockfiles/' + user.PicFileId + (toRoundedSvgFavIcon ? '?picRounded=true' : '')
+    return '/_postfiles/' + user.PicFileId + (toRoundedSvgFavIcon ? '?picRounded=true' : '')
 }
 
 export function userDomAttrsBuddy(user?: yo.User, now?: number) {

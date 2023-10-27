@@ -1,6 +1,9 @@
 package haxsh
 
 import (
+	"os"
+
+	. "yo/cfg"
 	yodb "yo/db"
 	. "yo/srv"
 )
@@ -12,8 +15,10 @@ func init() {
 	AppSideStaticRePathFor = func(requestPath string) string {
 		return "__static/haxsh.html"
 	}
-	ApiMaxRequestContentLength = 11 * (1024 * 2024)
 	StaticFileFilters["picRounded"] = imageRoundedSvgOfPng
+	for dir_name, dir_path := range Cfg.STATIC_FILE_STORAGE_DIRS {
+		StaticFileDirs[dir_name] = os.DirFS(dir_path)
+	}
 }
 
 func Init() {

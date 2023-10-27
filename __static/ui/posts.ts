@@ -91,7 +91,7 @@ export function create(): UiCtlPosts {
             const htm_files = htm.div({ 'class': 'haxsh-post-files' },
                 ...post.Files.map((file_id, idx) => {
                     const file_content_type = post.FileContentTypes[idx],
-                        file_url = `/__static/mockfiles/${encodeURIComponent(file_id)}`
+                        file_url = `/_postfiles/${encodeURIComponent(file_id)}`
                     const htm_file = htm.a({ 'class': 'haxsh-post-file', 'target': '_blank', 'href': file_url })
                     if (file_content_type !== "") {
                         if (file_content_type.startsWith('image/'))
@@ -175,8 +175,12 @@ async function deletePost(me: UiCtlPosts, postId: number) {
 
 async function sendNew(me: UiCtlPosts) {
     const post_html = htmlToSend(me)
-    if (!(post_html && post_html.length))
+    if ((!(post_html && post_html.length)) && !hasUpFiles(me))
         return false
+
+    if (hasUpFiles(me)) {
+        //TODO
+    }
 
     me.isSending.val = true
     const ok = await haxsh.sendNewPost(post_html)
