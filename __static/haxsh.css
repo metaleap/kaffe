@@ -277,7 +277,10 @@ body {
 }
 
 .self-post .haxsh-post-files {
-    margin-right: 1.44em;
+    margin-right: 1.55em;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 7.89em;
 }
 
 .self-post .haxsh-post-files button {
@@ -288,12 +291,17 @@ body {
     display: none;
 }
 
+.self-post .haxsh-post-file {
+    padding-bottom: 0;
+    max-width: 44%;
+}
+
 .haxsh-post-file {
     max-width: 88%;
     overflow: hidden;
     text-align: center;
     font-size: 0.88em !important;
-    margin: 0.44em;
+    margin: 0.22em;
     padding: 0.22em 0.44em 0.22em 0.22em;
     text-wrap: nowrap;
     font-weight: bold;

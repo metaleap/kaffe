@@ -17,6 +17,7 @@ export type UiCtlPosts = {
     numFreshPosts: number
     isSending: State<boolean>
     isDeleting: State<number>
+    upFiles: File[]
 }
 
 type PostAug = yo.Post & {
@@ -42,12 +43,13 @@ export function create(): UiCtlPosts {
     const button_disabled = () => {
         return (haxsh.isSeeminglyOffline.val || (is_deleting.val > 0) || is_sending.val)
     }
-    const files_to_post: vanx.Reactive<UploadFile[]> = vanx.reactive([] as UploadFile[])
-    const htm_input_file = htm.input({ 'type': 'file', 'multiple': true, 'onchange': () => onFilesAdded(files_to_post, htm_input_file) })
+    const files_to_post: vanx.Reactive<UpFile[]> = vanx.reactive([] as UpFile[])
+    const htm_input_file = htm.input({ 'type': 'file', 'multiple': true, 'onchange': () => onFilesAdded(me, files_to_post, htm_input_file) })
     me = {
         _htmPostInput: htm_post_entry,
         isSending: is_sending,
         isDeleting: is_deleting,
+        upFiles: [],
         DOM: htm.div({ 'class': 'haxsh-posts' },
             htm.div({ 'class': 'self-post' },
                 htm.div({ 'class': 'post' },
@@ -69,9 +71,9 @@ export function create(): UiCtlPosts {
                     htm.div({},
                         htm_post_entry,
                         vanx.list(() => { return htm.div({ 'class': 'haxsh-post-files' }) }, files_to_post, (_) => {
-                            return htm.a({ 'class': 'haxsh-post-file' },
+                            return htm.a({ 'class': 'haxsh-post-file', 'title': `${_.val.name + '\n'}${(_.val.size / (1024 * 1024)).toFixed(3)}MB` },
                                 htm.span({}, _.val.name,
-                                    htm.span({}, _.val.contentType || '(unknown type)', htm.button({ 'class': 'button delete', 'type': 'button', 'title': 'Remove' }))))
+                                    htm.span({}, _.val.type || '(unknown type)', htm.button({ 'class': 'button delete', 'type': 'button', 'title': 'Remove' }))))
                         }),
                     ),
                 ),
@@ -127,14 +129,16 @@ export function create(): UiCtlPosts {
     return me
 }
 
-type UploadFile = { idx: number, name: string, contentType: string }
-function onFilesAdded(filesToPost: vanx.Reactive<UploadFile[]>, htmInputFile: HTMLInputElement) {
-    vanx.replace(filesToPost, (_) => {
-        const ret: UploadFile[] = []
+type UpFile = { name: string, type: string, idx: number, size: number }
+function onFilesAdded(me: UiCtlPosts, filesToPost: vanx.Reactive<UpFile[]>, htmInputFile: HTMLInputElement) {
+    vanx.replace(filesToPost, (prevFiles: UpFile[]) => {
+        const ret = prevFiles.filter(_ => true)
         for (let i = 0; i < htmInputFile.files!.length; i++) {
             const file = htmInputFile.files!.item(i)
-            if (file)
-                ret.push({ idx: i, name: file.name, contentType: file.type })
+            if (file) {
+                ret.push({ name: file.name, type: file.type, size: file.size, idx: me.upFiles.length })
+                me.upFiles.push(file)
+            }
         }
         return ret
     })
