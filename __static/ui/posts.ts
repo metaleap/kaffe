@@ -40,9 +40,7 @@ export function create(): UiCtlPosts {
             }
         },
     }, "")
-    const button_disabled = () => {
-        return (haxsh.isSeeminglyOffline.val || (is_deleting.val > 0) || is_sending.val)
-    }
+    const button_disabled = () => (haxsh.isSeeminglyOffline.val || (is_deleting.val > 0) || is_sending.val)
     const files_to_post: vanx.Reactive<UpFile[]> = vanx.reactive([] as UpFile[])
     const htm_input_file = htm.input({ 'type': 'file', 'multiple': true, 'onchange': () => onFilesAdded(me, files_to_post, htm_input_file) })
     me = {
@@ -132,6 +130,10 @@ export function create(): UiCtlPosts {
     return me
 }
 
+function hasUpFiles(me: UiCtlPosts) {
+    return me.upFiles.some(_ => _ !== null)
+}
+
 type UpFile = { name: string, type: string, idx: number, size: number, lastModified: number }
 function onFilesAdded(me: UiCtlPosts, filesToPost: vanx.Reactive<UpFile[]>, htmInputFile: HTMLInputElement) {
     vanx.replace(filesToPost, (prevFiles: UpFile[]) => {
@@ -172,15 +174,8 @@ async function deletePost(me: UiCtlPosts, postId: number) {
 }
 
 async function sendNew(me: UiCtlPosts) {
-    if (haxsh.isSeeminglyOffline.val)
-        return false
-    let post_html = me._htmPostInput.innerHTML.replaceAll('&nbsp;', ' ').trim()
-    while (post_html.startsWith('<br>'))
-        post_html = post_html.substring('<br>'.length)
-    while (post_html.endsWith('<br>'))
-        post_html = post_html.substring(0, post_html.length - '<br>'.length)
-    post_html = me._htmPostInput.innerHTML.replaceAll('&nbsp;', ' ').trim() //
-    if ((post_html.length === 0) || (post_html.replaceAll('<br>', '').replaceAll('<p></p>', '').trim().length === 0))
+    const post_html = htmlToSend(me)
+    if (!(post_html && post_html.length))
         return false
 
     me.isSending.val = true
@@ -192,6 +187,19 @@ async function sendNew(me: UiCtlPosts) {
     }
     me._htmPostInput.focus()
     return false
+}
+
+function htmlToSend(me: UiCtlPosts) {
+    if (haxsh.isSeeminglyOffline.val)
+        return ""
+    let post_html = me._htmPostInput.innerHTML.replaceAll('&nbsp;', ' ').trim()
+    while (post_html.startsWith('<br>'))
+        post_html = post_html.substring('<br>'.length)
+    while (post_html.endsWith('<br>'))
+        post_html = post_html.substring(0, post_html.length - '<br>'.length)
+    post_html = me._htmPostInput.innerHTML.replaceAll('&nbsp;', ' ').trim() //
+    return ((post_html.length === 0) || (post_html.replaceAll('<br>', '').replaceAll('<p></p>', '').trim().length === 0))
+        ? "" : post_html
 }
 
 export function update(me: UiCtlPosts, newOrUpdatedPosts: yo.Post[], clearOld?: boolean, sansIds: number[] = []) {
