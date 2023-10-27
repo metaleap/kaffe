@@ -17,7 +17,7 @@ export type UiCtlPosts = {
     numFreshPosts: number
     isSending: State<boolean>
     isDeleting: State<number>
-    upFiles: File[]
+    upFiles: (File | null)[]
 }
 
 type PostAug = yo.Post & {
@@ -73,7 +73,10 @@ export function create(): UiCtlPosts {
                         vanx.list(() => { return htm.div({ 'class': 'haxsh-post-files' }) }, files_to_post, (_) => {
                             return htm.a({ 'class': 'haxsh-post-file', 'title': `${_.val.name + '\n'}${(_.val.size / (1024 * 1024)).toFixed(3)}MB` },
                                 htm.span({}, _.val.name,
-                                    htm.span({}, _.val.type || '(unknown type)', htm.button({ 'class': 'button delete', 'type': 'button', 'title': 'Remove' }))))
+                                    htm.span({}, _.val.type || '(unknown type)',
+                                        htm.button({
+                                            'class': 'button delete', 'type': 'button', 'title': 'Remove', 'onclick': () => removeUpFile(me, files_to_post, _.val)
+                                        }))))
                         }),
                     ),
                 ),
@@ -146,6 +149,13 @@ function onFilesAdded(me: UiCtlPosts, filesToPost: vanx.Reactive<UpFile[]>, htmI
         if (likely_dupls.length)
             alert("Detected probable (but not byte-by-byte-compared) duplicate files, please double-check and remove any duplicates:\n\n· " + likely_dupls.join('\n· '))
         return ret
+    })
+}
+
+function removeUpFile(me: UiCtlPosts, filesToPost: vanx.Reactive<UpFile[]>, upFile: UpFile) {
+    me.upFiles[upFile.idx] = null
+    vanx.replace(filesToPost, (prevFiles: UpFile[]) => {
+        return prevFiles.filter(_ => (_.idx !== upFile.idx))
     })
 }
 
