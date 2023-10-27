@@ -281,7 +281,7 @@ body {
     text-align: center;
     font-size: 0.88em !important;
     margin: 0.44em;
-    padding: 0.11em 0.44em 0.44em 0.22em;
+    padding: 0.22em 0.44em 0.22em 0.22em;
     text-wrap: nowrap;
     font-weight: bold;
     text-decoration: none;
@@ -295,10 +295,17 @@ body {
     float: left;
 }
 
+.haxsh-post-file>div.image {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    width: 2.34em;
+    height: 100%;
+}
+
 .haxsh-post-file>span {
     display: inline-block;
-    margin-top: 0.11em;
-    padding-left: 0.22em;
+    padding: 0em 0.22em 0.22em 0.22em;
 }
 
 .haxsh-post-file>span>span {

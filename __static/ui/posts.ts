@@ -83,7 +83,7 @@ export function create(): UiCtlPosts {
                 if (file_content_type !== "") {
                     const icon = fileContentTypeIcons[file_content_type.substring(0, file_content_type.indexOf('/'))]
                     if (icon && icon.length)
-                        inner_html += `<div>${icon}</div>`
+                        inner_html += (icon === fileContentTypeIcons['image']) ? `<div class="image" style="background-image:url('${file_url}')">&nbsp;</div>` : `<div>${icon}</div>`
                 }
                 inner_html += '<span>' + htm.span(file_id).innerHTML
                 if (file_content_type !== "")
