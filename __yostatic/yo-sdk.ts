@@ -18,16 +18,19 @@ export function setReqTimeoutMilliSec(timeoutMs: number) {
     reqTimeoutMilliSec = timeoutMs
 }
 
-export async function req<TIn, TOut>(methodPath: string, payload?: TIn | {}, urlQueryArgs?: { [_: string]: string }): Promise<TOut> {
+export async function req<TIn, TOut>(methodPath: string, payload?: TIn | {}, formData?: FormData, urlQueryArgs?: { [_: string]: string }): Promise<TOut> {
     let rel_url = '/' + methodPath
     if (urlQueryArgs)
         rel_url += ('?' + new URLSearchParams(urlQueryArgs).toString())
     // console.log('callAPI:', rel_url, payload)
     if (!payload)
         payload = {}
+    const payload_json = JSON.stringify(payload)
+    if (formData)
+        formData.set("_", payload_json)
     const resp = await fetch(rel_url, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
-        cache: 'no-store', mode: 'same-origin', redirect: 'error', signal: AbortSignal.timeout(reqTimeoutMilliSec)
+        method: 'POST', headers: (formData ? undefined : ({ 'Content-Type': 'application/json' })), body: (formData ? formData : payload_json),
+        cache: 'no-store', mode: 'same-origin', redirect: 'error', signal: AbortSignal.timeout(reqTimeoutMilliSec),
     })
     if (resp.status !== 200) {
         let body_text: string = '', body_err: any
@@ -122,9 +125,9 @@ function qGreaterOrEqual(x: QueryVal, y: QueryVal): QueryExpr { return { __yoQOp
 function qIn(x: QueryVal, ...set: QueryVal[]): QueryExpr { return { __yoQOp: 'IN', __yoQOperands: [x].concat(set) } as QueryExpr }
 
 const errsPostDelete = ['MissingOrExcessiveContentLength', 'PostDelete_InvalidPostId', 'TimedOut', 'Unauthorized'] as const
-export async function apiPostDelete(payload?: postDelete_In, query?: {[_:string]:string}): Promise<Void> {
+export async function apiPostDelete(payload?: postDelete_In, formData?: FormData, query?: {[_:string]:string}): Promise<Void> {
 	try {
-		return await req<postDelete_In, Void>('_/postDelete', payload, query)
+		return await req<postDelete_In, Void>('_/postDelete', payload, formData, query)
 	} catch(err: any) {
 		if (err && err['body_text'] && (errsPostDelete.indexOf(err.body_text) >= 0))
 			throw(new Err<PostDeleteErr>(err.body_text as PostDeleteErr))
@@ -134,9 +137,9 @@ export async function apiPostDelete(payload?: postDelete_In, query?: {[_:string]
 export type PostDeleteErr = typeof errsPostDelete[number]
 
 const errsPostNew = ['MissingOrExcessiveContentLength', 'PostNew_ExpectedNonEmptyPost', 'PostNew_ExpectedOnlyBuddyRecipients', 'TimedOut', 'Unauthorized'] as const
-export async function apiPostNew(payload?: Post, query?: {[_:string]:string}): Promise<Return_yo_db_I64_> {
+export async function apiPostNew(payload?: Post, formData?: FormData, query?: {[_:string]:string}): Promise<Return_yo_db_I64_> {
 	try {
-		return await req<Post, Return_yo_db_I64_>('_/postNew', payload, query)
+		return await req<Post, Return_yo_db_I64_>('_/postNew', payload, formData, query)
 	} catch(err: any) {
 		if (err && err['body_text'] && (errsPostNew.indexOf(err.body_text) >= 0))
 			throw(new Err<PostNewErr>(err.body_text as PostNewErr))
@@ -146,9 +149,9 @@ export async function apiPostNew(payload?: Post, query?: {[_:string]:string}): P
 export type PostNewErr = typeof errsPostNew[number]
 
 const errsPostsDeleted = ['MissingOrExcessiveContentLength', 'TimedOut', 'Unauthorized'] as const
-export async function apiPostsDeleted(payload?: postsDeleted_In, query?: {[_:string]:string}): Promise<postsDeleted_Out> {
+export async function apiPostsDeleted(payload?: postsDeleted_In, formData?: FormData, query?: {[_:string]:string}): Promise<postsDeleted_Out> {
 	try {
-		return await req<postsDeleted_In, postsDeleted_Out>('_/postsDeleted', payload, query)
+		return await req<postsDeleted_In, postsDeleted_Out>('_/postsDeleted', payload, formData, query)
 	} catch(err: any) {
 		if (err && err['body_text'] && (errsPostsDeleted.indexOf(err.body_text) >= 0))
 			throw(new Err<PostsDeletedErr>(err.body_text as PostsDeletedErr))
@@ -158,9 +161,9 @@ export async function apiPostsDeleted(payload?: postsDeleted_In, query?: {[_:str
 export type PostsDeletedErr = typeof errsPostsDeleted[number]
 
 const errsPostsForPeriod = ['MissingOrExcessiveContentLength', 'PostsForPeriod_ExpectedPeriodGreater0AndLess33Days', 'TimedOut', 'Unauthorized'] as const
-export async function apiPostsForPeriod(payload?: ApiArgPeriod, query?: {[_:string]:string}): Promise<PostsListResult> {
+export async function apiPostsForPeriod(payload?: ApiArgPeriod, formData?: FormData, query?: {[_:string]:string}): Promise<PostsListResult> {
 	try {
-		return await req<ApiArgPeriod, PostsListResult>('_/postsForPeriod', payload, query)
+		return await req<ApiArgPeriod, PostsListResult>('_/postsForPeriod', payload, formData, query)
 	} catch(err: any) {
 		if (err && err['body_text'] && (errsPostsForPeriod.indexOf(err.body_text) >= 0))
 			throw(new Err<PostsForPeriodErr>(err.body_text as PostsForPeriodErr))
@@ -170,9 +173,9 @@ export async function apiPostsForPeriod(payload?: ApiArgPeriod, query?: {[_:stri
 export type PostsForPeriodErr = typeof errsPostsForPeriod[number]
 
 const errsPostsRecent = ['MissingOrExcessiveContentLength', 'TimedOut', 'Unauthorized'] as const
-export async function apiPostsRecent(payload?: postsRecent_In, query?: {[_:string]:string}): Promise<PostsListResult> {
+export async function apiPostsRecent(payload?: postsRecent_In, formData?: FormData, query?: {[_:string]:string}): Promise<PostsListResult> {
 	try {
-		return await req<postsRecent_In, PostsListResult>('_/postsRecent', payload, query)
+		return await req<postsRecent_In, PostsListResult>('_/postsRecent', payload, formData, query)
 	} catch(err: any) {
 		if (err && err['body_text'] && (errsPostsRecent.indexOf(err.body_text) >= 0))
 			throw(new Err<PostsRecentErr>(err.body_text as PostsRecentErr))
@@ -182,9 +185,9 @@ export async function apiPostsRecent(payload?: postsRecent_In, query?: {[_:strin
 export type PostsRecentErr = typeof errsPostsRecent[number]
 
 const errsUserBuddies = ['MissingOrExcessiveContentLength', 'TimedOut', 'Unauthorized'] as const
-export async function apiUserBuddies(payload?: Void, query?: {[_:string]:string}): Promise<Return____haxsh_app_User_> {
+export async function apiUserBuddies(payload?: Void, formData?: FormData, query?: {[_:string]:string}): Promise<Return____haxsh_app_User_> {
 	try {
-		return await req<Void, Return____haxsh_app_User_>('_/userBuddies', payload, query)
+		return await req<Void, Return____haxsh_app_User_>('_/userBuddies', payload, formData, query)
 	} catch(err: any) {
 		if (err && err['body_text'] && (errsUserBuddies.indexOf(err.body_text) >= 0))
 			throw(new Err<UserBuddiesErr>(err.body_text as UserBuddiesErr))
@@ -194,9 +197,9 @@ export async function apiUserBuddies(payload?: Void, query?: {[_:string]:string}
 export type UserBuddiesErr = typeof errsUserBuddies[number]
 
 const errsUserBy = ['MissingOrExcessiveContentLength', 'TimedOut', 'Unauthorized', 'UserBy_ExpectedEitherNickNameOrEmailAddr'] as const
-export async function apiUserBy(payload?: userBy_In, query?: {[_:string]:string}): Promise<User> {
+export async function apiUserBy(payload?: userBy_In, formData?: FormData, query?: {[_:string]:string}): Promise<User> {
 	try {
-		return await req<userBy_In, User>('_/userBy', payload, query)
+		return await req<userBy_In, User>('_/userBy', payload, formData, query)
 	} catch(err: any) {
 		if (err && err['body_text'] && (errsUserBy.indexOf(err.body_text) >= 0))
 			throw(new Err<UserByErr>(err.body_text as UserByErr))
@@ -206,9 +209,9 @@ export async function apiUserBy(payload?: userBy_In, query?: {[_:string]:string}
 export type UserByErr = typeof errsUserBy[number]
 
 const errsUserSignIn = ['MissingOrExcessiveContentLength', 'TimedOut', '___yo_authLogin_AccountDoesNotExist', '___yo_authLogin_EmailInvalid', '___yo_authLogin_EmailRequiredButMissing', '___yo_authLogin_OkButFailedToCreateSignedToken', '___yo_authLogin_WrongPassword'] as const
-export async function apiUserSignIn(payload?: ApiAccountPayload, query?: {[_:string]:string}): Promise<Void> {
+export async function apiUserSignIn(payload?: ApiAccountPayload, formData?: FormData, query?: {[_:string]:string}): Promise<Void> {
 	try {
-		return await req<ApiAccountPayload, Void>('_/userSignIn', payload, query)
+		return await req<ApiAccountPayload, Void>('_/userSignIn', payload, formData, query)
 	} catch(err: any) {
 		if (err && err['body_text'] && (errsUserSignIn.indexOf(err.body_text) >= 0))
 			throw(new Err<UserSignInErr>(err.body_text as UserSignInErr))
@@ -218,9 +221,9 @@ export async function apiUserSignIn(payload?: ApiAccountPayload, query?: {[_:str
 export type UserSignInErr = typeof errsUserSignIn[number]
 
 const errsUserSignOut = ['MissingOrExcessiveContentLength', 'TimedOut'] as const
-export async function apiUserSignOut(payload?: Void, query?: {[_:string]:string}): Promise<Void> {
+export async function apiUserSignOut(payload?: Void, formData?: FormData, query?: {[_:string]:string}): Promise<Void> {
 	try {
-		return await req<Void, Void>('_/userSignOut', payload, query)
+		return await req<Void, Void>('_/userSignOut', payload, formData, query)
 	} catch(err: any) {
 		if (err && err['body_text'] && (errsUserSignOut.indexOf(err.body_text) >= 0))
 			throw(new Err<UserSignOutErr>(err.body_text as UserSignOutErr))
@@ -230,9 +233,9 @@ export async function apiUserSignOut(payload?: Void, query?: {[_:string]:string}
 export type UserSignOutErr = typeof errsUserSignOut[number]
 
 const errsUserSignUp = ['MissingOrExcessiveContentLength', 'TimedOut', '___yo_authLogin_AccountDoesNotExist', '___yo_authLogin_EmailInvalid', '___yo_authLogin_EmailRequiredButMissing', '___yo_authLogin_OkButFailedToCreateSignedToken', '___yo_authLogin_WrongPassword', '___yo_authRegister_EmailAddrAlreadyExists', '___yo_authRegister_EmailInvalid', '___yo_authRegister_EmailRequiredButMissing', '___yo_authRegister_PasswordInvalid', '___yo_authRegister_PasswordTooLong', '___yo_authRegister_PasswordTooShort'] as const
-export async function apiUserSignUp(payload?: ApiAccountPayload, query?: {[_:string]:string}): Promise<User> {
+export async function apiUserSignUp(payload?: ApiAccountPayload, formData?: FormData, query?: {[_:string]:string}): Promise<User> {
 	try {
-		return await req<ApiAccountPayload, User>('_/userSignUp', payload, query)
+		return await req<ApiAccountPayload, User>('_/userSignUp', payload, formData, query)
 	} catch(err: any) {
 		if (err && err['body_text'] && (errsUserSignUp.indexOf(err.body_text) >= 0))
 			throw(new Err<UserSignUpErr>(err.body_text as UserSignUpErr))
@@ -242,9 +245,9 @@ export async function apiUserSignUp(payload?: ApiAccountPayload, query?: {[_:str
 export type UserSignUpErr = typeof errsUserSignUp[number]
 
 const errsUserUpdate = ['DbUpdExpectedIdGt0', 'DbUpdate_ExpectedChangesForUpdate', 'DbUpdate_ExpectedQueryForUpdate', 'MissingOrExcessiveContentLength', 'TimedOut', 'Unauthorized', 'UserUpdate_NicknameAlreadyExists'] as const
-export async function apiUserUpdate(payload?: ApiUpdateArgs_haxsh_app_User_haxsh_app_UserField_, query?: {[_:string]:string}): Promise<Void> {
+export async function apiUserUpdate(payload?: ApiUpdateArgs_haxsh_app_User_haxsh_app_UserField_, formData?: FormData, query?: {[_:string]:string}): Promise<Void> {
 	try {
-		return await req<ApiUpdateArgs_haxsh_app_User_haxsh_app_UserField_, Void>('_/userUpdate', payload, query)
+		return await req<ApiUpdateArgs_haxsh_app_User_haxsh_app_UserField_, Void>('_/userUpdate', payload, formData, query)
 	} catch(err: any) {
 		if (err && err['body_text'] && (errsUserUpdate.indexOf(err.body_text) >= 0))
 			throw(new Err<UserUpdateErr>(err.body_text as UserUpdateErr))
@@ -261,7 +264,7 @@ export type UserAuthField = 'Id' | 'DtMade' | 'DtMod' | 'EmailAddr'
 
 export type ApiArgPeriod = {
 	From?: Time
-	OnlyBy: I64[]
+	OnlyBy?: I64[]
 	Until?: Time
 }
 
@@ -269,27 +272,27 @@ export type Post = {
 	By?: I64
 	DtMade?: DateTime
 	DtMod?: DateTime
-	FileContentTypes: string[]
-	Files: string[]
+	FileContentTypes?: string[]
+	Files?: string[]
 	Htm?: string
 	Id?: I64
-	To: I64[]
+	To?: I64[]
 }
 
 export type PostsListResult = {
-	Next?: DateTime
+	Next: DateTime
 	Posts: Post[]
-	Since?: DateTime
+	Since: DateTime
 }
 
 export type User = {
 	Auth: I64
 	Btw: string
 	Buddies: I64[]
-	DtMade?: DateTime
-	DtMod?: DateTime
+	DtMade: DateTime
+	DtMod: DateTime
 	Id: I64
-	LastSeen?: DateTime
+	LastSeen: DateTime
 	Nick: string
 	PicFileId: string
 }
@@ -299,7 +302,7 @@ export type postDelete_In = {
 }
 
 export type postsDeleted_In = {
-	OutOfPostIds: I64[]
+	OutOfPostIds?: I64[]
 }
 
 export type postsDeleted_Out = {
@@ -307,7 +310,7 @@ export type postsDeleted_Out = {
 }
 
 export type postsRecent_In = {
-	OnlyBy: I64[]
+	OnlyBy?: I64[]
 	Since?: DateTime
 }
 
@@ -318,8 +321,8 @@ export type userBy_In = {
 }
 
 export type ApiUpdateArgs_haxsh_app_User_haxsh_app_UserField_ = {
-	ChangedFields: UserField[]
-	Changes: User
+	ChangedFields?: UserField[]
+	Changes?: User
 	Id?: I64
 }
 

@@ -1,15 +1,21 @@
 package haxsh
 
 import (
+	"io"
+	"math"
+	"math/rand"
 	"mime"
 	"path/filepath"
 	"time"
+
+	. "yo/cfg"
 	. "yo/ctx"
 	yodb "yo/db"
 	q "yo/db/query"
 	yoauth "yo/feat_auth"
 	. "yo/srv"
 	. "yo/util"
+	"yo/util/str"
 )
 
 func init() {
@@ -48,11 +54,11 @@ func init() {
 		"postsDeleted": apiPostsDeleted.
 			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
 
-		"postNew": apiPostNew.Checks(
-			Fails{Err: "ExpectedNonEmptyPost", If: PostHtm.Equal("").And(q.ArrIsEmpty(PostFiles))},
+		"postNew": apiPostNew.IsMultipartForm().Checks(
 			Fails{Err: "ExpectedOnlyBuddyRecipients", If: q.ArrAreAnyIn(PostTo, q.OpLeq, 0)},
 		).
-			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
+			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized).
+			CouldFailWith("ExpectedNonEmptyPost"),
 
 		"postDelete": apiPostDelete.Checks(
 			Fails{Err: "InvalidPostId", If: PostDeleteId.LessOrEqual(0)},
@@ -141,7 +147,21 @@ var apiPostsDeleted = api(func(this *ApiCtx[struct {
 })
 
 var apiPostNew = api(func(this *ApiCtx[Post, Return[yodb.I64]]) {
-
+	files := this.Ctx.Http.Req.MultipartForm.File["files"]
+	dst_dir_path := Cfg.STATIC_FILE_STORAGE_DIRS["_postfiles"]
+	for _, file := range files {
+		multipart_file, err := file.Open()
+		if err != nil {
+			panic(err)
+		}
+		data, err := io.ReadAll(multipart_file)
+		if err != nil {
+			panic(err)
+		}
+		dst_file_name := str.FromI64(rand.Int63n(math.MaxInt64), 36) + str.FromI64(time.Now().UnixNano(), 36) + str.FromI64(file.Size, 36) + "__yo__" + file.Filename
+		WriteFile(filepath.Join(dst_dir_path, dst_file_name), data)
+		this.Args.Files = append(this.Args.Files, yodb.Text(dst_file_name))
+	}
 	this.Ret.Result = postNew(this.Ctx, this.Args, true)
 })
 

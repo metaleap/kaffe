@@ -145,19 +145,21 @@ export function getUserByPost(post?: yo.Post) {
     return uiBuddies.buddies.find(_ => (_.Id === post.By))
 }
 
-export async function sendNewPost(html: string, files?: string[]) {
+export async function sendNewPost(html: string, files?: File[]) {
     const user_self = userSelf.val
     if (!user_self)
         return false
     let ok = false
     try {
+        const form_data = new FormData()
+        if (files && files.length)
+            for (const file of files)
+                form_data.append('files', file)
         const resp = await yo.apiPostNew({
             By: user_self.Id,
             To: (selectedBuddy.val === 0) ? [] : [selectedBuddy.val],
-            Files: files ?? [],
-            FileContentTypes: [],
             Htm: html,
-        })
+        }, form_data)
         isSeeminglyOffline.val = false
         ok = (resp.Result > 0)
     } catch (err) {
