@@ -74,24 +74,23 @@ export function create(): UiCtlPosts {
     van.add(me.DOM, vanx.list(() => htm.div({ 'class': 'feed' }), me.posts, (it) => {
         const post = it.val
         let inner_html = post.Htm ?? ''
-        if (post.Htm && post.Files && post.Files.length)
-            inner_html += '<hr class="haxsh-post-files">'
         if (post.Files && post.Files.length) {
-            inner_html += `<ul class="haxsh-post-files" style="${(post.Files.length === 1) ? 'list-style-type:none;' : ''}">`
+            inner_html += `<div class="haxsh-post-files">`
             for (let i = 0; i < post.Files.length; i++) {
-                const file_id = post.Files[i], content_type = post.FileContentTypes[i]
+                const file_id = post.Files[i], file_content_type = post.FileContentTypes[i]
                 const file_url = `/__static/mockfiles/${encodeURIComponent(file_id)}`
-                inner_html += `<li><a target="_blank" href="${file_url}">${htm.span(file_id).innerHTML}</a>`
-                if (content_type && content_type.length) {
-                    inner_html += `&nbsp;<span>&nbsp;&mdash;&nbsp;${content_type}</span>`
-                    if (content_type.startsWith("image/"))
-                        inner_html += `<img alt="${file_id}" title="${file_id}" src="${file_url}">`
-                    else if (content_type.startsWith("video/"))
-                        inner_html += `<video alt="${file_id}" title="${file_id}" src="${file_url}" preload="metadata" controls="true">`
+                inner_html += `<a class="haxsh-post-file" target="_blank" href="${file_url}">`
+                if (file_content_type !== "") {
+                    const icon = fileContentTypeIcons[file_content_type.substring(0, file_content_type.indexOf('/'))]
+                    if (icon && icon.length)
+                        inner_html += `<div>${icon}</div>`
                 }
-                inner_html += '</li>'
+                inner_html += '<span>' + htm.span(file_id).innerHTML
+                if (file_content_type !== "")
+                    inner_html += `<span>${file_content_type}</span>`
+                inner_html += '</span></a>'
             }
-            inner_html += '</ul>'
+            inner_html += '</div>'
         }
 
         const htm_post = htm.div({ 'class': depends(() => ('post-content' + ((me.isDeleting.val === (post.Id!)) ? ' deleting' : (post._isFresh ? ' fresh' : '')))) })
@@ -185,4 +184,12 @@ export function update(me: UiCtlPosts, newOrUpdatedPosts: yo.Post[], clearOld?: 
     if (fresh_feed.length > 0)
         return fresh_feed[0]
     return undefined
+}
+
+const fileContentTypeIcons: { [_: string]: string } = {
+    'audio': "🎧",
+    'video': "🎥",
+    'image': "🖼️",
+    'text': "📝",
+    'application': "📦",
 }

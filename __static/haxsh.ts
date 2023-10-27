@@ -153,7 +153,7 @@ export async function sendNewPost(html: string, files?: string[]) {
     try {
         const resp = await yo.apiPostNew({
             By: user_self.Id,
-            To: [selectedBuddy.val],
+            To: (selectedBuddy.val === 0) ? [] : [selectedBuddy.val],
             Files: files ?? [],
             FileContentTypes: [],
             Htm: html,
