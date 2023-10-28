@@ -22,7 +22,7 @@ import (
 var mockLiveActivity = true
 
 const mockNumReqsPerSecApprox = 11 // max ~111 for outside-vscode `go run`s, ~44 in vscode dlv debug runs (due to default Postgres container's conn-limits setup)
-const mockUsersNumTotal = 123
+const mockUsersNumTotal = 12345
 const mockFilesDirPath = "__static/postfiles"
 
 var mockUsersNumMaxBuddies = 22 + rand.Intn(22)
@@ -192,7 +192,7 @@ func mockEnsureUser(i int) yodb.I64 {
 		ctx.TimingsNoPrintInDevMode = false
 		ctx.Timings.Step("register new auth")
 		auth_id := yoauth.UserRegister(ctx, user_email_addr, "foobar")
-		user = &User{Nick: yodb.Text(user_email_addr[:str.Idx(string(user_email_addr), '@')])}
+		user = &User{Nick: yodb.Text(user_email_addr[:str.Idx(string(user_email_addr), '@')]), ByBuddyDtLastMsgCheck: yodb.JsonMap[time.Time]{}}
 		switch i {
 		case 123:
 			user.Buddies = yodb.Arr[yodb.I64]{234, 321}

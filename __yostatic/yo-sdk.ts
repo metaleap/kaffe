@@ -306,9 +306,9 @@ export type Post = {
 }
 
 export type PostsListResult = {
-	Next: DateTime
+	NextSince: DateTime
 	Posts: Post[]
-	Since: DateTime
+	UnreadCounts: { [_:string]: I64 }
 }
 
 export type User = {
