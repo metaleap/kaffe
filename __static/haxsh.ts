@@ -231,7 +231,7 @@ function handleKnownErrMaybe<T extends string>(err: T): boolean {
             uiDialogLogin.showModal()
             return true
         case 'MissingOrExcessiveContentLength':
-            alert("Your input has exceeded the server's maximum permissible (total after encoding) payload size of 22MB.")
+            alert("To share something over " + yo.reqMaxReqPayloadSizeMb + "MB, host it elsewhere and share the link instead.")
             return true
     }
     return false
