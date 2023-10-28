@@ -1,5 +1,5 @@
 :root {
-    --liteness: 8%;
+    --liteness: 88%;
     --bgcolor: hsl(0, 0%, calc(var(--liteness)));
     --fgcolor: hsl(0, 0%, calc(100% - var(--liteness)));
     --bgadd10: hsl(0, 0%, calc(10% + var(--liteness)));
@@ -23,6 +23,10 @@ body {
     color: var(--fgcolor);
     margin: 0;
     padding: 0;
+}
+
+body a {
+    color: var(--sigcol) !important;
 }
 
 .haxsh-buddies {
@@ -59,10 +63,6 @@ body {
     padding: 0.25em 0;
 }
 
-.buddy.offline {
-    cursor: default;
-}
-
 .haxsh-buddies .badged::before {
     content: attr(data-badge);
     position: absolute;
@@ -94,7 +94,6 @@ body {
 }
 
 .buddy.selected {
-    cursor: default;
     background-color: var(--bgcolor);
 }
 
@@ -123,7 +122,6 @@ body {
 }
 
 .haxsh-buddies>div.buddy-self.selected {
-    cursor: default;
     background-color: var(--bgcolor);
 }
 
@@ -366,10 +364,19 @@ body {
     font-weight: normal;
 }
 
-dialog#mvd {
+dialog {
+    outline: none;
+    color: var(--fgcolor);
     background-color: color-mix(in hsl, var(--bgoff3), transparent 22%);
     border: 1px solid var(--bgoff2);
-    border-radius: 1.23em;
+    border-radius: 0.77em;
+}
+
+dialog::backdrop {
+    background-color: color-mix(in hsl, #808080, transparent 44%) !important;
+}
+
+dialog#mvd {
     text-align: center;
 }
 
@@ -378,4 +385,24 @@ dialog#mvd video {
     display: inline-block;
     max-height: 99%;
     max-width: 99%;
+}
+
+dialog.user-popup {
+    border-top-right-radius: 0;
+}
+
+dialog.user-popup .header {
+    font-size: 1.23em;
+    font-weight: bold;
+}
+
+dialog.user-popup .pic {
+    width: 3.21em;
+    height: 3.21em;
+    float: right;
+}
+
+dialog.user-popup .btw {
+    clear: both;
+    font-size: 1.11em;
 }

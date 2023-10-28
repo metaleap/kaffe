@@ -20,9 +20,8 @@ export function create(): UiCtlBuddies {
                 'class': depends(() => 'buddy-self' + ((haxsh.selectedBuddy.val === 0) ? ' selected' : '') + ((haxsh.buddyBadges[0].val) ? ' badged' : '')),
                 'data-badge': depends(() => (haxsh.buddyBadges[0].val) || ""),
                 'onclick': () => {
-                    if (!haxsh.isSeeminglyOffline.val) {
+                    if (!haxsh.isSeeminglyOffline.val)
                         haxsh.buddySelected(undefined, true)
-                    }
                 },
             },
                 htm.div(userDomAttrsSelf()),
@@ -39,9 +38,8 @@ export function create(): UiCtlBuddies {
         },
             htm.div(userDomAttrsBuddy(it.val, new Date().getTime())))
         item.onclick = () => {
-            if (!haxsh.isSeeminglyOffline.val) {
+            if (!haxsh.isSeeminglyOffline.val)
                 haxsh.buddySelected(it.val, true)
-            }
         }
         return item
     }))

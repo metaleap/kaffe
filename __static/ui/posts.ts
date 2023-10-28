@@ -35,7 +35,7 @@ export function create(): UiCtlPosts {
         'contenteditable': depends(() => (is_sending.val ? 'false' : 'true')),
         'autofocus': true, 'spellcheck': false, 'autocorrect': 'off', 'tabindex': 1,
         'data-placeholder': depends(() => haxsh.selectedBuddy.val
-            ? `Chat with ${haxsh.getUserById(haxsh.selectedBuddy.val)?.Nick || "?"}`
+            ? `Chat with ${haxsh.userById(haxsh.selectedBuddy.val)?.Nick || "?"}`
             : "This goes to all buddies. (For 1-to-1 chat, select a buddy on the right.)"),
         'oninput': () => {
             is_empty.val = (htm_post_entry.innerHTML === "") || (htm_post_entry.innerHTML === "<br>")
@@ -121,7 +121,7 @@ export function create(): UiCtlPosts {
             inner_html += htm_files.outerHTML
         }
 
-        const post_by = haxsh.getUserByPost(post), post_dt = new Date(post.DtMade!)
+        const post_by = haxsh.userByPost(post), post_dt = new Date(post.DtMade!)
         const htm_post = htm.div({ 'class': depends(() => ('post-content' + ((me.isDeleting.val === (post.Id!)) ? ' deleting' : (post._isFresh ? ' fresh' : '')))) })
         htm_post.innerHTML = inner_html
         const is_own_post = (post_by?.Id === haxsh.userSelf.val?.Id) || false

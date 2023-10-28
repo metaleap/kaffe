@@ -4,6 +4,7 @@ const htm = van.tags
 import * as yo from './yo-sdk.js'
 import * as uibuddies from './ui/buddies.js'
 import * as uiposts from './ui/posts.js'
+import * as uiuserpopup from './ui/user_popup.js'
 
 
 const fetchBuddiesIntervalMs = 4321
@@ -41,10 +42,9 @@ export function main() {
     setTimeout(fetchBuddies, 234)
 }
 
-async function fetchBuddies() {
-    if (fetchesPaused)
+async function fetchBuddies(oneOff?: boolean) {
+    if (fetchesPaused && !oneOff)
         return
-
     try {
         const buddies = (await yo.apiUserBuddies())!.Result ?? []
         for (const user of buddies)
@@ -65,7 +65,7 @@ async function fetchBuddies() {
             onErrOther(err)
     }
 
-    if (!fetchesPaused)
+    if ((!fetchesPaused) && !oneOff)
         setTimeout(fetchBuddies, fetchBuddiesIntervalMs)
 }
 
@@ -150,7 +150,7 @@ function newUiLoginDialog() {
     )
 }
 
-export function getUserById(id: number) {
+export function userById(id: number) {
     if (id <= 0)
         return undefined
     const user_self = userSelf.val
@@ -158,7 +158,7 @@ export function getUserById(id: number) {
         return user_self
     return uiBuddies.buddies.find(_ => (_.Id === id))
 }
-export function getUserByPost(post?: yo.Post) {
+export function userByPost(post?: yo.Post) {
     const user_self = userSelf.val
     if ((!post) || (user_self && (user_self.Id === post.By)))
         return user_self
@@ -207,7 +207,7 @@ export async function deletePost(id: number) {
 }
 
 function browserTabTitleRefresh() {
-    const user_self = userSelf.val, user_buddy = getUserById(selectedBuddy.val)
+    const user_self = userSelf.val, user_buddy = userById(selectedBuddy.val)
     const buddies_and_self = (user_buddy && user_self) ? [user_buddy, user_self]
         : uiBuddies.buddies.concat(user_self ? [user_self] : [])
     const new_title = ((isSeeminglyOffline.val ? '(disconnected)' : ((uiPosts.numFreshPosts === 0) ? '' : `(${uiPosts.numFreshPosts})`))
@@ -221,16 +221,30 @@ function browserTabTitleRefresh() {
 }
 
 export function buddySelected(user?: yo.User, ensureIsSelected?: boolean): boolean {
-    let is_selected = (!selectedBuddy.val) ? false : (selectedBuddy.val === ((user?.Id) ?? 0))
-    if (ensureIsSelected && !is_selected) {
-        selectedBuddy.val = ((user?.Id) ?? 0)
-        buddyBadges[selectedBuddy.val].val = ""
-        is_selected = !is_selected
-        uiposts.update(uiPosts, [], true)
-        fetchPostsSinceDt = undefined
-        fetchPostsRecent(true)
-    }
+    let is_selected = (selectedBuddy.val === ((user?.Id) ?? 0))
+    if (ensureIsSelected)
+        if (!is_selected) {
+            selectedBuddy.val = ((user?.Id) ?? 0)
+            buddyBadges[selectedBuddy.val].val = ""
+            is_selected = !is_selected
+            uiposts.update(uiPosts, [], true)
+            fetchPostsSinceDt = undefined
+            fetchPostsRecent(true)
+            fetchBuddies(true)
+        } else  // already was selected, so the click/tap shows user card
+            userShowPopup(user)
     return is_selected
+}
+
+export function userShowPopup(user?: yo.User) {
+    if (!user)
+        user = userSelf.val
+    if (user) {
+        const popup = uiuserpopup.create(user ?? userSelf.val)
+        van.add(document.body, popup.DOM)
+        popup.DOM.onclose = () => popup.DOM.remove()
+        popup.DOM.showModal()
+    }
 }
 
 
