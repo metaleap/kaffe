@@ -9,6 +9,7 @@
     --bgoff2: color-mix(in hsl, var(--bgcolor), var(--fgcolor) 90%);
     --bgoff3: color-mix(in hsl, var(--bgcolor), var(--fgcolor) 50%);
     --bgoff4: hsl(0, 0%, calc(var(--liteness) - 22%));
+    --sigcol: darkgoldenrod;
 }
 
 @font-face {
@@ -61,6 +62,24 @@ body {
 
 .buddy.offline {
     cursor: default;
+}
+
+.haxsh-buddies .buddy::before,
+.haxsh-buddies .buddy-self::before {
+    content: attr(data-badge);
+    position: absolute;
+    background-color: var(--sigcol);
+    color: var(--fgcolor);
+    width: 1.23em;
+    height: 1.23em;
+    border-radius: 77em;
+    padding: 0;
+    line-height: 0.77em;
+    margin: 0 0 0 0.22em;
+    font-size: 0.77em;
+    font-weight: bold;
+    text-align: center;
+    display: inline-block;
 }
 
 .buddy-pic {
@@ -239,7 +258,7 @@ body {
 }
 
 .haxsh-posts .feed .post-content.fresh {
-    background-color: darkgoldenrod !important;
+    background-color: var(--sigcol) !important;
 }
 
 .haxsh-posts .feed .post-content.deleting {

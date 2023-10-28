@@ -16,7 +16,10 @@ export type UiCtlBuddies = {
 export function create(): UiCtlBuddies {
     const me: UiCtlBuddies = {
         DOM: htm.div({ 'class': 'haxsh-buddies' },
-            htm.div({ 'class': depends(() => 'buddy-self' + (haxsh.selectedBuddy.val ? ' selected' : '')) },
+            htm.div({
+                'class': depends(() => 'buddy-self' + (haxsh.selectedBuddy.val ? ' selected' : '')),
+                'data-badge': depends(() => (haxsh.buddyBadges[0] ? haxsh.buddyBadges[0].val : "")),
+            },
                 htm.div(userDomAttrsSelf()),
             ),
         ),
@@ -25,7 +28,10 @@ export function create(): UiCtlBuddies {
     }
 
     van.add(me.DOM, vanx.list(() => htm.div({ 'class': 'buddies' }), me.buddies, (it) => {
-        const item = htm.div({ 'class': depends(() => 'buddy' + (haxsh.isSeeminglyOffline.val ? ' offline' : '') + (haxsh.buddySelected(it.val) ? ' selected' : '')) },
+        const item = htm.div({
+            'class': depends(() => 'buddy' + (haxsh.isSeeminglyOffline.val ? ' offline' : '') + (haxsh.buddySelected(it.val) ? ' selected' : '')),
+            'data-badge': depends(() => (haxsh.buddyBadges[it.val.Id] ? haxsh.buddyBadges[it.val.Id].val : "")),
+        },
             htm.div(userDomAttrsBuddy(it.val, new Date().getTime())))
         item.onclick = () => {
             if (!haxsh.isSeeminglyOffline.val) {
@@ -54,12 +60,12 @@ export function userDomAttrsBuddy(user?: yo.User, now?: number) {
         return {
             'class': 'buddy-pic offline',
             'title': "(ex-buddy — or bug)",
-            'style': `background-image: url('${userPicFileUrl()}')`
+            'style': `background-image: url('${userPicFileUrl()}')`,
         }
     return {
         'class': depends(() => 'buddy-pic' + ((haxsh.isSeeminglyOffline.val || isOffline(user, now)) ? ' offline' : '')),
         'title': `${user.Nick}${((!user.Btw) ? '' : (' — ' + user.Btw))}`,
-        'style': `background-image: url('${userPicFileUrl(user)}')`
+        'style': `background-image: url('${userPicFileUrl(user)}')`,
     }
 }
 
