@@ -35,7 +35,7 @@ export function create(): UiCtlPosts {
         'contenteditable': depends(() => (is_sending.val ? 'false' : 'true')),
         'autofocus': true, 'spellcheck': false, 'autocorrect': 'off', 'tabindex': 1,
         'data-placeholder': depends(() => haxsh.selectedBuddy.val
-            ? `Chat with ${haxsh.getUserById(haxsh.selectedBuddy.val)}`
+            ? `Chat with ${haxsh.getUserById(haxsh.selectedBuddy.val)?.Nick || "?"}`
             : "This goes to all buddies. (For 1-to-1 chat, select a buddy on the right.)"),
         'oninput': () => {
             is_empty.val = (htm_post_entry.innerHTML === "") || (htm_post_entry.innerHTML === "<br>")

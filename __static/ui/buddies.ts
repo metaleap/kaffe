@@ -17,8 +17,8 @@ export function create(): UiCtlBuddies {
     const me: UiCtlBuddies = {
         DOM: htm.div({ 'class': 'haxsh-buddies' },
             htm.div({
-                'class': depends(() => 'buddy-self' + (haxsh.selectedBuddy.val ? ' selected' : '')),
-                'data-badge': depends(() => (haxsh.buddyBadges[0] ? haxsh.buddyBadges[0].val : "")),
+                'class': depends(() => 'buddy-self' + (haxsh.selectedBuddy.val ? ' selected' : '') + ((haxsh.buddyBadges[0].val) ? ' badged' : '')),
+                'data-badge': depends(() => (haxsh.buddyBadges[0].val) || ""),
             },
                 htm.div(userDomAttrsSelf()),
             ),
@@ -29,8 +29,8 @@ export function create(): UiCtlBuddies {
 
     van.add(me.DOM, vanx.list(() => htm.div({ 'class': 'buddies' }), me.buddies, (it) => {
         const item = htm.div({
-            'class': depends(() => 'buddy' + (haxsh.isSeeminglyOffline.val ? ' offline' : '') + (haxsh.buddySelected(it.val) ? ' selected' : '')),
-            'data-badge': depends(() => (haxsh.buddyBadges[it.val.Id] ? haxsh.buddyBadges[it.val.Id].val : "")),
+            'class': depends(() => 'buddy' + (haxsh.isSeeminglyOffline.val ? ' offline' : '') + (haxsh.buddySelected(it.val) ? ' selected' : '') + ((haxsh.buddyBadges[it.val.Id].val) ? ' badged' : '')),
+            'data-badge': depends(() => (haxsh.buddyBadges[it.val.Id].val) || ""),
         },
             htm.div(userDomAttrsBuddy(it.val, new Date().getTime())))
         item.onclick = () => {

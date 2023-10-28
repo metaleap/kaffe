@@ -18,7 +18,7 @@ export let userSelf = van.state(undefined as (yo.User | undefined))
 export let browserTabInvisibleSince = 0
 export let isSeeminglyOffline = van.state(false)
 export let selectedBuddy: State<number> = van.state(0)
-export let buddyBadges: { [_: number]: State<string> } = {}
+export let buddyBadges: { [_: number]: State<string> } = { 0: van.state("") }
 
 let uiDialogLogin = newUiLoginDialog()
 let uiBuddies: uibuddies.UiCtlBuddies = uibuddies.create()
@@ -47,6 +47,9 @@ async function fetchBuddies() {
 
     try {
         const buddies = (await yo.apiUserBuddies())!.Result ?? []
+        for (const user of buddies)
+            if (!buddyBadges[user.Id])
+                buddyBadges[user.Id] = van.state("")
         uiBuddies.update(buddies)
         let user_self = userSelf.val
         if (!user_self)

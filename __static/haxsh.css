@@ -64,8 +64,7 @@ body {
     cursor: default;
 }
 
-.haxsh-buddies .buddy::before,
-.haxsh-buddies .buddy-self::before {
+.haxsh-buddies .badged::before {
     content: attr(data-badge);
     position: absolute;
     background-color: var(--sigcol);
@@ -74,8 +73,8 @@ body {
     height: 1.23em;
     border-radius: 77em;
     padding: 0;
-    line-height: 0.77em;
-    margin: 0 0 0 0.22em;
+    line-height: 1em;
+    margin: 0 0 0 0.11em;
     font-size: 0.77em;
     font-weight: bold;
     text-align: center;
