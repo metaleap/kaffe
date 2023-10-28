@@ -1,5 +1,5 @@
 :root {
-    --liteness: 88%;
+    --liteness: 8%;
     --bgcolor: hsl(0, 0%, calc(var(--liteness)));
     --fgcolor: hsl(0, 0%, calc(100% - var(--liteness)));
     --bgadd10: hsl(0, 0%, calc(10% + var(--liteness)));
@@ -154,7 +154,6 @@ body {
     content: attr(data-placeholder);
     color: var(--bgoff3);
     cursor: text;
-    position: absolute;
 }
 
 .haxsh-posts>div.self-post .post-content.offline {
