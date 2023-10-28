@@ -88,7 +88,6 @@ async function fetchPostsRecent(oneOff?: boolean) {
             for (const buddy_id_str in recent_updates.UnreadCounts) {
                 const buddy_id = (buddy_id_str === "") ? 0 : parseInt(buddy_id_str), num_unread = recent_updates.UnreadCounts[buddy_id_str]
                 const state = buddyBadges[buddy_id], badge_text = ((num_unread <= 0) ? "" : num_unread.toString())
-                console.log(buddy_id, num_unread, badge_text, state ? true : false)
                 if (state)
                     state.val = badge_text
                 else
@@ -228,6 +227,7 @@ export function buddySelected(user: yo.User, toggleIsSelected?: boolean): boolea
             selectedBuddy.val = 0
         else
             selectedBuddy.val = user.Id
+        buddyBadges[selectedBuddy.val].val = ""
         is_selected = !is_selected
         uiposts.update(uiPosts, [], true)
         fetchPostsSinceDt = undefined

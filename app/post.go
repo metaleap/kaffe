@@ -62,7 +62,7 @@ func postsRecent(ctx *Ctx, forUser *User, since *yodb.DateTime, onlyThoseBy []yo
 		var mut sync.Mutex
 		do_count := func(buddyId yodb.I64, since *yodb.DateTime, onDone func()) {
 			defer onDone()
-			query := dbQueryPostsForUser(forUser, sl.Slice[yodb.I64]{buddyId})
+			query := dbQueryPostsForUser(forUser, If(buddyId == 0, nil, sl.Slice[yodb.I64]{buddyId}))
 			if since != nil {
 				query = query.And(PostDtMade.GreaterOrEqual(since))
 			}
