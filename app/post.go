@@ -29,7 +29,7 @@ type Post struct {
 type PostsListResult struct {
 	Posts        []*Post
 	NextSince    *yodb.DateTime
-	UnreadCounts map[yodb.I64]int64
+	UnreadCounts map[string]int64
 }
 
 func postsFor(ctx *Ctx, forUser *User, dtFrom time.Time, dtUntil time.Time, onlyThoseBy []yodb.I64) (ret []*Post) {
@@ -46,7 +46,7 @@ func postsRecent(ctx *Ctx, forUser *User, since *yodb.DateTime, onlyThoseBy []yo
 		since = nil
 	}
 
-	ret := &PostsListResult{NextSince: yodb.DtNow(), UnreadCounts: map[yodb.I64]int64{}} // `NextSince=now` must happen before hitting the DB
+	ret := &PostsListResult{NextSince: yodb.DtNow(), UnreadCounts: map[string]int64{}} // `NextSince=now` must happen before hitting the DB
 	query_posts_for_user := dbQueryPostsForUser(forUser, onlyThoseBy)
 
 	if since == nil {
@@ -58,12 +58,15 @@ func postsRecent(ctx *Ctx, forUser *User, since *yodb.DateTime, onlyThoseBy []yo
 		ret.Posts = yodb.FindMany[Post](ctx, query_posts_for_user, 11, nil, PostDtMade.Desc())
 	}
 
-	// we also populate PostsListResult.UnreadCounts for all buddies
-	{
-		do_count := func(buddyId yodb.I64, since yodb.DateTime, onDone func()) int64 {
+	{ // we also populate PostsListResult.UnreadCounts for all buddies
+		var mut sync.Mutex
+		do_count := func(buddyId yodb.I64, since yodb.DateTime, onDone func()) {
 			defer onDone()
 			query := dbQueryPostsForUser(forUser, sl.Slice[yodb.I64]{buddyId}).And(PostDtMade.GreaterOrEqual(since))
-			return yodb.Count[Post](ctx, query, "", nil)
+			count, key := yodb.Count[Post](ctx, query, "", nil), If(buddyId == 0, "", str.FromI64(int64(buddyId), 10))
+			mut.Lock()
+			ret.UnreadCounts[key] = count
+			mut.Unlock()
 		}
 		var work sync.WaitGroup
 		if len(onlyThoseBy) > 0 {

@@ -102,5 +102,9 @@ func userSetLastSeen(auth_id yodb.I64, byBuddyDtLastMsgCheck yodb.JsonMap[time.T
 	ctx.TimingsNoPrintInDevMode = true
 	upd := &User{LastSeen: yodb.DtNow(), ByBuddyDtLastMsgCheck: byBuddyDtLastMsgCheck}
 	upd.Auth.SetId(auth_id)
-	userUpdate(ctx, upd, true, false, UserLastSeen)
+	only_fields := []UserField{UserLastSeen}
+	if byBuddyDtLastMsgCheck != nil {
+		only_fields = append(only_fields, UserByBuddyDtLastMsgCheck)
+	}
+	userUpdate(ctx, upd, true, false, only_fields...)
 }
