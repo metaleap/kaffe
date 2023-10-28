@@ -19,6 +19,11 @@ export function create(): UiCtlBuddies {
             htm.div({
                 'class': depends(() => 'buddy-self' + ((haxsh.selectedBuddy.val === 0) ? ' selected' : '') + ((haxsh.buddyBadges[0].val) ? ' badged' : '')),
                 'data-badge': depends(() => (haxsh.buddyBadges[0].val) || ""),
+                'onclick': () => {
+                    if (!haxsh.isSeeminglyOffline.val) {
+                        haxsh.buddySelected(undefined, true)
+                    }
+                },
             },
                 htm.div(userDomAttrsSelf()),
             ),
