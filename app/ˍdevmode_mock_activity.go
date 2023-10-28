@@ -22,7 +22,7 @@ import (
 var mockLiveActivity = true
 
 const mockNumReqsPerSecApprox = 11 // max ~111 for outside-vscode `go run`s, ~44 in vscode dlv debug runs (due to default Postgres container's conn-limits setup)
-const mockUsersNumTotal = 12345
+const mockUsersNumTotal = 123
 const mockFilesDirPath = "__static/postfiles"
 
 var mockUsersNumMaxBuddies = 22 + rand.Intn(22)

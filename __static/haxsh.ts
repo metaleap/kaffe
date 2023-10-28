@@ -187,8 +187,10 @@ export async function deletePost(id: number) {
 }
 
 function browserTabTitleRefresh() {
-    const user_self = userSelf.val
-    const buddies_and_self = uiBuddies.buddies.concat(user_self ? [user_self] : [])
+    const user_self = userSelf.val, user_buddy = selectedBuddy.val
+    const buddies_and_self = (user_buddy && user_self)
+        ? [user_buddy, user_self]
+        : uiBuddies.buddies.concat(user_self ? [user_self] : [])
     const new_title = ((isSeeminglyOffline.val ? '(disconnected)' : ((uiPosts.numFreshPosts === 0) ? '' : `(${uiPosts.numFreshPosts})`))
         + ' ' + (buddies_and_self.map(_ => _.Nick).join(', '))).trim()
     if (new_title !== document.title)

@@ -284,7 +284,7 @@ export type UserUpdateErr = typeof errsUserUpdate[number]
 
 export type PostField = 'Id' | 'DtMade' | 'DtMod' | 'By' | 'To' | 'Htm' | 'Files'
 
-export type UserField = 'Id' | 'DtMade' | 'DtMod' | 'LastSeen' | 'Auth' | 'PicFileId' | 'Nick' | 'Btw' | 'Buddies'
+export type UserField = 'Id' | 'DtMade' | 'DtMod' | 'LastSeen' | 'Auth' | 'PicFileId' | 'Nick' | 'Btw' | 'Buddies' | 'ByBuddyDtLastMsgCheck'
 
 export type UserAuthField = 'Id' | 'DtMade' | 'DtMod' | 'EmailAddr'
 
@@ -315,6 +315,7 @@ export type User = {
 	Auth: I64
 	Btw: string
 	Buddies: I64[]
+	ByBuddyDtLastMsgCheck: { [_:string]: Time }
 	DtMade: DateTime
 	DtMod: DateTime
 	Id: I64

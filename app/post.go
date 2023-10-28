@@ -25,9 +25,8 @@ type Post struct {
 }
 
 type PostsListResult struct {
-	Posts []*Post
-	Since *yodb.DateTime
-	Next  *yodb.DateTime
+	Posts     []*Post
+	NextSince *yodb.DateTime
 }
 
 func postsFor(ctx *Ctx, forUser *User, dtFrom time.Time, dtUntil time.Time, onlyThoseBy []yodb.I64) (ret []*Post) {
@@ -44,7 +43,7 @@ func postsRecent(ctx *Ctx, forUser *User, since *yodb.DateTime, onlyThoseBy []yo
 		since = nil
 	}
 
-	ret := &PostsListResult{Since: forUser.DtMade, Next: yodb.DtNow()} // the below outside the ctor to ensure Next is set before hitting the DB
+	ret := &PostsListResult{NextSince: yodb.DtNow()} // NextSince=now must happen before hitting the DB
 	query_posts_for_user := dbQueryPostsForUser(forUser, onlyThoseBy)
 	if since == nil {
 		since = yodb.DtFrom(time.Now().AddDate(0, 0, -1))

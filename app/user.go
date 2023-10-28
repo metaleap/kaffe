@@ -25,12 +25,13 @@ type User struct {
 	DtMade *yodb.DateTime
 	DtMod  *yodb.DateTime
 
-	LastSeen  *yodb.DateTime
-	Auth      yodb.Ref[yoauth.UserAuth, yodb.RefOnDelCascade]
-	PicFileId yodb.Text
-	Nick      yodb.Text
-	Btw       yodb.Text
-	Buddies   yodb.Arr[yodb.I64]
+	LastSeen              *yodb.DateTime
+	Auth                  yodb.Ref[yoauth.UserAuth, yodb.RefOnDelCascade]
+	PicFileId             yodb.Text
+	Nick                  yodb.Text
+	Btw                   yodb.Text
+	Buddies               yodb.Arr[yodb.I64]
+	ByBuddyDtLastMsgCheck yodb.JsonMap[time.Time]
 }
 
 func userUpdate(ctx *Ctx, upd *User, byCurUserInCtx bool, inclEmptyOrMissingFields bool, onlyFields ...UserField) {
