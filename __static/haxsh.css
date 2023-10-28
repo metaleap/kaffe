@@ -96,7 +96,7 @@ body {
 
 .haxsh-buddies>div.buddy-self {
     z-index: 99999;
-    background-color: color-mix(in hsl, var(--bgoff1), transparent 22%);
+    background-color: var(--bgcolor);
     position: fixed;
     margin-top: 0;
     padding: 0.22em 0 0 0;
@@ -148,6 +148,12 @@ body {
     min-height: 2.34em;
     max-height: 12.34em;
     margin-right: 3.88em;
+}
+
+.haxsh-posts>div.self-post .post-content.empty::before {
+    content: attr(data-placeholder);
+    color: var(--bgoff3);
+    cursor: text;
 }
 
 .haxsh-posts>div.self-post .post-content.offline {

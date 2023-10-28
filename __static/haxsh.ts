@@ -17,7 +17,7 @@ let fetchedPostsEverYet = false
 export let userSelf = van.state(undefined as (yo.User | undefined))
 export let browserTabInvisibleSince = 0
 export let isSeeminglyOffline = van.state(false)
-export let selectedBuddy: State<number> = van.state(0)
+export let selectedBuddy: State<yo.User | null> = van.state(null)
 
 let uiDialogLogin = newUiLoginDialog()
 let uiBuddies: uibuddies.UiCtlBuddies = uibuddies.create()
@@ -71,7 +71,7 @@ async function fetchPostsRecent(oneOff?: boolean) {
     try {
         const recent_updates = await yo.apiPostsRecent({
             Since: fetchPostsSinceDt,
-            OnlyBy: selectedBuddy.val ? [selectedBuddy.val] : [],
+            OnlyBy: selectedBuddy.val ? [selectedBuddy.val.Id] : [],
         })
         isSeeminglyOffline.val = false
         fetchedPostsEverYet = true // even if empty, we have a non-error outcome and so set this
@@ -157,7 +157,7 @@ export async function sendNewPost(html: string, files?: File[]) {
                 form_data.append('files', file)
         const resp = await yo.apiPostNew({
             By: user_self.Id,
-            To: (selectedBuddy.val === 0) ? [] : [selectedBuddy.val],
+            To: (!selectedBuddy.val) ? [] : [selectedBuddy.val.Id],
             Htm: html,
         }, form_data)
         isSeeminglyOffline.val = false
@@ -200,12 +200,12 @@ function browserTabTitleRefresh() {
 }
 
 export function buddySelected(user: yo.User, toggleIsSelected?: boolean): boolean {
-    let is_selected = (selectedBuddy.val === user.Id)
+    let is_selected = (!selectedBuddy.val) ? false : (selectedBuddy.val.Id === user.Id)
     if (toggleIsSelected) {
         if (is_selected)
-            selectedBuddy.val = 0
+            selectedBuddy.val = null
         else
-            selectedBuddy.val = user.Id
+            selectedBuddy.val = user
         is_selected = !is_selected
         uiposts.update(uiPosts, [], true)
         fetchPostsSinceDt = undefined

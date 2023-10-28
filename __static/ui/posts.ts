@@ -27,17 +27,25 @@ type PostAug = yo.Post & {
 }
 
 export function create(): UiCtlPosts {
-    const is_sending = van.state(false), is_deleting = van.state(0)
+    const is_sending = van.state(false), is_deleting = van.state(0), is_empty = van.state(true)
     let me: UiCtlPosts
     const files_to_post: vanx.Reactive<UpFile[]> = vanx.reactive([] as UpFile[])
     const htm_post_entry = htm.div({
-        'class': depends(() => 'post-content' + (haxsh.isSeeminglyOffline.val ? ' offline' : '') + (is_sending.val ? ' sending' : '')),
+        'class': depends(() => 'post-content' + (haxsh.isSeeminglyOffline.val ? ' offline' : '') + (is_sending.val ? ' sending' : '') + (is_empty.val ? ' empty' : '')),
         'contenteditable': depends(() => (is_sending.val ? 'false' : 'true')),
-        'autofocus': true, 'spellcheck': false, 'autocorrect': 'off', 'tabindex': 1, 'onkeydown': (evt: KeyboardEvent) => {
+        'autofocus': true, 'spellcheck': false, 'autocorrect': 'off', 'tabindex': 1,
+        'data-placeholder': depends(() => haxsh.selectedBuddy.val
+            ? `Chat with ${haxsh.selectedBuddy.val.Nick}`
+            : "This goes to all buddies. (For 1-to-1 chat, select a buddy on the right.)"),
+        'oninput': () => {
+            is_empty.val = (htm_post_entry.innerHTML === "") || (htm_post_entry.innerHTML === "<br>")
+        },
+        'onkeydown': (evt: KeyboardEvent) => {
             if (['Enter', 'NumpadEnter'].includes(evt.code) && !(evt.shiftKey || evt.ctrlKey || evt.altKey || evt.metaKey)) {
                 evt.preventDefault()
                 evt.stopPropagation()
-                return sendNew(me, files_to_post)
+                sendNew(me, files_to_post, is_empty)
+                return false
             }
         },
     }, "")
@@ -58,7 +66,7 @@ export function create(): UiCtlPosts {
                     htm.div({ 'class': 'post-buttons' },
                         htm.button({
                             'type': 'button', 'class': 'button send', 'title': "Send", 'tabindex': 2,
-                            'disabled': depends(button_disabled), 'onclick': (() => sendNew(me, files_to_post)),
+                            'disabled': depends(button_disabled), 'onclick': (() => sendNew(me, files_to_post, is_empty)),
                         }),
                         htm.button({
                             'type': 'button', 'class': 'button attach', 'title': "Add Files", 'tabindex': 3,
@@ -70,8 +78,6 @@ export function create(): UiCtlPosts {
                         htm_post_entry,
                         vanx.list(() => { return htm.div({ 'class': 'haxsh-post-files' }) }, files_to_post, (_) => {
                             const icon = _.val.type.includes('/') ? (fileContentTypeIcons[_.val.type.substring(0, _.val.type.indexOf('/'))]) : ""
-                            // van.add(htm_file, (icon !== fileContentTypeIcons['image']) ? htm.div({}, icon)
-                            //     : htm.div({ 'class': 'image', 'style': `background-image:url('${file_url}')` }))
                             return htm.a({ 'class': 'haxsh-post-file', 'title': `${_.val.name + '\n'}${(_.val.size / (1024 * 1024)).toFixed(3)}MB` },
                                 (icon ? htm.div({}, icon) : undefined),
                                 htm.span({}, _.val.name,
@@ -182,10 +188,10 @@ async function deletePost(me: UiCtlPosts, postId: number) {
     me.isDeleting.val = 0
 }
 
-async function sendNew(me: UiCtlPosts, upFilesOwn: vanx.Reactive<UpFile[]>) {
+async function sendNew(me: UiCtlPosts, upFilesOwn: vanx.Reactive<UpFile[]>, isEmptyStateToSet: State<boolean>) {
     const post_html = htmlToSend(me)
     if ((!(post_html && post_html.length)) && !hasUpFiles(me))
-        return false
+        return
 
     me.isSending.val = true
     const ok = await haxsh.sendNewPost(post_html, me.upFilesNative.filter(_ => (_ ? true : false)).map(_ => (_ as File)))
@@ -195,13 +201,13 @@ async function sendNew(me: UiCtlPosts, upFilesOwn: vanx.Reactive<UpFile[]>) {
         me.upFilesNative = []
         vanx.replace(upFilesOwn, () => [])
         window.scrollTo(0, 0)
+        isEmptyStateToSet.val = true
     }
     me._htmPostInput.focus()
-    return false
 }
 
-function htmlToSend(me: UiCtlPosts) {
-    if (haxsh.isSeeminglyOffline.val)
+function htmlToSend(me: UiCtlPosts, ignoreOffline?: boolean) {
+    if (haxsh.isSeeminglyOffline.val && !ignoreOffline)
         return ""
     let post_html = me._htmPostInput.innerHTML
     {   // firefox-only (seemingly) quirks:
