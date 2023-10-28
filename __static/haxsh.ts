@@ -220,13 +220,10 @@ function browserTabTitleRefresh() {
         htm_favicon.href = fav_icon_href
 }
 
-export function buddySelected(user: yo.User, toggleIsSelected?: boolean): boolean {
-    let is_selected = (!selectedBuddy.val) ? false : (selectedBuddy.val === user.Id)
-    if (toggleIsSelected) {
-        if (is_selected)
-            selectedBuddy.val = 0
-        else
-            selectedBuddy.val = user.Id
+export function buddySelected(user?: yo.User, ensureIsSelected?: boolean): boolean {
+    let is_selected = (!selectedBuddy.val) ? false : (selectedBuddy.val === ((user?.Id) ?? 0))
+    if (ensureIsSelected && !is_selected) {
+        selectedBuddy.val = ((user?.Id) ?? 0)
         buddyBadges[selectedBuddy.val].val = ""
         is_selected = !is_selected
         uiposts.update(uiPosts, [], true)

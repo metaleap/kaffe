@@ -38,7 +38,6 @@ body {
     scrollbar-width: none;
     -ms-overflow-style: none;
     background-color: var(--bgoff1);
-    /* box-shadow: 0 0 0.44em 0 #ff0000; */
 }
 
 .haxsh-buddies:hover {
@@ -95,6 +94,7 @@ body {
 }
 
 .buddy.selected {
+    cursor: default;
     background-color: var(--bgcolor);
 }
 
@@ -113,8 +113,9 @@ body {
 }
 
 .haxsh-buddies>div.buddy-self {
+    cursor: pointer;
     z-index: 99999;
-    background-color: var(--bgcolor);
+    background-color: var(--bgoff1);
     position: fixed;
     margin-top: 0;
     padding: 0.22em 0 0 0;
@@ -122,6 +123,7 @@ body {
 }
 
 .haxsh-buddies>div.buddy-self.selected {
+    cursor: default;
     background-color: var(--bgcolor);
 }
 
