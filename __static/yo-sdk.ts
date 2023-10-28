@@ -14,15 +14,15 @@ export type F64 = number
 export let userEmailAddr = ''
 export let reqTimeoutMilliSecForJsonApis = 4321
 export let reqTimeoutMilliSecForMultipartForms = 54321
-export let reqMaxReqPayloadSizeMb = 0                   // declaration only, generated code sets the value
-export let errMaxReqPayloadSizeExceeded: Err<string>    // declaration only, generated code sets the value
+export let reqMaxReqPayloadSizeMb = 0           // declaration only, generated code sets the value
+export let errMaxReqPayloadSizeExceeded = ""    // declaration only, generated code sets the value
 
 export function setReqTimeoutMilliSec(reqTimeoutMsForJsonApis: number, reqTimeoutMsForMultipartForms: number) {
     reqTimeoutMilliSecForJsonApis = reqTimeoutMsForJsonApis
     reqTimeoutMilliSecForMultipartForms = reqTimeoutMsForMultipartForms
 }
 
-export async function req<TIn, TOut>(methodPath: string, payload?: TIn | {}, formData?: FormData, urlQueryArgs?: { [_: string]: string }): Promise<TOut> {
+export async function req<TIn, TOut, TErr extends string>(methodPath: string, payload?: TIn | {}, formData?: FormData, urlQueryArgs?: { [_: string]: string }): Promise<TOut> {
     let rel_url = '/' + methodPath
     if (urlQueryArgs)
         rel_url += ('?' + new URLSearchParams(urlQueryArgs).toString())
@@ -32,7 +32,7 @@ export async function req<TIn, TOut>(methodPath: string, payload?: TIn | {}, for
     const payload_json = JSON.stringify(payload)
 
     if ((reqMaxReqPayloadSizeMb > 0) && errMaxReqPayloadSizeExceeded && (payload_json.length > (1024 * 1024 * reqMaxReqPayloadSizeMb)))
-        throw errMaxReqPayloadSizeExceeded
+        throw new Err<TErr>(errMaxReqPayloadSizeExceeded as TErr)
 
     if (formData) {
         formData.set("_", payload_json)
@@ -47,7 +47,7 @@ export async function req<TIn, TOut>(methodPath: string, payload?: TIn | {}, for
                     req_payload_size += file.size
             })
             if (req_payload_size > (1024 * 1024 * reqMaxReqPayloadSizeMb))
-                throw errMaxReqPayloadSizeExceeded
+                throw new Err<TErr>(errMaxReqPayloadSizeExceeded as TErr)
         }
     }
 
@@ -146,10 +146,14 @@ function qGreaterThan(x: QueryVal, y: QueryVal): QueryExpr { return { __yoQOp: '
 function qGreaterOrEqual(x: QueryVal, y: QueryVal): QueryExpr { return { __yoQOp: 'GE', __yoQOperands: [x, y] } as QueryExpr }
 function qIn(x: QueryVal, ...set: QueryVal[]): QueryExpr { return { __yoQOp: 'IN', __yoQOperands: [x].concat(set) } as QueryExpr }
 
+errMaxReqPayloadSizeExceeded = 'MissingOrExcessiveContentLength'
+
+reqMaxReqPayloadSizeMb = 22
+
 const errsPostDelete = ['MissingOrExcessiveContentLength', 'PostDelete_InvalidPostId', 'TimedOut', 'Unauthorized'] as const
 export async function apiPostDelete(payload?: postDelete_In, formData?: FormData, query?: {[_:string]:string}): Promise<Void> {
 	try {
-		return await req<postDelete_In, Void>('_/postDelete', payload, formData, query)
+		return await req<postDelete_In, Void, PostDeleteErr>('_/postDelete', payload, formData, query)
 	} catch(err: any) {
 		if (err && err['body_text'] && (errsPostDelete.indexOf(err.body_text) >= 0))
 			throw(new Err<PostDeleteErr>(err.body_text as PostDeleteErr))
@@ -161,7 +165,7 @@ export type PostDeleteErr = typeof errsPostDelete[number]
 const errsPostNew = ['MissingOrExcessiveContentLength', 'PostNew_ExpectedEmptyFilesFieldWithUploadedFilesInMultipartForm', 'PostNew_ExpectedNonEmptyPost', 'PostNew_ExpectedOnlyBuddyRecipients', 'TimedOut', 'Unauthorized'] as const
 export async function apiPostNew(payload?: Post, formData?: FormData, query?: {[_:string]:string}): Promise<Return_yo_db_I64_> {
 	try {
-		return await req<Post, Return_yo_db_I64_>('_/postNew', payload, formData, query)
+		return await req<Post, Return_yo_db_I64_, PostNewErr>('_/postNew', payload, formData, query)
 	} catch(err: any) {
 		if (err && err['body_text'] && (errsPostNew.indexOf(err.body_text) >= 0))
 			throw(new Err<PostNewErr>(err.body_text as PostNewErr))
@@ -173,7 +177,7 @@ export type PostNewErr = typeof errsPostNew[number]
 const errsPostsDeleted = ['MissingOrExcessiveContentLength', 'TimedOut', 'Unauthorized'] as const
 export async function apiPostsDeleted(payload?: postsDeleted_In, formData?: FormData, query?: {[_:string]:string}): Promise<postsDeleted_Out> {
 	try {
-		return await req<postsDeleted_In, postsDeleted_Out>('_/postsDeleted', payload, formData, query)
+		return await req<postsDeleted_In, postsDeleted_Out, PostsDeletedErr>('_/postsDeleted', payload, formData, query)
 	} catch(err: any) {
 		if (err && err['body_text'] && (errsPostsDeleted.indexOf(err.body_text) >= 0))
 			throw(new Err<PostsDeletedErr>(err.body_text as PostsDeletedErr))
@@ -185,7 +189,7 @@ export type PostsDeletedErr = typeof errsPostsDeleted[number]
 const errsPostsForPeriod = ['MissingOrExcessiveContentLength', 'PostsForPeriod_ExpectedPeriodGreater0AndLess33Days', 'TimedOut', 'Unauthorized'] as const
 export async function apiPostsForPeriod(payload?: ApiArgPeriod, formData?: FormData, query?: {[_:string]:string}): Promise<PostsListResult> {
 	try {
-		return await req<ApiArgPeriod, PostsListResult>('_/postsForPeriod', payload, formData, query)
+		return await req<ApiArgPeriod, PostsListResult, PostsForPeriodErr>('_/postsForPeriod', payload, formData, query)
 	} catch(err: any) {
 		if (err && err['body_text'] && (errsPostsForPeriod.indexOf(err.body_text) >= 0))
 			throw(new Err<PostsForPeriodErr>(err.body_text as PostsForPeriodErr))
@@ -197,7 +201,7 @@ export type PostsForPeriodErr = typeof errsPostsForPeriod[number]
 const errsPostsRecent = ['MissingOrExcessiveContentLength', 'TimedOut', 'Unauthorized'] as const
 export async function apiPostsRecent(payload?: postsRecent_In, formData?: FormData, query?: {[_:string]:string}): Promise<PostsListResult> {
 	try {
-		return await req<postsRecent_In, PostsListResult>('_/postsRecent', payload, formData, query)
+		return await req<postsRecent_In, PostsListResult, PostsRecentErr>('_/postsRecent', payload, formData, query)
 	} catch(err: any) {
 		if (err && err['body_text'] && (errsPostsRecent.indexOf(err.body_text) >= 0))
 			throw(new Err<PostsRecentErr>(err.body_text as PostsRecentErr))
@@ -209,7 +213,7 @@ export type PostsRecentErr = typeof errsPostsRecent[number]
 const errsUserBuddies = ['MissingOrExcessiveContentLength', 'TimedOut', 'Unauthorized'] as const
 export async function apiUserBuddies(payload?: Void, formData?: FormData, query?: {[_:string]:string}): Promise<Return____haxsh_app_User_> {
 	try {
-		return await req<Void, Return____haxsh_app_User_>('_/userBuddies', payload, formData, query)
+		return await req<Void, Return____haxsh_app_User_, UserBuddiesErr>('_/userBuddies', payload, formData, query)
 	} catch(err: any) {
 		if (err && err['body_text'] && (errsUserBuddies.indexOf(err.body_text) >= 0))
 			throw(new Err<UserBuddiesErr>(err.body_text as UserBuddiesErr))
@@ -221,7 +225,7 @@ export type UserBuddiesErr = typeof errsUserBuddies[number]
 const errsUserBy = ['MissingOrExcessiveContentLength', 'TimedOut', 'Unauthorized', 'UserBy_ExpectedEitherNickNameOrEmailAddr'] as const
 export async function apiUserBy(payload?: userBy_In, formData?: FormData, query?: {[_:string]:string}): Promise<User> {
 	try {
-		return await req<userBy_In, User>('_/userBy', payload, formData, query)
+		return await req<userBy_In, User, UserByErr>('_/userBy', payload, formData, query)
 	} catch(err: any) {
 		if (err && err['body_text'] && (errsUserBy.indexOf(err.body_text) >= 0))
 			throw(new Err<UserByErr>(err.body_text as UserByErr))
@@ -233,7 +237,7 @@ export type UserByErr = typeof errsUserBy[number]
 const errsUserSignIn = ['MissingOrExcessiveContentLength', 'TimedOut', '___yo_authLogin_AccountDoesNotExist', '___yo_authLogin_EmailInvalid', '___yo_authLogin_EmailRequiredButMissing', '___yo_authLogin_OkButFailedToCreateSignedToken', '___yo_authLogin_WrongPassword'] as const
 export async function apiUserSignIn(payload?: ApiAccountPayload, formData?: FormData, query?: {[_:string]:string}): Promise<Void> {
 	try {
-		return await req<ApiAccountPayload, Void>('_/userSignIn', payload, formData, query)
+		return await req<ApiAccountPayload, Void, UserSignInErr>('_/userSignIn', payload, formData, query)
 	} catch(err: any) {
 		if (err && err['body_text'] && (errsUserSignIn.indexOf(err.body_text) >= 0))
 			throw(new Err<UserSignInErr>(err.body_text as UserSignInErr))
@@ -245,7 +249,7 @@ export type UserSignInErr = typeof errsUserSignIn[number]
 const errsUserSignOut = ['MissingOrExcessiveContentLength', 'TimedOut'] as const
 export async function apiUserSignOut(payload?: Void, formData?: FormData, query?: {[_:string]:string}): Promise<Void> {
 	try {
-		return await req<Void, Void>('_/userSignOut', payload, formData, query)
+		return await req<Void, Void, UserSignOutErr>('_/userSignOut', payload, formData, query)
 	} catch(err: any) {
 		if (err && err['body_text'] && (errsUserSignOut.indexOf(err.body_text) >= 0))
 			throw(new Err<UserSignOutErr>(err.body_text as UserSignOutErr))
@@ -257,7 +261,7 @@ export type UserSignOutErr = typeof errsUserSignOut[number]
 const errsUserSignUp = ['MissingOrExcessiveContentLength', 'TimedOut', '___yo_authLogin_AccountDoesNotExist', '___yo_authLogin_EmailInvalid', '___yo_authLogin_EmailRequiredButMissing', '___yo_authLogin_OkButFailedToCreateSignedToken', '___yo_authLogin_WrongPassword', '___yo_authRegister_EmailAddrAlreadyExists', '___yo_authRegister_EmailInvalid', '___yo_authRegister_EmailRequiredButMissing', '___yo_authRegister_PasswordInvalid', '___yo_authRegister_PasswordTooLong', '___yo_authRegister_PasswordTooShort'] as const
 export async function apiUserSignUp(payload?: ApiAccountPayload, formData?: FormData, query?: {[_:string]:string}): Promise<User> {
 	try {
-		return await req<ApiAccountPayload, User>('_/userSignUp', payload, formData, query)
+		return await req<ApiAccountPayload, User, UserSignUpErr>('_/userSignUp', payload, formData, query)
 	} catch(err: any) {
 		if (err && err['body_text'] && (errsUserSignUp.indexOf(err.body_text) >= 0))
 			throw(new Err<UserSignUpErr>(err.body_text as UserSignUpErr))
@@ -269,7 +273,7 @@ export type UserSignUpErr = typeof errsUserSignUp[number]
 const errsUserUpdate = ['DbUpdExpectedIdGt0', 'DbUpdate_ExpectedChangesForUpdate', 'DbUpdate_ExpectedQueryForUpdate', 'MissingOrExcessiveContentLength', 'TimedOut', 'Unauthorized', 'UserUpdate_NicknameAlreadyExists'] as const
 export async function apiUserUpdate(payload?: ApiUpdateArgs_haxsh_app_User_haxsh_app_UserField_, formData?: FormData, query?: {[_:string]:string}): Promise<Void> {
 	try {
-		return await req<ApiUpdateArgs_haxsh_app_User_haxsh_app_UserField_, Void>('_/userUpdate', payload, formData, query)
+		return await req<ApiUpdateArgs_haxsh_app_User_haxsh_app_UserField_, Void, UserUpdateErr>('_/userUpdate', payload, formData, query)
 	} catch(err: any) {
 		if (err && err['body_text'] && (errsUserUpdate.indexOf(err.body_text) >= 0))
 			throw(new Err<UserUpdateErr>(err.body_text as UserUpdateErr))
