@@ -1,6 +1,7 @@
 package haxsh
 
 import (
+	"sync"
 	"time"
 
 	. "yo/ctx"
@@ -26,8 +27,9 @@ type Post struct {
 }
 
 type PostsListResult struct {
-	Posts     []*Post
-	NextSince *yodb.DateTime
+	Posts        []*Post
+	NextSince    *yodb.DateTime
+	UnreadCounts map[yodb.I64]int64
 }
 
 func postsFor(ctx *Ctx, forUser *User, dtFrom time.Time, dtUntil time.Time, onlyThoseBy []yodb.I64) (ret []*Post) {
@@ -44,8 +46,9 @@ func postsRecent(ctx *Ctx, forUser *User, since *yodb.DateTime, onlyThoseBy []yo
 		since = nil
 	}
 
-	ret := &PostsListResult{NextSince: yodb.DtNow()} // NextSince=now must happen before hitting the DB
+	ret := &PostsListResult{NextSince: yodb.DtNow(), UnreadCounts: map[yodb.I64]int64{}} // `NextSince=now` must happen before hitting the DB
 	query_posts_for_user := dbQueryPostsForUser(forUser, onlyThoseBy)
+
 	if since == nil {
 		since = yodb.DtFrom(time.Now().AddDate(0, 0, -1))
 	}
@@ -54,16 +57,37 @@ func postsRecent(ctx *Ctx, forUser *User, since *yodb.DateTime, onlyThoseBy []yo
 	if (since == nil) && (len(ret.Posts) == 0) {
 		ret.Posts = yodb.FindMany[Post](ctx, query_posts_for_user, 11, nil, PostDtMade.Desc())
 	}
-	if len(onlyThoseBy) > 0 {
-		did_mut := false
+
+	// we also populate PostsListResult.UnreadCounts for all buddies
+	{
+		do_count := func(buddyId yodb.I64, since yodb.DateTime, onDone func()) int64 {
+			defer onDone()
+			query := dbQueryPostsForUser(forUser, sl.Slice[yodb.I64]{buddyId}).And(PostDtMade.GreaterOrEqual(since))
+			return yodb.Count[Post](ctx, query, "", nil)
+		}
+		var work sync.WaitGroup
+		if len(onlyThoseBy) > 0 {
+			work.Add(1)
+			go do_count(0, yodb.DateTime(forUser.ByBuddyDtLastMsgCheck[""]), work.Done)
+		}
+		work.Add(len(forUser.Buddies))
+		for _, buddy_id := range forUser.Buddies {
+			go do_count(0, yodb.DateTime(forUser.ByBuddyDtLastMsgCheck[str.FromI64(int64(buddy_id), 10)]), work.Done)
+		}
+		work.Wait()
+	}
+
+	// ensure later update of user.ByBuddyDtLastMsgCheck
+	{
 		for _, user_id := range onlyThoseBy {
 			if user_id != forUser.Id {
-				did_mut, forUser.ByBuddyDtLastMsgCheck[str.FromI64(int64(user_id), 10)] = true, time.Time(*ret.NextSince)
+				forUser.ByBuddyDtLastMsgCheck[str.FromI64(int64(user_id), 10)] = time.Time(*ret.NextSince)
 			}
 		}
-		if did_mut {
-			ctx.Set("by_buddy_last_msg_check", forUser.ByBuddyDtLastMsgCheck)
+		if len(onlyThoseBy) == 0 {
+			forUser.ByBuddyDtLastMsgCheck[str.FromI64(int64(0), 10)] = time.Time(*ret.NextSince)
 		}
+		ctx.Set("by_buddy_last_msg_check", forUser.ByBuddyDtLastMsgCheck)
 	}
 	return ret
 }
