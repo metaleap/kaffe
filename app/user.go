@@ -16,7 +16,7 @@ const ctxKeyCurUser = "haxshCurUser"
 
 func init() {
 	PostApiHandling = append(PostApiHandling, Middleware{"userSetLastSeen", func(ctx *Ctx) {
-		by_buddy_last_msg_check, _ := ctx.Get("by_buddy_last_msg_check", nil).(yodb.JsonMap[time.Time])
+		by_buddy_last_msg_check, _ := ctx.Get("by_buddy_last_msg_check", nil).(yodb.JsonMap[*yodb.DateTime])
 		go userSetLastSeen(ctx.Get(yoauth.CtxKeyAuthId, yodb.I64(0)).(yodb.I64), by_buddy_last_msg_check)
 	}})
 }
@@ -32,7 +32,7 @@ type User struct {
 	Nick                  yodb.Text
 	Btw                   yodb.Text
 	Buddies               yodb.Arr[yodb.I64]
-	ByBuddyDtLastMsgCheck yodb.JsonMap[time.Time]
+	ByBuddyDtLastMsgCheck yodb.JsonMap[*yodb.DateTime]
 }
 
 func userUpdate(ctx *Ctx, upd *User, byCurUserInCtx bool, inclEmptyOrMissingFields bool, onlyFields ...UserField) {
@@ -93,7 +93,7 @@ func userCur(ctx *Ctx) (ret *User) {
 	return
 }
 
-func userSetLastSeen(auth_id yodb.I64, byBuddyDtLastMsgCheck yodb.JsonMap[time.Time]) {
+func userSetLastSeen(auth_id yodb.I64, byBuddyDtLastMsgCheck yodb.JsonMap[*yodb.DateTime]) {
 	if auth_id == 0 {
 		return
 	}

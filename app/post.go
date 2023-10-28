@@ -60,9 +60,12 @@ func postsRecent(ctx *Ctx, forUser *User, since *yodb.DateTime, onlyThoseBy []yo
 
 	{ // we also populate PostsListResult.UnreadCounts for all buddies
 		var mut sync.Mutex
-		do_count := func(buddyId yodb.I64, since yodb.DateTime, onDone func()) {
+		do_count := func(buddyId yodb.I64, since *yodb.DateTime, onDone func()) {
 			defer onDone()
-			query := dbQueryPostsForUser(forUser, sl.Slice[yodb.I64]{buddyId}).And(PostDtMade.GreaterOrEqual(since))
+			query := dbQueryPostsForUser(forUser, sl.Slice[yodb.I64]{buddyId})
+			if since != nil {
+				query = query.And(PostDtMade.GreaterOrEqual(since))
+			}
 			count, key := yodb.Count[Post](ctx, query, "", nil), If(buddyId == 0, "", str.FromI64(int64(buddyId), 10))
 			mut.Lock()
 			ret.UnreadCounts[key] = count
@@ -71,11 +74,11 @@ func postsRecent(ctx *Ctx, forUser *User, since *yodb.DateTime, onlyThoseBy []yo
 		var work sync.WaitGroup
 		if len(onlyThoseBy) > 0 {
 			work.Add(1)
-			go do_count(0, yodb.DateTime(forUser.ByBuddyDtLastMsgCheck[""]), work.Done)
+			go do_count(0, forUser.ByBuddyDtLastMsgCheck[""], work.Done)
 		}
 		work.Add(len(forUser.Buddies))
 		for _, buddy_id := range forUser.Buddies {
-			go do_count(0, yodb.DateTime(forUser.ByBuddyDtLastMsgCheck[str.FromI64(int64(buddy_id), 10)]), work.Done)
+			go do_count(0, forUser.ByBuddyDtLastMsgCheck[str.FromI64(int64(buddy_id), 10)], work.Done)
 		}
 		work.Wait()
 	}
@@ -84,11 +87,11 @@ func postsRecent(ctx *Ctx, forUser *User, since *yodb.DateTime, onlyThoseBy []yo
 	{
 		for _, user_id := range onlyThoseBy {
 			if user_id != forUser.Id {
-				forUser.ByBuddyDtLastMsgCheck[str.FromI64(int64(user_id), 10)] = time.Time(*ret.NextSince)
+				forUser.ByBuddyDtLastMsgCheck[str.FromI64(int64(user_id), 10)] = ret.NextSince
 			}
 		}
 		if len(onlyThoseBy) == 0 {
-			forUser.ByBuddyDtLastMsgCheck[str.FromI64(int64(0), 10)] = time.Time(*ret.NextSince)
+			forUser.ByBuddyDtLastMsgCheck[""] = ret.NextSince
 		}
 		ctx.Set("by_buddy_last_msg_check", forUser.ByBuddyDtLastMsgCheck)
 	}

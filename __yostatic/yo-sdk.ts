@@ -315,7 +315,7 @@ export type User = {
 	Auth: I64
 	Btw: string
 	Buddies: I64[]
-	ByBuddyDtLastMsgCheck: { [_:string]: Time }
+	ByBuddyDtLastMsgCheck: { [_:string]: DateTime }
 	DtMade: DateTime
 	DtMod: DateTime
 	Id: I64

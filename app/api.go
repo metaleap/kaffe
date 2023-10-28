@@ -77,7 +77,7 @@ var apiUserSignUp = api(func(this *ApiCtx[yoauth.ApiAccountPayload, User]) {
 	this.Ctx.DbTx()
 
 	auth := Do(yoauth.ApiUserRegister, this.Ctx, this.Args)
-	user := User{LastSeen: yodb.DtNow(), ByBuddyDtLastMsgCheck: yodb.JsonMap[time.Time]{}}
+	user := User{LastSeen: yodb.DtNow(), ByBuddyDtLastMsgCheck: yodb.JsonMap[*yodb.DateTime]{}}
 	user.Auth.SetId(auth.Id)
 	user.Id = yodb.CreateOne(this.Ctx, &user)
 	// _ = Do(apiUserSignIn, this.Ctx, this.Args)

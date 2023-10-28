@@ -154,6 +154,7 @@ body {
     content: attr(data-placeholder);
     color: var(--bgoff3);
     cursor: text;
+    position: absolute;
 }
 
 .haxsh-posts>div.self-post .post-content.offline {

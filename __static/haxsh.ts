@@ -76,10 +76,11 @@ async function fetchPostsRecent(oneOff?: boolean) {
         isSeeminglyOffline.val = false
         fetchedPostsEverYet = true // even if empty, we have a non-error outcome and so set this
         if (uiPosts.isDeleting.val === 0) {
-            fetchPostsSinceDt = recent_updates.Next
+            fetchPostsSinceDt = recent_updates.NextSince
             uiposts.update(uiPosts, recent_updates?.Posts ?? [])
             browserTabTitleRefresh()
         }
+        console.log(recent_updates.UnreadCounts)
     } catch (err) {
         if (!knownErr<yo.PostsRecentErr>(err, handleKnownErrMaybe<yo.PostsRecentErr>))
             onErrOther(err)
