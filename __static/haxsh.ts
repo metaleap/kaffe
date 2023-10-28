@@ -17,7 +17,7 @@ let fetchedPostsEverYet = false
 export let userSelf = van.state(undefined as (yo.User | undefined))
 export let browserTabInvisibleSince = 0
 export let isSeeminglyOffline = van.state(false)
-export let selectedBuddy: State<yo.User | null> = van.state(null)
+export let selectedBuddy: State<number> = van.state(0)
 
 let uiDialogLogin = newUiLoginDialog()
 let uiBuddies: uibuddies.UiCtlBuddies = uibuddies.create()
@@ -71,7 +71,7 @@ async function fetchPostsRecent(oneOff?: boolean) {
     try {
         const recent_updates = await yo.apiPostsRecent({
             Since: fetchPostsSinceDt,
-            OnlyBy: selectedBuddy.val ? [selectedBuddy.val.Id] : [],
+            OnlyBy: selectedBuddy.val ? [selectedBuddy.val] : [],
         })
         isSeeminglyOffline.val = false
         fetchedPostsEverYet = true // even if empty, we have a non-error outcome and so set this
@@ -138,7 +138,14 @@ function newUiLoginDialog() {
     )
 }
 
-
+export function getUserById(id: number) {
+    if (id <= 0)
+        return undefined
+    const user_self = userSelf.val
+    if (user_self && (user_self.Id === id))
+        return user_self
+    return uiBuddies.buddies.find(_ => (_.Id === id))
+}
 export function getUserByPost(post?: yo.Post) {
     const user_self = userSelf.val
     if ((!post) || (user_self && (user_self.Id === post.By)))
@@ -158,7 +165,7 @@ export async function sendNewPost(html: string, files?: File[]) {
                 form_data.append('files', file)
         const resp = await yo.apiPostNew({
             By: user_self.Id,
-            To: (!selectedBuddy.val) ? [] : [selectedBuddy.val.Id],
+            To: (!selectedBuddy.val) ? [] : [selectedBuddy.val],
             Htm: html,
         }, form_data)
         isSeeminglyOffline.val = false
@@ -188,9 +195,8 @@ export async function deletePost(id: number) {
 }
 
 function browserTabTitleRefresh() {
-    const user_self = userSelf.val, user_buddy = selectedBuddy.val
-    const buddies_and_self = (user_buddy && user_self)
-        ? [user_buddy, user_self]
+    const user_self = userSelf.val, user_buddy = getUserById(selectedBuddy.val)
+    const buddies_and_self = (user_buddy && user_self) ? [user_buddy, user_self]
         : uiBuddies.buddies.concat(user_self ? [user_self] : [])
     const new_title = ((isSeeminglyOffline.val ? '(disconnected)' : ((uiPosts.numFreshPosts === 0) ? '' : `(${uiPosts.numFreshPosts})`))
         + ' ' + (buddies_and_self.map(_ => _.Nick).join(', '))).trim()
@@ -203,12 +209,12 @@ function browserTabTitleRefresh() {
 }
 
 export function buddySelected(user: yo.User, toggleIsSelected?: boolean): boolean {
-    let is_selected = (!selectedBuddy.val) ? false : (selectedBuddy.val.Id === user.Id)
+    let is_selected = (!selectedBuddy.val) ? false : (selectedBuddy.val === user.Id)
     if (toggleIsSelected) {
         if (is_selected)
-            selectedBuddy.val = null
+            selectedBuddy.val = 0
         else
-            selectedBuddy.val = user
+            selectedBuddy.val = user.Id
         is_selected = !is_selected
         uiposts.update(uiPosts, [], true)
         fetchPostsSinceDt = undefined
