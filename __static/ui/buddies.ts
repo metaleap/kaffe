@@ -58,7 +58,7 @@ export function userDomAttrsBuddy(user?: yo.User, now?: number) {
         }
     return {
         'class': depends(() => 'buddy-pic' + ((haxsh.isSeeminglyOffline.val || isOffline(user, now)) ? ' offline' : '')),
-        'title': `${user.Id}\t${user.Nick}${((!user.Btw) ? '' : (' — ' + user.Btw))}`,
+        'title': `${user.Nick}${((!user.Btw) ? '' : (' — ' + user.Btw))}`,
         'style': `background-image: url('${userPicFileUrl(user)}')`
     }
 }

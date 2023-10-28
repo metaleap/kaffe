@@ -19,7 +19,7 @@ import (
 	"yo/util/str"
 )
 
-var mockLiveActivity = false
+var mockLiveActivity = true
 
 const mockNumReqsPerSecApprox = 11 // max ~111 for outside-vscode `go run`s, ~44 in vscode dlv debug runs (due to default Postgres container's conn-limits setup)
 const mockUsersNumTotal = 12345
@@ -166,35 +166,8 @@ func mockSomeActivityChangeBuddy(ctx *Ctx, user *User, userEmailAddr string) {
 }
 
 func mockSomeActivityPostSomething(ctx *Ctx, user *User, client *http.Client) {
-	files := yodb.Arr[yodb.Text]{}
-	var to []yodb.I64
 	md := mockGetFortune(0, false)
-
-	// add one or more files?
-	if rand.Intn(11) <= 2 {
-		md = ""
-	} // separate rands because can have file-only posts as well as text+file/s posts
-	if (md == "") || (rand.Intn(11) <= 2) {
-		num_files := If(rand.Intn(2) == 0, 1, 1+rand.Intn(11))
-		for i := 0; i < num_files; i++ {
-			var file_name yodb.Text
-			for (file_name == "") || sl.Has(file_name, files) {
-				file_name = yodb.Text(mockPostFiles[rand.Intn(len(mockPostFiles))])
-			}
-			files = append(files, file_name)
-		}
-	}
-
-	// addressing only some not all?
-	if max := len(user.Buddies) - 1; (rand.Intn(11) <= 4) && (max > 1) {
-		for to = make([]yodb.I64, 0, 1+rand.Intn(max-1)); len(to) < cap(to); {
-			if buddy_id := user.Buddies[rand.Intn(len(user.Buddies))]; !sl.Has(buddy_id, to) {
-				to = append(to, buddy_id)
-			}
-		}
-	}
-
-	new_post := &Post{Htm: yodb.Text(md), Files: files, To: to}
+	new_post := &Post{Htm: yodb.Text(md)}
 	new_post.By.SetId(user.Id)
 	ViaHttp[Post, Return[yodb.I64]](apiPostNew, ctx, new_post, client)
 }

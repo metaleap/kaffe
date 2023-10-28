@@ -72,7 +72,7 @@ body {
     background-size: cover;
     background-position: center center;
     border-radius: 77em;
-    filter: sepia(0.55) grayscale(0);
+    filter: sepia(0.44) grayscale(0);
     transition: all 0.44s ease-in-out;
 }
 
@@ -82,11 +82,16 @@ body {
 
 .buddy-pic.offline {
     filter: sepia(0) grayscale(1);
+    opacity: 0.66;
 }
 
 .buddy-pic:hover,
 .buddy-pic.offline:hover {
     filter: sepia(0.11) grayscale(0);
+}
+
+.buddy-pic.offline:hover {
+    opacity: 0.77;
 }
 
 .haxsh-buddies>div.buddy-self {
