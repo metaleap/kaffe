@@ -32,7 +32,7 @@ type User struct {
 	Nick                  yodb.Text
 	Btw                   yodb.Text
 	Buddies               yodb.Arr[yodb.I64]
-	ByBuddyDtLastMsgCheck yodb.JsonMap[*yodb.DateTime]
+	byBuddyDtLastMsgCheck yodb.JsonMap[*yodb.DateTime]
 }
 
 func userUpdate(ctx *Ctx, upd *User, byCurUserInCtx bool, inclEmptyOrMissingFields bool, onlyFields ...UserField) {
@@ -100,11 +100,11 @@ func userSetLastSeen(auth_id yodb.I64, byBuddyDtLastMsgCheck yodb.JsonMap[*yodb.
 	ctx := NewCtxNonHttp(time.Minute, "userSetLastSeen")
 	defer ctx.OnDone(nil)
 	ctx.TimingsNoPrintInDevMode = true
-	upd := &User{LastSeen: yodb.DtNow(), ByBuddyDtLastMsgCheck: byBuddyDtLastMsgCheck}
+	upd := &User{LastSeen: yodb.DtNow(), byBuddyDtLastMsgCheck: byBuddyDtLastMsgCheck}
 	upd.Auth.SetId(auth_id)
 	only_fields := []UserField{UserLastSeen}
 	if byBuddyDtLastMsgCheck != nil {
-		only_fields = append(only_fields, UserByBuddyDtLastMsgCheck)
+		only_fields = append(only_fields, userByBuddyDtLastMsgCheck)
 	}
 	userUpdate(ctx, upd, true, false, only_fields...)
 }

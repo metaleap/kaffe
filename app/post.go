@@ -74,11 +74,11 @@ func postsRecent(ctx *Ctx, forUser *User, since *yodb.DateTime, onlyThoseBy []yo
 		var work sync.WaitGroup
 		if len(onlyThoseBy) > 0 {
 			work.Add(1)
-			go do_count(0, forUser.ByBuddyDtLastMsgCheck[""], work.Done)
+			go do_count(0, forUser.byBuddyDtLastMsgCheck[""], work.Done)
 		}
 		work.Add(len(forUser.Buddies))
 		for _, buddy_id := range forUser.Buddies {
-			go do_count(0, forUser.ByBuddyDtLastMsgCheck[str.FromI64(int64(buddy_id), 10)], work.Done)
+			go do_count(buddy_id, forUser.byBuddyDtLastMsgCheck[str.FromI64(int64(buddy_id), 10)], work.Done)
 		}
 		work.Wait()
 	}
@@ -87,13 +87,13 @@ func postsRecent(ctx *Ctx, forUser *User, since *yodb.DateTime, onlyThoseBy []yo
 	{
 		for _, user_id := range onlyThoseBy {
 			if user_id != forUser.Id {
-				forUser.ByBuddyDtLastMsgCheck[str.FromI64(int64(user_id), 10)] = ret.NextSince
+				forUser.byBuddyDtLastMsgCheck[str.FromI64(int64(user_id), 10)] = ret.NextSince
 			}
 		}
 		if len(onlyThoseBy) == 0 {
-			forUser.ByBuddyDtLastMsgCheck[""] = ret.NextSince
+			forUser.byBuddyDtLastMsgCheck[""] = ret.NextSince
 		}
-		ctx.Set("by_buddy_last_msg_check", forUser.ByBuddyDtLastMsgCheck)
+		ctx.Set("by_buddy_last_msg_check", forUser.byBuddyDtLastMsgCheck)
 	}
 	return ret
 }

@@ -15,7 +15,7 @@ const (
 	UserNick                  UserField = "Nick"
 	UserBtw                   UserField = "Btw"
 	UserBuddies               UserField = "Buddies"
-	UserByBuddyDtLastMsgCheck UserField = "ByBuddyDtLastMsgCheck"
+	userByBuddyDtLastMsgCheck UserField = "byBuddyDtLastMsgCheck"
 	UserAuth_Id               UserField = "Auth.Id"
 	UserAuth_DtMade           UserField = "Auth.DtMade"
 	UserAuth_DtMod            UserField = "Auth.DtMod"
@@ -62,7 +62,7 @@ const (
 	PostBy_Nick                  PostField = "By.Nick"
 	PostBy_Btw                   PostField = "By.Btw"
 	PostBy_Buddies               PostField = "By.Buddies"
-	PostBy_ByBuddyDtLastMsgCheck PostField = "By.ByBuddyDtLastMsgCheck"
+	postBy_byBuddyDtLastMsgCheck PostField = "By.byBuddyDtLastMsgCheck"
 )
 
 func (me PostField) ArrLen(a1 ...interface{}) q.Operand { return ((q.F)(me)).ArrLen(a1...) }

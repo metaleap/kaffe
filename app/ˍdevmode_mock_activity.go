@@ -192,7 +192,7 @@ func mockEnsureUser(i int) yodb.I64 {
 		ctx.TimingsNoPrintInDevMode = false
 		ctx.Timings.Step("register new auth")
 		auth_id := yoauth.UserRegister(ctx, user_email_addr, "foobar")
-		user = &User{Nick: yodb.Text(user_email_addr[:str.Idx(string(user_email_addr), '@')]), ByBuddyDtLastMsgCheck: yodb.JsonMap[*yodb.DateTime]{}}
+		user = &User{Nick: yodb.Text(user_email_addr[:str.Idx(string(user_email_addr), '@')]), byBuddyDtLastMsgCheck: yodb.JsonMap[*yodb.DateTime]{}}
 		switch i {
 		case 123:
 			user.Buddies = yodb.Arr[yodb.I64]{234, 321}
