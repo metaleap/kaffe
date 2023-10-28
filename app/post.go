@@ -9,6 +9,7 @@ import (
 	. "yo/srv"
 	. "yo/util"
 	"yo/util/sl"
+	"yo/util/str"
 )
 
 type Post struct {
@@ -52,6 +53,17 @@ func postsRecent(ctx *Ctx, forUser *User, since *yodb.DateTime, onlyThoseBy []yo
 		If(time.Since(*since.Time()) > (23*time.Hour), 11, 0), nil, PostDtMade.Desc())
 	if (since == nil) && (len(ret.Posts) == 0) {
 		ret.Posts = yodb.FindMany[Post](ctx, query_posts_for_user, 11, nil, PostDtMade.Desc())
+	}
+	if len(onlyThoseBy) > 0 {
+		did_mut := false
+		for _, user_id := range onlyThoseBy {
+			if user_id != forUser.Id {
+				did_mut, forUser.ByBuddyDtLastMsgCheck[str.FromI64(int64(user_id), 10)] = true, time.Time(*ret.NextSince)
+			}
+		}
+		if did_mut {
+			ctx.Set("by_buddy_last_msg_check", forUser.ByBuddyDtLastMsgCheck)
+		}
 	}
 	return ret
 }

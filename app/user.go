@@ -15,8 +15,9 @@ import (
 const ctxKeyCurUser = "haxshCurUser"
 
 func init() {
-	PreApiHandling = append(PreApiHandling, Middleware{"userSetLastSeen", func(ctx *Ctx) {
-		go userSetLastSeen(ctx.Get(yoauth.CtxKeyAuthId, yodb.I64(0)).(yodb.I64))
+	PostApiHandling = append(PostApiHandling, Middleware{"userSetLastSeen", func(ctx *Ctx) {
+		by_buddy_last_msg_check, _ := ctx.Get("by_buddy_last_msg_check", nil).(yodb.JsonMap[time.Time])
+		go userSetLastSeen(ctx.Get(yoauth.CtxKeyAuthId, yodb.I64(0)).(yodb.I64), by_buddy_last_msg_check)
 	}})
 }
 
@@ -92,14 +93,14 @@ func userCur(ctx *Ctx) (ret *User) {
 	return
 }
 
-func userSetLastSeen(auth_id yodb.I64) {
+func userSetLastSeen(auth_id yodb.I64, byBuddyDtLastMsgCheck yodb.JsonMap[time.Time]) {
 	if auth_id == 0 {
 		return
 	}
 	ctx := NewCtxNonHttp(time.Minute, "userSetLastSeen")
 	defer ctx.OnDone(nil)
 	ctx.TimingsNoPrintInDevMode = true
-	upd := &User{LastSeen: yodb.DtNow()}
+	upd := &User{LastSeen: yodb.DtNow(), ByBuddyDtLastMsgCheck: byBuddyDtLastMsgCheck}
 	upd.Auth.SetId(auth_id)
 	userUpdate(ctx, upd, true, false, UserLastSeen)
 }
