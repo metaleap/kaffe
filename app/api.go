@@ -151,7 +151,6 @@ var apiPostsDeleted = api(func(this *ApiCtx[struct {
 var apiPostNew = api(func(this *ApiCtx[Post, Return[yodb.I64]]) {
 	files := this.Ctx.Http.Req.MultipartForm.File["files"]
 	if len(files) > 0 {
-		defer this.Ctx.Http.Req.MultipartForm.RemoveAll()
 		dst_dir_path := Cfg.STATIC_FILE_STORAGE_DIRS["_postfiles"]
 		for _, file := range files {
 			multipart_file, err := file.Open()

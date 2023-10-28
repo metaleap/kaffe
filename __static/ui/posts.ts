@@ -77,7 +77,7 @@ export function create(): UiCtlPosts {
                                 htm.span({}, _.val.name,
                                     htm.span({}, _.val.type || '(unknown type)',
                                         htm.button({
-                                            'class': 'button delete', 'type': 'button', 'title': 'Remove', 'onclick': () => removeUpFile(me, files_to_post, _.val)
+                                            'class': 'button delete', 'type': 'button', 'title': 'Remove', 'disabled': depends(button_disabled), 'onclick': () => removeUpFile(me, files_to_post, _.val)
                                         }))))
                         }),
                     ),
@@ -169,6 +169,8 @@ function removeUpFile(me: UiCtlPosts, upFilesOwn: vanx.Reactive<UpFile[]>, upFil
 }
 
 async function deletePost(me: UiCtlPosts, postId: number) {
+    if (!confirm("Sure to delete?"))
+        return
     const post_idx = me.posts.findIndex(_ => (_ && (_.Id === postId)))
     if (post_idx < 0)
         return
