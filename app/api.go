@@ -242,9 +242,9 @@ func apiUserUpdateTrySquaringNewUserPic(srcRaw []byte) []byte {
 	}); (img_old != nil) && sl.Has(format, known_formats) {
 		if sub_rect := img_old.Bounds(); sub_rect.Dx() != sub_rect.Dy() {
 			if w, h := sub_rect.Dx(), sub_rect.Dy(); w > h {
-				sub_rect = image.Rect((w-h)/2, 0, h, h)
+				sub_rect = image.Rect((w-h)/2, 0, ((w-h)/2)+h, h)
 			} else { // h > w
-				sub_rect = image.Rect(0, (h-w)/2, w, w)
+				sub_rect = image.Rect(0, (h-w)/2, w, ((h-w)/2)+w)
 			}
 			img = img_old.SubImage(sub_rect)
 			var buf bytes.Buffer
