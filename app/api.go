@@ -53,6 +53,9 @@ func init() {
 		).
 			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
 
+		"postPeriods": apiPostPeriods.
+			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
+
 		"postsDeleted": apiPostsDeleted.
 			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
 
@@ -148,6 +151,14 @@ var apiPostsRecent = api(func(this *ApiCtx[struct {
 	}
 	this.Ret = postsRecent(this.Ctx, user_cur, this.Args.Since, this.Args.OnlyBy)
 	this.Ret.augmentWithFileContentTypes()
+})
+
+var apiPostPeriods = api(func(this *ApiCtx[struct {
+	WithUserIds []yodb.I64
+}, struct {
+	Periods []time.Time
+}]) {
+	this.Ret.Periods = postPeriods(this.Ctx, userCur(this.Ctx), this.Args.WithUserIds)
 })
 
 var apiPostsDeleted = api(func(this *ApiCtx[struct {

@@ -41,6 +41,34 @@ func postsFor(ctx *Ctx, forUser *User, dtFrom time.Time, dtUntil time.Time, only
 	return yodb.FindMany[Post](ctx, query, 0, nil, PostDtMade.Desc())
 }
 
+func postPeriods(ctx *Ctx, forUser *User, with []yodb.I64) (ret []time.Time) {
+	now_year, now_month, _ := time.Now().Date()
+	query := dbQueryPostsForUser(forUser, with)
+	post_earliest := yodb.FindOne[Post](ctx, query.And(PostDtMade.GreaterOrEqual(forUser.DtMade)), PostDtMade.Asc())
+	if post_earliest != nil {
+		year, month, day := post_earliest.DtMade.Time().Date()
+		ret = append(ret, time.Date(year, month, day, 0, 0, 0, 0, time.UTC))
+		for {
+			if month++; month > time.December {
+				year, month = year+1, time.January
+			}
+			if (year > now_year) || ((year == now_year) && (month > now_month)) {
+				break
+			}
+			ret = append(ret, time.Date(year, month, 1, 0, 0, 0, 0, time.UTC))
+		}
+	}
+	var idxs_to_drop []int
+	for i := 1; i < len(ret)-1; i++ {
+		have_post_in_month := yodb.Exists[Post](ctx, query.And(PostDtMade.GreaterOrEqual(ret[i])).And(PostDtMade.LessThan(ret[i+1])))
+		if !have_post_in_month {
+			idxs_to_drop = append(idxs_to_drop, i)
+		}
+	}
+	ret = sl.Reversed(sl.WithoutIdxs(idxs_to_drop, ret))
+	return
+}
+
 func postsRecent(ctx *Ctx, forUser *User, since *yodb.DateTime, onlyThoseBy []yodb.I64) *PostsListResult {
 	if (since != nil) && (since.Time().After(time.Now()) || since.Time().Before(*forUser.DtMade.Time())) {
 		since = nil
