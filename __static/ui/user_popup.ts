@@ -28,15 +28,28 @@ export function create(user: yo.User): UiCtlUserPopup {
     const is_self = (haxsh.userSelf.val) && (haxsh.userSelf.val.Id === user.Id),
         htm_input_nick = htm.input({ 'type': 'text', 'class': 'nick', 'value': user.Nick, 'placeholder': '(Nickname)', 'spellcheck': false, 'autocorrect': 'off' }),
         htm_input_btw = htm.input({ 'type': 'text', 'class': 'btw', 'value': user.Btw, 'placeholder': '(Your hover statement here)' }),
-        htm_input_pic = htm.input({ 'type': 'file' }),
+        htm_input_pic = htm.input({ 'type': 'file', 'name': 'picfile', 'id': 'picfile' }),
         htm_input_darklite = htm.input({ 'type': 'range', 'id': 'darklite', 'class': 'darklite', 'value': darkliteCurrent(), 'min': 0, 'max': 100, 'step': 1, 'onchange': on_darklite_slider_change })
     const save_changes = () => {
         const darklite = parseInt(htm_input_darklite.value)
         if (!isNaN(darklite))
             localStorage.setItem('darklite', htm_input_darklite.value)
 
-        const has_changed = (htm_input_nick.value.trim() !== user.Nick) || (htm_input_btw.value.trim() !== user.Btw) || (htm_input_pic.files?.length)
+        htm_input_nick.value = htm_input_nick.value.trim()
+        htm_input_btw.value = htm_input_btw.value.trim()
+        const pic_has_changed = (htm_input_pic.files?.length) && (htm_input_pic.files[0])
+        const has_changed = pic_has_changed || (htm_input_nick.value !== user.Nick) || (htm_input_btw.value !== user.Btw)
         if (has_changed) {
+            const form_data = new FormData()
+            if (pic_has_changed)
+                form_data.append('picfile', htm_input_pic.files![0])
+            yo.apiUserUpdate({
+                Id: user.Id, Changes: {
+                    ...user,
+                    Nick: htm_input_nick.value,
+                    Btw: htm_input_btw.value,
+                }, ChangedFields: ['Btw', 'Nick']
+            }, pic_has_changed ? form_data : undefined)
             // yo.apiUserUpdate()
         }
 

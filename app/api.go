@@ -16,6 +16,7 @@ import (
 	yoauth "yo/feat_auth"
 	. "yo/srv"
 	. "yo/util"
+	"yo/util/sl"
 	"yo/util/str"
 )
 
@@ -107,6 +108,14 @@ var apiUserUpdate = api(func(this *ApiCtx[yodb.ApiUpdateArgs[User, UserField], V
 	if user_auth_id != this.Args.Changes.Auth.Id() {
 		panic(ErrUnauthorized)
 	}
+
+	uploaded_file_names := apiHandleUploadedFiles(this.Ctx, "picfile", 1)
+	if len(uploaded_file_names) > 0 {
+		this.Args.Changes.PicFileId = uploaded_file_names[0]
+		if len(this.Args.ChangedFields) > 0 {
+			this.Args.ChangedFields = sl.With(this.Args.ChangedFields, UserPicFileId)
+		}
+	}
 	userUpdate(this.Ctx, &this.Args.Changes, true, (len(this.Args.ChangedFields) > 0), this.Args.ChangedFields...)
 })
 
@@ -149,7 +158,7 @@ var apiPostsDeleted = api(func(this *ApiCtx[struct {
 })
 
 var apiPostNew = api(func(this *ApiCtx[Post, Return[yodb.I64]]) {
-	this.Args.Files = apiHandleUploadedFiles(this.Ctx)
+	this.Args.Files = apiHandleUploadedFiles(this.Ctx, "files", 0)
 
 	{
 		uris, toks := str.Dict{}, str.Split(string(this.Args.Htm), " ")
@@ -188,10 +197,13 @@ func (me *PostsListResult) augmentWithFileContentTypes() {
 	}
 }
 
-func apiHandleUploadedFiles(ctx *Ctx) (ret []yodb.Text) {
-	if files := ctx.Http.Req.MultipartForm.File["files"]; len(files) > 0 {
+func apiHandleUploadedFiles(ctx *Ctx, fieldName string, maxNumFiles int) (ret []yodb.Text) {
+	if files := ctx.Http.Req.MultipartForm.File[fieldName]; len(files) > 0 {
 		dst_dir_path := Cfg.STATIC_FILE_STORAGE_DIRS["_postfiles"]
-		for _, file := range files {
+		for i, file := range files {
+			if (maxNumFiles > 0) && (i == maxNumFiles) {
+				break
+			}
 			multipart_file, err := file.Open()
 			if multipart_file != nil {
 				defer multipart_file.Close()
