@@ -44,27 +44,27 @@ export function main() {
         uiPeriodPicker,
     )
     uiuserpopup.setLiveDarklite()
-    setTimeout(fetchBuddies, 234)
+    setTimeout(fetchBuddies, 123)
 }
 
 export async function reloadUserSelf() {
-    const user_self = await yo.apiUserBy({ EmailAddr: yo.userEmailAddr })
-    userSelf.val = user_self
-    return user_self
+    userSelf.val = undefined // in case of failure, a later fetch will do the reload — but only with this assignment in place
+    userSelf.val = await yo.apiUserBy({ EmailAddr: yo.userEmailAddr })
+    isSeeminglyOffline.val = false
 }
 
 async function fetchBuddies(oneOff?: boolean) {
     if (fetchesPaused && !oneOff)
         return
     try {
+        if (!userSelf.val)
+            reloadUserSelf() // no need to await really
         const buddies = (await yo.apiUserBuddies())!.Result ?? []
+        isSeeminglyOffline.val = false
         for (const user of buddies)
             if (!buddyBadges[user.Id!])
                 buddyBadges[user.Id!] = van.state("")
         uiBuddies.update(buddies)
-        if (!userSelf.val)
-            reloadUserSelf()
-        isSeeminglyOffline.val = false
         browserTabTitleRefresh()
         if (!fetchedPostsEverYet) {
             setTimeout(fetchPostsRecent, 123)

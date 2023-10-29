@@ -69,7 +69,7 @@ export function create(user: yo.User): UiCtlUserPopup {
                     }, ChangedFields: ['Btw', 'Nick']
                 }, form_data)
                 did_save = true
-                await haxsh.reloadUserSelf()
+                haxsh.reloadUserSelf()
             } catch (err) {
                 if (!haxsh.knownErr<yo.UserUpdateErr>(err, haxsh.handleKnownErrMaybe<yo.UserUpdateErr>))
                     haxsh.onErrOther(err)
@@ -81,7 +81,7 @@ export function create(user: yo.User): UiCtlUserPopup {
 
     const me: UiCtlUserPopup = {
         DOM: htm.dialog({ 'class': 'user-popup' },
-            htm.button({ 'type': 'button', 'class': 'close', 'onclick': _ => me.DOM.close() }, "🗙"),
+            htm.button({ 'type': 'button', 'class': 'close', 'onclick': _ => me.DOM.close() }, "❎"),
             (!is_self) ? undefined : htm.button({ 'type': 'button', 'class': 'save', 'onclick': save_changes }, "✅"),
             htm.div({},
                 is_self ? htm_input_nick : htm.span({ 'class': 'nick' }, user.Nick),

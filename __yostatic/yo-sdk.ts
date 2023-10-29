@@ -174,6 +174,18 @@ export async function apiPostNew(payload?: Post, formData?: FormData, query?: {[
 }
 export type PostNewErr = typeof errsPostNew[number]
 
+const errsPostPeriods = ['MissingOrExcessiveContentLength', 'TimedOut', 'Unauthorized'] as const
+export async function apiPostPeriods(payload?: postPeriods_In, formData?: FormData, query?: {[_:string]:string}): Promise<postPeriods_Out> {
+	try {
+		return await req<postPeriods_In, postPeriods_Out, PostPeriodsErr>('_/postPeriods', payload, formData, query)
+	} catch(err: any) {
+		if (err && err['body_text'] && (errsPostPeriods.indexOf(err.body_text) >= 0))
+			throw(new Err<PostPeriodsErr>(err.body_text as PostPeriodsErr))
+		throw(err)
+	}
+}
+export type PostPeriodsErr = typeof errsPostPeriods[number]
+
 const errsPostsDeleted = ['MissingOrExcessiveContentLength', 'TimedOut', 'Unauthorized'] as const
 export async function apiPostsDeleted(payload?: postsDeleted_In, formData?: FormData, query?: {[_:string]:string}): Promise<postsDeleted_Out> {
 	try {
@@ -325,6 +337,14 @@ export type User = {
 
 export type postDelete_In = {
 	Id?: I64
+}
+
+export type postPeriods_In = {
+	WithUserIds?: I64[]
+}
+
+export type postPeriods_Out = {
+	Periods: Time[]
 }
 
 export type postsDeleted_In = {

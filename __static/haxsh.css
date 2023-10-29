@@ -472,7 +472,9 @@ dialog::backdrop,
 
 .user-popup button {
     position: absolute;
-    top: 0.22em;
+    top: 0.077em;
+    border-radius: 0 !important;
+    background-color: transparent;
     padding: 0 0 0.123em 0;
     font-size: 0.55em;
 }
@@ -482,11 +484,7 @@ dialog::backdrop,
 }
 
 .user-popup button.save {
-    top: 0.044em;
-    right: 1.44em;
-    border-radius: 0 !important;
-    background-color: transparent;
-    font-size: 0.77em;
+    right: 1.77em;
 }
 
 .user-popup .buddy-pic {
