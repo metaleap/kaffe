@@ -139,6 +139,7 @@ var apiPostsForPeriod = api(func(this *ApiCtx[ApiArgPeriod, PostsListResult]) {
 	}
 	this.Ret.Posts = postsFor(this.Ctx, userCur(this.Ctx), *this.Args.From, *this.Args.Until, this.Args.OnlyBy)
 	this.Ret.augmentWithFileContentTypes()
+	this.Ret.NextSince = nil
 })
 
 var apiPostsRecent = api(func(this *ApiCtx[struct {
