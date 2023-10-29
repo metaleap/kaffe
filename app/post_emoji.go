@@ -4,7 +4,7 @@ import (
 	"yo/util/str"
 )
 
-var emoji = str.Dict{
+var postEmoji = str.Dict{
 	":+1:":                               "&#x1f44d;",
 	":100:":                              "&#x1f4af;",
 	":1234:":                             "&#x1f522;",
