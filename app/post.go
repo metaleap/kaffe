@@ -82,9 +82,9 @@ func postsRecent(ctx *Ctx, forUser *User, since *yodb.DateTime, onlyThoseBy []yo
 		since = yodb.DtFrom(time.Now().AddDate(0, 0, -1))
 	}
 	ret.Posts = yodb.FindMany[Post](ctx, query_posts_for_user.And(PostDtMod.GreaterOrEqual(since)),
-		If(time.Since(*since.Time()) > (23*time.Hour), 4, 0), nil, PostDtMade.Desc())
+		If(time.Since(*since.Time()) > (23*time.Hour), 22, 0 /*TODO: adapt max more fluidly to since*/), nil, PostDtMade.Desc())
 	if no_since_given && (len(ret.Posts) == 0) {
-		ret.Posts = yodb.FindMany[Post](ctx, query_posts_for_user, 4, nil, PostDtMade.Desc())
+		ret.Posts = yodb.FindMany[Post](ctx, query_posts_for_user, 22, nil, PostDtMade.Desc())
 	}
 
 	{ // we also populate PostsListResult.UnreadCounts for all buddies

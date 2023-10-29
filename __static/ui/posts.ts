@@ -32,11 +32,13 @@ export function create(): UiCtlPosts {
     const files_to_post: vanx.Reactive<UpFile[]> = vanx.reactive([] as UpFile[])
     const htm_post_entry = htm.div({
         'class': depends(() => 'post-content' + (haxsh.isSeeminglyOffline.val ? ' offline' : '') + (is_sending.val ? ' sending' : '') + (is_empty.val ? ' empty' : '')),
-        'contenteditable': depends(() => (is_sending.val ? 'false' : 'true')),
+        'contenteditable': depends(() => ((is_sending.val || haxsh.isArchiveBrowsing.val) ? 'false' : 'true')),
         'autofocus': true, 'spellcheck': false, 'autocorrect': 'off', 'tabindex': 1,
-        'data-placeholder': depends(() => haxsh.selectedBuddy.val
-            ? `Chat with ${haxsh.userById(haxsh.selectedBuddy.val)?.Nick || "?"}`
-            : "This goes to all buddies. (For 1-to-1 chat, select a buddy on the right.)"),
+        'title': depends(() => haxsh.isArchiveBrowsing.val
+            ? "Browsing archives. To chat, switch back to 'Fresh'."
+            : (haxsh.selectedBuddy.val
+                ? `Chat with ${haxsh.userById(haxsh.selectedBuddy.val)?.Nick || "?"}`
+                : "This goes to all buddies. (For 1-to-1 chat, select a buddy on the right.)")),
         'oninput': () => {
             is_empty.val = (htm_post_entry.innerHTML === "") || (htm_post_entry.innerHTML === "<br>")
         },
@@ -124,11 +126,12 @@ export function create(): UiCtlPosts {
         const post_by = haxsh.userByPost(post), post_dt = new Date(post.DtMade!)
         const htm_post = htm.div({ 'class': depends(() => ('post-content' + ((me.isDeleting.val === (post.Id!)) ? ' deleting' : (post._isFresh ? ' fresh' : '')))) })
         htm_post.innerHTML = inner_html
-        const is_own_post = (post_by?.Id === haxsh.userSelf.val?.Id) || false
-        return htm.div({ 'class': 'post' },
+        const is_own_post = (post_by?.Id === haxsh.userSelf.val?.Id) || false,
+            dt_str = post_dt.toLocaleDateString() + " — " + post_dt.toLocaleTimeString()
+        return htm.div({ 'class': 'post', 'title': dt_str },
             htm.div({ 'class': 'post-head' },
                 htm.div(is_own_post ? uibuddies.userDomAttrsSelf() : uibuddies.userDomAttrsBuddy(post_by)),
-                htm.div({ 'class': 'post-ago', 'title': post_dt.toLocaleDateString() + " — " + post_dt.toLocaleTimeString() }, post._uxStrAgo),
+                htm.div({ 'class': 'post-ago', 'title': dt_str }, post._uxStrAgo),
             ),
             htm.div({ 'class': 'post-buttons' },
                 htm.button({

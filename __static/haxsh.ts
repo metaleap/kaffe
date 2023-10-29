@@ -18,6 +18,7 @@ let fetchedPostsEverYet = false
 export let userSelf = van.state(undefined as (yo.User | undefined))
 export let browserTabInvisibleSince = 0
 export let isSeeminglyOffline = van.state(false)
+export let isArchiveBrowsing = van.state(false)
 export let selectedBuddy: State<number> = van.state(0)
 export let buddyBadges: { [_: number]: State<string> } = { 0: van.state("") }
 let firstOfMonth = new Date(new Date().getFullYear(), new Date().getUTCMonth(), 1, 0, 0, 0, 0).getTime()
@@ -29,6 +30,7 @@ let uiPeriodPicker: HTMLSelectElement =
     htm.select({
         'class': 'dtsel',
         'onchange': () => {
+            isArchiveBrowsing.val = (uiPeriodPicker.selectedIndex > 0)
             uiposts.update(uiPosts, [], true)
             fetchPostsRecent(true) // no await needed
         },
@@ -241,6 +243,8 @@ export async function deletePost(id: number) {
 }
 
 async function reloadPostPeriods() {
+    uiPeriodPicker.selectedIndex = 0
+    isArchiveBrowsing.val = false
     while (uiPeriodPicker.options.length > 1)
         uiPeriodPicker.options.remove(1)
     const periods = (await yo.apiPostPeriods({ WithUserIds: selectedBuddy.val ? [selectedBuddy.val] : [] })).Periods

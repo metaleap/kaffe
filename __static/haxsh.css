@@ -170,7 +170,7 @@ body a {
 }
 
 .haxsh-posts>div.self-post .post-content.empty::before {
-    content: attr(data-placeholder);
+    content: attr(title);
     color: var(--bgoff3);
     cursor: text;
     display: inline-block;
