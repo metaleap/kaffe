@@ -397,6 +397,7 @@ dialog::backdrop,
 
 .user-popup>div {
     margin-bottom: 0.44em;
+    clear: both;
 }
 
 .user-popup input[type='text'] {
@@ -414,18 +415,21 @@ dialog::backdrop,
     font-size: 0.88em;
 }
 
+.user-popup input.btw {
+    color: var(--bgoff2);
+    font-style: italic;
+    width: 99%;
+}
+
 .user-popup input.nick {
     font-size: 1.23em !important;
     font-weight: bold;
+    width: calc(99% - 4em);
 }
 
 .user-popup .pic {
     width: 3.21em;
     height: 3.21em;
     float: right;
-}
-
-.user-popup .btw {
-    clear: both;
-    font-size: 1.11em;
+    cursor: pointer;
 }

@@ -16,13 +16,14 @@ export type UiCtlUserPopup = {
 export function create(user: yo.User): UiCtlUserPopup {
     const me: UiCtlUserPopup = {
         DOM: htm.dialog({ 'class': 'user-popup' },
-            htm.div({ 'class': 'header' },
+            htm.div({},
                 htm.input({ 'type': 'text', 'class': 'nick', 'value': user.Nick, 'placeholder': '(Nickname)', 'spellcheck': false, 'autocorrect': 'off' }),
                 htm.div({ 'class': 'pic', 'style': `background-image:url('${uibuddies.userPicFileUrl(user)}')` })),
-            htm.div({ 'class': '' },
+            htm.div({},
                 htm.input({ 'type': 'text', 'class': 'btw', 'value': user.Btw, 'placeholder': '(Your hover message/slogan/thought here)' }),
             ),
-            htm.div({ 'class': '' },
+            htm.div({}),
+            htm.div({},
                 htm.label({ 'for': 'darklite' }, "UI Dark/Light:"),
                 htm.input({ 'type': 'range', 'id': 'darklite', 'class': 'darklite', 'value': 88, 'min': 0, 'max': 100, 'step': 1 }),
             ),
