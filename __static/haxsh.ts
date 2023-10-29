@@ -20,13 +20,22 @@ export let browserTabInvisibleSince = 0
 export let isSeeminglyOffline = van.state(false)
 export let selectedBuddy: State<number> = van.state(0)
 export let buddyBadges: { [_: number]: State<string> } = { 0: van.state("") }
+let firstOfMonth = new Date(new Date().getFullYear(), new Date().getUTCMonth(), 1, 0, 0, 0, 0).getTime()
 
 let uiDialogLogin = newUiLoginDialog()
 let uiBuddies: uibuddies.UiCtlBuddies = uibuddies.create()
 let uiPosts: uiposts.UiCtlPosts = uiposts.create()
-let uiPeriodPicker: HTMLSelectElement = htm.select({ 'class': 'dtsel' },
-    htm.option({ 'value': '' }, "⏶\xa0\xa0 Fresh")
-)
+let uiPeriodPicker: HTMLSelectElement =
+    htm.select({
+        'class': 'dtsel',
+        'onchange': () => {
+            uiposts.update(uiPosts, [], true)
+            fetchPostsRecent(true) // no await needed
+        },
+    },
+        htm.option({ 'value': '' },
+            "⏶\xa0\xa0 Fresh")
+    )
 
 export function main() {
     document.onvisibilitychange = () => {
@@ -87,20 +96,31 @@ async function fetchPostsRecent(oneOff?: boolean) {
     if ((uiPosts.isDeleting.val > 0) || (fetchesPaused && !oneOff))
         return
     try {
-        const recent_updates = await yo.apiPostsRecent({
-            Since: fetchPostsSinceDt,
-            OnlyBy: selectedBuddy.val ? [selectedBuddy.val] : [],
-        })
+        const fetch_archived_posts = (uiPeriodPicker.selectedIndex > 0)
+        if (fetch_archived_posts) {
+            fetchPostsSinceDt = (uiPeriodPicker.selectedOptions[0].value)
+            if ((!oneOff) && (uiPosts.posts.length > 0) && (new Date(fetchPostsSinceDt).getTime() < firstOfMonth))
+                return // the month selected is before the current month and was already fetched. there'll be no updates so bugging out.
+        }
+        const result = fetch_archived_posts
+            ? await yo.apiPostsForPeriod({
+                OnlyBy: selectedBuddy.val ? [selectedBuddy.val] : [],
+                From: fetchPostsSinceDt,
+            })
+            : await yo.apiPostsRecent({
+                OnlyBy: selectedBuddy.val ? [selectedBuddy.val] : [],
+                Since: fetchPostsSinceDt,
+            })
         isSeeminglyOffline.val = false
         fetchedPostsEverYet = true // even if empty, we have a non-error outcome and so set this
         if (uiPosts.isDeleting.val === 0) {
-            fetchPostsSinceDt = recent_updates.NextSince
-            uiposts.update(uiPosts, recent_updates?.Posts ?? [])
+            fetchPostsSinceDt = result.NextSince
+            uiposts.update(uiPosts, result?.Posts ?? [])
             browserTabTitleRefresh()
         }
-        if (recent_updates.UnreadCounts)
-            for (const buddy_id_str in recent_updates.UnreadCounts) {
-                const buddy_id = (buddy_id_str === "") ? 0 : parseInt(buddy_id_str), num_unread = recent_updates.UnreadCounts[buddy_id_str]
+        if (result.UnreadCounts)
+            for (const buddy_id_str in result.UnreadCounts) {
+                const buddy_id = (buddy_id_str === "") ? 0 : parseInt(buddy_id_str), num_unread = result.UnreadCounts[buddy_id_str]
                 const state = buddyBadges[buddy_id], badge_text = ((num_unread <= 0) ? "" : num_unread.toString())
                 if (state)
                     state.val = badge_text
@@ -224,6 +244,7 @@ async function reloadPostPeriods() {
     while (uiPeriodPicker.options.length > 1)
         uiPeriodPicker.options.remove(1)
     const periods = (await yo.apiPostPeriods({ WithUserIds: selectedBuddy.val ? [selectedBuddy.val] : [] })).Periods
+    console.log(periods)
     for (const period of periods) {
         const dt = new Date(period)
         uiPeriodPicker.options.add(htm.option({ 'value': period }, `${dt.getFullYear()} — ${dt.toLocaleDateString('default', { month: 'long' })}`))
