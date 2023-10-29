@@ -270,7 +270,6 @@ export function knownErr<T extends string>(err: any, ifSo: (_: T) => boolean): b
     return yo_err && yo_err.knownErr && (yo_err.knownErr.length > 0) && ifSo(yo_err.knownErr)
 }
 export function handleKnownErrMaybe<T extends string>(err: T): boolean {
-    console.log(JSON.stringify(err))
     switch (err) {
         case 'Unauthorized':
             fetchesPaused = true

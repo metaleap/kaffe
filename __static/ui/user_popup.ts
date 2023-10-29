@@ -32,10 +32,17 @@ export function create(user: yo.User): UiCtlUserPopup {
         htm_div_pic = htm.div({ 'class': 'buddy-pic', 'style': `background-image:url('${uibuddies.userPicFileUrl(user)}');cursor:${is_self ? 'pointer' : 'default'}`, 'onclick': _ => (is_self) ? htm_input_pic.click() : false }),
         htm_input_darklite = htm.input({ 'type': 'range', 'id': 'darklite', 'class': 'darklite', 'value': darkliteCurrent(), 'min': 0, 'max': 100, 'step': 1, 'onchange': on_darklite_slider_change })
     htm_input_pic.onchange = _ => {
-        console.log("OC1")
-        if (!(htm_input_pic.files && htm_input_pic.files.length && htm_input_pic.files[0] && htm_input_pic.files[0].type && htm_input_pic.files[0].type.startsWith('image/')))
+        if (!(htm_input_pic.files && htm_input_pic.files.length && htm_input_pic.files[0]))
             return
-        console.log("OC2")
+        if (!(htm_input_pic.files[0].type && htm_input_pic.files[0].type.startsWith('image/'))) {
+            alert(`That '${htm_input_pic.files[0].name}' may have merit, but we'll need a picture file here 'mmkay?`)
+            htm_input_pic.value = ''
+            return
+        } else if (htm_input_pic.files[0].size > (1024 * 1024 * yo.reqMaxReqPayloadSizeMb)) {
+            alert(`Pretty as heck! But over the ${yo.reqMaxReqPayloadSizeMb}MB limit. What else ye got?`)
+            htm_input_pic.value = ''
+            return
+        }
         const file_reader = new FileReader()
         file_reader.onload = evt =>
             htm_div_pic.style.backgroundImage = `url('${evt.target?.result}')`
