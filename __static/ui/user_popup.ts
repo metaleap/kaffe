@@ -30,7 +30,7 @@ export function create(user: yo.User): UiCtlUserPopup {
         htm_input_btw = htm.input({ 'type': 'text', 'class': 'btw', 'value': user.Btw ?? '', 'placeholder': '(Your hover statement here)' }),
         htm_input_pic = htm.input({ 'type': 'file', 'name': 'picfile', 'id': 'picfile' }),
         htm_input_darklite = htm.input({ 'type': 'range', 'id': 'darklite', 'class': 'darklite', 'value': darkliteCurrent(), 'min': 0, 'max': 100, 'step': 1, 'onchange': on_darklite_slider_change })
-    const save_changes = () => {
+    const save_changes = async () => {
         const darklite = parseInt(htm_input_darklite.value)
         if (!isNaN(darklite))
             localStorage.setItem('darklite', htm_input_darklite.value)
@@ -44,16 +44,17 @@ export function create(user: yo.User): UiCtlUserPopup {
             if (pic_has_changed)
                 form_data.append('picfile', htm_input_pic.files![0])
             try {
-                yo.apiUserUpdate({
+                await yo.apiUserUpdate({
                     Id: user.Id, Changes: {
                         Nick: htm_input_nick.value,
                         Btw: htm_input_btw.value,
                     }, ChangedFields: ['Btw', 'Nick']
-                }, pic_has_changed ? form_data : undefined)
+                }, form_data)
                 did_save = true
+                await haxsh.reloadUserSelf()
             } catch (err) {
                 if (!haxsh.handleKnownErrMaybe(err))
-                    haxsh.onErrOther(err, true)
+                    haxsh.onErrOther(err, !did_save)
             }
         }
         if (did_save || !has_changed)
@@ -66,7 +67,7 @@ export function create(user: yo.User): UiCtlUserPopup {
             (!is_self) ? undefined : htm.button({ 'type': 'button', 'class': 'save', 'onclick': save_changes }, "✅"),
             htm.div({},
                 is_self ? htm_input_nick : htm.span({ 'class': 'nick' }, user.Nick),
-                htm.div({ 'class': 'pic', 'style': `background-image:url('${uibuddies.userPicFileUrl(user)}');cursor:${is_self ? 'pointer' : 'default'}`, 'onclick': _ => (is_self) ? htm_input_pic.click() : false })),
+                htm.div({ 'class': 'buddy-pic', 'style': `background-image:url('${uibuddies.userPicFileUrl(user)}');cursor:${is_self ? 'pointer' : 'default'}`, 'onclick': _ => (is_self) ? htm_input_pic.click() : false })),
             htm.div({},
                 is_self ? htm_input_btw : htm.span({ 'class': 'btw' }, user.Btw),
             ),

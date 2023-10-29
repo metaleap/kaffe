@@ -43,6 +43,12 @@ export function main() {
     setTimeout(fetchBuddies, 234)
 }
 
+export async function reloadUserSelf() {
+    const user_self = await yo.apiUserBy({ EmailAddr: yo.userEmailAddr })
+    userSelf.val = user_self
+    return user_self
+}
+
 async function fetchBuddies(oneOff?: boolean) {
     if (fetchesPaused && !oneOff)
         return
@@ -52,9 +58,8 @@ async function fetchBuddies(oneOff?: boolean) {
             if (!buddyBadges[user.Id!])
                 buddyBadges[user.Id!] = van.state("")
         uiBuddies.update(buddies)
-        let user_self = userSelf.val
-        if (!user_self)
-            userSelf.val = (user_self = await yo.apiUserBy({ EmailAddr: yo.userEmailAddr }))
+        if (!userSelf.val)
+            reloadUserSelf()
         isSeeminglyOffline.val = false
         browserTabTitleRefresh()
         if (!fetchedPostsEverYet) {

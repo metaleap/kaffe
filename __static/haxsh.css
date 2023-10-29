@@ -455,8 +455,9 @@ dialog::backdrop,
     font-size: 0.77em;
 }
 
-.user-popup .pic {
+.user-popup .buddy-pic {
     width: 3.21em;
     height: 3.21em;
     float: right;
+    margin: 0;
 }
