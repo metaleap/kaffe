@@ -173,6 +173,9 @@ body a {
     content: attr(data-placeholder);
     color: var(--bgoff3);
     cursor: text;
+    display: inline-block;
+    height: 2.34em;
+    overflow: hidden;
 }
 
 .haxsh-posts>div.self-post .post-content.offline {
