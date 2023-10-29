@@ -249,8 +249,9 @@ export function userShowPopup(user?: yo.User) {
 
 
 export function onErrOther(err: any, showAlert?: boolean) {
-    isSeeminglyOffline.val = true
+    isSeeminglyOffline.val = !showAlert
     browserTabTitleRefresh()
+    // const err_json = JSON.stringify(err), err_str = `${err}`
     if (showAlert)
         alert(err)
     else
