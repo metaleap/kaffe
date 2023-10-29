@@ -182,6 +182,11 @@ var apiPostNew = api(func(this *ApiCtx[Post, Return[yodb.I64]]) {
 			}
 		}
 		this.Args.Htm = yodb.Text(str.Trim(str.Replace(string(" "+this.Args.Htm+" "), uris)))
+		if idx1 := str.Idx(string(this.Args.Htm), ':'); idx1 >= 0 {
+			if idx2 := str.IdxLast(string(this.Args.Htm), ':'); idx2 > idx1 {
+				this.Args.Htm = yodb.Text(str.Replace(string(this.Args.Htm), emoji))
+			}
+		}
 	}
 
 	this.Ret.Result = postNew(this.Ctx, this.Args, true)
