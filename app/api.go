@@ -49,7 +49,7 @@ func init() {
 			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
 
 		"postsForPeriod": apiPostsForPeriod.Checks(
-			Fails{Err: "ExpectedPeriodGreater0AndLess33Days", If: PostsForPeriodFrom.Equal(nil).Or(PostsForPeriodUntil.Equal(nil)).Or(PostsForPeriodUntil.LessOrEqual(PostsForPeriodFrom))},
+			Fails{Err: "ExpectedPeriodGreater0AndLess33Days", If: PostsForPeriodFrom.Equal(nil).Or(PostsForPeriodUntil.NotEqual(nil).And(PostsForPeriodUntil.LessOrEqual(PostsForPeriodFrom)))},
 		).
 			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
 
@@ -134,8 +134,11 @@ type ApiArgPeriod struct {
 }
 
 var apiPostsForPeriod = api(func(this *ApiCtx[ApiArgPeriod, PostsListResult]) {
-	if (this.Args.From == nil) || (this.Args.Until == nil) {
+	if this.Args.From == nil {
 		panic(ErrPostsForPeriod_ExpectedPeriodGreater0AndLess33Days)
+	}
+	if this.Args.Until == nil {
+		this.Args.Until = Ptr(this.Args.From.AddDate(0, 1, 0))
 	}
 	this.Ret.Posts = postsFor(this.Ctx, userCur(this.Ctx), *this.Args.From, *this.Args.Until, this.Args.OnlyBy)
 	this.Ret.augmentWithFileContentTypes()

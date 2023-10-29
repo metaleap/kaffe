@@ -37,7 +37,7 @@ func postsFor(ctx *Ctx, forUser *User, dtFrom time.Time, dtUntil time.Time, only
 	if (year < 2023) || ((year == 2023) && (dtFrom.Month() < 10)) || (dtUntil.Equal(dtFrom)) || (dtUntil.Before(dtFrom)) || (dtUntil.Sub(dtFrom) > (time.Hour * 24 * 33)) {
 		panic(ErrPostsForPeriod_ExpectedPeriodGreater0AndLess33Days)
 	}
-	query := dbQueryPostsForUser(forUser, onlyThoseBy).And(PostDtMade.GreaterOrEqual(dtFrom)).And(PostDtMade.LessOrEqual(dtUntil))
+	query := dbQueryPostsForUser(forUser, onlyThoseBy).And(PostDtMade.GreaterOrEqual(dtFrom)).And(PostDtMade.LessThan(dtUntil))
 	return yodb.FindMany[Post](ctx, query, 0, nil, PostDtMade.Desc())
 }
 
