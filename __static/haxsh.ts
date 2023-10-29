@@ -48,19 +48,21 @@ export function main() {
 }
 
 export async function reloadUserSelf() {
-    userSelf.val = undefined // in case of failure, a later fetch will do the reload — but only with this assignment in place
-    userSelf.val = await yo.apiUserBy({ EmailAddr: yo.userEmailAddr })
-    isSeeminglyOffline.val = false
+    if (yo.userEmailAddr) {
+        userSelf.val = undefined // in case of failure, a later buddy-fetch will re-attempt a fresh reload — but only with this assignment in place
+        userSelf.val = await yo.apiUserBy({ EmailAddr: yo.userEmailAddr })
+        isSeeminglyOffline.val = false
+    }
 }
 
 async function fetchBuddies(oneOff?: boolean) {
     if (fetchesPaused && !oneOff)
         return
     try {
-        if (!userSelf.val)
-            reloadUserSelf() // no need to await really
         const buddies = (await yo.apiUserBuddies())!.Result ?? []
         isSeeminglyOffline.val = false
+        if (!userSelf.val) // fetch only *after* the above because apiUserBy needs cur-user email-addr, which isn't cookied
+            reloadUserSelf() // no need to await really
         for (const user of buddies)
             if (!buddyBadges[user.Id!])
                 buddyBadges[user.Id!] = van.state("")
@@ -250,7 +252,7 @@ export function userShowPopup(user?: yo.User) {
     if (!user)
         user = userSelf.val
     if (user) {
-        const popup = uiuserpopup.create(user ?? userSelf.val)
+        const popup = uiuserpopup.create(user)
         van.add(document.body, popup.DOM)
         popup.DOM.showModal()
     }
