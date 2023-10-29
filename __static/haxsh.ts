@@ -249,13 +249,16 @@ export function userShowPopup(user?: yo.User) {
 
 
 export function onErrOther(err: any, showAlert?: boolean) {
-    isSeeminglyOffline.val = !showAlert
-    browserTabTitleRefresh()
-    // const err_json = JSON.stringify(err), err_str = `${err}`
+    if (isSeeminglyOffline.val = !showAlert)
+        browserTabTitleRefresh()
+    const err_json = JSON.stringify(err), err_str_1 = err.toString(), err_str_2 = `${err}`,
+        err_msg = err.message ? err.message :
+            ((err_str_1 && err_str_1 !== '[object Object]') ? err_str_1 :
+                ((err_str_2 && err_str_2 !== '[object Object]') ? err_str_2 : err_json))
     if (showAlert)
-        alert(err)
+        alert(err_msg)
     else
-        console.warn(`${err}`, err, JSON.stringify(err))
+        console.warn(err, err_json, err_msg)
 }
 function knownErr<T extends string>(err: any, ifSo: (_: T) => boolean): boolean {
     const yo_err = err as yo.Err<T>
