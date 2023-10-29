@@ -35,7 +35,7 @@ func init() {
 		).
 			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
 
-		"userUpdate": apiUserUpdate.Checks(
+		"userUpdate": apiUserUpdate.IsMultipartForm().Checks(
 			Fails{Err: ErrDbUpdExpectedIdGt0, If: UserUpdateId.LessOrEqual(0)},
 		).
 			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized).
@@ -149,26 +149,7 @@ var apiPostsDeleted = api(func(this *ApiCtx[struct {
 })
 
 var apiPostNew = api(func(this *ApiCtx[Post, Return[yodb.I64]]) {
-	files := this.Ctx.Http.Req.MultipartForm.File["files"]
-	if len(files) > 0 {
-		dst_dir_path := Cfg.STATIC_FILE_STORAGE_DIRS["_postfiles"]
-		for _, file := range files {
-			multipart_file, err := file.Open()
-			if multipart_file != nil {
-				defer multipart_file.Close()
-			}
-			if err != nil {
-				panic(err)
-			}
-			data, err := io.ReadAll(multipart_file)
-			if err != nil {
-				panic(err)
-			}
-			dst_file_name := str.FromI64(rand.Int63n(math.MaxInt64), 36) + "_" + str.FromI64(time.Now().UnixNano(), 36) + "_" + str.FromI64(file.Size, 36) + "__yo__" + file.Filename
-			WriteFile(filepath.Join(dst_dir_path, dst_file_name), data)
-			this.Args.Files = append(this.Args.Files, yodb.Text(dst_file_name))
-		}
-	}
+	this.Args.Files = apiHandleUploadedFiles(this.Ctx)
 
 	{
 		uris, toks := str.Dict{}, str.Split(string(this.Args.Htm), " ")
@@ -205,4 +186,27 @@ func (me *PostsListResult) augmentWithFileContentTypes() {
 			post.FileContentTypes[i] = mime.TypeByExtension(filepath.Ext(string(file_id)))
 		}
 	}
+}
+
+func apiHandleUploadedFiles(ctx *Ctx) (ret []yodb.Text) {
+	if files := ctx.Http.Req.MultipartForm.File["files"]; len(files) > 0 {
+		dst_dir_path := Cfg.STATIC_FILE_STORAGE_DIRS["_postfiles"]
+		for _, file := range files {
+			multipart_file, err := file.Open()
+			if multipart_file != nil {
+				defer multipart_file.Close()
+			}
+			if err != nil {
+				panic(err)
+			}
+			data, err := io.ReadAll(multipart_file)
+			if err != nil {
+				panic(err)
+			}
+			dst_file_name := str.FromI64(rand.Int63n(math.MaxInt64), 36) + "_" + str.FromI64(time.Now().UnixNano(), 36) + "_" + str.FromI64(file.Size, 36) + "__yo__" + file.Filename
+			WriteFile(filepath.Join(dst_dir_path, dst_file_name), data)
+			ret = append(ret, yodb.Text(dst_file_name))
+		}
+	}
+	return
 }
