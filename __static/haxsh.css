@@ -198,23 +198,26 @@ body a {
     overflow: hidden;
 }
 
-.button {
-    font-family: "fontello";
+button {
     cursor: pointer;
     display: block;
     border: none 0px var(--bgoff1);
     outline: none;
     text-align: center;
     overflow: hidden;
-    font-size: 0.77em;
     line-height: 0em;
-    margin: 0 0 0.22em 0;
+    font-size: 0.77em;
+    border-radius: 77em !important;
     width: 1.44em;
     height: 1.44em;
-    border-radius: 77em !important;
     padding: 0.22em;
     background-color: var(--bgcolor);
     color: var(--fgcolor);
+}
+
+.button {
+    font-family: "fontello";
+    margin: 0 0 0.22em 0;
 }
 
 .button.send:before {
@@ -366,6 +369,7 @@ body a {
 
 dialog,
 .dialog {
+    padding: 1.44em;
     outline: none;
     color: var(--fgcolor);
     background-color: color-mix(in hsl, var(--bgoff3), transparent 22%);
@@ -379,6 +383,7 @@ dialog::backdrop,
 }
 
 #mvd {
+    border-top-left-radius: 0;
     text-align: center;
 }
 
@@ -400,6 +405,10 @@ dialog::backdrop,
     clear: both;
 }
 
+.user-popup input[type='file'] {
+    display: none;
+}
+
 .user-popup input[type='text'] {
     font-family: system-ui;
     font-size: 1em;
@@ -415,21 +424,39 @@ dialog::backdrop,
     font-size: 0.88em;
 }
 
-.user-popup input.btw {
+.user-popup .btw {
     color: var(--bgoff2);
     font-style: italic;
     width: 99%;
 }
 
-.user-popup input.nick {
+.user-popup .nick {
     font-size: 1.23em !important;
     font-weight: bold;
     width: calc(99% - 4em);
+}
+
+.user-popup button {
+    position: absolute;
+    top: 0.22em;
+    padding: 0 0 0.123em 0;
+    font-size: 0.55em;
+}
+
+.user-popup button.close {
+    right: 0.22em;
+}
+
+.user-popup button.save {
+    top: 0;
+    right: 1.44em;
+    border-radius: 0 !important;
+    background-color: transparent;
+    font-size: 0.77em;
 }
 
 .user-popup .pic {
     width: 3.21em;
     height: 3.21em;
     float: right;
-    cursor: pointer;
 }
