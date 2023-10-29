@@ -105,9 +105,7 @@ var apiUserBy = api(func(this *ApiCtx[struct {
 var apiUserUpdate = api(func(this *ApiCtx[yodb.ApiUpdateArgs[User, UserField], Void]) {
 	_, user_auth_id := yoauth.CurrentlyLoggedInUser(this.Ctx)
 	this.Args.Changes.Id = this.Args.Id
-	if user_auth_id != this.Args.Changes.Auth.Id() {
-		panic(ErrUnauthorized)
-	}
+	this.Args.Changes.Auth.SetId(user_auth_id)
 
 	uploaded_file_names := apiHandleUploadedFiles(this.Ctx, "picfile", 1)
 	if len(uploaded_file_names) > 0 {

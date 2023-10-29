@@ -49,8 +49,8 @@ async function fetchBuddies(oneOff?: boolean) {
     try {
         const buddies = (await yo.apiUserBuddies())!.Result ?? []
         for (const user of buddies)
-            if (!buddyBadges[user.Id])
-                buddyBadges[user.Id] = van.state("")
+            if (!buddyBadges[user.Id!])
+                buddyBadges[user.Id!] = van.state("")
         uiBuddies.update(buddies)
         let user_self = userSelf.val
         if (!user_self)
@@ -248,16 +248,19 @@ export function userShowPopup(user?: yo.User) {
 }
 
 
-function onErrOther(err: any) {
+export function onErrOther(err: any, showAlert?: boolean) {
     isSeeminglyOffline.val = true
     browserTabTitleRefresh()
-    console.warn(`${err}`, err, JSON.stringify(err))
+    if (showAlert)
+        alert(err)
+    else
+        console.warn(`${err}`, err, JSON.stringify(err))
 }
 function knownErr<T extends string>(err: any, ifSo: (_: T) => boolean): boolean {
     const yo_err = err as yo.Err<T>
     return yo_err && yo_err.knownErr && (yo_err.knownErr.length > 0) && ifSo(yo_err.knownErr)
 }
-function handleKnownErrMaybe<T extends string>(err: T): boolean {
+export function handleKnownErrMaybe<T extends string>(err: T): boolean {
     switch (err) {
         case 'Unauthorized':
             fetchesPaused = true

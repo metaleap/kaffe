@@ -34,26 +34,32 @@ export function create(user: yo.User): UiCtlUserPopup {
         const darklite = parseInt(htm_input_darklite.value)
         if (!isNaN(darklite))
             localStorage.setItem('darklite', htm_input_darklite.value)
-
         htm_input_nick.value = htm_input_nick.value.trim()
         htm_input_btw.value = htm_input_btw.value.trim()
         const pic_has_changed = (htm_input_pic.files?.length) && (htm_input_pic.files[0])
         const has_changed = pic_has_changed || (htm_input_nick.value !== user.Nick) || (htm_input_btw.value !== user.Btw)
+        let did_save = false
         if (has_changed) {
             const form_data = new FormData()
             if (pic_has_changed)
                 form_data.append('picfile', htm_input_pic.files![0])
-            yo.apiUserUpdate({
-                Id: user.Id, Changes: {
-                    Nick: htm_input_nick.value,
-                    Btw: htm_input_btw.value,
-                }, ChangedFields: ['Btw', 'Nick']
-            }, pic_has_changed ? form_data : undefined)
-            // yo.apiUserUpdate()
+            try {
+                yo.apiUserUpdate({
+                    Id: user.Id, Changes: {
+                        Nick: htm_input_nick.value,
+                        Btw: htm_input_btw.value,
+                    }, ChangedFields: ['Btw', 'Nick']
+                }, pic_has_changed ? form_data : undefined)
+                did_save = true
+            } catch (err) {
+                if (!haxsh.handleKnownErrMaybe(err))
+                    haxsh.onErrOther(err, true)
+            }
         }
-
-        me.DOM.close()
+        if (did_save || !has_changed)
+            me.DOM.close()
     }
+
     const me: UiCtlUserPopup = {
         DOM: htm.dialog({ 'class': 'user-popup' },
             htm.button({ 'type': 'button', 'class': 'close', 'onclick': _ => me.DOM.close() }, "🗙"),
@@ -72,7 +78,6 @@ export function create(user: yo.User): UiCtlUserPopup {
         )
     }
     me.DOM.onclose = () => {
-        console.log("ONCLOSE")
         if (is_self)
             setLiveDarklite()
         me.DOM.remove()
