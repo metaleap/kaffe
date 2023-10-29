@@ -1,11 +1,6 @@
 package haxsh
 
 import (
-	"bytes"
-	"image"
-	"image/gif"
-	"image/jpeg"
-	"image/png"
 	"io"
 	"math"
 	"math/rand"
@@ -112,7 +107,7 @@ var apiUserUpdate = api(func(this *ApiCtx[yodb.ApiUpdateArgs[User, UserField], V
 	this.Args.Changes.Id = this.Args.Id
 	this.Args.Changes.Auth.SetId(user_auth_id)
 
-	uploaded_file_names, uploaded_file_paths := apiHandleUploadedFiles(this.Ctx, "picfile", 1, apiUserUpdateTrySquaringNewUserPic)
+	uploaded_file_names, uploaded_file_paths := apiHandleUploadedFiles(this.Ctx, "picfile", 1, imageSquared)
 	for i, file_name := range uploaded_file_names {
 		old_file_path := filepath.Join(filepath.Dir(uploaded_file_paths[i]), string(userCur(this.Ctx).PicFileId))
 		DelFile(old_file_path)
@@ -231,41 +226,4 @@ func apiHandleUploadedFiles(ctx *Ctx, fieldName string, maxNumFiles int, transfo
 		}
 	}
 	return
-}
-
-func apiUserUpdateTrySquaringNewUserPic(srcRaw []byte) []byte {
-	known_formats := []string{"png", "jpeg", "gif"}
-	img, format, _ := image.Decode(bytes.NewReader(srcRaw))
-	if img_old, _ := img.(interface {
-		image.Image
-		SubImage(r image.Rectangle) image.Image
-	}); (img_old != nil) && sl.Has(format, known_formats) {
-		if sub_rect := img_old.Bounds(); sub_rect.Dx() != sub_rect.Dy() {
-			if w, h := sub_rect.Dx(), sub_rect.Dy(); w > h {
-				sub_rect = image.Rect((w-h)/2, 0, ((w-h)/2)+h, h)
-			} else { // h > w
-				sub_rect = image.Rect(0, (h-w)/2, w, ((h-w)/2)+w)
-			}
-			img = img_old.SubImage(sub_rect)
-			var buf bytes.Buffer
-			switch format {
-			case "png":
-				if err := png.Encode(&buf, img); err != nil {
-					buf.Reset()
-				}
-			case "jpeg":
-				if err := jpeg.Encode(&buf, img, nil); err != nil {
-					buf.Reset()
-				}
-			case "gif":
-				if err := gif.Encode(&buf, img, nil); err != nil {
-					buf.Reset()
-				}
-			}
-			if buf.Len() > 0 {
-				srcRaw = buf.Bytes()
-			}
-		}
-	}
-	return srcRaw
 }
