@@ -1,11 +1,8 @@
 import van from '../../__yostatic/vanjs/van-1.2.3.debug.js'
-import * as vanx from '../../__yostatic/vanjs/van-x.js'
-const htm = van.tags, depends = van.derive
+const htm = van.tags
 
 import * as yo from '../yo-sdk.js'
-import * as youtil from '../../__yostatic/util.js'
 import * as haxsh from '../haxsh.js'
-import * as util from '../util.js'
 
 import * as uibuddies from './buddies.js'
 
@@ -13,18 +10,37 @@ export type UiCtlUserPopup = {
     DOM: HTMLDialogElement
 }
 
-export function create(user: yo.User): UiCtlUserPopup {
-    const on_darklite_slider_change = () => {
-        document.getElementById('theme')!.innerHTML = `:root {--liteness: ${htm_input_darklite.value}%;}`
-    }
-    const is_self = (haxsh.userSelf.val) && (haxsh.userSelf.val.Id === user.Id),
-        darklite = parseInt(localStorage.getItem("darklight") ?? "88"),
-        htm_input_nick = htm.input({ 'type': 'text', 'class': 'nick', 'value': user.Nick, 'placeholder': '(Nickname)', 'spellcheck': false, 'autocorrect': 'off' }),
-        htm_input_btw = htm.input({ 'type': 'text', 'class': 'btw', 'value': user.Btw, 'placeholder': '(Your hover message/slogan/thought here)' }),
-        htm_input_pic = htm.input({ 'type': 'file' }),
-        htm_input_darklite = htm.input({ 'type': 'range', 'id': 'darklite', 'class': 'darklite', 'value': darklite, 'min': 0, 'max': 100, 'step': 1, 'onchange': on_darklite_slider_change })
-    const save_changes = () => {
+export const darkliteDefault = 88
 
+export function darkliteCurrent(): number {
+    return parseInt(localStorage.getItem('darklite') ?? darkliteDefault.toString())
+}
+
+export function setLiveDarklite(value?: string | number) {
+    if (value === undefined)
+        value = darkliteCurrent()
+    document.getElementById('theme')!.innerHTML = `:root {--liteness: ${value}%;}`
+}
+
+export function create(user: yo.User): UiCtlUserPopup {
+    const on_darklite_slider_change = () =>
+        setLiveDarklite(htm_input_darklite.value)
+    const is_self = (haxsh.userSelf.val) && (haxsh.userSelf.val.Id === user.Id),
+        htm_input_nick = htm.input({ 'type': 'text', 'class': 'nick', 'value': user.Nick, 'placeholder': '(Nickname)', 'spellcheck': false, 'autocorrect': 'off' }),
+        htm_input_btw = htm.input({ 'type': 'text', 'class': 'btw', 'value': user.Btw, 'placeholder': '(Your hover statement here)' }),
+        htm_input_pic = htm.input({ 'type': 'file' }),
+        htm_input_darklite = htm.input({ 'type': 'range', 'id': 'darklite', 'class': 'darklite', 'value': darkliteCurrent(), 'min': 0, 'max': 100, 'step': 1, 'onchange': on_darklite_slider_change })
+    const save_changes = () => {
+        const darklite = parseInt(htm_input_darklite.value)
+        if (!isNaN(darklite))
+            localStorage.setItem('darklite', htm_input_darklite.value)
+
+        const has_changed = (htm_input_nick.value.trim() !== user.Nick) || (htm_input_btw.value.trim() !== user.Btw) || (htm_input_pic.files?.length)
+        if (has_changed) {
+            // yo.apiUserUpdate()
+        }
+
+        me.DOM.close()
     }
     const me: UiCtlUserPopup = {
         DOM: htm.dialog({ 'class': 'user-popup' },
@@ -42,6 +58,12 @@ export function create(user: yo.User): UiCtlUserPopup {
                 htm_input_darklite,
             ),
         )
+    }
+    me.DOM.onclose = () => {
+        console.log("ONCLOSE")
+        if (is_self)
+            setLiveDarklite()
+        me.DOM.remove()
     }
     return me
 }

@@ -39,6 +39,7 @@ export function main() {
         uiBuddies.DOM,
         uiDialogLogin,
     )
+    uiuserpopup.setLiveDarklite()
     setTimeout(fetchBuddies, 234)
 }
 
@@ -242,7 +243,6 @@ export function userShowPopup(user?: yo.User) {
     if (user) {
         const popup = uiuserpopup.create(user ?? userSelf.val)
         van.add(document.body, popup.DOM)
-        popup.DOM.onclose = () => popup.DOM.remove()
         popup.DOM.showModal()
     }
 }
