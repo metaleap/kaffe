@@ -312,15 +312,15 @@ export type PostsListResult = {
 }
 
 export type User = {
-	Auth: I64
-	Btw: string
-	Buddies: I64[]
-	DtMade: DateTime
-	DtMod: DateTime
-	Id: I64
-	LastSeen: DateTime
-	Nick: string
-	PicFileId: string
+	Auth?: I64
+	Btw?: string
+	Buddies?: I64[]
+	DtMade?: DateTime
+	DtMod?: DateTime
+	Id?: I64
+	LastSeen?: DateTime
+	Nick?: string
+	PicFileId?: string
 }
 
 export type postDelete_In = {

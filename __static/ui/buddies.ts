@@ -33,8 +33,8 @@ export function create(): UiCtlBuddies {
 
     van.add(me.DOM, vanx.list(() => htm.div({ 'class': 'buddies' }), me.buddies, (it) => {
         const item = htm.div({
-            'class': depends(() => 'buddy' + (haxsh.isSeeminglyOffline.val ? ' offline' : '') + (haxsh.buddySelected(it.val) ? ' selected' : '') + ((haxsh.buddyBadges[it.val.Id].val) ? ' badged' : '')),
-            'data-badge': depends(() => (haxsh.buddyBadges[it.val.Id].val) || ""),
+            'class': depends(() => 'buddy' + (haxsh.isSeeminglyOffline.val ? ' offline' : '') + (haxsh.buddySelected(it.val) ? ' selected' : '') + ((haxsh.buddyBadges[it.val.Id!].val) ? ' badged' : '')),
+            'data-badge': depends(() => (haxsh.buddyBadges[it.val.Id!].val) || ""),
         },
             htm.div(userDomAttrsBuddy(it.val, new Date().getTime())))
         item.onclick = () => {
@@ -91,11 +91,11 @@ function update(me: UiCtlBuddies, buddies: yo.User[]): number {
         const is_selected: { [_: number]: boolean } = {}
         for (let i = 0; i < buddies.length; i++) {
             const buddy = buddies[i]
-            is_selected[buddy.Id] = haxsh.buddySelected(buddy)
-            if ((i > 0) && (is_selected[buddy.Id])) {
+            is_selected[buddy.Id!] = haxsh.buddySelected(buddy)
+            if ((i > 0) && (is_selected[buddy.Id!])) {
                 for (let j = 0; j < i; j++) {
                     const earlier = buddies[j]
-                    if (!is_selected[earlier.Id]) {
+                    if (!is_selected[earlier.Id!]) {
                         buddies[j] = buddy
                         buddies[i] = earlier
                         break
