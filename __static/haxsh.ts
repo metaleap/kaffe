@@ -265,11 +265,12 @@ export function onErrOther(err: any, showAlert?: boolean) {
     else
         console.warn(err, err_json, err_msg)
 }
-function knownErr<T extends string>(err: any, ifSo: (_: T) => boolean): boolean {
+export function knownErr<T extends string>(err: any, ifSo: (_: T) => boolean): boolean {
     const yo_err = err as yo.Err<T>
     return yo_err && yo_err.knownErr && (yo_err.knownErr.length > 0) && ifSo(yo_err.knownErr)
 }
 export function handleKnownErrMaybe<T extends string>(err: T): boolean {
+    console.log(JSON.stringify(err))
     switch (err) {
         case 'Unauthorized':
             fetchesPaused = true
@@ -277,6 +278,9 @@ export function handleKnownErrMaybe<T extends string>(err: T): boolean {
             return true
         case 'MissingOrExcessiveContentLength':
             alert("To share something over " + yo.reqMaxReqPayloadSizeMb + "MB, host it elsewhere and share the link instead.")
+            return true
+        case 'UserUpdate_NicknameAlreadyExists':
+            alert(`Nickname already taken — but, look... '${userSelf.val?.Nick}' ain't so shabby either!`)
             return true
     }
     return false

@@ -27,9 +27,20 @@ export function create(user: yo.User): UiCtlUserPopup {
         setLiveDarklite(htm_input_darklite.value)
     const is_self = (haxsh.userSelf.val) && (haxsh.userSelf.val.Id === user.Id),
         htm_input_nick = htm.input({ 'type': 'text', 'class': 'nick', 'value': user.Nick!, 'placeholder': '(Nickname)', 'spellcheck': false, 'autocorrect': 'off' }),
-        htm_input_btw = htm.input({ 'type': 'text', 'class': 'btw', 'value': user.Btw ?? '', 'placeholder': '(Your hover statement here)' }),
+        htm_input_btw = htm.input({ 'type': 'text', 'class': 'btw', 'value': user.Btw ?? '', 'placeholder': '(Your hover statement here)', 'spellcheck': false, 'autocorrect': 'off' }),
         htm_input_pic = htm.input({ 'type': 'file', 'name': 'picfile', 'id': 'picfile' }),
+        htm_div_pic = htm.div({ 'class': 'buddy-pic', 'style': `background-image:url('${uibuddies.userPicFileUrl(user)}');cursor:${is_self ? 'pointer' : 'default'}`, 'onclick': _ => (is_self) ? htm_input_pic.click() : false }),
         htm_input_darklite = htm.input({ 'type': 'range', 'id': 'darklite', 'class': 'darklite', 'value': darkliteCurrent(), 'min': 0, 'max': 100, 'step': 1, 'onchange': on_darklite_slider_change })
+    htm_input_pic.onchange = _ => {
+        console.log("OC1")
+        if (!(htm_input_pic.files && htm_input_pic.files.length && htm_input_pic.files[0] && htm_input_pic.files[0].type && htm_input_pic.files[0].type.startsWith('image/')))
+            return
+        console.log("OC2")
+        const file_reader = new FileReader()
+        file_reader.onload = evt =>
+            htm_div_pic.style.backgroundImage = `url('${evt.target?.result}')`
+        file_reader.readAsDataURL(htm_input_pic.files[0])
+    }
     const save_changes = async () => {
         const darklite = parseInt(htm_input_darklite.value)
         if (!isNaN(darklite))
@@ -53,8 +64,8 @@ export function create(user: yo.User): UiCtlUserPopup {
                 did_save = true
                 await haxsh.reloadUserSelf()
             } catch (err) {
-                if (!haxsh.handleKnownErrMaybe(err))
-                    haxsh.onErrOther(err, !did_save)
+                if (!haxsh.knownErr<yo.UserUpdateErr>(err, haxsh.handleKnownErrMaybe<yo.UserUpdateErr>))
+                    haxsh.onErrOther(err)
             }
         }
         if (did_save || !has_changed)
@@ -67,7 +78,8 @@ export function create(user: yo.User): UiCtlUserPopup {
             (!is_self) ? undefined : htm.button({ 'type': 'button', 'class': 'save', 'onclick': save_changes }, "✅"),
             htm.div({},
                 is_self ? htm_input_nick : htm.span({ 'class': 'nick' }, user.Nick),
-                htm.div({ 'class': 'buddy-pic', 'style': `background-image:url('${uibuddies.userPicFileUrl(user)}');cursor:${is_self ? 'pointer' : 'default'}`, 'onclick': _ => (is_self) ? htm_input_pic.click() : false })),
+                htm_div_pic,
+            ),
             htm.div({},
                 is_self ? htm_input_btw : htm.span({ 'class': 'btw' }, user.Btw),
             ),

@@ -30,7 +30,7 @@ body a {
 }
 
 .haxsh-buddies {
-    z-index: 9999;
+    z-index: 999;
     position: fixed;
     right: 0;
     top: 0;
@@ -68,6 +68,7 @@ body a {
     position: absolute;
     background-color: var(--sigcol);
     color: var(--fgcolor);
+    z-index: 99999;
     width: 1.23em;
     height: 1.23em;
     border-radius: 77em;
@@ -113,7 +114,7 @@ body a {
 
 .haxsh-buddies>div.buddy-self {
     cursor: pointer;
-    z-index: 99999;
+    z-index: 9999;
     background-color: var(--bgoff1);
     position: fixed;
     margin-top: 0;
@@ -433,7 +434,17 @@ dialog::backdrop,
 .user-popup .nick {
     font-size: 1.23em !important;
     font-weight: bold;
+}
+
+.user-popup input.nick {
     width: calc(99% - 4em);
+}
+
+.user-popup span.nick {
+    display: inline-block;
+    white-space: nowrap;
+    text-wrap: nowrap;
+    padding-right: 1em;
 }
 
 .user-popup button {
