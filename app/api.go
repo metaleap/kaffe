@@ -1,6 +1,11 @@
 package haxsh
 
 import (
+	"bytes"
+	"image"
+	_ "image/gif"
+	_ "image/jpeg"
+	_ "image/png"
 	"io"
 	"math"
 	"math/rand"
@@ -107,12 +112,15 @@ var apiUserUpdate = api(func(this *ApiCtx[yodb.ApiUpdateArgs[User, UserField], V
 	this.Args.Changes.Id = this.Args.Id
 	this.Args.Changes.Auth.SetId(user_auth_id)
 
-	uploaded_file_names := apiHandleUploadedFiles(this.Ctx, "picfile", 1)
-	if len(uploaded_file_names) > 0 {
-		this.Args.Changes.PicFileId = uploaded_file_names[0]
+	uploaded_file_names, uploaded_file_paths := apiHandleUploadedFiles(this.Ctx, "picfile", 1, apiUserUpdateTrySquaringNewUserPic)
+	for i, file_name := range uploaded_file_names {
+		old_file_path := filepath.Join(filepath.Dir(uploaded_file_paths[i]), string(userCur(this.Ctx).PicFileId))
+		DelFile(old_file_path)
+		this.Args.Changes.PicFileId = file_name
 		if len(this.Args.ChangedFields) > 0 {
 			this.Args.ChangedFields = sl.With(this.Args.ChangedFields, UserPicFileId)
 		}
+		break
 	}
 	userUpdate(this.Ctx, &this.Args.Changes, true, (len(this.Args.ChangedFields) > 0), this.Args.ChangedFields...)
 })
@@ -156,7 +164,7 @@ var apiPostsDeleted = api(func(this *ApiCtx[struct {
 })
 
 var apiPostNew = api(func(this *ApiCtx[Post, Return[yodb.I64]]) {
-	this.Args.Files = apiHandleUploadedFiles(this.Ctx, "files", 0)
+	this.Args.Files, _ = apiHandleUploadedFiles(this.Ctx, "files", 0, nil)
 
 	{
 		uris, toks := str.Dict{}, str.Split(string(this.Args.Htm), " ")
@@ -195,7 +203,7 @@ func (me *PostsListResult) augmentWithFileContentTypes() {
 	}
 }
 
-func apiHandleUploadedFiles(ctx *Ctx, fieldName string, maxNumFiles int) (ret []yodb.Text) {
+func apiHandleUploadedFiles(ctx *Ctx, fieldName string, maxNumFiles int, transform func([]byte) []byte) (fileNames []yodb.Text, filePaths []string) {
 	if files := ctx.Http.Req.MultipartForm.File[fieldName]; len(files) > 0 {
 		dst_dir_path := Cfg.STATIC_FILE_STORAGE_DIRS["_postfiles"]
 		for i, file := range files {
@@ -213,10 +221,22 @@ func apiHandleUploadedFiles(ctx *Ctx, fieldName string, maxNumFiles int) (ret []
 			if err != nil {
 				panic(err)
 			}
+			if transform != nil {
+				data = transform(data)
+			}
 			dst_file_name := str.FromI64(rand.Int63n(math.MaxInt64), 36) + "_" + str.FromI64(time.Now().UnixNano(), 36) + "_" + str.FromI64(file.Size, 36) + "__yo__" + file.Filename
-			WriteFile(filepath.Join(dst_dir_path, dst_file_name), data)
-			ret = append(ret, yodb.Text(dst_file_name))
+			dst_file_path := filepath.Join(dst_dir_path, dst_file_name)
+			WriteFile(dst_file_path, data)
+			fileNames, filePaths = append(fileNames, yodb.Text(dst_file_name)), append(filePaths, dst_file_path)
 		}
 	}
 	return
+}
+
+func apiUserUpdateTrySquaringNewUserPic(srcRaw []byte) []byte {
+	img, _, err := image.Decode(bytes.NewReader(srcRaw))
+	if (err == nil) && (img.Bounds().Dx() != img.Bounds().Dy()) {
+
+	}
+	return srcRaw
 }
