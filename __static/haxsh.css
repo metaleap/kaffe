@@ -460,6 +460,16 @@ dialog::backdrop,
     padding-right: 1em;
 }
 
+.user-popup input[type='range'] {
+    margin: 0;
+    padding: 0;
+    vertical-align: bottom;
+}
+
+.user-popup label {
+    margin-right: 1em;
+}
+
 .user-popup button {
     position: absolute;
     top: 0.22em;
