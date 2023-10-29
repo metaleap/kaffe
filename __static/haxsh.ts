@@ -24,6 +24,9 @@ export let buddyBadges: { [_: number]: State<string> } = { 0: van.state("") }
 let uiDialogLogin = newUiLoginDialog()
 let uiBuddies: uibuddies.UiCtlBuddies = uibuddies.create()
 let uiPosts: uiposts.UiCtlPosts = uiposts.create()
+let uiPeriodPicker: HTMLSelectElement = htm.select({ 'class': 'dtsel' },
+    htm.option({ 'value': '' }, "⏶\xa0\xa0 Fresh")
+)
 
 export function main() {
     document.onvisibilitychange = () => {
@@ -38,6 +41,7 @@ export function main() {
         uiPosts.DOM,
         uiBuddies.DOM,
         uiDialogLogin,
+        uiPeriodPicker,
     )
     uiuserpopup.setLiveDarklite()
     setTimeout(fetchBuddies, 234)
@@ -237,7 +241,7 @@ export function buddySelected(user?: yo.User, ensureIsSelected?: boolean): boole
             fetchPostsSinceDt = undefined
             fetchPostsRecent(true)
             fetchBuddies(true)
-        } else  // already was selected, so the click/tap shows user card
+        } else  // already was selected, so the click/tap shows user popup
             userShowPopup(user)
     return is_selected
 }

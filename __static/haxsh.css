@@ -128,7 +128,7 @@ body a {
 
 .haxsh-posts {
     margin-right: 3.88em;
-    padding-bottom: 1.23em;
+    padding-bottom: 3.21em;
 }
 
 .haxsh-posts>div {
@@ -489,13 +489,16 @@ dialog::backdrop,
 .dtsel {
     outline: none;
     position: fixed;
+    width: 100%;
     bottom: 0;
-    left: -3em;
+    left: 0;
     right: 0;
     text-align: center;
-    background-color: var(--bgcolor);
+    background-color: color-mix(in hsl, var(--bgcolor), transparent 22%);
     color: var(--fgcolor);
+    margin: 0;
     padding: 0.22em;
     font-family: system-ui;
     font-weight: bold;
+    border: 0 none transparent;
 }
