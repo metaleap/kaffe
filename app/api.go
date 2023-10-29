@@ -3,9 +3,9 @@ package haxsh
 import (
 	"bytes"
 	"image"
-	_ "image/gif"
-	_ "image/jpeg"
-	_ "image/png"
+	"image/gif"
+	"image/jpeg"
+	"image/png"
 	"io"
 	"math"
 	"math/rand"
@@ -234,9 +234,38 @@ func apiHandleUploadedFiles(ctx *Ctx, fieldName string, maxNumFiles int, transfo
 }
 
 func apiUserUpdateTrySquaringNewUserPic(srcRaw []byte) []byte {
-	img, _, err := image.Decode(bytes.NewReader(srcRaw))
-	if (err == nil) && (img.Bounds().Dx() != img.Bounds().Dy()) {
-
+	known_formats := []string{"png", "jpeg", "gif"}
+	img, format, _ := image.Decode(bytes.NewReader(srcRaw))
+	if img_old, _ := img.(interface {
+		image.Image
+		SubImage(r image.Rectangle) image.Image
+	}); (img_old != nil) && sl.Has(format, known_formats) {
+		if sub_rect := img_old.Bounds(); sub_rect.Dx() != sub_rect.Dy() {
+			if w, h := sub_rect.Dx(), sub_rect.Dy(); w > h {
+				sub_rect = image.Rect((w-h)/2, 0, h, h)
+			} else { // h > w
+				sub_rect = image.Rect(0, (h-w)/2, w, w)
+			}
+			img = img_old.SubImage(sub_rect)
+			var buf bytes.Buffer
+			switch format {
+			case "png":
+				if err := png.Encode(&buf, img); err != nil {
+					buf.Reset()
+				}
+			case "jpeg":
+				if err := jpeg.Encode(&buf, img, nil); err != nil {
+					buf.Reset()
+				}
+			case "gif":
+				if err := gif.Encode(&buf, img, nil); err != nil {
+					buf.Reset()
+				}
+			}
+			if buf.Len() > 0 {
+				srcRaw = buf.Bytes()
+			}
+		}
 	}
 	return srcRaw
 }
