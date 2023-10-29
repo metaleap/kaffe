@@ -35,7 +35,7 @@ export function create(user: yo.User): UiCtlUserPopup {
         if (!(htm_input_pic.files && htm_input_pic.files.length && htm_input_pic.files[0]))
             return
         if (!(htm_input_pic.files[0].type && htm_input_pic.files[0].type.startsWith('image/'))) {
-            alert(`That '${htm_input_pic.files[0].name}' may have merit, but we'll need a picture file here 'mmkay?`)
+            alert(`That '${htm_input_pic.files[0].name}' may have merit, but we'll need a picture file here ...mmkay?`)
             htm_input_pic.value = ''
             return
         } else if (htm_input_pic.files[0].size > (1024 * 1024 * yo.reqMaxReqPayloadSizeMb)) {

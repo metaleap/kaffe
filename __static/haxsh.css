@@ -402,8 +402,12 @@ dialog::backdrop,
 }
 
 .user-popup>div {
-    margin-bottom: 0.44em;
+    margin-bottom: 1.23em;
     clear: both;
+}
+
+.user-popup>div:last-child {
+    margin-bottom: 0;
 }
 
 .user-popup input[type='file'] {
@@ -428,7 +432,13 @@ dialog::backdrop,
 .user-popup .btw {
     color: var(--bgoff2);
     font-style: italic;
+    text-align: center;
     width: 99%;
+}
+
+.user-popup span.btw {
+    display: block;
+    margin-top: 3.21em;
 }
 
 .user-popup .nick {
@@ -459,7 +469,7 @@ dialog::backdrop,
 }
 
 .user-popup button.save {
-    top: 0;
+    top: 0.044em;
     right: 1.44em;
     border-radius: 0 !important;
     background-color: transparent;
