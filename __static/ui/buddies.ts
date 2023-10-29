@@ -86,18 +86,20 @@ export function userDomAttrsSelf() {
 }
 
 function update(me: UiCtlBuddies, buddies: yo.User[]): number {
-    const now = new Date().getTime()
-    const is_selected: { [_: number]: boolean } = {}
-    for (let i = 0; i < buddies.length; i++) {
-        const buddy = buddies[i]
-        is_selected[buddy.Id] = haxsh.buddySelected(buddy)
-        if ((i > 0) && (is_selected[buddy.Id])) {
-            for (let j = 0; j < i; j++) {
-                const earlier = buddies[j]
-                if (!is_selected[earlier.Id]) {
-                    buddies[j] = buddy
-                    buddies[i] = earlier
-                    break
+    const now = new Date().getTime(), move_selected_top = false
+    if (move_selected_top) {
+        const is_selected: { [_: number]: boolean } = {}
+        for (let i = 0; i < buddies.length; i++) {
+            const buddy = buddies[i]
+            is_selected[buddy.Id] = haxsh.buddySelected(buddy)
+            if ((i > 0) && (is_selected[buddy.Id])) {
+                for (let j = 0; j < i; j++) {
+                    const earlier = buddies[j]
+                    if (!is_selected[earlier.Id]) {
+                        buddies[j] = buddy
+                        buddies[i] = earlier
+                        break
+                    }
                 }
             }
         }

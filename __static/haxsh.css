@@ -364,7 +364,8 @@ body a {
     font-weight: normal;
 }
 
-dialog {
+dialog,
+.dialog {
     outline: none;
     color: var(--fgcolor);
     background-color: color-mix(in hsl, var(--bgoff3), transparent 22%);
@@ -372,37 +373,59 @@ dialog {
     border-radius: 0.77em;
 }
 
-dialog::backdrop {
+dialog::backdrop,
+.dialog::backdrop {
     background-color: color-mix(in hsl, #808080, transparent 44%) !important;
 }
 
-dialog#mvd {
+#mvd {
     text-align: center;
 }
 
-dialog#mvd img,
-dialog#mvd video {
+#mvd img,
+#mvd video {
     display: inline-block;
     max-height: 99%;
     max-width: 99%;
 }
 
-dialog.user-popup {
+.user-popup {
+    margin-right: 0;
+    margin-top: 3em;
     border-top-right-radius: 0;
 }
 
-dialog.user-popup .header {
-    font-size: 1.23em;
+.user-popup>div {
+    margin-bottom: 0.44em;
+}
+
+.user-popup input[type='text'] {
+    font-family: system-ui;
+    font-size: 1em;
+    background-color: transparent;
+    color: var(--fgcolor);
+    border: 0px none transparent;
+    outline: none;
+}
+
+.user-popup input[type='text']::placeholder {
+    color: var(--bgoff2);
+    font-style: italic;
+    font-size: 0.88em;
+}
+
+.user-popup input.nick {
+    font-size: 1.23em !important;
     font-weight: bold;
 }
 
-dialog.user-popup .pic {
+.user-popup .pic {
     width: 3.21em;
     height: 3.21em;
     float: right;
 }
 
-dialog.user-popup .btw {
+.user-popup .btw {
     clear: both;
     font-size: 1.11em;
 }
