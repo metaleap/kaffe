@@ -63,13 +63,15 @@ async function fetchBuddies(oneOff?: boolean) {
         isSeeminglyOffline.val = false
         if (!userSelf.val) // fetch only *after* the above because apiUserBy needs cur-user email-addr, which isn't cookied
             reloadUserSelf() // no need to await really
+        if (uiPeriodPicker.options.length < 2)
+            reloadPostPeriods() // no await needed
         for (const user of buddies)
             if (!buddyBadges[user.Id!])
                 buddyBadges[user.Id!] = van.state("")
         uiBuddies.update(buddies)
         browserTabTitleRefresh()
         if (!fetchedPostsEverYet) {
-            setTimeout(fetchPostsRecent, 123)
+            fetchPostsRecent()
             setTimeout(fetchPostsDeleted, fetchPostsDeletedIntervalMs)
         }
     } catch (err) {
@@ -218,6 +220,16 @@ export async function deletePost(id: number) {
     return ok
 }
 
+async function reloadPostPeriods() {
+    while (uiPeriodPicker.options.length > 1)
+        uiPeriodPicker.options.remove(1)
+    const periods = (await yo.apiPostPeriods({ WithUserIds: selectedBuddy.val ? [selectedBuddy.val] : [] })).Periods
+    for (const period of periods) {
+        const dt = new Date(period)
+        uiPeriodPicker.options.add(htm.option({ 'value': period }, `${dt.getFullYear()} — ${dt.toLocaleDateString('default', { month: 'long' })}`))
+    }
+}
+
 function browserTabTitleRefresh() {
     const user_self = userSelf.val, user_buddy = userById(selectedBuddy.val)
     const buddies_and_self = (user_buddy && user_self) ? [user_buddy, user_self]
@@ -237,12 +249,13 @@ export function buddySelected(user?: yo.User, ensureIsSelected?: boolean): boole
     if (ensureIsSelected)
         if (!is_selected) {
             selectedBuddy.val = ((user?.Id) ?? 0)
+            fetchPostsSinceDt = undefined
+            reloadPostPeriods() // no await needed
             buddyBadges[selectedBuddy.val].val = ""
             is_selected = !is_selected
             uiposts.update(uiPosts, [], true)
-            fetchPostsSinceDt = undefined
-            fetchPostsRecent(true)
-            fetchBuddies(true)
+            fetchPostsRecent(true) // no await needed
+            fetchBuddies(true) // no await needed
         } else  // already was selected, so the click/tap shows user popup
             userShowPopup(user)
     return is_selected
