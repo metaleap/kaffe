@@ -10,8 +10,8 @@ import * as util from '../util.js'
 export type UiCtlBuddies = {
     DOM: HTMLElement
     buddies: vanx.Reactive<yo.User[]>
-    buddyRequests: yo.User[]
-    update: (buddies: yo.User[], buddyRequests: yo.User[]) => number
+    buddyRequestsMade: yo.User[]
+    update: (_: yo.userBuddies_Out) => number
 }
 
 export function create(): UiCtlBuddies {
@@ -29,8 +29,8 @@ export function create(): UiCtlBuddies {
             ),
         ),
         buddies: vanx.reactive([] as yo.User[]),
-        buddyRequests: [],
-        update: (buddies, buddyRequests) => update(me, buddies, buddyRequests),
+        buddyRequestsMade: [],
+        update: (_) => update(me, _),
     }
 
     van.add(me.DOM, vanx.list(() => htm.div({ 'class': 'buddies' }), me.buddies, (it) => {
@@ -87,27 +87,27 @@ export function userDomAttrsSelf() {
     }
 }
 
-function update(me: UiCtlBuddies, buddies: yo.User[], buddyRequests: yo.User[]): number {
-    me.buddyRequests = buddyRequests
+function update(me: UiCtlBuddies, buddiesInfo: yo.userBuddies_Out): number {
+    me.buddyRequestsMade = buddiesInfo.BuddyRequestsMade
     const now = new Date().getTime(), move_selected_top = false
     if (move_selected_top) {
         const is_selected: { [_: number]: boolean } = {}
-        for (let i = 0; i < buddies.length; i++) {
-            const buddy = buddies[i]
+        for (let i = 0; i < buddiesInfo.Buddies.length; i++) {
+            const buddy = buddiesInfo.Buddies[i]
             is_selected[buddy.Id!] = haxsh.buddySelected(buddy)
             if ((i > 0) && (is_selected[buddy.Id!])) {
                 for (let j = 0; j < i; j++) {
-                    const earlier = buddies[j]
+                    const earlier = buddiesInfo.Buddies[j]
                     if (!is_selected[earlier.Id!]) {
-                        buddies[j] = buddy
-                        buddies[i] = earlier
+                        buddiesInfo.Buddies[j] = buddy
+                        buddiesInfo.Buddies[i] = earlier
                         break
                     }
                 }
             }
         }
     }
-    if (!youtil.deepEq(buddies, me.buddies.filter(_ => true), false, false))
-        vanx.replace(me.buddies, (_: yo.User[]) => buddies)
-    return buddies.filter(_ => !isOffline(_, now)).length
+    if (!youtil.deepEq(buddiesInfo.Buddies, me.buddies.filter(_ => true), false, false))
+        vanx.replace(me.buddies, (_: yo.User[]) => buddiesInfo.Buddies)
+    return buddiesInfo.Buddies.filter(_ => !isOffline(_, now)).length
 }

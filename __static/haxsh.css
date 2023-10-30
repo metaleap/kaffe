@@ -300,6 +300,7 @@ button {
 
 .haxsh-posts .buddy-pic {
     display: inline-block;
+    cursor: pointer;
     margin: 0;
     width: 1.23em;
     height: 1.23em;
