@@ -9,9 +9,9 @@ import (
 
 func userBuddies(ctx *Ctx, forUser *User, normalizeLastSeenByMinute bool) (buddiesAlready []*User, buddyRequests []*User) {
 	buddiesAlready = yodb.FindMany[User](ctx, UserId.In(forUser.Buddies.ToAnys()...).And(
-		q.ArrHas(UserBuddies, forUser.Id)), 0, nil, UserLastSeen.Desc(), UserDtMod.Desc())
+		q.InArr(forUser.Id, UserBuddies)), 0, nil, UserLastSeen.Desc(), UserDtMod.Desc())
 	buddyRequests = yodb.FindMany[User](ctx, UserId.In(forUser.Buddies.ToAnys()...).And(
-		q.ArrHas(UserBuddies, forUser.Id).Not()), 0, nil, UserDtMade.Desc())
+		q.InArr(forUser.Id, UserBuddies).Not()), 0, nil, UserDtMade.Desc())
 	if normalizeLastSeenByMinute {
 		for _, buddy := range buddiesAlready {
 			if buddy.LastSeen != nil {
