@@ -3,6 +3,10 @@ package haxsh
 
 import q "yo/db/query"
 
+import sl "yo/util/sl"
+
+func UserFields(fields ...UserField) []q.F { return sl.To(fields, UserField.F) }
+
 type UserField q.F
 
 const (
@@ -42,6 +46,8 @@ func (me UserField) NotEqual(a1 interface{}) q.Query       { return ((q.F)(me)).
 func (me UserField) NotIn(a1 ...interface{}) q.Query       { return ((q.F)(me)).NotIn(a1...) }
 func (me UserField) NotInArr(a1 interface{}) q.Query       { return ((q.F)(me)).NotInArr(a1) }
 func (me UserField) StrLen(a1 ...interface{}) q.Operand    { return ((q.F)(me)).StrLen(a1...) }
+
+func PostFields(fields ...PostField) []q.F { return sl.To(fields, PostField.F) }
 
 type PostField q.F
 

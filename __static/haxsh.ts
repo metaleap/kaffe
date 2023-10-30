@@ -79,7 +79,7 @@ async function fetchBuddies(oneOff?: boolean) {
         for (const user of result.Buddies)
             if (!buddyBadges[user.Id!])
                 buddyBadges[user.Id!] = van.state("")
-        uiBuddies.update(result.Buddies, result.BuddyRequests)
+        uiBuddies.update(result.Buddies, result.BuddyRequestsMade)
         browserTabTitleRefresh()
         if (!fetchedPostsEverYet) {
             fetchPostsRecent()

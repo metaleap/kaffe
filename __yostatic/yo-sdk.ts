@@ -363,7 +363,8 @@ export type postsRecent_In = {
 export type Time = string
 export type userBuddies_Out = {
 	Buddies: User[]
-	BuddyRequests: User[]
+	BuddyRequestsBy: User[]
+	BuddyRequestsMade: User[]
 }
 
 export type userBy_In = {

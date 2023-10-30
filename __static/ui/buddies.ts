@@ -10,6 +10,7 @@ import * as util from '../util.js'
 export type UiCtlBuddies = {
     DOM: HTMLElement
     buddies: vanx.Reactive<yo.User[]>
+    buddyRequests: yo.User[]
     update: (buddies: yo.User[], buddyRequests: yo.User[]) => number
 }
 
@@ -28,6 +29,7 @@ export function create(): UiCtlBuddies {
             ),
         ),
         buddies: vanx.reactive([] as yo.User[]),
+        buddyRequests: [],
         update: (buddies, buddyRequests) => update(me, buddies, buddyRequests),
     }
 
@@ -86,6 +88,7 @@ export function userDomAttrsSelf() {
 }
 
 function update(me: UiCtlBuddies, buddies: yo.User[], buddyRequests: yo.User[]): number {
+    me.buddyRequests = buddyRequests
     const now = new Date().getTime(), move_selected_top = false
     if (move_selected_top) {
         const is_selected: { [_: number]: boolean } = {}
