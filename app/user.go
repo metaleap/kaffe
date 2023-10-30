@@ -37,12 +37,14 @@ type User struct {
 
 func userUpdate(ctx *Ctx, upd *User, byCurUserInCtx bool, inclEmptyOrMissingFields bool, onlyFields ...UserField) {
 	ctx.DbTx()
-	upd.Btw.Do(str.Trim)
+	upd.Btw.Set(str.Trim)
 	if (len(onlyFields) == 0) || sl.Has(UserBuddies, onlyFields) {
 		upd.Buddies.EnsureAllUnique(nil)
 	}
-	if upd.Nick.Do(str.Trim); (upd.Nick != "") && ((len(onlyFields) == 0) || sl.Has(UserNick, onlyFields)) {
-		if yodb.Exists[User](ctx, UserNick.Equal(upd.Nick).And(UserId.NotEqual(upd.Id))) {
+	if upd.Nick.Set(str.Trim); (len(onlyFields) == 0) || sl.Has(UserNick, onlyFields) {
+		if upd.Nick == "" {
+			panic(ErrUserUpdate_ExpectedNonEmptyNickname)
+		} else if yodb.Exists[User](ctx, UserNick.Equal(upd.Nick).And(UserId.NotEqual(upd.Id))) {
 			panic(ErrUserUpdate_NicknameAlreadyExists)
 		}
 	}

@@ -38,11 +38,9 @@ func init() {
 
 		"userUpdate": apiUserUpdate.IsMultipartForm().Checks(
 			Fails{Err: ErrDbUpdExpectedIdGt0, If: UserUpdateId.LessOrEqual(0)},
-			Fails{Err: "ExpectedNonEmptyNickname", If: UserUpdateChangesNick.Equal("").And(
-				q.ArrHas(UserUpdateChangedFields, string(UserNick)).Or(q.ArrIsEmpty(UserUpdateChangedFields)))},
 		).
 			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized).
-			CouldFailWith(":"+yodb.ErrSetDbUpdate, "NicknameAlreadyExists"),
+			CouldFailWith(":"+yodb.ErrSetDbUpdate, "NicknameAlreadyExists", "ExpectedNonEmptyNickname"),
 
 		"userBuddies": apiUserBuddies.
 			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
@@ -140,7 +138,7 @@ var apiPostsForPeriod = api(func(this *ApiCtx[ApiArgPeriod, PostsListResult]) {
 		panic(ErrPostsForPeriod_ExpectedPeriodGreater0AndLess33Days)
 	}
 	if this.Args.Until == nil {
-		this.Args.Until = Ptr(this.Args.From.AddDate(0, 1, 0))
+		this.Args.Until = ToPtr(this.Args.From.AddDate(0, 1, 0))
 	}
 	this.Ret.Posts = postsFor(this.Ctx, userCur(this.Ctx), *this.Args.From, *this.Args.Until, this.Args.OnlyBy)
 	this.Ret.augmentWithFileContentTypes()
