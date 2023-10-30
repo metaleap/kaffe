@@ -234,6 +234,18 @@ export async function apiUserBuddies(payload?: Void, formData?: FormData, query?
 }
 export type UserBuddiesErr = typeof errsUserBuddies[number]
 
+const errsUserBuddiesAdd = ['DbUpdate_ExpectedChangesForUpdate', 'DbUpdate_ExpectedQueryForUpdate', 'MissingOrExcessiveContentLength', 'TimedOut', 'Unauthorized', 'UserBuddiesAdd_ExpectedEitherNickNameOrEmailAddr'] as const
+export async function apiUserBuddiesAdd(payload?: userBuddiesAdd_In, formData?: FormData, query?: {[_:string]:string}): Promise<userBuddiesAdd_Out> {
+	try {
+		return await req<userBuddiesAdd_In, userBuddiesAdd_Out, UserBuddiesAddErr>('_/userBuddiesAdd', payload, formData, query)
+	} catch(err: any) {
+		if (err && err['body_text'] && (errsUserBuddiesAdd.indexOf(err.body_text) >= 0))
+			throw(new Err<UserBuddiesAddErr>(err.body_text as UserBuddiesAddErr))
+		throw(err)
+	}
+}
+export type UserBuddiesAddErr = typeof errsUserBuddiesAdd[number]
+
 const errsUserBy = ['MissingOrExcessiveContentLength', 'TimedOut', 'Unauthorized', 'UserBy_ExpectedEitherNickNameOrEmailAddr'] as const
 export async function apiUserBy(payload?: userBy_In, formData?: FormData, query?: {[_:string]:string}): Promise<User> {
 	try {
@@ -361,6 +373,14 @@ export type postsRecent_In = {
 }
 
 export type Time = string
+export type userBuddiesAdd_In = {
+	NickOrEmailAddr?: string
+}
+
+export type userBuddiesAdd_Out = {
+	Done: boolean
+}
+
 export type userBuddies_Out = {
 	Buddies: User[]
 	BuddyRequestsBy: User[]

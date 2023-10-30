@@ -45,6 +45,12 @@ func init() {
 		"userBuddies": apiUserBuddies.
 			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
 
+		"userBuddiesAdd": apiUserBuddiesAdd.Checks(
+			Fails{Err: "ExpectedEitherNickNameOrEmailAddr", If: UserBuddiesAddNickOrEmailAddr.Equal("")},
+		).
+			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized).
+			CouldFailWith(":" + yodb.ErrSetDbUpdate),
+
 		"postsRecent": apiPostsRecent.
 			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
 
@@ -129,6 +135,14 @@ var apiUserBuddies = api(func(this *ApiCtx[Void, struct {
 	BuddyRequestsBy   []*User
 }]) {
 	this.Ret.Buddies, this.Ret.BuddyRequestsMade, this.Ret.BuddyRequestsBy = userBuddies(this.Ctx, userCur(this.Ctx), true)
+})
+
+var apiUserBuddiesAdd = api(func(this *ApiCtx[struct {
+	NickOrEmailAddr string
+}, struct {
+	Done bool
+}]) {
+	this.Ret.Done = (nil != userAddBuddy(this.Ctx, userCur(this.Ctx), this.Args.NickOrEmailAddr))
 })
 
 type ApiArgPeriod struct {
