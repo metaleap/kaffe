@@ -119,11 +119,19 @@ function update(me: UiCtlBuddies, buddiesInfo: yo.userBuddies_Out): number {
 }
 
 async function showBuddiesDialog(me: UiCtlBuddies) {
-    const add_new_buddy = () => {
-        const buddy_needle = prompt("Nickname or email address?", "")
-        if (buddy_needle && buddy_needle.length) {
-
-        }
+    const add_new_buddy = async () => {
+        let nick_or_email_addr = prompt("New buddy's nick or email address?", "")
+        if (nick_or_email_addr && nick_or_email_addr.length && (nick_or_email_addr = nick_or_email_addr.trim()))
+            try {
+                const result = await yo.apiUserBuddiesAdd({ NickOrEmailAddr: nick_or_email_addr })
+                if (!result.Done)
+                    alert(`No user '${nick_or_email_addr}' was found. Typo?`)
+                else
+                    alert(`Done. Until '${nick_or_email_addr}' confirms, they'll appear offline in your buddy list.`)
+            } catch (err) {
+                if (!haxsh.knownErr<yo.UserBuddiesAddErr>(err, haxsh.handleKnownErrMaybe<yo.UserBuddiesAddErr>))
+                    haxsh.onErrOther(err, true)
+            }
     }
     const dialog = htm.dialog({ 'class': 'buddies-popup' },
         htm.button({ 'type': 'button', 'class': 'addnew', 'title': "Add a buddy...", 'onclick': _ => add_new_buddy() }, "➕"),

@@ -26,7 +26,7 @@ export function create(user: yo.User): UiCtlUserPopup {
     const on_darklite_slider_change = () =>
         setLiveDarklite(htm_input_darklite.value)
     const is_self = (haxsh.userSelf.val) && (haxsh.userSelf.val.Id === user.Id),
-        htm_input_nick = htm.input({ 'type': 'text', 'class': 'nick', 'value': user.Nick!, 'placeholder': '(Nickname)', 'spellcheck': false, 'autocorrect': 'off' }),
+        htm_input_nick = htm.input({ 'type': 'text', 'class': 'nick', 'value': user.Nick!, 'placeholder': '(Nick)', 'spellcheck': false, 'autocorrect': 'off' }),
         htm_input_btw = htm.input({ 'type': 'text', 'class': 'btw', 'value': user.Btw ?? '', 'placeholder': '(Your hover statement here)', 'spellcheck': false, 'autocorrect': 'off' }),
         htm_input_pic = htm.input({ 'type': 'file', 'name': 'picfile', 'id': 'picfile', 'accept': 'image/*' }),
         htm_div_pic = htm.div({ 'class': 'buddy-pic', 'style': `background-image:url('${uibuddies.userPicFileUrl(user)}');cursor:${is_self ? 'pointer' : 'default'}`, 'onclick': _ => (is_self) ? htm_input_pic.click() : false }),
@@ -72,7 +72,7 @@ export function create(user: yo.User): UiCtlUserPopup {
                 haxsh.reloadUserSelf()
             } catch (err) {
                 if (!haxsh.knownErr<yo.UserUpdateErr>(err, haxsh.handleKnownErrMaybe<yo.UserUpdateErr>))
-                    haxsh.onErrOther(err)
+                    haxsh.onErrOther(err, true)
             }
         }
         if (did_save || !has_changed)

@@ -489,6 +489,10 @@ dialog ul {
     list-style-type: none;
 }
 
+dialog h3 {
+    margin: 0;
+}
+
 dialog li {
     clear: both;
     padding: 0 0 3.21em 0;

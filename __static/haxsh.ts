@@ -304,7 +304,7 @@ export function onErrOther(err: any, showAlert?: boolean) {
             ((err_str_1 && (err_str_1 !== '[object Object]')) ? err_str_1 :
                 ((err_str_2 && (err_str_2 !== '[object Object]')) ? err_str_2 : err_json))
     if (showAlert)
-        alert(err_msg)
+        alert("Try again shortly, because this attempt errored with: " + err_msg)
     else
         console.warn(err, err_json, err_msg)
 }
@@ -322,10 +322,10 @@ export function handleKnownErrMaybe<T extends string>(err: T): boolean {
             alert("To share something over " + yo.reqMaxReqPayloadSizeMb + "MB, host it elsewhere and share the link instead.")
             return true
         case 'UserUpdate_NicknameAlreadyExists':
-            alert(`Nickname already taken — but, look... '${userSelf.val?.Nick}' ain't so shabby either!`)
+            alert(`Nick already taken — but, look... '${userSelf.val?.Nick}' ain't so shabby either!`)
             return true
         case 'UserUpdate_ExpectedNonEmptyNickname':
-            alert("That choice of nickname does not reflect you: you're not empty.")
+            alert("That choice of nick does not reflect you: you're not empty.")
             return true
     }
     return false
