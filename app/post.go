@@ -178,7 +178,7 @@ func dbQueryPostsForUser(forUser *User, onlyThoseBy sl.Slice[yodb.I64]) q.Query 
 	onlyThoseBy = sl.With(onlyThoseBy, forUser.Id)
 	ret := PostBy.In(onlyThoseBy.ToAnys()...).And(If(is_room,
 		PostTo.Equal(sl.Sorted(onlyThoseBy)),
-		q.ArrIsEmpty(PostTo),
+		q.ArrIsEmpty(PostTo).And(q.ArrHas(PostBy_Buddies, forUser.Id)),
 	))
 	return ret
 }
