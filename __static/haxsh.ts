@@ -300,9 +300,10 @@ export function onErrOther(err: any, showAlert?: boolean) {
     if (isSeeminglyOffline.val = !showAlert)
         browserTabTitleRefresh()
     const err_json = JSON.stringify(err), err_str_1 = err.toString(), err_str_2 = `${err}`,
-        err_msg = err.message ? err.message :
+        err_msg = err.knownErr || err.message ||
             ((err_str_1 && (err_str_1 !== '[object Object]')) ? err_str_1 :
-                ((err_str_2 && (err_str_2 !== '[object Object]')) ? err_str_2 : err_json))
+                ((err_str_2 && (err_str_2 !== '[object Object]')) ? err_str_2
+                    : err_json))
     if (showAlert)
         alert("Try again shortly, because this attempt errored with: " + err_msg)
     else

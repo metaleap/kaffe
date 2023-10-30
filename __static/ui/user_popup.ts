@@ -88,13 +88,13 @@ export function create(user: yo.User): UiCtlUserPopup {
                 htm_div_pic,
             ),
             htm.div({},
-                is_self ? htm_input_btw : htm.span({ 'class': 'btw' }, user.Btw),
+                is_self ? htm_input_btw : htm.div({ 'class': 'btw' }, user.Btw),
             ),
             htm.div({}),
-            (!is_self) ? undefined : htm.div({},
+            (!is_self) ? undefined : htm.div({}, htm.span({},
                 htm.label({ 'for': 'darklite' }, "UI Dark/Light:"),
                 htm_input_darklite,
-            ),
+            )),
         )
     }
     me.DOM.onclose = () => {

@@ -133,21 +133,52 @@ async function showBuddiesDialog(me: UiCtlBuddies) {
                 }
         }
     }
+    const confirm_new_buddy = async (htmCheckbox: HTMLInputElement, user: yo.User) => {
+        htmCheckbox.checked = false
+        if (!confirm(`Sure to become buddies with '${user.Nick}' now? (Just checking in case your cat triggered this...)`))
+            return
+        htmCheckbox.style.cursor = 'wait'
+        htmCheckbox.disabled = true
+        try {
+            await haxsh.reloadUserSelf()
+            const user_self = haxsh.userSelf?.val
+            if (!user_self)
+                return
+            if (!user_self.Buddies)
+                user_self.Buddies = []
+            if (!user_self.Buddies.some(_ => (_ === user.Id!))) {
+                user_self.Buddies.push(user.Id!)
+                await yo.apiUserUpdate({
+                    Id: user_self.Id, Changes: { Buddies: user_self.Buddies }, ChangedFields: ['Buddies']
+                }, new FormData())
+            }
+            htmCheckbox.checked = true
+            alert(`You're now buddies with '${user.Nick ?? '?'}', so chat them up!`)
+            haxsh.reloadUserSelf()
+        } catch (err) {
+            if (!haxsh.knownErr<yo.UserUpdateErr>(err, haxsh.handleKnownErrMaybe<yo.UserUpdateErr>))
+                haxsh.onErrOther(err, true)
+        } finally {
+            htmCheckbox.style.removeProperty('cursor')
+        }
+    }
     const dialog = htm.dialog({ 'class': 'buddies-popup' },
         htm.button({ 'type': 'button', 'class': 'addnew', 'title': "Add a buddy...", 'onclick': _ => add_new_buddy() }, "➕"),
         htm.button({ 'type': 'button', 'class': 'close', 'title': "Close", 'onclick': _ => dialog.close() }, "❎"),
-        htm.div(htm.h3({}, "Who wants to be buddies:")),
-        me.buddyRequestsBy.val.length
-            ? htm.ul({}, ...me.buddyRequestsBy.val.map(_ =>
-                htm.li({},
-                    htm.div(userDomAttrsBuddy(_)),
-                    htm.b(_.Nick),
-                    htm.hr(),
-                    htm.input({ 'id': 'chk_confirm_' + _.Id, 'type': 'checkbox' }),
-                    htm.label({ 'for': 'chk_confirm_' + _.Id }, "Become buddies now?"),
+        htm.div({}, htm.h3({}, "Who wants to be buddies:")), (!me.buddyRequestsBy.val.length)
+        ? htm.div({}, "No buddy requests received lately. ", htm.a({ 'onclick': () => add_new_buddy() }, " Add a buddy..."))
+        : htm.ul({}, ...me.buddyRequestsBy.val.map(buddy_to_be => {
+            let htm_checkbox = htm.input({ 'id': 'chk_confirm_' + buddy_to_be.Id, 'type': 'checkbox', 'onclick': () => confirm_new_buddy(htm_checkbox, buddy_to_be) })
+            return htm.li({},
+                htm.div(userDomAttrsBuddy(buddy_to_be)),
+                htm.b(buddy_to_be.Nick),
+                htm.hr(),
+                htm.span({},
+                    htm_checkbox,
+                    htm.label({ 'for': 'chk_confirm_' + buddy_to_be.Id }, "Become buddies now?")
                 ),
-            ))
-            : htm.div({}, "No buddy requests received lately. ", htm.a({ 'onclick': () => add_new_buddy() }, " Add a buddy...")),
+            )
+        }))
     )
     dialog.onclose = _ => dialog.remove()
 

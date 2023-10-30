@@ -444,7 +444,7 @@ dialog input[type='text']::placeholder {
     width: 99%;
 }
 
-.user-popup span.btw {
+.user-popup div.btw {
     display: block;
     margin-top: 3.21em;
 }
@@ -472,7 +472,15 @@ dialog input[type='range'] {
 }
 
 dialog label {
+    white-space: nowrap;
+    text-wrap: nowrap;
     margin-right: 1em;
+}
+
+dialog span {
+    display: block;
+    white-space: nowrap;
+    text-wrap: nowrap;
 }
 
 dialog button {
