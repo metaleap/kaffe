@@ -156,18 +156,24 @@ async function fetchPostsDeleted() {
 }
 
 function newUiLoginDialog() {
-    const on_btn_login = async () => {
+    const on_btn_clicked = async () => {
+        if (!(in_user_name.value = in_user_name.value.trim()))
+            return
+        in_user_name.disabled = true
+        in_password.disabled = true
         try {
             await yo.apiUserSignIn({ EmailAddr: in_user_name.value, PasswordPlain: in_password.value })
             isSeeminglyOffline.val = false
             location.reload()
         } catch (err) {
+            in_user_name.disabled = false
+            in_password.disabled = false
             if (!knownErr<yo.UserSignInErr>(err, (err) => {
                 switch (err) {
-                    case '___yo_authLogin_WrongPassword':
                     case '___yo_authLogin_AccountDoesNotExist':
+                    case '___yo_authLogin_WrongPassword':
                     case '___yo_authLogin_EmailInvalid':
-                        alert(err)
+                        alert("You must have had a typo in there, please double-check and try again.")
                         return true
                 }
                 return false
@@ -176,15 +182,17 @@ function newUiLoginDialog() {
         }
     }
 
-    const in_user_name = htm.input({ 'value': 'foo789@bar.baz' })
-    const in_password = htm.input({ 'type': 'password', 'value': 'foobar' })
-    return htm.dialog({},
+    const in_user_name = htm.input({ 'placeholder': '(nick or email address)' })
+    const in_password = htm.input({ 'type': 'password', 'placeholder': '(keep blank if forgotten OR not yet registered)' })
+    const dialog = htm.dialog({ 'class': 'login-popup' },
         htm.form({},
+            htm.button({ 'type': 'button', 'class': 'save', 'title': "Sign in or sign up now", 'onclick': _ => on_btn_clicked() }, "✅"),
             in_user_name,
             in_password,
-            htm.button({ 'onclick': on_btn_login, 'type': 'button' }, "Login"),
         ),
     )
+    dialog.onclose = () => setTimeout(() => dialog.showModal(), 1234)
+    return dialog
 }
 
 export function userById(id: number) {

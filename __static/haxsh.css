@@ -25,6 +25,12 @@ body {
     padding: 0;
 }
 
+input,
+select {
+    outline: none;
+    font-family: system-ui !important;
+}
+
 body a {
     color: var(--sigcol) !important;
 }
@@ -424,7 +430,6 @@ dialog input[type='file'] {
 }
 
 dialog input[type='text'] {
-    font-family: system-ui;
     font-size: 1em;
     background-color: transparent;
     color: var(--fgcolor);
@@ -468,6 +473,10 @@ dialog input[type='text']::placeholder {
     white-space: nowrap;
     text-wrap: nowrap;
     padding-right: 1em;
+}
+
+.login-popup input {
+    width: calc(99%);
 }
 
 dialog input[type='range'] {
@@ -563,7 +572,6 @@ dialog .buddy-pic {
     color: var(--fgcolor);
     margin: 0;
     padding: 0.22em;
-    font-family: system-ui;
     font-weight: bold;
     border: 0 none transparent;
 }

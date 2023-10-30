@@ -32,13 +32,13 @@ export function create(): UiCtlPosts {
     const files_to_post: vanx.Reactive<UpFile[]> = vanx.reactive([] as UpFile[])
     const htm_post_entry = htm.div({
         'class': depends(() => 'post-content' + (haxsh.isSeeminglyOffline.val ? ' offline' : '') + (is_sending.val ? ' sending' : '') + (is_empty.val ? ' empty' : '')),
-        'contenteditable': depends(() => ((is_sending.val || haxsh.isArchiveBrowsing.val) ? 'false' : 'true')),
+        'contenteditable': depends(() => ((is_sending.val || haxsh.isArchiveBrowsing.val || !haxsh.userSelf.val) ? 'false' : 'true')),
         'autofocus': true, 'spellcheck': false, 'autocorrect': 'off', 'tabindex': 1,
-        'title': depends(() => haxsh.isArchiveBrowsing.val
+        'title': depends(() => (!haxsh.userSelf.val) ? "Sign in or sign up to resume confabulations:" : (haxsh.isArchiveBrowsing.val
             ? "Browsing archives. To chat, switch back to 'Fresh'."
             : (haxsh.selectedBuddy.val
                 ? `Chat with ${haxsh.userById(haxsh.selectedBuddy.val)?.Nick || "?"}`
-                : "This goes to all buddies. (For 1-to-1 chat, select a buddy on the right.)")),
+                : "This goes to all buddies. (For 1-to-1 chat, select a buddy on the right.)"))),
         'oninput': () => {
             is_empty.val = (htm_post_entry.innerHTML === "") || (htm_post_entry.innerHTML === "<br>")
         },
@@ -51,7 +51,7 @@ export function create(): UiCtlPosts {
             }
         },
     }, "")
-    const button_disabled = () => (haxsh.isSeeminglyOffline.val || (is_deleting.val > 0) || is_sending.val)
+    const button_disabled = () => (haxsh.isSeeminglyOffline.val || (is_deleting.val > 0) || is_sending.val || !haxsh.userSelf.val)
     const htm_input_file = htm.input({ 'type': 'file', 'multiple': true, 'onchange': () => onFilesAdded(me, files_to_post, htm_input_file) })
     me = {
         _htmPostInput: htm_post_entry,
