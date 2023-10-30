@@ -5,21 +5,23 @@ import (
 	yodb "yo/db"
 	q "yo/db/query"
 	. "yo/util"
+	"yo/util/sl"
 )
 
 func userBuddies(ctx *Ctx, forUser *User, normalizeLastSeenByMinute bool) (buddiesAlready []*User, buddyRequestsMade []*User, buddyRequestsBy []*User) {
-	buddiesAlready = yodb.FindMany[User](ctx,
-		UserId.In(forUser.Buddies.ToAnys()...).And(
-			q.InArr(forUser.Id, UserBuddies)),
-		0, nil, UserLastSeen.Desc(), UserDtMod.Desc())
-	buddyRequestsMade = yodb.FindMany[User](ctx,
-		UserId.In(forUser.Buddies.ToAnys()...).And(
-			q.InArr(forUser.Id, UserBuddies).Not()),
-		0, UserFields(UserId, UserNick, UserDtMade), UserDtMade.Desc())
-	buddyRequestsBy = yodb.FindMany[User](ctx,
-		q.InArr(UserBuddies, forUser.Id).And(
-			UserId.NotIn(forUser.Buddies.ToAnys()...)),
-		0, nil)
+	for _, user := range yodb.FindMany[User](ctx,
+		UserId.In(forUser.Buddies.ToAnys()...).Or(q.InArr(forUser.Id, UserBuddies)),
+		0, nil, UserLastSeen.Desc(), UserDtMod.Desc(),
+	) {
+		in_our_buddies, in_their_buddies := sl.Has(user.Id, forUser.Buddies), sl.Has(forUser.Id, user.Buddies)
+		if in_our_buddies && in_their_buddies {
+			buddiesAlready = append(buddiesAlready, user)
+		} else if in_their_buddies {
+			buddyRequestsBy = append(buddyRequestsBy, user)
+		} else if in_our_buddies {
+			buddyRequestsMade = append(buddyRequestsMade, user)
+		}
+	}
 
 	if normalizeLastSeenByMinute {
 		for _, buddy := range buddiesAlready {
