@@ -374,7 +374,6 @@ button {
 
 dialog,
 .dialog {
-    margin: 1.11em;
     padding: 1.44em;
     outline: none;
     color: var(--fgcolor);
@@ -526,6 +525,10 @@ dialog a {
 
 dialog button.close {
     right: 0.22em;
+}
+
+dialog button.exit {
+    right: 3.45em;
 }
 
 dialog button.save,

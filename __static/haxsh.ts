@@ -285,6 +285,10 @@ export function buddySelected(user?: yo.User, ensureIsSelected?: boolean) {
     return is_selected
 }
 
+export function userSignOut(confirmFirst: boolean) {
+    if (!confirm("Sure to sign out now?")) { }
+}
+
 export function userShowPopup(user?: yo.User) {
     if (!user)
         user = userSelf.val
