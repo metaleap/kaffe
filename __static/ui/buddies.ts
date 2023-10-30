@@ -1,4 +1,4 @@
-import van from '../../__yostatic/vanjs/van-1.2.3.debug.js'
+import van, { State } from '../../__yostatic/vanjs/van-1.2.3.debug.js'
 import * as vanx from '../../__yostatic/vanjs/van-x.js'
 const htm = van.tags, depends = van.derive
 
@@ -11,6 +11,7 @@ export type UiCtlBuddies = {
     DOM: HTMLElement
     buddies: vanx.Reactive<yo.User[]>
     buddyRequestsMade: yo.User[]
+    buddyRequestsBy: State<yo.User[]>
     update: (_: yo.userBuddies_Out) => number
 }
 
@@ -24,12 +25,11 @@ export function create(): UiCtlBuddies {
                     if (!haxsh.isSeeminglyOffline.val)
                         haxsh.buddySelected(undefined, true)
                 },
-            },
-                htm.div(userDomAttrsSelf()),
-            ),
+            }, htm.div(userDomAttrsSelf())),
         ),
         buddies: vanx.reactive([] as yo.User[]),
         buddyRequestsMade: [],
+        buddyRequestsBy: van.state([] as yo.User[]),
         update: (_) => update(me, _),
     }
 
@@ -37,14 +37,18 @@ export function create(): UiCtlBuddies {
         const item = htm.div({
             'class': depends(() => 'buddy' + (haxsh.isSeeminglyOffline.val ? ' offline' : '') + (haxsh.buddySelected(it.val) ? ' selected' : '') + ((haxsh.buddyBadges[it.val.Id!].val) ? ' badged' : '')),
             'data-badge': depends(() => (haxsh.buddyBadges[it.val.Id!].val) || ""),
-        },
-            htm.div(userDomAttrsBuddy(it.val)))
+        }, htm.div(userDomAttrsBuddy(it.val)))
         item.onclick = () => {
             if (!haxsh.isSeeminglyOffline.val)
                 haxsh.buddySelected(it.val, true)
         }
         return item
     }))
+    van.add(me.DOM, htm.div({
+        'class': depends(() => 'buddy' + (me.buddyRequestsBy.val.length ? ' badged' : '')),
+        'data-badge': depends(() => me.buddyRequestsBy.val.length || ""),
+        'onclick': () => showBuddiesDialog(me),
+    }, htm.div({ 'class': 'buddy-pic', 'title': "Manage Buddies", 'style': `background-image: url('${userPicFileUrl(undefined, "👥")}')` })))
     return me
 }
 
@@ -88,26 +92,51 @@ export function userDomAttrsSelf() {
 }
 
 function update(me: UiCtlBuddies, buddiesInfo: yo.userBuddies_Out): number {
-    me.buddyRequestsMade = buddiesInfo.BuddyRequestsMade
+    me.buddyRequestsMade = buddiesInfo.BuddyRequestsMade ?? []
+    me.buddyRequestsBy.val = buddiesInfo.BuddyRequestsBy ?? []
+    const buddies = buddiesInfo.Buddies ?? []
     const now = new Date().getTime(), move_selected_top = false
     if (move_selected_top) {
         const is_selected: { [_: number]: boolean } = {}
-        for (let i = 0; i < buddiesInfo.Buddies.length; i++) {
-            const buddy = buddiesInfo.Buddies[i]
+        for (let i = 0; i < buddies.length; i++) {
+            const buddy = buddies[i]
             is_selected[buddy.Id!] = haxsh.buddySelected(buddy)
             if ((i > 0) && (is_selected[buddy.Id!])) {
                 for (let j = 0; j < i; j++) {
-                    const earlier = buddiesInfo.Buddies[j]
+                    const earlier = buddies[j]
                     if (!is_selected[earlier.Id!]) {
-                        buddiesInfo.Buddies[j] = buddy
-                        buddiesInfo.Buddies[i] = earlier
+                        buddies[j] = buddy
+                        buddies[i] = earlier
                         break
                     }
                 }
             }
         }
     }
-    if (!youtil.deepEq(buddiesInfo.Buddies, me.buddies.filter(_ => true), false, false))
-        vanx.replace(me.buddies, (_: yo.User[]) => buddiesInfo.Buddies)
-    return buddiesInfo.Buddies.filter(_ => !isOffline(_, now)).length
+    if (!youtil.deepEq(buddies, me.buddies.filter(_ => true), false, false))
+        vanx.replace(me.buddies, (_: yo.User[]) => buddies)
+    return buddies.filter(_ => !isOffline(_, now)).length
+}
+
+async function showBuddiesDialog(me: UiCtlBuddies) {
+    const add_new_buddy = () => {
+        const buddy_needle = prompt("Nickname or email address?", "")
+        if (buddy_needle && buddy_needle.length) {
+
+        }
+    }
+    const dialog = htm.dialog({ 'class': 'buddies-popup' },
+        htm.button({ 'type': 'button', 'class': 'addnew', 'title': "Add a buddy...", 'onclick': _ => add_new_buddy() }, "➕"),
+        htm.button({ 'type': 'button', 'class': 'close', 'title': "Close", 'onclick': _ => dialog.close() }, "❎"),
+        htm.div(htm.h3({}, "Who wants to be buddies:")),
+        me.buddyRequestsBy.val.length
+            ? htm.ul({}, ...me.buddyRequestsBy.val.map(_ =>
+                htm.li({}, htm.div(userDomAttrsBuddy(_)), _.Nick),
+            ))
+            : htm.div({}, "No buddy requests received lately. ", htm.a({ 'onclick': () => add_new_buddy() }, " Add a buddy...")),
+    )
+    dialog.onclose = _ => dialog.remove()
+
+    van.add(me.DOM, dialog)
+    dialog.showModal()
 }

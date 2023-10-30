@@ -67,7 +67,7 @@ body a {
     content: attr(data-badge);
     position: absolute;
     background-color: var(--sigcol);
-    color: var(--fgcolor);
+    color: #ffffff;
     z-index: 99999;
     width: 1.23em;
     height: 1.23em;
@@ -399,26 +399,30 @@ dialog::backdrop,
     max-width: 99%;
 }
 
-.user-popup {
+.user-popup,
+.buddies-popup {
     margin-right: 0;
-    margin-top: 3em;
     border-top-right-radius: 0;
 }
 
-.user-popup>div {
+.user-popup {
+    margin-top: 3em;
+}
+
+dialog>div {
     margin-bottom: 1.23em;
     clear: both;
 }
 
-.user-popup>div:last-child {
+dialog>div:last-child {
     margin-bottom: 0;
 }
 
-.user-popup input[type='file'] {
+dialog input[type='file'] {
     display: none;
 }
 
-.user-popup input[type='text'] {
+dialog input[type='text'] {
     font-family: system-ui;
     font-size: 1em;
     background-color: transparent;
@@ -427,7 +431,7 @@ dialog::backdrop,
     outline: none;
 }
 
-.user-popup input[type='text']::placeholder {
+dialog input[type='text']::placeholder {
     color: var(--bgoff2);
     font-style: italic;
     font-size: 0.88em;
@@ -461,17 +465,17 @@ dialog::backdrop,
     padding-right: 1em;
 }
 
-.user-popup input[type='range'] {
+dialog input[type='range'] {
     margin: 0;
     padding: 0;
     vertical-align: bottom;
 }
 
-.user-popup label {
+dialog label {
     margin-right: 1em;
 }
 
-.user-popup button {
+dialog button {
     position: absolute;
     top: 0.077em;
     border-radius: 0 !important;
@@ -480,15 +484,41 @@ dialog::backdrop,
     font-size: 0.55em;
 }
 
-.user-popup button.close {
+dialog ul {
+    padding: 0;
+    list-style-type: none;
+}
+
+dialog li {
+    clear: both;
+    padding: 0 0 3.21em 0;
+}
+
+dialog li .buddy-pic {
+    float: left;
+    margin-right: 0.44em;
+}
+
+dialog a {
+    color: LinkText !important;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+dialog button.close {
     right: 0.22em;
 }
 
-.user-popup button.save {
+dialog button.save,
+dialog button.addnew {
     right: 1.77em;
 }
 
-.user-popup .buddy-pic {
+dialog button.addnew {
+    background-color: cornflowerblue;
+}
+
+dialog .buddy-pic {
     width: 3.21em;
     height: 3.21em;
     float: right;

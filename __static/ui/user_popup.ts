@@ -81,8 +81,8 @@ export function create(user: yo.User): UiCtlUserPopup {
 
     const me: UiCtlUserPopup = {
         DOM: htm.dialog({ 'class': 'user-popup' },
-            htm.button({ 'type': 'button', 'class': 'close', 'onclick': _ => me.DOM.close() }, "❎"),
-            (!is_self) ? undefined : htm.button({ 'type': 'button', 'class': 'save', 'onclick': save_changes }, "✅"),
+            htm.button({ 'type': 'button', 'class': 'close', 'title': "Close", 'onclick': _ => me.DOM.close() }, "❎"),
+            (!is_self) ? undefined : htm.button({ 'type': 'button', 'class': 'save', 'title': "Save changes", 'onclick': save_changes }, "✅"),
             htm.div({},
                 is_self ? htm_input_nick : htm.span({ 'class': 'nick' }, user.Nick),
                 htm_div_pic,
