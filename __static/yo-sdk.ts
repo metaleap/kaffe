@@ -384,7 +384,6 @@ export type userBuddiesAdd_Out = {
 export type userBuddies_Out = {
 	Buddies: User[]
 	BuddyRequestsBy: User[]
-	BuddyRequestsMade: User[]
 }
 
 export type userBy_In = {

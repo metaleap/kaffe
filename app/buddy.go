@@ -38,6 +38,7 @@ func userBuddies(ctx *Ctx, forUser *User, normalizeLastSeenByMinute bool) (buddi
 		buddy_request.LastSeen = buddy_request.DtMade
 		buddy_request.PicFileId = ""
 	}
+	buddyRequestsMade = sl.SortedPer(buddyRequestsMade, func(lhs *User, rhs *User) int { return int(rhs.Id - lhs.Id) })
 	return
 }
 

@@ -130,11 +130,12 @@ var apiUserUpdate = api(func(this *ApiCtx[yodb.ApiUpdateArgs[User, UserField], V
 })
 
 var apiUserBuddies = api(func(this *ApiCtx[Void, struct {
-	Buddies           []*User
-	BuddyRequestsMade []*User
-	BuddyRequestsBy   []*User
+	Buddies         []*User
+	BuddyRequestsBy []*User
 }]) {
-	this.Ret.Buddies, this.Ret.BuddyRequestsMade, this.Ret.BuddyRequestsBy = userBuddies(this.Ctx, userCur(this.Ctx), true)
+	var buddy_requests_made []*User
+	this.Ret.Buddies, buddy_requests_made, this.Ret.BuddyRequestsBy = userBuddies(this.Ctx, userCur(this.Ctx), true)
+	this.Ret.Buddies = append(this.Ret.Buddies, buddy_requests_made...)
 })
 
 var apiUserBuddiesAdd = api(func(this *ApiCtx[struct {

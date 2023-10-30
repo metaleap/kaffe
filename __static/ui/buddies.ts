@@ -10,9 +10,8 @@ import * as util from '../util.js'
 export type UiCtlBuddies = {
     DOM: HTMLElement
     buddies: vanx.Reactive<yo.User[]>
-    buddyRequestsMade: yo.User[]
     buddyRequestsBy: State<yo.User[]>
-    update: (_: yo.userBuddies_Out) => number
+    update: (_: yo.userBuddies_Out) => void
 }
 
 export function create(): UiCtlBuddies {
@@ -28,7 +27,6 @@ export function create(): UiCtlBuddies {
             }, htm.div(userDomAttrsSelf())),
         ),
         buddies: vanx.reactive([] as yo.User[]),
-        buddyRequestsMade: [],
         buddyRequestsBy: van.state([] as yo.User[]),
         update: (_) => update(me, _),
     }
@@ -91,11 +89,10 @@ export function userDomAttrsSelf() {
     }
 }
 
-function update(me: UiCtlBuddies, buddiesInfo: yo.userBuddies_Out): number {
-    me.buddyRequestsMade = buddiesInfo.BuddyRequestsMade ?? []
+function update(me: UiCtlBuddies, buddiesInfo: yo.userBuddies_Out) {
     me.buddyRequestsBy.val = buddiesInfo.BuddyRequestsBy ?? []
     const buddies = buddiesInfo.Buddies ?? []
-    const now = new Date().getTime(), move_selected_top = false
+    const move_selected_top = false // actually irritating ux-wise, so decided-against for now
     if (move_selected_top) {
         const is_selected: { [_: number]: boolean } = {}
         for (let i = 0; i < buddies.length; i++) {
@@ -115,7 +112,6 @@ function update(me: UiCtlBuddies, buddiesInfo: yo.userBuddies_Out): number {
     }
     if (!youtil.deepEq(buddies, me.buddies.filter(_ => true), false, false))
         vanx.replace(me.buddies, (_: yo.User[]) => buddies)
-    return buddies.filter(_ => !isOffline(_, now)).length
 }
 
 async function showBuddiesDialog(me: UiCtlBuddies) {
@@ -123,8 +119,6 @@ async function showBuddiesDialog(me: UiCtlBuddies) {
         let nick_or_email_addr = prompt("New buddy's nick or email address?", "")
         if (nick_or_email_addr && nick_or_email_addr.length && (nick_or_email_addr = nick_or_email_addr.trim())) {
             if (me.buddies.filter(_ => true).some(_ => _.Nick === nick_or_email_addr))
-                alert(`You're already buddies with '${nick_or_email_addr}'! Getting sentimental here now...`)
-            else if (me.buddyRequestsMade.some(_ => _.Nick === nick_or_email_addr))
                 alert(`A buddy request for '${nick_or_email_addr}' had already been placed at an earlier time, but your eagerness is commendable.`)
             else
                 try {
@@ -145,7 +139,13 @@ async function showBuddiesDialog(me: UiCtlBuddies) {
         htm.div(htm.h3({}, "Who wants to be buddies:")),
         me.buddyRequestsBy.val.length
             ? htm.ul({}, ...me.buddyRequestsBy.val.map(_ =>
-                htm.li({}, htm.div(userDomAttrsBuddy(_)), _.Nick),
+                htm.li({},
+                    htm.div(userDomAttrsBuddy(_)),
+                    htm.b(_.Nick),
+                    htm.hr(),
+                    htm.input({ 'id': 'chk_confirm_' + _.Id, 'type': 'checkbox' }),
+                    htm.label({ 'for': 'chk_confirm_' + _.Id }, "Become buddies now?"),
+                ),
             ))
             : htm.div({}, "No buddy requests received lately. ", htm.a({ 'onclick': () => add_new_buddy() }, " Add a buddy...")),
     )
