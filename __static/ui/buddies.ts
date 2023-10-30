@@ -43,6 +43,7 @@ export function create(): UiCtlBuddies {
         return item
     }))
     van.add(me.DOM, htm.div({
+        'style': depends(() => haxsh.userSelf.val ? '' : 'display:none'),
         'class': depends(() => 'buddy' + (me.buddyRequestsBy.val.length ? ' badged' : '')),
         'data-badge': depends(() => me.buddyRequestsBy.val.length || ""),
         'onclick': () => showBuddiesDialog(me),

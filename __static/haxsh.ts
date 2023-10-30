@@ -285,8 +285,16 @@ export function buddySelected(user?: yo.User, ensureIsSelected?: boolean) {
     return is_selected
 }
 
-export function userSignOut(confirmFirst: boolean) {
-    if (!confirm("Sure to sign out now?")) { }
+export async function userSignOut(confirmFirst: boolean) {
+    if (confirmFirst && !confirm("Sure to sign out now?"))
+        return
+    try {
+        await yo.apiUserSignOut({})
+        location.reload()
+    } catch (err) {
+        if (confirm('Failed to successfully sign out (at the server side), you can clear the Cookies for this domain or: try again?'))
+            userSignOut(false)
+    }
 }
 
 export function userShowPopup(user?: yo.User) {
