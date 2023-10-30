@@ -438,6 +438,10 @@ dialog input[type='text']::placeholder {
     font-size: 0.88em;
 }
 
+.user-popup input.btw:focus::placeholder {
+    color: transparent;
+}
+
 .user-popup .btw {
     color: var(--bgoff2);
     font-style: italic;

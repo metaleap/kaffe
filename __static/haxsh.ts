@@ -76,9 +76,10 @@ async function fetchBuddies(oneOff?: boolean) {
             reloadUserSelf() // no need to await really
         if (uiPeriodPicker.options.length < 2)
             reloadPostPeriods() // no await needed
-        for (const user of result.Buddies)
-            if (!buddyBadges[user.Id!])
-                buddyBadges[user.Id!] = van.state("")
+        if (result.Buddies && result.Buddies.length)
+            for (const user of result.Buddies)
+                if (!buddyBadges[user.Id!])
+                    buddyBadges[user.Id!] = van.state("")
         uiBuddies.update(result)
         browserTabTitleRefresh()
         if (!fetchedPostsEverYet) {
