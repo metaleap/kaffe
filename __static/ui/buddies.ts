@@ -51,7 +51,7 @@ function isOffline(user: yo.User, now?: number) {
     return (((now ?? youtil.dtNow()) - last_seen) > 77777)
 }
 
-export function userPicFileUrl(user?: yo.User, fallBackToEmoji = '👤', toRoundedSvgFavIcon = false) {
+export function userPicFileUrl(user?: yo.User, fallBackToEmoji = '🦜', toRoundedSvgFavIcon = false) {
     if (!(user && user.PicFileId))
         return util.svgTextIconDataHref(fallBackToEmoji)
     return '/_postfiles/' + user.PicFileId + (toRoundedSvgFavIcon ? '?picRounded=true' : '')

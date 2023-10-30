@@ -124,7 +124,7 @@ var apiUserUpdate = api(func(this *ApiCtx[yodb.ApiUpdateArgs[User, UserField], V
 })
 
 var apiUserBuddies = api(func(this *ApiCtx[Void, Return[[]*User]]) {
-	this.Ret.Result = userBuddies(this.Ctx, userCur(this.Ctx), true)
+	this.Ret.Result, _ = userBuddies(this.Ctx, userCur(this.Ctx), true)
 })
 
 type ApiArgPeriod struct {

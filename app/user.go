@@ -7,7 +7,6 @@ import (
 	yodb "yo/db"
 	yoauth "yo/feat_auth"
 	. "yo/srv"
-	. "yo/util"
 	"yo/util/sl"
 	"yo/util/str"
 )
@@ -54,18 +53,6 @@ func userUpdate(ctx *Ctx, upd *User, byCurUserInCtx bool, inclEmptyOrMissingFiel
 	if 0 == yodb.Update[User](ctx, upd, nil, !inclEmptyOrMissingFields, sl.To(onlyFields, UserField.F)...) {
 		panic("nochanges in " + str.From(onlyFields) + "?" + str.From(upd) + "vs." + str.From(userCur(ctx)))
 	}
-}
-
-func userBuddies(ctx *Ctx, forUser *User, normalizeLastSeenByMinute bool) []*User {
-	buddies := yodb.FindMany[User](ctx, UserId.In(forUser.Buddies.ToAnys()...), 0, nil, UserLastSeen.Desc(), UserDtMod.Desc())
-	if normalizeLastSeenByMinute {
-		for _, buddy := range buddies {
-			if buddy.LastSeen != nil {
-				buddy.LastSeen.Set(DtAtZeroSecsUtc)
-			}
-		}
-	}
-	return buddies
 }
 
 func userByEmailAddr(ctx *Ctx, emailAddr string) *User {
