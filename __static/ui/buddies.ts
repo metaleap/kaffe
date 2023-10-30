@@ -145,12 +145,9 @@ async function showBuddiesDialog(me: UiCtlBuddies) {
             const user_self = haxsh.userSelf?.val
             if (!user_self)
                 return
-            if (!user_self.Buddies)
-                user_self.Buddies = []
-            if (!user_self.Buddies.some(_ => (_ === user.Id!))) {
-                user_self.Buddies.push(user.Id!)
+            if ((!user_self.Buddies) || !user_self.Buddies.some(_ => (_ === user.Id!))) {
                 await yo.apiUserUpdate({
-                    Id: user_self.Id, Changes: { Buddies: user_self.Buddies }, ChangedFields: ['Buddies']
+                    Id: user_self.Id, Changes: { Buddies: [user.Id!].concat(user_self.Buddies ?? []) }, ChangedFields: ['Buddies']
                 }, new FormData())
             }
             htmCheckbox.checked = true

@@ -16,7 +16,7 @@ export type UiCtlPosts = {
     posts: vanx.Reactive<PostAug[]>
     numFreshPosts: number
     isSending: State<boolean>
-    isDeleting: State<number>
+    isRequestingDeletion: State<number>
     upFilesNative: (File | null)[]
 }
 
@@ -56,7 +56,7 @@ export function create(): UiCtlPosts {
     me = {
         _htmPostInput: htm_post_entry,
         isSending: is_sending,
-        isDeleting: is_deleting,
+        isRequestingDeletion: is_deleting,
         upFilesNative: [],
         DOM: htm.div({ 'class': 'haxsh-posts' },
             htm.div({ 'class': 'self-post' },
@@ -124,10 +124,10 @@ export function create(): UiCtlPosts {
         }
 
         const post_by = haxsh.userByPost(post), post_dt = new Date(post.DtMade!)
-        const htm_post = htm.div({ 'class': depends(() => ('post-content' + ((me.isDeleting.val === (post.Id!)) ? ' deleting' : (post._isFresh ? ' fresh' : '')))) })
+        const htm_post = htm.div({ 'class': depends(() => ('post-content' + ((post._isDel || (me.isRequestingDeletion.val === (post.Id!))) ? ' deleting' : (post._isFresh ? ' fresh' : '')))) })
         htm_post.innerHTML = inner_html
         const is_own_post = (post_by?.Id === haxsh.userSelf.val?.Id) || false,
-            dt_str = post_dt.toLocaleDateString() + " — " + post_dt.toLocaleTimeString()
+            dt_str = post_dt.toLocaleDateString() + " at " + post_dt.toLocaleTimeString()
         return htm.div({ 'class': 'post', 'title': dt_str },
             htm.div({ 'class': 'post-head' },
                 htm.div({
@@ -186,12 +186,13 @@ async function deletePost(me: UiCtlPosts, postId: number) {
     const post_idx = me.posts.findIndex(_ => (_ && (_.Id === postId)))
     if (post_idx < 0)
         return
-    me.isDeleting.val = postId
+    me.isRequestingDeletion.val = postId
     const post = me.posts[post_idx]
-    post._isDel = true
+    if (post)
+        post._isDel = true
     await haxsh.deletePost(postId)
     update(me, me.posts)
-    me.isDeleting.val = 0
+    me.isRequestingDeletion.val = 0
 }
 
 async function sendNew(me: UiCtlPosts, upFilesOwn: vanx.Reactive<UpFile[]>, isEmptyStateToSet: State<boolean>) {

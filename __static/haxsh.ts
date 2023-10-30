@@ -22,6 +22,7 @@ export let isArchiveBrowsing = van.state(false)
 export let selectedBuddy: State<number> = van.state(0)
 export let buddyBadges: { [_: number]: State<string> } = { 0: van.state("") }
 let firstOfMonth = new Date(new Date().getFullYear(), new Date().getUTCMonth(), 1, 0, 0, 0, 0).getTime()
+let shouldReloadPostPeriods = true
 
 let uiDialogLogin = newUiLoginDialog()
 let uiBuddies: uibuddies.UiCtlBuddies = uibuddies.create()
@@ -74,8 +75,6 @@ async function fetchBuddies(oneOff?: boolean) {
         isSeeminglyOffline.val = false
         if (!userSelf.val) // fetch only *after* the above because apiUserBy needs cur-user email-addr, which isn't cookied
             reloadUserSelf() // no need to await really
-        if (uiPeriodPicker.options.length < 2)
-            reloadPostPeriods() // no await needed
         if (result.Buddies && result.Buddies.length)
             for (const user of result.Buddies)
                 if (!buddyBadges[user.Id!])
@@ -96,9 +95,22 @@ async function fetchBuddies(oneOff?: boolean) {
 }
 
 async function fetchPostsRecent(oneOff?: boolean) {
-    if ((uiPosts.isDeleting.val > 0) || (fetchesPaused && !oneOff))
+    if ((uiPosts.isRequestingDeletion.val > 0) || (fetchesPaused && !oneOff))
         return
     try {
+        if (shouldReloadPostPeriods) {
+            shouldReloadPostPeriods = false
+            uiPeriodPicker.selectedIndex = 0
+            while (uiPeriodPicker.options.length > 1)
+                uiPeriodPicker.options.remove(1)
+            isArchiveBrowsing.val = false
+            const periods = (await yo.apiPostPeriods({ WithUserIds: selectedBuddy.val ? [selectedBuddy.val] : [] })).Periods ?? []
+            for (const period of periods) {
+                const dt = new Date(period)
+                uiPeriodPicker.options.add(htm.option({ 'value': period }, `${dt.getFullYear()} — ${dt.toLocaleDateString('default', { month: 'long' })}`))
+            }
+        }
+
         const fetch_archived_posts = (uiPeriodPicker.selectedIndex > 0)
         if (fetch_archived_posts) {
             fetchPostsSinceDt = (uiPeriodPicker.selectedOptions[0].value)
@@ -116,7 +128,7 @@ async function fetchPostsRecent(oneOff?: boolean) {
             })
         isSeeminglyOffline.val = false
         fetchedPostsEverYet = true // even if empty, we have a non-error outcome and so set this
-        if (uiPosts.isDeleting.val === 0) {
+        if (uiPosts.isRequestingDeletion.val === 0) {
             fetchPostsSinceDt = result.NextSince
             uiposts.update(uiPosts, result?.Posts ?? [])
             browserTabTitleRefresh()
@@ -142,15 +154,16 @@ async function fetchPostsDeleted() {
     if (fetchesPaused)
         return
     const post_ids = uiPosts.posts.filter(_ => true).map(_ => _.Id!)
-    if (post_ids.length) try {
-        const post_ids_deleted = (await yo.apiPostsDeleted({ OutOfPostIds: post_ids })).DeletedPostIds
-        isSeeminglyOffline.val = false
-        if (post_ids_deleted && post_ids_deleted.length)
-            uiposts.update(uiPosts, uiPosts.posts.filter(_ => !post_ids_deleted.includes(_.Id!)), false, post_ids_deleted)
-    } catch (err) {
-        if (!knownErr<yo.PostsDeletedErr>(err, handleKnownErrMaybe<yo.PostsDeletedErr>))
-            onErrOther(err)
-    }
+    if (post_ids.length)
+        try {
+            const post_ids_deleted = (await yo.apiPostsDeleted({ OutOfPostIds: post_ids })).DeletedPostIds
+            isSeeminglyOffline.val = false
+            if (post_ids_deleted && post_ids_deleted.length)
+                uiposts.update(uiPosts, uiPosts.posts.filter(_ => !post_ids_deleted.includes(_.Id!)), false, post_ids_deleted)
+        } catch (err) {
+            if (!knownErr<yo.PostsDeletedErr>(err, handleKnownErrMaybe<yo.PostsDeletedErr>))
+                onErrOther(err)
+        }
     if (!fetchesPaused)
         setTimeout(fetchPostsDeleted, fetchPostsDeletedIntervalMs)
 }
@@ -251,18 +264,6 @@ export async function deletePost(id: number) {
     return ok
 }
 
-async function reloadPostPeriods() {
-    uiPeriodPicker.selectedIndex = 0
-    isArchiveBrowsing.val = false
-    while (uiPeriodPicker.options.length > 1)
-        uiPeriodPicker.options.remove(1)
-    const periods = (await yo.apiPostPeriods({ WithUserIds: selectedBuddy.val ? [selectedBuddy.val] : [] })).Periods ?? []
-    for (const period of periods) {
-        const dt = new Date(period)
-        uiPeriodPicker.options.add(htm.option({ 'value': period }, `${dt.getFullYear()} — ${dt.toLocaleDateString('default', { month: 'long' })}`))
-    }
-}
-
 function browserTabTitleRefresh() {
     const user_self = userSelf.val, user_buddy = userById(selectedBuddy.val)
     const buddies_and_self = (user_buddy && user_self) ? [user_buddy, user_self]
@@ -286,9 +287,9 @@ export function buddySelected(user?: yo.User, ensureIsSelected?: boolean) {
             buddyBadges[selectedBuddy.val].val = ""
             is_selected = !is_selected
             uiposts.update(uiPosts, [], true)
+            shouldReloadPostPeriods = true
             fetchPostsRecent(true) // no await needed
             fetchBuddies(true) // no await needed
-            reloadPostPeriods().catch(_ => { }) // no await needed, but this one needs a catch (it doesnt even `try`)
         } else  // already was selected, so the click/tap shows user popup
             userShowPopup(user)
     return is_selected
