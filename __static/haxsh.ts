@@ -70,16 +70,16 @@ async function fetchBuddies(oneOff?: boolean) {
     if (fetchesPaused && !oneOff)
         return
     try {
-        const buddies = (await yo.apiUserBuddies())!.Result ?? []
+        const result = await yo.apiUserBuddies()
         isSeeminglyOffline.val = false
         if (!userSelf.val) // fetch only *after* the above because apiUserBy needs cur-user email-addr, which isn't cookied
             reloadUserSelf() // no need to await really
         if (uiPeriodPicker.options.length < 2)
             reloadPostPeriods() // no await needed
-        for (const user of buddies)
+        for (const user of result.Buddies)
             if (!buddyBadges[user.Id!])
                 buddyBadges[user.Id!] = van.state("")
-        uiBuddies.update(buddies)
+        uiBuddies.update(result.Buddies, result.BuddyRequests)
         browserTabTitleRefresh()
         if (!fetchedPostsEverYet) {
             fetchPostsRecent()
@@ -247,8 +247,7 @@ async function reloadPostPeriods() {
     isArchiveBrowsing.val = false
     while (uiPeriodPicker.options.length > 1)
         uiPeriodPicker.options.remove(1)
-    const periods = (await yo.apiPostPeriods({ WithUserIds: selectedBuddy.val ? [selectedBuddy.val] : [] })).Periods
-    console.log(periods)
+    const periods = (await yo.apiPostPeriods({ WithUserIds: selectedBuddy.val ? [selectedBuddy.val] : [] })).Periods ?? []
     for (const period of periods) {
         const dt = new Date(period)
         uiPeriodPicker.options.add(htm.option({ 'value': period }, `${dt.getFullYear()} — ${dt.toLocaleDateString('default', { month: 'long' })}`))

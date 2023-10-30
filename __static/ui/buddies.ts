@@ -10,7 +10,7 @@ import * as util from '../util.js'
 export type UiCtlBuddies = {
     DOM: HTMLElement
     buddies: vanx.Reactive<yo.User[]>
-    update: (_: yo.User[]) => number
+    update: (buddies: yo.User[], buddyRequests: yo.User[]) => number
 }
 
 export function create(): UiCtlBuddies {
@@ -28,7 +28,7 @@ export function create(): UiCtlBuddies {
             ),
         ),
         buddies: vanx.reactive([] as yo.User[]),
-        update: (buddies) => update(me, buddies),
+        update: (buddies, buddyRequests) => update(me, buddies, buddyRequests),
     }
 
     van.add(me.DOM, vanx.list(() => htm.div({ 'class': 'buddies' }), me.buddies, (it) => {
@@ -36,7 +36,7 @@ export function create(): UiCtlBuddies {
             'class': depends(() => 'buddy' + (haxsh.isSeeminglyOffline.val ? ' offline' : '') + (haxsh.buddySelected(it.val) ? ' selected' : '') + ((haxsh.buddyBadges[it.val.Id!].val) ? ' badged' : '')),
             'data-badge': depends(() => (haxsh.buddyBadges[it.val.Id!].val) || ""),
         },
-            htm.div(userDomAttrsBuddy(it.val, new Date().getTime())))
+            htm.div(userDomAttrsBuddy(it.val)))
         item.onclick = () => {
             if (!haxsh.isSeeminglyOffline.val)
                 haxsh.buddySelected(it.val, true)
@@ -57,15 +57,15 @@ export function userPicFileUrl(user?: yo.User, fallBackToEmoji = '🦜', toRound
     return '/_postfiles/' + user.PicFileId + (toRoundedSvgFavIcon ? '?picRounded=true' : '')
 }
 
-export function userDomAttrsBuddy(user?: yo.User, now?: number) {
+export function userDomAttrsBuddy(user?: yo.User, userIdHint?: number) {
     if (!user)
         return {
             'class': 'buddy-pic offline',
-            'title': "(ex-buddy — or bug)",
+            'title': `(ex-buddy #${userIdHint ?? -1} — or bug)`,
             'style': `background-image: url('${userPicFileUrl()}')`,
         }
     return {
-        'class': depends(() => 'buddy-pic' + ((haxsh.isSeeminglyOffline.val || isOffline(user, now)) ? ' offline' : '')),
+        'class': depends(() => 'buddy-pic' + ((haxsh.isSeeminglyOffline.val || isOffline(user)) ? ' offline' : '')),
         'title': `${user.Nick}${((!user.Btw) ? '' : (' — ' + user.Btw))}`,
         'style': `background-image: url('${userPicFileUrl(user)}')`,
     }
@@ -85,7 +85,7 @@ export function userDomAttrsSelf() {
     }
 }
 
-function update(me: UiCtlBuddies, buddies: yo.User[]): number {
+function update(me: UiCtlBuddies, buddies: yo.User[], buddyRequests: yo.User[]): number {
     const now = new Date().getTime(), move_selected_top = false
     if (move_selected_top) {
         const is_selected: { [_: number]: boolean } = {}

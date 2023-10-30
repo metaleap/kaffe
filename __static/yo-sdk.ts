@@ -223,9 +223,9 @@ export async function apiPostsRecent(payload?: postsRecent_In, formData?: FormDa
 export type PostsRecentErr = typeof errsPostsRecent[number]
 
 const errsUserBuddies = ['MissingOrExcessiveContentLength', 'TimedOut', 'Unauthorized'] as const
-export async function apiUserBuddies(payload?: Void, formData?: FormData, query?: {[_:string]:string}): Promise<Return____haxsh_app_User_> {
+export async function apiUserBuddies(payload?: Void, formData?: FormData, query?: {[_:string]:string}): Promise<userBuddies_Out> {
 	try {
-		return await req<Void, Return____haxsh_app_User_, UserBuddiesErr>('_/userBuddies', payload, formData, query)
+		return await req<Void, userBuddies_Out, UserBuddiesErr>('_/userBuddies', payload, formData, query)
 	} catch(err: any) {
 		if (err && err['body_text'] && (errsUserBuddies.indexOf(err.body_text) >= 0))
 			throw(new Err<UserBuddiesErr>(err.body_text as UserBuddiesErr))
@@ -361,6 +361,11 @@ export type postsRecent_In = {
 }
 
 export type Time = string
+export type userBuddies_Out = {
+	Buddies: User[]
+	BuddyRequests: User[]
+}
+
 export type userBy_In = {
 	EmailAddr?: string
 	NickName?: string
@@ -376,10 +381,6 @@ export type DateTime = string
 export type ApiAccountPayload = {
 	EmailAddr?: string
 	PasswordPlain?: string
-}
-
-export type Return____haxsh_app_User_ = {
-	Result: User[]
 }
 
 export type Return_yo_db_I64_ = {

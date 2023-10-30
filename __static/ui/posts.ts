@@ -130,7 +130,7 @@ export function create(): UiCtlPosts {
             dt_str = post_dt.toLocaleDateString() + " — " + post_dt.toLocaleTimeString()
         return htm.div({ 'class': 'post', 'title': dt_str },
             htm.div({ 'class': 'post-head' },
-                htm.div(is_own_post ? uibuddies.userDomAttrsSelf() : uibuddies.userDomAttrsBuddy(post_by)),
+                htm.div(is_own_post ? uibuddies.userDomAttrsSelf() : uibuddies.userDomAttrsBuddy(post_by, post.By)),
                 htm.div({ 'class': 'post-ago', 'title': dt_str }, post._uxStrAgo),
             ),
             htm.div({ 'class': 'post-buttons' },
