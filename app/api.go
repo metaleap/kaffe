@@ -38,8 +38,8 @@ func init() {
 
 		"userUpdate": apiUserUpdate.IsMultipartForm().Checks(
 			Fails{Err: ErrDbUpdExpectedIdGt0, If: UserUpdateId.LessOrEqual(0)},
-			Fails{Err: "ExpectedNickname", If: UserUpdateChangesNick.Equal("").And(
-				q.ArrHas(UserUpdateChangedFields, UserNick).Or(q.ArrIsEmpty(UserUpdateChangedFields)))},
+			Fails{Err: "ExpectedNonEmptyNickname", If: UserUpdateChangesNick.Equal("").And(
+				q.ArrHas(UserUpdateChangedFields, string(UserNick)).Or(q.ArrIsEmpty(UserUpdateChangedFields)))},
 		).
 			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized).
 			CouldFailWith(":"+yodb.ErrSetDbUpdate, "NicknameAlreadyExists"),

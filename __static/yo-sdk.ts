@@ -282,7 +282,7 @@ export async function apiUserSignUp(payload?: ApiAccountPayload, formData?: Form
 }
 export type UserSignUpErr = typeof errsUserSignUp[number]
 
-const errsUserUpdate = ['DbUpdExpectedIdGt0', 'DbUpdate_ExpectedChangesForUpdate', 'DbUpdate_ExpectedQueryForUpdate', 'MissingOrExcessiveContentLength', 'TimedOut', 'Unauthorized', 'UserUpdate_NicknameAlreadyExists'] as const
+const errsUserUpdate = ['DbUpdExpectedIdGt0', 'DbUpdate_ExpectedChangesForUpdate', 'DbUpdate_ExpectedQueryForUpdate', 'MissingOrExcessiveContentLength', 'TimedOut', 'Unauthorized', 'UserUpdate_ExpectedNonEmptyNickname', 'UserUpdate_NicknameAlreadyExists'] as const
 export async function apiUserUpdate(payload?: ApiUpdateArgs_haxsh_app_User_haxsh_app_UserField_, formData?: FormData, query?: {[_:string]:string}): Promise<Void> {
 	try {
 		return await req<ApiUpdateArgs_haxsh_app_User_haxsh_app_UserField_, Void, UserUpdateErr>('_/userUpdate', payload, formData, query)
