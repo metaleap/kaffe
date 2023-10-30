@@ -271,7 +271,7 @@ function browserTabTitleRefresh() {
 export function buddySelected(user?: yo.User, ensureIsSelected?: boolean) {
     let is_selected = (selectedBuddy.val === ((user?.Id) ?? 0))
     if (ensureIsSelected)
-        if (!is_selected) {
+        if ((!is_selected) && ((!user) || (user.Auth))) { // pending buddy-req `User`s have no fields other than `Nick` set, so their `Auth` will be 0
             selectedBuddy.val = ((user?.Id) ?? 0)
             fetchPostsSinceDt = undefined
             buddyBadges[selectedBuddy.val].val = ""
