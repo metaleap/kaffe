@@ -268,18 +268,18 @@ function browserTabTitleRefresh() {
         htm_favicon.href = fav_icon_href
 }
 
-export function buddySelected(user?: yo.User, ensureIsSelected?: boolean): boolean {
+export async function buddySelected(user?: yo.User, ensureIsSelected?: boolean) {
     let is_selected = (selectedBuddy.val === ((user?.Id) ?? 0))
     if (ensureIsSelected)
         if (!is_selected) {
             selectedBuddy.val = ((user?.Id) ?? 0)
             fetchPostsSinceDt = undefined
-            reloadPostPeriods() // no await needed
             buddyBadges[selectedBuddy.val].val = ""
             is_selected = !is_selected
             uiposts.update(uiPosts, [], true)
             fetchPostsRecent(true) // no await needed
             fetchBuddies(true) // no await needed
+            await reloadPostPeriods()
         } else  // already was selected, so the click/tap shows user popup
             userShowPopup(user)
     return is_selected

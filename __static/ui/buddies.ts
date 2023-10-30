@@ -154,7 +154,7 @@ async function showBuddiesDialog(me: UiCtlBuddies) {
             }
             htmCheckbox.checked = true
             alert(`You're now buddies with '${user.Nick ?? '?'}', so chat them up!`)
-            haxsh.reloadUserSelf()
+            await haxsh.reloadUserSelf()
         } catch (err) {
             if (!haxsh.knownErr<yo.UserUpdateErr>(err, haxsh.handleKnownErrMaybe<yo.UserUpdateErr>))
                 haxsh.onErrOther(err, true)
