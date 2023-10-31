@@ -56,7 +56,9 @@ function isOffline(user: yo.User, now?: number) {
     return (((now ?? youtil.dtNow()) - last_seen) > 77777)
 }
 
-export function userPicFileUrl(user?: yo.User, fallBackToEmoji = '🦜', toRoundedSvgFavIcon = false) {
+export function userPicFileUrl(user?: yo.User, fallBackToEmoji = "🦜", toRoundedSvgFavIcon = false) {
+    if (user && !user.Auth)
+        fallBackToEmoji = "👤"
     if (!(user && user.PicFileId))
         return util.svgTextIconDataHref(fallBackToEmoji)
     return '/_postfiles/' + user.PicFileId + (toRoundedSvgFavIcon ? '?picRounded=true' : '')
@@ -68,6 +70,12 @@ export function userDomAttrsBuddy(user?: yo.User, userIdHint?: number) {
             'class': 'buddy-pic offline',
             'title': `(ex-buddy #${userIdHint ?? -1} — or bug)`,
             'style': `background-image: url('${userPicFileUrl()}')`,
+        }
+    if (!user.Auth) //
+        return {
+            'class': 'buddy-pic offline',
+            'title': `${user.Nick} — (buddy request still pending)`,
+            'style': `background-image: url('${userPicFileUrl(user)}')`,
         }
     return {
         'class': depends(() => 'buddy-pic' + ((haxsh.isSeeminglyOffline.val || isOffline(user)) ? ' offline' : '')),

@@ -89,7 +89,7 @@ export function create(user: yo.User): UiCtlUserPopup {
                 htm_div_pic,
             ),
             htm.div({},
-                is_self ? htm_input_btw : htm.div({ 'class': 'btw' }, user.Btw),
+                is_self ? htm_input_btw : htm.div({ 'class': 'btw' }, user.Auth ? user.Btw : "(Buddy request still pending.)"),
             ),
             htm.div({}),
             (!is_self) ? undefined : htm.div({}, htm.span({},

@@ -473,6 +473,9 @@ dialog input[type='text']::placeholder {
     white-space: nowrap;
     text-wrap: nowrap;
     padding-right: 1em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: calc(99% - 3.77em);
 }
 
 .login-popup input {
@@ -517,6 +520,9 @@ dialog h3 {
 
 dialog hr {
     margin-top: 0;
+    border-style: solid;
+    border-bottom: 0 none transparent;
+    border-color: color-mix(in hsl, var(--fgcolor), transparent 55%);
 }
 
 dialog li {
@@ -528,6 +534,8 @@ dialog li .buddy-pic {
     float: left;
     background-color: var(--sigcol);
     margin-right: 0.44em;
+    opacity: 1 !important;
+    filter: sepia(0.55) !important;
 }
 
 dialog a {

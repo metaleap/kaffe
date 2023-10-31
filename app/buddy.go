@@ -33,7 +33,7 @@ func userBuddies(ctx *Ctx, forUser *User, normalizeLastSeenByMinute bool) (buddi
 	}
 	for _, buddy_request := range buddyRequestsMade {
 		buddy_request.Auth.SetId(0)
-		buddy_request.Btw = "(Buddy request still pending)"
+		buddy_request.Btw = ""
 		buddy_request.Buddies = nil
 		buddy_request.DtMod = buddy_request.DtMade
 		buddy_request.LastSeen = buddy_request.DtMade
