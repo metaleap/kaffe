@@ -5,6 +5,7 @@ import * as yo from './yo-sdk.js'
 import * as uibuddies from './ui/buddies.js'
 import * as uiposts from './ui/posts.js'
 import * as uiuserpopup from './ui/user_popup.js'
+import * as uilogindialog from './ui/login_dialog.js'
 
 
 const fetchBuddiesIntervalMs = 4321
@@ -24,7 +25,7 @@ export let buddyBadges: { [_: number]: State<string> } = { 0: van.state("") }
 let firstOfMonth = new Date(new Date().getFullYear(), new Date().getUTCMonth(), 1, 0, 0, 0, 0).getTime()
 let shouldReloadPostPeriods = true
 
-let uiDialogLogin = newUiLoginDialog()
+let uiDialogLogin = uilogindialog.create()
 let uiBuddies: uibuddies.UiCtlBuddies = uibuddies.create()
 let uiPosts: uiposts.UiCtlPosts = uiposts.create()
 let uiPeriodPicker: HTMLSelectElement =
@@ -166,50 +167,6 @@ async function fetchPostsDeleted() {
         }
     if (!fetchesPaused)
         setTimeout(fetchPostsDeleted, fetchPostsDeletedIntervalMs)
-}
-
-function newUiLoginDialog() {
-    const on_btn_clicked = async () => {
-        if (!(in_user_name.value = in_user_name.value.trim()))
-            return
-        in_user_name.disabled = true
-        in_password.disabled = true
-        in_password_new.disabled = true
-        try {
-            await yo.apiUserSignIn({ NickOrEmailAddr: in_user_name.value, PasswordPlain: in_password.value })
-            isSeeminglyOffline.val = false
-            location.reload()
-        } catch (err) {
-            in_user_name.disabled = false
-            in_password.disabled = false
-            in_password_new.disabled = false
-            if (!knownErr<yo.UserSignInErr>(err, (err) => {
-                switch (err) {
-                    case '___yo_authLogin_AccountDoesNotExist':
-                    case '___yo_authLogin_WrongPassword':
-                    case '___yo_authLogin_EmailInvalid':
-                        alert("You must have had a typo in there, please double-check and try again.")
-                        return true
-                }
-                return false
-            }))
-                onErrOther(err)
-        }
-    }
-
-    const in_user_name = htm.input({ 'placeholder': '(nick or email address)' })
-    const in_password = htm.input({ 'type': 'password', 'placeholder': '(password: keep blank if forgotten OR to sign up)' })
-    const in_password_new = htm.input({ 'type': 'password', 'placeholder': '(only to change password: new one here, old one above)' })
-    const dialog = htm.dialog({ 'class': 'login-popup' },
-        htm.form({},
-            htm.button({ 'type': 'submit', 'class': 'save', 'title': "Sign in or sign up now", 'onclick': _ => on_btn_clicked() }, "✅"),
-            in_user_name,
-            in_password,
-            in_password_new,
-        ),
-    )
-    dialog.onclose = () => setTimeout(() => dialog.showModal(), 1234)
-    return dialog
 }
 
 export function userById(id: number) {
