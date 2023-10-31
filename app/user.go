@@ -40,8 +40,8 @@ func userUpdate(ctx *Ctx, upd *User, byCurUserInCtx bool, inclEmptyOrMissingFiel
 	if (len(onlyFields) == 0) || sl.Has(UserBuddies, onlyFields) {
 		upd.Buddies.EnsureAllUnique(nil)
 	}
-	if upd.Nick.Set(str.Trim); (len(onlyFields) == 0) || sl.Has(UserNick, onlyFields) {
-		if upd.Nick == "" {
+	if upd.Nick = yodb.Text(str.Replace(string(upd.Nick), str.Dict{"@": ""})); (len(onlyFields) == 0) || sl.Has(UserNick, onlyFields) {
+		if upd.Nick.Set(str.Trim); upd.Nick == "" {
 			panic(ErrUserUpdate_ExpectedNonEmptyNickname)
 		} else if yodb.Exists[User](ctx, UserNick.Equal(upd.Nick).And(UserId.NotEqual(upd.Id))) {
 			panic(ErrUserUpdate_NicknameAlreadyExists)

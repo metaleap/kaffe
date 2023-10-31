@@ -98,8 +98,8 @@ func mockSomeActivity() {
 	ctx.TimingsNoPrintInDevMode = true
 
 	if must_log_in_first {
-		ViaHttp[yoauth.ApiAccountPayload, Void](apiUserSignIn, ctx, &yoauth.ApiAccountPayload{
-			EmailAddr: user_email_addr, PasswordPlain: "foobar",
+		ViaHttp[ApiUserSignIn, Void](apiUserSignIn, ctx, &ApiUserSignIn{
+			NickOrEmailAddr: user_email_addr, PasswordPlain: "foobar",
 		}, user_client)
 	}
 

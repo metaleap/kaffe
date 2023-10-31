@@ -175,7 +175,7 @@ function newUiLoginDialog() {
         in_user_name.disabled = true
         in_password.disabled = true
         try {
-            await yo.apiUserSignIn({ EmailAddr: in_user_name.value, PasswordPlain: in_password.value })
+            await yo.apiUserSignIn({ NickOrEmailAddr: in_user_name.value, PasswordPlain: in_password.value })
             isSeeminglyOffline.val = false
             location.reload()
         } catch (err) {
