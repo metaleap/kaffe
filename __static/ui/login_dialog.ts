@@ -16,7 +16,6 @@ export function create(setSignUpOrPwdForgotNotice: (_: string) => void) {
         in_password_new.value = in_password_new.value.trim()
         try {
             const is_signup_or_pwd_forgotten = (!in_password.value.length)
-            console.log(is_signup_or_pwd_forgotten)
             if (is_signup_or_pwd_forgotten)
                 await yo.apiUserSignUpOrForgotPassword({ NickOrEmailAddr: in_user_name.value })
             else
@@ -25,6 +24,7 @@ export function create(setSignUpOrPwdForgotNotice: (_: string) => void) {
                 const notice = `An email will be sent to '${in_user_name.value}' shortly with the next step.`
                 setSignUpOrPwdForgotNotice(notice)
                 alert(notice)
+                dialog.close()
             } else
                 location.reload()
         } catch (err) {
@@ -38,12 +38,12 @@ export function create(setSignUpOrPwdForgotNotice: (_: string) => void) {
                     case '___yo_authLogin_EmailInvalid':
                     case '___yo_authLogin_EmailRequiredButMissing':
                     case 'UserSignIn_ExpectedPasswordAndNickOrEmailAddr':
-                    case 'UserSignIn____yo_authLogin_WrongPassword':
+                    case 'UserSignIn_WrongPassword':
                     case '___yo_authRegister_EmailInvalid':
                     case '___yo_authRegister_EmailRequiredButMissing':
-                    case 'UserSignUpOrForgotPassword____yo_authRegister_EmailInvalid':
-                    case 'UserSignUpOrForgotPassword____yo_authRegister_EmailRequiredButMissing':
-                        alert("You must have had a typo in there, please double-check and try again.")
+                    case 'UserSignUpOrForgotPassword_EmailInvalid':
+                    case 'UserSignUpOrForgotPassword_EmailRequiredButMissing':
+                        alert("There's surely a typo in there, please double-check and try again.")
                         return true
                 }
                 return false
@@ -63,6 +63,12 @@ export function create(setSignUpOrPwdForgotNotice: (_: string) => void) {
             in_password_new,
         ),
     )
-    dialog.onclose = () => setTimeout(() => dialog.showModal(), 1234)
+    dialog.onclose = (evt) => {
+        if (!haxsh.signUpOrPwdForgotNotice.val)
+            setTimeout(() => {
+                if (!haxsh.signUpOrPwdForgotNotice.val)
+                    dialog.showModal()
+            }, 1234)
+    }
     return dialog
 }

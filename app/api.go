@@ -25,39 +25,43 @@ func init() {
 		"userSignOut": apiUserSignOut.
 			CouldFailWith(":" + yoauth.MethodPathLogout),
 
-		"userSignIn": apiUserSignIn.Checks(
-			Fails{Err: "ExpectedPasswordAndNickOrEmailAddr", If: UserSignInNickOrEmailAddr.Equal("").Or(UserSignInPasswordPlain.Equal(""))},
-			Fails{Err: Err___yo_authLogin_WrongPassword,
-				If: UserSignInPasswordPlain.StrLen().LessThan(Cfg.YO_AUTH_PWD_MIN_LEN).Or(
-					UserSignInPasswordPlain.StrLen().GreaterThan(Cfg.YO_AUTH_PWD_MAX_LEN))},
-		).
-			CouldFailWith(":" + yoauth.MethodPathLogin),
+		"userSignIn": apiUserSignIn.
+			CouldFailWith(":"+yoauth.MethodPathLogin).
+			Checks(
+				Fails{Err: "ExpectedPasswordAndNickOrEmailAddr", If: UserSignInNickOrEmailAddr.Equal("").Or(UserSignInPasswordPlain.Equal(""))},
+				Fails{Err: "WrongPassword",
+					If: UserSignInPasswordPlain.StrLen().LessThan(Cfg.YO_AUTH_PWD_MIN_LEN).Or(
+						UserSignInPasswordPlain.StrLen().GreaterThan(Cfg.YO_AUTH_PWD_MAX_LEN))},
+			),
 
-		"userSignUpOrForgotPassword": apiUserSignUpOrForgotPassword.Checks(
-			Fails{Err: Err___yo_authRegister_EmailRequiredButMissing, If: UserSignUpOrForgotPasswordNickOrEmailAddr.Equal("")},
-			Fails{Err: Err___yo_authRegister_EmailInvalid, If: yoauth.IsEmailishEnough(UserSignUpOrForgotPasswordNickOrEmailAddr).Not()},
-		).
-			CouldFailWith(":"+yoauth.MethodPathRegister, ":userSignIn"),
+		"userSignUpOrForgotPassword": apiUserSignUpOrForgotPassword.
+			CouldFailWith(":"+yoauth.MethodPathRegister).
+			Checks(
+				Fails{Err: "EmailRequiredButMissing", If: UserSignUpOrForgotPasswordNickOrEmailAddr.Equal("")},
+				Fails{Err: "EmailInvalid", If: yoauth.IsEmailishEnough(UserSignUpOrForgotPasswordNickOrEmailAddr).Not()},
+			),
 
 		"userBy": apiUserBy.Checks(
 			Fails{Err: "ExpectedEitherNickNameOrEmailAddr", If: UserByEmailAddr.Equal("").And(UserByNickName.Equal(""))},
 		).
 			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
 
-		"userUpdate": apiUserUpdate.IsMultipartForm().Checks(
-			Fails{Err: ErrDbUpdExpectedIdGt0, If: UserUpdateId.LessOrEqual(0)},
-		).
-			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized).
-			CouldFailWith(":"+yodb.ErrSetDbUpdate, "NicknameAlreadyExists", "ExpectedNonEmptyNickname"),
+		"userUpdate": apiUserUpdate.IsMultipartForm().
+			CouldFailWith(":"+yodb.ErrSetDbUpdate, "NicknameAlreadyExists", "ExpectedNonEmptyNickname").
+			Checks(
+				Fails{Err: ErrDbUpdExpectedIdGt0, If: UserUpdateId.LessOrEqual(0)},
+			).
+			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
 
 		"userBuddies": apiUserBuddies.
 			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
 
-		"userBuddiesAdd": apiUserBuddiesAdd.Checks(
-			Fails{Err: "ExpectedEitherNickNameOrEmailAddr", If: UserBuddiesAddNickOrEmailAddr.Equal("")},
-		).
-			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized).
-			CouldFailWith(":" + yodb.ErrSetDbUpdate),
+		"userBuddiesAdd": apiUserBuddiesAdd.
+			CouldFailWith(":"+yodb.ErrSetDbUpdate).
+			Checks(
+				Fails{Err: "ExpectedEitherNickNameOrEmailAddr", If: UserBuddiesAddNickOrEmailAddr.Equal("")},
+			).
+			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
 
 		"postsRecent": apiPostsRecent.
 			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
@@ -73,12 +77,13 @@ func init() {
 		"postsDeleted": apiPostsDeleted.
 			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
 
-		"postNew": apiPostNew.IsMultipartForm().Checks(
-			Fails{Err: "ExpectedOnlyBuddyRecipients", If: q.ArrAreAnyIn(PostTo, q.OpLeq, 0)},
-			Fails{Err: "ExpectedEmptyFilesFieldWithUploadedFilesInMultipartForm", If: PostFiles.ArrLen().NotEqual(0)},
-		).
-			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized).
-			CouldFailWith("ExpectedNonEmptyPost"),
+		"postNew": apiPostNew.IsMultipartForm().
+			CouldFailWith("ExpectedNonEmptyPost").
+			Checks(
+				Fails{Err: "ExpectedOnlyBuddyRecipients", If: q.ArrAreAnyIn(PostTo, q.OpLeq, 0)},
+				Fails{Err: "ExpectedEmptyFilesFieldWithUploadedFilesInMultipartForm", If: PostFiles.ArrLen().NotEqual(0)},
+			).
+			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
 
 		"postDelete": apiPostDelete.Checks(
 			Fails{Err: "InvalidPostId", If: PostDeleteId.LessOrEqual(0)},
@@ -99,7 +104,7 @@ var apiUserSignIn = api(func(this *ApiCtx[ApiUserSignIn, Void]) {
 
 var apiUserSignUpOrForgotPassword = api(func(this *ApiCtx[ApiNickOrEmailAddr, Void]) {
 	this.Ctx.DbTx()
-	this.Args.ensureEmailAddr(this.Ctx, Err___yo_authLogin_AccountDoesNotExist, Err___yo_authRegister_EmailInvalid)
+	this.Args.ensureEmailAddr(this.Ctx, Err___yo_authLogin_AccountDoesNotExist, ErrUserSignUpOrForgotPassword_EmailInvalid)
 	yoauth.UserPregisterOrForgotPassword(this.Ctx, this.Args.NickOrEmailAddr)
 })
 
