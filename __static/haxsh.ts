@@ -174,6 +174,7 @@ function newUiLoginDialog() {
             return
         in_user_name.disabled = true
         in_password.disabled = true
+        in_password_new.disabled = true
         try {
             await yo.apiUserSignIn({ NickOrEmailAddr: in_user_name.value, PasswordPlain: in_password.value })
             isSeeminglyOffline.val = false
@@ -181,6 +182,7 @@ function newUiLoginDialog() {
         } catch (err) {
             in_user_name.disabled = false
             in_password.disabled = false
+            in_password_new.disabled = false
             if (!knownErr<yo.UserSignInErr>(err, (err) => {
                 switch (err) {
                     case '___yo_authLogin_AccountDoesNotExist':
@@ -200,7 +202,7 @@ function newUiLoginDialog() {
     const in_password_new = htm.input({ 'type': 'password', 'placeholder': '(only to change password: new one here, old one above)' })
     const dialog = htm.dialog({ 'class': 'login-popup' },
         htm.form({},
-            htm.button({ 'type': 'button', 'class': 'save', 'title': "Sign in or sign up now", 'onclick': _ => on_btn_clicked() }, "✅"),
+            htm.button({ 'type': 'submit', 'class': 'save', 'title': "Sign in or sign up now", 'onclick': _ => on_btn_clicked() }, "✅"),
             in_user_name,
             in_password,
             in_password_new,

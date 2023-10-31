@@ -27,10 +27,16 @@ func init() {
 
 		"userSignIn": apiUserSignIn.Checks(
 			Fails{Err: "ExpectedPasswordAndNickOrEmailAddr", If: UserSignInNickOrEmailAddr.Equal("").Or(UserSignInPasswordPlain.Equal(""))},
+			Fails{Err: Err___yo_authLogin_WrongPassword,
+				If: UserSignInPasswordPlain.StrLen().LessThan(Cfg.YO_AUTH_PWD_MIN_LEN).Or(
+					UserSignInPasswordPlain.StrLen().GreaterThan(Cfg.YO_AUTH_PWD_MAX_LEN))},
 		).
 			CouldFailWith(":" + yoauth.MethodPathLogin),
 
-		"userSignUpOrForgotPassword": apiUserSignUpOrForgotPassword.
+		"userSignUpOrForgotPassword": apiUserSignUpOrForgotPassword.Checks(
+			Fails{Err: Err___yo_authRegister_EmailRequiredButMissing, If: UserSignUpOrForgotPasswordNickOrEmailAddr.Equal("")},
+			Fails{Err: Err___yo_authRegister_EmailInvalid, If: yoauth.IsEmailishEnough(UserSignUpOrForgotPasswordNickOrEmailAddr).Not()},
+		).
 			CouldFailWith(":"+yoauth.MethodPathRegister, ":userSignIn"),
 
 		"userBy": apiUserBy.Checks(
@@ -86,6 +92,10 @@ type ApiUserSignIn struct {
 	PasswordPlain   string
 }
 
+type ApiUserSignUpOrForgotPassword struct {
+	NickOrEmailAddr string
+}
+
 var apiUserSignIn = api(func(this *ApiCtx[ApiUserSignIn, Void]) {
 	this.Ctx.DbTx()
 
@@ -96,6 +106,8 @@ var apiUserSignIn = api(func(this *ApiCtx[ApiUserSignIn, Void]) {
 			panic(Err___yo_authLogin_AccountDoesNotExist)
 		}
 		email_addr = string(yoauth.ById(this.Ctx, existing_user.Auth.Id()).EmailAddr)
+	} else if !str.IsEmailishEnough(email_addr) {
+		panic(Err___yo_authLogin_EmailInvalid)
 	}
 
 	Do(yoauth.ApiUserLogin, this.Ctx, &yoauth.ApiAccountPayload{EmailAddr: email_addr, PasswordPlain: this.Args.PasswordPlain})
@@ -105,15 +117,8 @@ var apiUserSignOut = api(func(this *ApiCtx[Void, Void]) {
 	Do(yoauth.ApiUserLogout, this.Ctx, this.Args)
 })
 
-var apiUserSignUpOrForgotPassword = api(func(this *ApiCtx[yoauth.ApiAccountPayload, User]) {
-	this.Ctx.DbTx()
-
-	auth := Do(yoauth.ApiUserRegister, this.Ctx, this.Args)
-	user := User{LastSeen: yodb.DtNow(), byBuddyDtLastMsgCheck: yodb.JsonMap[*yodb.DateTime]{}}
-	user.Auth.SetId(auth.Id)
-	user.Id = yodb.CreateOne(this.Ctx, &user)
-	// _ = Do(apiUserSignIn, this.Ctx, this.Args)
-	this.Ret = &user
+var apiUserSignUpOrForgotPassword = api(func(this *ApiCtx[ApiUserSignUpOrForgotPassword, Void]) {
+	yoauth.UserPregisterOrForgotPassword(this.Ctx, this.Args.NickOrEmailAddr)
 })
 
 var apiUserBy = api(func(this *ApiCtx[struct {

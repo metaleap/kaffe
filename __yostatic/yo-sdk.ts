@@ -258,7 +258,7 @@ export async function apiUserBy(payload?: userBy_In, formData?: FormData, query?
 }
 export type UserByErr = typeof errsUserBy[number]
 
-const errsUserSignIn = ['MissingOrExcessiveContentLength', 'TimedOut', 'UserSignIn_ExpectedPasswordAndNickOrEmailAddr', '___yo_authLogin_AccountDoesNotExist', '___yo_authLogin_EmailInvalid', '___yo_authLogin_EmailRequiredButMissing', '___yo_authLogin_OkButFailedToCreateSignedToken', '___yo_authLogin_WrongPassword'] as const
+const errsUserSignIn = ['MissingOrExcessiveContentLength', 'TimedOut', 'UserSignIn_ExpectedPasswordAndNickOrEmailAddr', 'UserSignIn____yo_authLogin_WrongPassword', '___yo_authLogin_AccountDoesNotExist', '___yo_authLogin_EmailInvalid', '___yo_authLogin_EmailRequiredButMissing', '___yo_authLogin_OkButFailedToCreateSignedToken', '___yo_authLogin_WrongPassword'] as const
 export async function apiUserSignIn(payload?: ApiUserSignIn, formData?: FormData, query?: {[_:string]:string}): Promise<Void> {
 	try {
 		return await req<ApiUserSignIn, Void, UserSignInErr>('_/userSignIn', payload, formData, query)
@@ -282,10 +282,10 @@ export async function apiUserSignOut(payload?: Void, formData?: FormData, query?
 }
 export type UserSignOutErr = typeof errsUserSignOut[number]
 
-const errsUserSignUpOrForgotPassword = ['MissingOrExcessiveContentLength', 'TimedOut', 'UserSignIn_ExpectedPasswordAndNickOrEmailAddr', '___yo_authLogin_AccountDoesNotExist', '___yo_authLogin_EmailInvalid', '___yo_authLogin_EmailRequiredButMissing', '___yo_authLogin_OkButFailedToCreateSignedToken', '___yo_authLogin_WrongPassword', '___yo_authRegister_EmailAddrAlreadyExists', '___yo_authRegister_EmailInvalid', '___yo_authRegister_EmailRequiredButMissing', '___yo_authRegister_PasswordInvalid', '___yo_authRegister_PasswordTooLong', '___yo_authRegister_PasswordTooShort'] as const
-export async function apiUserSignUpOrForgotPassword(payload?: ApiAccountPayload, formData?: FormData, query?: {[_:string]:string}): Promise<User> {
+const errsUserSignUpOrForgotPassword = ['MissingOrExcessiveContentLength', 'TimedOut', 'UserSignIn_ExpectedPasswordAndNickOrEmailAddr', 'UserSignIn____yo_authLogin_WrongPassword', 'UserSignUpOrForgotPassword____yo_authRegister_EmailInvalid', 'UserSignUpOrForgotPassword____yo_authRegister_EmailRequiredButMissing', '___yo_authLogin_AccountDoesNotExist', '___yo_authLogin_EmailInvalid', '___yo_authLogin_EmailRequiredButMissing', '___yo_authLogin_OkButFailedToCreateSignedToken', '___yo_authLogin_WrongPassword', '___yo_authRegister_EmailAddrAlreadyExists', '___yo_authRegister_EmailInvalid', '___yo_authRegister_EmailRequiredButMissing', '___yo_authRegister_PasswordInvalid', '___yo_authRegister_PasswordTooLong', '___yo_authRegister_PasswordTooShort'] as const
+export async function apiUserSignUpOrForgotPassword(payload?: ApiUserSignUpOrForgotPassword, formData?: FormData, query?: {[_:string]:string}): Promise<Void> {
 	try {
-		return await req<ApiAccountPayload, User, UserSignUpOrForgotPasswordErr>('_/userSignUpOrForgotPassword', payload, formData, query)
+		return await req<ApiUserSignUpOrForgotPassword, Void, UserSignUpOrForgotPasswordErr>('_/userSignUpOrForgotPassword', payload, formData, query)
 	} catch(err: any) {
 		if (err && err['body_text'] && (errsUserSignUpOrForgotPassword.indexOf(err.body_text) >= 0))
 			throw(new Err<UserSignUpOrForgotPasswordErr>(err.body_text as UserSignUpOrForgotPasswordErr))
@@ -321,6 +321,10 @@ export type ApiArgPeriod = {
 export type ApiUserSignIn = {
 	NickOrEmailAddr?: string
 	PasswordPlain?: string
+}
+
+export type ApiUserSignUpOrForgotPassword = {
+	NickOrEmailAddr?: string
 }
 
 export type Post = {
@@ -403,11 +407,6 @@ export type ApiUpdateArgs_haxsh_app_User_haxsh_app_UserField_ = {
 }
 
 export type DateTime = string
-export type ApiAccountPayload = {
-	EmailAddr?: string
-	PasswordPlain?: string
-}
-
 export type Return_yo_db_I64_ = {
 	Result: I64
 }
