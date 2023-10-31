@@ -21,7 +21,7 @@ export function create(setSignUpOrPwdForgotNotice: (_: string) => void) {
             else
                 await yo.apiUserSignIn({ NickOrEmailAddr: in_user_name.value, PasswordPlain: in_password.value })
             if (is_signup_or_pwd_forgotten) {
-                const notice = `An email will be sent to '${in_user_name.value}' shortly with the next step.`
+                const notice = `An email will be sent to '${in_user_name.value}' within minutes, with the link to complete the sign-up or password-reset.`
                 setSignUpOrPwdForgotNotice(notice)
                 alert(notice)
                 dialog.close()
