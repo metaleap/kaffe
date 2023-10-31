@@ -370,6 +370,9 @@ button {
 .haxsh-post-file>span {
     display: inline-block;
     padding: 0em 0.22em 0.22em 0.22em;
+    max-width: 77%;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .haxsh-post-file>span>span {
@@ -394,13 +397,13 @@ dialog::backdrop,
     background-color: color-mix(in hsl, #808080, transparent 44%) !important;
 }
 
-#mvd {
+.media-popup {
     border-top-left-radius: 0;
     text-align: center;
 }
 
-#mvd img,
-#mvd video {
+.media-popup img,
+.media-popup video {
     display: inline-block;
     max-height: 99%;
     max-width: 99%;

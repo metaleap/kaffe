@@ -106,26 +106,31 @@ export function create(): UiCtlPosts {
                     const file_name_show = (idx_sep < 0) ? file_name_full : file_name_full.substring(idx_sep + "__yo__".length)
                     const file_content_type = post.FileContentTypes![idx],
                         file_url = `/_postfiles/${encodeURIComponent(file_name_full)}`
-                    const htm_file = htm.a({ 'class': 'haxsh-post-file', 'target': '_blank', 'href': file_url })
+                    const htm_file_link = htm.a({ 'class': 'haxsh-post-file', 'target': '_blank', 'href': file_url, 'data-filename': file_name_show, 'data-filetype': file_content_type })
                     if (file_content_type !== "") {
-                        if (file_content_type.startsWith('image/'))
-                            htm_file.setAttribute('onclick', `mvd.innerHTML="<img alt='${file_name_show}' title='${file_name_show}' src='${file_url}'>";mvd.showModal();return false`)
-                        else if (file_content_type.startsWith('video/'))
-                            htm_file.setAttribute('onclick', `mvd.innerHTML="<video controls='true' loop='true' playsinline='true' title='${file_name_show}' src='${file_url}'>";mvd.showModal();return false`)
                         const icon = fileContentTypeIcons[file_content_type.substring(0, file_content_type.indexOf('/'))]
-                        van.add(htm_file, (icon !== fileContentTypeIcons['image']) ? htm.div({}, icon)
+                        van.add(htm_file_link, (icon !== fileContentTypeIcons['image']) ? htm.div({}, icon)
                             : htm.div({ 'class': 'image', 'style': `background-image:url('${file_url}')` }))
                     }
-                    van.add(htm_file, htm.span({}, file_name_show, (file_content_type === "") ? undefined : htm.span({}, file_content_type)))
-                    return htm_file
+                    van.add(htm_file_link, htm.span({}, file_name_show, (file_content_type === "") ? undefined : htm.span({}, file_content_type)))
+                    return htm_file_link
                 })
             )
             inner_html += htm_files.outerHTML
         }
 
-        const post_by = haxsh.userByPost(post), post_dt = new Date(post.DtMade!)
         const htm_post = htm.div({ 'class': depends(() => ('post-content' + ((post._isDel || (me.isRequestingDeletion.val === (post.Id!))) ? ' deleting' : (post._isFresh ? ' fresh' : '')))) })
         htm_post.innerHTML = inner_html
+        const htm_file_link_nodes = htm_post.querySelectorAll("a[data-filetype]")
+        if (htm_file_link_nodes)
+            htm_file_link_nodes.forEach((a) => {
+                if (a.getAttribute('data-filetype')!.startsWith('image/'))
+                    (a as HTMLAnchorElement).onclick = () => openMediaPopup(a.getAttribute('href')!, a.getAttribute('data-filename')!, false)
+                else if (a.getAttribute('data-filetype')!.startsWith('video/'))
+                    (a as HTMLAnchorElement).onclick = () => openMediaPopup(a.getAttribute('href')!, a.getAttribute('data-filename')!, true)
+            })
+
+        const post_by = haxsh.userByPost(post), post_dt = new Date(post.DtMade!)
         const is_own_post = (post_by?.Id === haxsh.userSelf.val?.Id) || false,
             dt_str = post_dt.toLocaleDateString() + " at " + post_dt.toLocaleTimeString()
         return htm.div({ 'class': 'post', 'title': dt_str },
@@ -146,6 +151,19 @@ export function create(): UiCtlPosts {
         )
     }))
     return me
+}
+
+function openMediaPopup(fileUrl: string, fileNameShow: string, isVideo: boolean) {
+    const dialog = htm.dialog({ 'class': 'media-popup' },
+        htm.button({ 'type': 'button', 'class': 'close', 'title': "Close", 'onclick': _ => dialog.close() }, "❎"),
+        (!isVideo)
+            ? htm.img({ 'title': fileNameShow, 'src': fileUrl, 'alt': fileNameShow })
+            : htm.video({ 'title': fileNameShow, 'src': fileUrl, 'controls': true, 'loop': true, 'playsinline': true }),
+    )
+    dialog.onclose = () => dialog.remove()
+    van.add(document.body, dialog)
+    dialog.showModal()
+    return false
 }
 
 function hasUpFiles(me: UiCtlPosts) {
