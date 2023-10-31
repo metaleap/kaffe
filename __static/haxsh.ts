@@ -22,10 +22,11 @@ export let isSeeminglyOffline = van.state(false)
 export let isArchiveBrowsing = van.state(false)
 export let selectedBuddy: State<number> = van.state(0)
 export let buddyBadges: { [_: number]: State<string> } = { 0: van.state("") }
+export let signUpOrPwdForgotNotice = van.state("")
 let firstOfMonth = new Date(new Date().getFullYear(), new Date().getUTCMonth(), 1, 0, 0, 0, 0).getTime()
 let shouldReloadPostPeriods = true
 
-let uiDialogLogin = uilogindialog.create()
+let uiDialogLogin = uilogindialog.create(_ => signUpOrPwdForgotNotice.val = _)
 let uiBuddies: uibuddies.UiCtlBuddies = uibuddies.create()
 let uiPosts: uiposts.UiCtlPosts = uiposts.create()
 let uiPeriodPicker: HTMLSelectElement =

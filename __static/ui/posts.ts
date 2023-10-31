@@ -34,7 +34,7 @@ export function create(): UiCtlPosts {
         'class': depends(() => 'post-content' + (haxsh.isSeeminglyOffline.val ? ' offline' : '') + (is_sending.val ? ' sending' : '') + (is_empty.val ? ' empty' : '')),
         'contenteditable': depends(() => ((is_sending.val || haxsh.isArchiveBrowsing.val || !haxsh.userSelf.val) ? 'false' : 'true')),
         'autofocus': true, 'spellcheck': false, 'autocorrect': 'off', 'tabindex': 1,
-        'title': depends(() => (!haxsh.userSelf.val) ? "Sign in or sign up to resume confabulations:" : (haxsh.isArchiveBrowsing.val
+        'title': depends(() => (!haxsh.userSelf.val) ? (haxsh.signUpOrPwdForgotNotice.val || "Sign in or sign up to resume confabulations:") : (haxsh.isArchiveBrowsing.val
             ? "Browsing archives. To chat, switch back to 'Fresh'."
             : (haxsh.selectedBuddy.val
                 ? `Chat with ${haxsh.userById(haxsh.selectedBuddy.val)?.Nick || "?"}`

@@ -5,7 +5,7 @@ import * as yo from '../yo-sdk.js'
 import * as haxsh from '../haxsh.js'
 
 
-export function create() {
+export function create(setSignUpOrPwdForgotNotice: (_: string) => void) {
     const on_btn_clicked = async () => {
         if (!(in_user_name.value = in_user_name.value.trim()))
             return
@@ -21,9 +21,11 @@ export function create() {
                 await yo.apiUserSignUpOrForgotPassword({ NickOrEmailAddr: in_user_name.value })
             else
                 await yo.apiUserSignIn({ NickOrEmailAddr: in_user_name.value, PasswordPlain: in_password.value })
-            if (is_signup_or_pwd_forgotten)
-                alert(`An email will be sent to '${in_user_name.value}' shortly with the next step.`)
-            else
+            if (is_signup_or_pwd_forgotten) {
+                const notice = `An email will be sent to '${in_user_name.value}' shortly with the next step.`
+                setSignUpOrPwdForgotNotice(notice)
+                alert(notice)
+            } else
                 location.reload()
         } catch (err) {
             in_user_name.disabled = false
@@ -54,7 +56,7 @@ export function create() {
     const in_password = htm.input({ 'type': 'password', 'placeholder': '(password: keep blank if forgotten OR to sign up)' })
     const in_password_new = htm.input({ 'type': 'password', 'placeholder': '(only to change password: new one here, old one above)' })
     const dialog = htm.dialog({ 'class': 'login-popup' },
-        htm.form({},
+        htm.form({ 'onsubmit': () => false },
             htm.button({ 'type': 'submit', 'class': 'save', 'title': "Sign in or sign up now", 'onclick': _ => on_btn_clicked() }, "✅"),
             in_user_name,
             in_password,
