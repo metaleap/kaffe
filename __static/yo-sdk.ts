@@ -310,7 +310,7 @@ export type PostField = 'Id' | 'DtMade' | 'DtMod' | 'By' | 'To' | 'Htm' | 'Files
 
 export type UserField = 'Id' | 'DtMade' | 'DtMod' | 'LastSeen' | 'Auth' | 'PicFileId' | 'Nick' | 'Btw' | 'Buddies'
 
-export type UserAuthField = 'Id' | 'DtMade' | 'DtMod' | 'EmailAddr'
+export type UserAuthField = 'Id' | 'DtMade' | 'DtMod' | 'EmailAddr' | 'PwdForgotten'
 
 export type ApiArgPeriod = {
 	From?: Time
