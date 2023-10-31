@@ -28,7 +28,7 @@ func imageSquared(srcRaw []byte) []byte {
 	if img_old, _ := img.(interface {
 		image.Image
 		SubImage(r image.Rectangle) image.Image
-	}); (img_old != nil) && sl.Has(format, known_formats) {
+	}); (img_old != nil) && sl.Has(known_formats, format) {
 		if sub_rect := img_old.Bounds(); sub_rect.Dx() != sub_rect.Dy() {
 			if w, h := sub_rect.Dx(), sub_rect.Dy(); w > h {
 				sub_rect = image.Rect((w-h)/2, 0, ((w-h)/2)+h, h)

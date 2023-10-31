@@ -152,11 +152,11 @@ func mockSomeActivity() {
 
 func mockSomeActivityChangeBuddy(ctx *Ctx, user *User, userEmailAddr string) {
 	if add_or_remove := rand.Intn(11); ((add_or_remove == 0) || (len(user.Buddies) > mockUsersNumMaxBuddies)) && (len(user.Buddies) > 0) {
-		user.Buddies = sl.WithoutIdx(rand.Intn(len(user.Buddies)), user.Buddies, true) // remove a buddy
+		user.Buddies = sl.WithoutIdx(user.Buddies, rand.Intn(len(user.Buddies)), true) // remove a buddy
 	} else { // add a buddy
 		var buddy_email_addr string
 		var buddy_id yodb.I64
-		for (buddy_id == 0) || (buddy_id == user.Id) || sl.Has(buddy_id, user.Buddies) || (buddy_email_addr == "") || (buddy_email_addr == userEmailAddr) {
+		for (buddy_id == 0) || (buddy_id == user.Id) || sl.Has(user.Buddies, buddy_id) || (buddy_email_addr == "") || (buddy_email_addr == userEmailAddr) {
 			if buddy_email_addr = str.Fmt("foo%d@bar.baz", 1+rand.Intn(mockUsersNumTotal)); buddy_email_addr != userEmailAddr {
 				buddy_id = userByEmailAddr(ctx, buddy_email_addr).Id
 			}

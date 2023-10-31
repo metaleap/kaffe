@@ -65,7 +65,7 @@ func postPeriods(ctx *Ctx, forUser *User, with []yodb.I64) (ret []time.Time) {
 			idxs_to_drop = append(idxs_to_drop, i)
 		}
 	}
-	ret = sl.Reversed(sl.WithoutIdxs(idxs_to_drop, ret))
+	ret = sl.Reversed(sl.WithoutIdxs(ret, idxs_to_drop...))
 	return
 }
 
@@ -161,7 +161,7 @@ func postNew(ctx *Ctx, post *Post, byCurUserInCtx bool) yodb.I64 {
 	}
 
 	if len(post.To) > 0 {
-		if sl.Any(post.To, func(it yodb.I64) bool { return !sl.Has(it, user.Buddies) }) {
+		if sl.Any(post.To, func(it yodb.I64) bool { return !sl.Has(user.Buddies, it) }) {
 			panic(ErrPostNew_ExpectedOnlyBuddyRecipients)
 		}
 		post.To = sl.Sorted(sl.With(post.To, user.Id))

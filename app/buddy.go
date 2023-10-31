@@ -14,7 +14,7 @@ func userBuddies(ctx *Ctx, forUser *User, normalizeLastSeenByMinute bool) (buddi
 		query = query.Or(UserId.In(forUser.Buddies.ToAnys()...))
 	}
 	for _, user := range yodb.FindMany[User](ctx, query, 0, nil, UserLastSeen.Desc(), UserDtMod.Desc()) {
-		in_our_buddies, in_their_buddies := sl.Has(user.Id, forUser.Buddies), sl.Has(forUser.Id, user.Buddies)
+		in_our_buddies, in_their_buddies := sl.Has(forUser.Buddies, user.Id), sl.Has(user.Buddies, forUser.Id)
 		if in_our_buddies && in_their_buddies {
 			buddiesAlready = append(buddiesAlready, user)
 		} else if in_their_buddies {
@@ -45,7 +45,7 @@ func userBuddies(ctx *Ctx, forUser *User, normalizeLastSeenByMinute bool) (buddi
 
 func userAddBuddy(ctx *Ctx, forUser *User, nickOrEmailAddr string) *User {
 	user := yodb.FindOne[User](ctx, UserNick.Equal(nickOrEmailAddr).Or(UserAuth_EmailAddr.Equal(nickOrEmailAddr)))
-	if (user != nil) && !sl.Has(user.Id, forUser.Buddies) {
+	if (user != nil) && !sl.Has(forUser.Buddies, user.Id) {
 		userUpdate(ctx, &User{Id: forUser.Id, Buddies: sl.With(forUser.Buddies, user.Id)}, true, false, UserBuddies)
 	}
 	return user
