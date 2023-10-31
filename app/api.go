@@ -87,37 +87,19 @@ func init() {
 	})
 }
 
-type ApiUserSignIn struct {
-	NickOrEmailAddr string
-	PasswordPlain   string
-}
-
-type ApiUserSignUpOrForgotPassword struct {
-	NickOrEmailAddr string
-}
-
-var apiUserSignIn = api(func(this *ApiCtx[ApiUserSignIn, Void]) {
-	this.Ctx.DbTx()
-
-	email_addr := this.Args.NickOrEmailAddr
-	if !str.Has(email_addr, "@") { // is nick, not email addr
-		existing_user := yodb.FindOne[User](this.Ctx, UserNick.Equal(email_addr))
-		if existing_user == nil {
-			panic(Err___yo_authLogin_AccountDoesNotExist)
-		}
-		email_addr = string(yoauth.ById(this.Ctx, existing_user.Auth.Id()).EmailAddr)
-	} else if !str.IsEmailishEnough(email_addr) {
-		panic(Err___yo_authLogin_EmailInvalid)
-	}
-
-	Do(yoauth.ApiUserLogin, this.Ctx, &yoauth.ApiAccountPayload{EmailAddr: email_addr, PasswordPlain: this.Args.PasswordPlain})
-})
-
 var apiUserSignOut = api(func(this *ApiCtx[Void, Void]) {
 	Do(yoauth.ApiUserLogout, this.Ctx, this.Args)
 })
 
-var apiUserSignUpOrForgotPassword = api(func(this *ApiCtx[ApiUserSignUpOrForgotPassword, Void]) {
+var apiUserSignIn = api(func(this *ApiCtx[ApiUserSignIn, Void]) {
+	this.Ctx.DbTx()
+	this.Args.ensureEmailAddr(this.Ctx, Err___yo_authLogin_AccountDoesNotExist, Err___yo_authLogin_EmailInvalid)
+	Do(yoauth.ApiUserLogin, this.Ctx, &yoauth.ApiAccountPayload{EmailAddr: this.Args.NickOrEmailAddr, PasswordPlain: this.Args.PasswordPlain})
+})
+
+var apiUserSignUpOrForgotPassword = api(func(this *ApiCtx[ApiNickOrEmailAddr, Void]) {
+	this.Ctx.DbTx()
+	this.Args.ensureEmailAddr(this.Ctx, Err___yo_authLogin_AccountDoesNotExist, Err___yo_authRegister_EmailInvalid)
 	yoauth.UserPregisterOrForgotPassword(this.Ctx, this.Args.NickOrEmailAddr)
 })
 
@@ -283,4 +265,27 @@ func apiHandleUploadedFiles(ctx *Ctx, fieldName string, maxNumFiles int, transfo
 		}
 	}
 	return
+}
+
+type ApiUserSignIn struct {
+	ApiNickOrEmailAddr
+	PasswordPlain string
+}
+
+type ApiNickOrEmailAddr struct {
+	NickOrEmailAddr string
+}
+
+func (me *ApiNickOrEmailAddr) ensureEmailAddr(ctx *Ctx, errNoSuchAccount Err, errBadEmail Err) {
+	if str.Has(me.NickOrEmailAddr, "@") {
+		if !str.IsEmailishEnough(me.NickOrEmailAddr) {
+			panic(errBadEmail)
+		}
+	} else {
+		existing_user := yodb.FindOne[User](ctx, UserNick.Equal(me.NickOrEmailAddr))
+		if existing_user == nil {
+			panic(errNoSuchAccount)
+		}
+		me.NickOrEmailAddr = string(yoauth.ById(ctx, existing_user.Auth.Id()).EmailAddr)
+	}
 }

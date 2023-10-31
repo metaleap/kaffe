@@ -283,9 +283,9 @@ export async function apiUserSignOut(payload?: Void, formData?: FormData, query?
 export type UserSignOutErr = typeof errsUserSignOut[number]
 
 const errsUserSignUpOrForgotPassword = ['MissingOrExcessiveContentLength', 'TimedOut', 'UserSignIn_ExpectedPasswordAndNickOrEmailAddr', 'UserSignIn____yo_authLogin_WrongPassword', 'UserSignUpOrForgotPassword____yo_authRegister_EmailInvalid', 'UserSignUpOrForgotPassword____yo_authRegister_EmailRequiredButMissing', '___yo_authLogin_AccountDoesNotExist', '___yo_authLogin_EmailInvalid', '___yo_authLogin_EmailRequiredButMissing', '___yo_authLogin_OkButFailedToCreateSignedToken', '___yo_authLogin_WrongPassword', '___yo_authRegister_EmailAddrAlreadyExists', '___yo_authRegister_EmailInvalid', '___yo_authRegister_EmailRequiredButMissing', '___yo_authRegister_PasswordInvalid', '___yo_authRegister_PasswordTooLong', '___yo_authRegister_PasswordTooShort'] as const
-export async function apiUserSignUpOrForgotPassword(payload?: ApiUserSignUpOrForgotPassword, formData?: FormData, query?: {[_:string]:string}): Promise<Void> {
+export async function apiUserSignUpOrForgotPassword(payload?: ApiNickOrEmailAddr, formData?: FormData, query?: {[_:string]:string}): Promise<Void> {
 	try {
-		return await req<ApiUserSignUpOrForgotPassword, Void, UserSignUpOrForgotPasswordErr>('_/userSignUpOrForgotPassword', payload, formData, query)
+		return await req<ApiNickOrEmailAddr, Void, UserSignUpOrForgotPasswordErr>('_/userSignUpOrForgotPassword', payload, formData, query)
 	} catch(err: any) {
 		if (err && err['body_text'] && (errsUserSignUpOrForgotPassword.indexOf(err.body_text) >= 0))
 			throw(new Err<UserSignUpOrForgotPasswordErr>(err.body_text as UserSignUpOrForgotPasswordErr))
@@ -318,13 +318,13 @@ export type ApiArgPeriod = {
 	Until?: Time
 }
 
+export type ApiNickOrEmailAddr = {
+	NickOrEmailAddr?: string
+}
+
 export type ApiUserSignIn = {
 	NickOrEmailAddr?: string
 	PasswordPlain?: string
-}
-
-export type ApiUserSignUpOrForgotPassword = {
-	NickOrEmailAddr?: string
 }
 
 export type Post = {

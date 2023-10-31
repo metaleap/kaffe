@@ -99,7 +99,7 @@ func mockSomeActivity() {
 
 	if must_log_in_first {
 		ViaHttp[ApiUserSignIn, Void](apiUserSignIn, ctx, &ApiUserSignIn{
-			NickOrEmailAddr: user_email_addr, PasswordPlain: "foobar",
+			ApiNickOrEmailAddr: ApiNickOrEmailAddr{NickOrEmailAddr: user_email_addr}, PasswordPlain: "foobar",
 		}, user_client)
 	}
 
