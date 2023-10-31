@@ -196,7 +196,7 @@ function newUiLoginDialog() {
     }
 
     const in_user_name = htm.input({ 'placeholder': '(nick or email address)' })
-    const in_password = htm.input({ 'type': 'password', 'placeholder': '(keep blank if forgotten OR not yet registered)' })
+    const in_password = htm.input({ 'type': 'password', 'placeholder': '(password: keep blank to sign up or if forgotten)' })
     const dialog = htm.dialog({ 'class': 'login-popup' },
         htm.form({},
             htm.button({ 'type': 'button', 'class': 'save', 'title': "Sign in or sign up now", 'onclick': _ => on_btn_clicked() }, "✅"),
