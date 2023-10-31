@@ -51,7 +51,7 @@ func userUpdate(ctx *Ctx, upd *User, byCurUserInCtx bool, inclEmptyOrMissingFiel
 		upd.LastSeen = yodb.DtNow()
 	}
 	if 0 == yodb.Update[User](ctx, upd, nil, !inclEmptyOrMissingFields, sl.To(onlyFields, UserField.F)...) {
-		panic("nochanges in " + str.From(onlyFields) + "?" + str.From(upd) + "vs." + str.From(userCur(ctx)))
+		panic("nochanges in " + str.GoLike(onlyFields) + "?" + str.GoLike(upd) + "vs." + str.GoLike(userCur(ctx)))
 	}
 }
 
