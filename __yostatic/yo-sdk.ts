@@ -347,6 +347,7 @@ export type PostsListResult = {
 export type User = {
 	Auth?: I64
 	Btw?: string
+	BtwEmoji?: string
 	Buddies?: I64[]
 	DtMade?: DateTime
 	DtMod?: DateTime

@@ -87,6 +87,26 @@ body a {
     display: inline-block;
 }
 
+.haxsh-buddies .badged-alt::after {
+    color: #ffffff;
+    z-index: 99999;
+    width: 1.23em;
+    height: 1.23em;
+    border-radius: 77em;
+    margin: 0 0 0 0.11em;
+    font-size: 0.77em;
+    text-align: center;
+
+    line-height: 1.23em;
+    padding: 0.044em 0.11em;
+    content: attr(data-badge-alt);
+    font-weight: normal;
+    position: relative !important;
+    bottom: 1.23em;
+    float: right;
+    background-color: var(--bgoff1);
+}
+
 .buddy-pic {
     padding: 0;
     margin: 0.25em;

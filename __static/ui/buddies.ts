@@ -18,8 +18,9 @@ export function create(): UiCtlBuddies {
     const me: UiCtlBuddies = {
         DOM: htm.div({ 'class': 'haxsh-buddies' },
             htm.div({
-                'class': depends(() => 'buddy-self' + ((haxsh.selectedBuddy.val === 0) ? ' selected' : '') + ((haxsh.buddyBadges[0].val) ? ' badged' : '')),
+                'class': depends(() => 'buddy-self' + ((haxsh.selectedBuddy.val === 0) ? ' selected' : '') + ((haxsh.buddyBadges[0].val) ? ' badged' : '') + ((haxsh.buddyBadgesAlt[0].val) ? ' badged-alt' : '')),
                 'data-badge': depends(() => (haxsh.buddyBadges[0].val) || ""),
+                'data-badge-alt': depends(() => (haxsh.buddyBadgesAlt[0].val) || ""),
                 'onclick': () => {
                     if (!haxsh.isSeeminglyOffline.val)
                         haxsh.buddySelected(undefined, true)
@@ -33,8 +34,9 @@ export function create(): UiCtlBuddies {
 
     van.add(me.DOM, vanx.list(() => htm.div({ 'class': 'buddies' }), me.buddies, (it) => {
         const item = htm.div({
-            'class': depends(() => 'buddy' + (haxsh.isSeeminglyOffline.val ? ' offline' : '') + (haxsh.buddySelected(it.val) ? ' selected' : '') + ((haxsh.buddyBadges[it.val.Id!].val) ? ' badged' : '')),
+            'class': depends(() => 'buddy' + (haxsh.isSeeminglyOffline.val ? ' offline' : '') + (haxsh.buddySelected(it.val) ? ' selected' : '') + ((haxsh.buddyBadges[it.val.Id!].val) ? ' badged' : '') + ((haxsh.buddyBadgesAlt[it.val.Id!].val) ? ' badged-alt' : '')),
             'data-badge': depends(() => (haxsh.buddyBadges[it.val.Id!].val) || ""),
+            'data-badge-alt': depends(() => (haxsh.buddyBadgesAlt[it.val.Id!].val) || ""),
         }, htm.div(userDomAttrsBuddy(it.val)))
         item.onclick = () => {
             if (!haxsh.isSeeminglyOffline.val)

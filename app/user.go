@@ -32,6 +32,8 @@ type User struct {
 	Btw                   yodb.Text
 	Buddies               yodb.Arr[yodb.I64]
 	byBuddyDtLastMsgCheck yodb.JsonMap[*yodb.DateTime]
+
+	BtwEmoji string // for API consumers, not in DB
 }
 
 func userUpdate(ctx *Ctx, upd *User, byCurUserInCtx bool, inclEmptyOrMissingFields bool, onlyFields ...UserField) {

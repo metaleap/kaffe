@@ -1,11 +1,13 @@
 package haxsh
 
 import (
+	"strconv"
 	. "yo/ctx"
 	yodb "yo/db"
 	q "yo/db/query"
 	. "yo/util"
 	"yo/util/sl"
+	"yo/util/str"
 )
 
 func userBuddies(ctx *Ctx, forUser *User, normalizeLastSeenByMinute bool) (buddiesAlready []*User, buddyRequestsMade []*User, buddyRequestsBy []*User) {
@@ -16,6 +18,11 @@ func userBuddies(ctx *Ctx, forUser *User, normalizeLastSeenByMinute bool) (buddi
 	for _, user := range yodb.FindMany[User](ctx, query, 0, nil, UserLastSeen.Desc(), UserDtMod.Desc()) {
 		in_our_buddies, in_their_buddies := sl.Has(forUser.Buddies, user.Id), sl.Has(user.Buddies, forUser.Id)
 		if in_our_buddies && in_their_buddies {
+			if str.Begins(string(user.Btw), ":") && str.Ends(string(user.Btw), ":") {
+				if emoji_html := postEmoji[string(user.Btw)]; emoji_html != "" {
+					user.BtwEmoji, _ = strconv.Unquote("\"\\u" + emoji_html[3:len(emoji_html)-1] + "\"")
+				}
+			}
 			buddiesAlready = append(buddiesAlready, user)
 		} else if in_their_buddies {
 			buddyRequestsBy = append(buddyRequestsBy, user)

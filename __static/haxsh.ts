@@ -22,6 +22,7 @@ export let isSeeminglyOffline = van.state(false)
 export let isArchiveBrowsing = van.state(false)
 export let selectedBuddy: State<number> = van.state(0)
 export let buddyBadges: { [_: number]: State<string> } = { 0: van.state("") }
+export let buddyBadgesAlt: { [_: number]: State<string> } = { 0: van.state("") }
 export let signUpOrPwdForgotNotice = van.state("")
 let firstOfMonth = new Date(new Date().getFullYear(), new Date().getUTCMonth(), 1, 0, 0, 0, 0).getTime()
 let shouldReloadPostPeriods = true
@@ -78,15 +79,20 @@ async function fetchBuddies(oneOff?: boolean) {
         if (!userSelf.val) // fetch only *after* the above because apiUserBy needs cur-user email-addr, which isn't cookied
             reloadUserSelf() // no need to await really
         if (result.Buddies && result.Buddies.length)
-            for (const user of result.Buddies)
+            for (const user of result.Buddies) {
                 if (!buddyBadges[user.Id!])
                     buddyBadges[user.Id!] = van.state("")
+                if (!buddyBadgesAlt[user.Id!])
+                    buddyBadgesAlt[user.Id!] = van.state("")
+                buddyBadgesAlt[user.Id!].val = user.BtwEmoji ?? ""
+            }
         uiBuddies.update(result)
         browserTabTitleRefresh()
         if (!fetchedPostsEverYet) {
             fetchPostsRecent()
             setTimeout(fetchPostsDeleted, fetchPostsDeletedIntervalMs)
         }
+        fetchesPaused = true
     } catch (err) {
         if (!knownErr<yo.UserBuddiesErr>(err, handleKnownErrMaybe<yo.UserBuddiesErr>))
             onErrOther(err)
