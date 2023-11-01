@@ -1,7 +1,7 @@
 package haxsh
 
 import (
-	"strconv"
+	"html"
 	. "yo/ctx"
 	yodb "yo/db"
 	q "yo/db/query"
@@ -20,7 +20,7 @@ func userBuddies(ctx *Ctx, forUser *User, normalizeLastSeenByMinute bool) (buddi
 		if in_our_buddies && in_their_buddies {
 			if str.Begins(string(user.Btw), ":") && str.Ends(string(user.Btw), ":") {
 				if emoji_html := postEmoji[string(user.Btw)]; emoji_html != "" {
-					user.BtwEmoji, _ = strconv.Unquote("\"\\u" + emoji_html[3:len(emoji_html)-1] + "\"")
+					user.BtwEmoji = html.UnescapeString(emoji_html)
 				}
 			}
 			buddiesAlready = append(buddiesAlready, user)
