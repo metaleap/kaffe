@@ -306,6 +306,8 @@ export function knownErr<T extends string>(err: any, ifSo: (_: T) => boolean): b
 }
 export function handleKnownErrMaybe<T extends string>(err: T): boolean {
     switch (err) {
+        case 'DbUpdate_ExpectedChangesForUpdate': // classical double-click-the-Save-button handling (although we disable them here)
+            return true
         case 'Unauthorized':
             fetchesPaused = true
             uiDialogLogin.showModal()

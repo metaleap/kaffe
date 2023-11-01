@@ -49,6 +49,10 @@ export function create(user: yo.User): UiCtlUserPopup {
         file_reader.readAsDataURL(htm_input_pic.files[0])
     }
     const save_changes = async () => {
+        const htm_nodes_to_disable: (HTMLElement & { disabled: boolean })[] =
+            [btn_save!, btn_sign_out!, btn_close, htm_input_btw, htm_input_nick, htm_input_pic]
+        for (const htm_node of htm_nodes_to_disable)
+            htm_node.disabled = true
         const darklite = parseInt(htm_input_darklite.value)
         if (!isNaN(darklite))
             localStorage.setItem('darklite', htm_input_darklite.value)
@@ -73,17 +77,23 @@ export function create(user: yo.User): UiCtlUserPopup {
             } catch (err) {
                 if (!haxsh.knownErr<yo.UserUpdateErr>(err, haxsh.handleKnownErrMaybe<yo.UserUpdateErr>))
                     haxsh.onErrOther(err, true)
+            } finally {
+                for (const htm_node of htm_nodes_to_disable)
+                    htm_node.disabled = false
             }
         }
         if (did_save || !has_changed)
             me.DOM.close()
     }
+    const btn_close = htm.button({ 'type': 'button', 'class': 'close', 'title': "Close", 'onclick': _ => me.DOM.close() }, "❎")
+    const btn_sign_out = (!is_self) ? undefined : htm.button({ 'type': 'button', 'class': 'exit', 'title': "Sign out", 'onclick': () => haxsh.userSignOut(true) }, "🚫")
+    const btn_save = (!is_self) ? undefined : htm.button({ 'type': 'button', 'class': 'save', 'title': "Save changes", 'onclick': save_changes }, "✅")
 
     const me: UiCtlUserPopup = {
         DOM: htm.dialog({ 'class': 'user-popup' },
-            htm.button({ 'type': 'button', 'class': 'close', 'title': "Close", 'onclick': _ => me.DOM.close() }, "❎"),
-            (!is_self) ? undefined : htm.button({ 'type': 'button', 'class': 'exit', 'title': "Sign out", 'onclick': () => haxsh.userSignOut(true) }, "🚫"),
-            (!is_self) ? undefined : htm.button({ 'type': 'button', 'class': 'save', 'title': "Save changes", 'onclick': save_changes }, "✅"),
+            btn_close,
+            btn_sign_out,
+            btn_save,
             htm.div({},
                 is_self ? htm_input_nick : htm.span({ 'class': 'nick' }, user.Nick),
                 htm_div_pic,
