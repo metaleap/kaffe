@@ -58,30 +58,35 @@ func userUpdate(ctx *Ctx, upd *User, byCurUserInCtx bool, inclEmptyOrMissingFiel
 }
 
 func userByEmailAddr(ctx *Ctx, emailAddr string) *User {
-	return yodb.FindOne[User](ctx, UserAuth_EmailAddr.Equal(emailAddr))
+	return yodb.FindOne[User](ctx, UserAuth_EmailAddr.Equal(emailAddr)).augmentAfterLoaded()
 }
 
 func userByNickName(ctx *Ctx, nickName string) *User {
-	return yodb.FindOne[User](ctx, UserNick.Equal(nickName))
+	return yodb.FindOne[User](ctx, UserNick.Equal(nickName)).augmentAfterLoaded()
 }
 
 func userById(ctx *Ctx, id yodb.I64) *User {
-	user_cur, _ := ctx.Get(ctxKeyCurUser, nil).(*User)
-	if (user_cur != nil) && (user_cur.Id == id) {
-		return user_cur
+	user, _ := ctx.Get(ctxKeyCurUser, nil).(*User) // maybe `id` points to current-user anyway?
+	if (user == nil) || (user.Id != id) {
+		user = yodb.ById[User](ctx, id).augmentAfterLoaded()
 	}
-	return yodb.ById[User](ctx, id)
+	return user
 }
 
 func userCur(ctx *Ctx) (ret *User) {
 	if ret, _ = ctx.Get(ctxKeyCurUser, nil).(*User); ret == nil {
 		_, user_auth_id := yoauth.CurrentlyLoggedInUser(ctx)
 		if user_auth_id != 0 {
-			ret = yodb.FindOne[User](ctx, UserAuth.Equal(user_auth_id))
+			ret = yodb.FindOne[User](ctx, UserAuth.Equal(user_auth_id)).augmentAfterLoaded()
 			ctx.Set(ctxKeyCurUser, ret)
 		}
 	}
 	return
+}
+
+func (me *User) augmentAfterLoaded() *User {
+	me.BtwEmoji = emojiUnescaped(string(me.Btw))
+	return me
 }
 
 func userSetLastSeen(auth_id yodb.I64, byBuddyDtLastMsgCheck yodb.JsonMap[*yodb.DateTime]) {

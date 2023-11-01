@@ -65,8 +65,10 @@ export function main() {
 export async function reloadUserSelf() {
     if (yo.userEmailAddr) {
         userSelf.val = undefined // in case of failure, a later buddy-fetch will re-attempt a fresh reload — but only with this assignment in place
-        userSelf.val = await yo.apiUserBy({ EmailAddr: yo.userEmailAddr })
+        const user_self = await yo.apiUserBy({ EmailAddr: yo.userEmailAddr })
         isSeeminglyOffline.val = false
+        userSelf.val = user_self
+        buddyBadgesAlt[0].val = user_self.BtwEmoji ?? ""
     }
 }
 
@@ -92,7 +94,6 @@ async function fetchBuddies(oneOff?: boolean) {
             fetchPostsRecent()
             setTimeout(fetchPostsDeleted, fetchPostsDeletedIntervalMs)
         }
-        fetchesPaused = true
     } catch (err) {
         if (!knownErr<yo.UserBuddiesErr>(err, handleKnownErrMaybe<yo.UserBuddiesErr>))
             onErrOther(err)
@@ -240,8 +241,8 @@ function browserTabTitleRefresh() {
         + ' ' + (buddies_and_self.map(_ => _.Nick).join(', '))).trim()
     if (new_title !== document.title)
         document.title = new_title
-    const fav_icon_user = isSeeminglyOffline.val ? undefined : buddies_and_self.find(_ => (_.PicFileId !== ''))
-    const fav_icon_href = uibuddies.userPicFileUrl(fav_icon_user, '☕'), htm_favicon = document.getElementById('favicon') as HTMLLinkElement
+    const fav_icon_user = isSeeminglyOffline.val ? undefined : buddies_and_self.find(_ => ((_.PicFileId !== '') || selectedBuddy.val))
+    const fav_icon_href = uibuddies.userPicFileUrl(fav_icon_user, fav_icon_user ? undefined : '☕'), htm_favicon = document.getElementById('favicon') as HTMLLinkElement
     if (htm_favicon && htm_favicon.href && (htm_favicon.href !== fav_icon_href))
         htm_favicon.href = fav_icon_href
 }

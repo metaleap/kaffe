@@ -49,7 +49,7 @@ export function create(): UiCtlBuddies {
         'class': depends(() => 'buddy' + (me.buddyRequestsBy.val.length ? ' badged' : '')),
         'data-badge': depends(() => me.buddyRequestsBy.val.length || ""),
         'onclick': () => showBuddiesDialog(me),
-    }, htm.div({ 'class': 'buddy-pic', 'title': "Manage Buddies", 'style': `background-image: url('${userPicFileUrl(undefined, "👥")}')` })))
+    }, htm.div({ 'class': 'buddy-pic', 'title': "Manage buddies", 'style': `background-image: url('${userPicFileUrl(undefined, "👥")}')` })))
     return me
 }
 

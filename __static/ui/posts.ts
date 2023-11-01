@@ -71,7 +71,7 @@ export function create(): UiCtlPosts {
                             'disabled': depends(button_disabled), 'onclick': (() => sendNew(me, files_to_post, is_empty)),
                         }),
                         htm.button({
-                            'type': 'button', 'class': 'button attach', 'title': "Add Files", 'tabindex': 3,
+                            'type': 'button', 'class': 'button attach', 'title': "Add files", 'tabindex': 3,
                             'disabled': depends(button_disabled), 'onclick': () => htm_input_file.click(),
                         }),
                     ),

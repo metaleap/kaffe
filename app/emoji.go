@@ -1,10 +1,20 @@
 package haxsh
 
 import (
+	"html"
 	"yo/util/str"
 )
 
-var postEmoji = str.Dict{
+func emojiUnescaped(colonedIdentStr string) (ret string) {
+	if str.Begins(colonedIdentStr, ":") && str.Ends(colonedIdentStr, ":") {
+		if emoji_html := emojiKnown[colonedIdentStr]; emoji_html != "" {
+			ret = html.UnescapeString(emoji_html)
+		}
+	}
+	return
+}
+
+var emojiKnown = str.Dict{
 	":+1:":                               "&#x1f44d;",
 	":100:":                              "&#x1f4af;",
 	":1234:":                             "&#x1f522;",

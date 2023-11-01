@@ -97,8 +97,8 @@ body a {
     font-size: 0.77em;
     text-align: center;
 
-    line-height: 1.23em;
-    padding: 0.044em 0.11em;
+    line-height: 1.11em;
+    padding: 0.123em;
     content: attr(data-badge-alt);
     font-weight: normal;
     position: relative !important;
