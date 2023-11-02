@@ -92,7 +92,7 @@ func mockSomeActivity() {
 		mockLock.Unlock()
 	}
 
-	ctx := NewCtxNonHttp(time.Minute, user_email_addr+" "+action)
+	ctx := NewCtxNonHttp(time.Minute, false, user_email_addr+" "+action)
 	defer ctx.OnDone(nil)
 	ctx.DbTx()
 	ctx.TimingsNoPrintInDevMode = true
@@ -181,7 +181,7 @@ func mockUpdEnsureChange[T comparable](at *T, getAnother func() T, ok func(T) bo
 
 func mockEnsureUser(i int) yodb.I64 {
 	user_email_addr := str.Fmt("foo%d@bar.baz", i)
-	ctx := NewCtxNonHttp(time.Minute, user_email_addr)
+	ctx := NewCtxNonHttp(time.Minute, false, user_email_addr)
 	defer ctx.OnDone(nil)
 	ctx.DbTx()
 	ctx.TimingsNoPrintInDevMode = true

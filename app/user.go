@@ -93,7 +93,7 @@ func userSetLastSeen(auth_id yodb.I64, byBuddyDtLastMsgCheck yodb.JsonMap[*yodb.
 	if auth_id == 0 {
 		return
 	}
-	ctx := NewCtxNonHttp(time.Minute, "userSetLastSeen")
+	ctx := NewCtxNonHttp(time.Minute, false, "userSetLastSeen")
 	defer ctx.OnDone(nil)
 	ctx.TimingsNoPrintInDevMode = true
 	upd := &User{LastSeen: yodb.DtNow(), byBuddyDtLastMsgCheck: byBuddyDtLastMsgCheck}
