@@ -91,7 +91,7 @@ func postsRecent(ctx *Ctx, forUser *User, since *yodb.DateTime, onlyThoseBy []yo
 		var mut sync.Mutex
 		do_count := func(buddyId yodb.I64, since *yodb.DateTime, onDone func()) {
 			defer onDone()
-			query := dbQueryPostsForUser(forUser, If(buddyId == 0, nil, sl.Slice[yodb.I64]{buddyId}))
+			query := dbQueryPostsForUser(forUser, If(buddyId == 0, nil, sl.Of[yodb.I64]{buddyId}))
 			if since != nil {
 				query = query.And(PostDtMade.GreaterOrEqual(since))
 			}
@@ -170,10 +170,10 @@ func postNew(ctx *Ctx, post *Post, byCurUserInCtx bool) yodb.I64 {
 	return yodb.CreateOne(ctx, post)
 }
 
-func dbQueryPostsForUser(forUser *User, onlyThoseBy sl.Slice[yodb.I64]) q.Query {
+func dbQueryPostsForUser(forUser *User, onlyThoseBy sl.Of[yodb.I64]) q.Query {
 	is_room := (len(onlyThoseBy) > 0)
 	if !is_room {
-		onlyThoseBy = (sl.Slice[yodb.I64])(forUser.Buddies)
+		onlyThoseBy = (sl.Of[yodb.I64])(forUser.Buddies)
 	}
 	onlyThoseBy = sl.With(onlyThoseBy, forUser.Id)
 	ret := PostBy.In(onlyThoseBy.ToAnys()...).
