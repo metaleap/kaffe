@@ -11,6 +11,7 @@ import (
 )
 
 var devModeInitMockUsers func()
+var jobs yojobs.Engine
 
 func init() {
 	AppApiUrlPrefix = "_/"
@@ -52,4 +53,6 @@ func OnBeforeListenAndServe() {
 		TimeoutSecsJobRunPrepAndFinalize: 3,
 		Schedules:                        yodb.Arr[yodb.Text]{"* * * * *"},
 	})
+	jobs = yojobs.NewEngine(yojobs.Options{})
+	go jobs.Resume()
 }
