@@ -1,6 +1,7 @@
 package haxsh
 
 import (
+	"math"
 	. "yo/ctx"
 	yodb "yo/db"
 	q "yo/db/query"
@@ -13,7 +14,7 @@ func userBuddies(ctx *Ctx, forUser *User, normalizeLastSeenBySecond bool) (buddi
 	if len(forUser.Buddies) > 0 {
 		query = query.Or(UserId.In(forUser.Buddies.ToAnys()...))
 	}
-	for _, user := range yodb.FindMany[User](ctx, query, 0, nil, UserLastSeen.Desc(), UserDtMod.Desc()) {
+	for _, user := range yodb.FindMany[User](ctx, query, 0, nil, UserDtMod.Desc()) {
 		in_our_buddies, in_their_buddies := sl.Has(forUser.Buddies, user.Id), sl.Has(user.Buddies, forUser.Id)
 		if in_our_buddies && in_their_buddies {
 			buddiesAlready = append(buddiesAlready, user.augmentAfterLoaded())
@@ -31,6 +32,18 @@ func userBuddies(ctx *Ctx, forUser *User, normalizeLastSeenBySecond bool) (buddi
 			}
 		}
 	}
+	buddiesAlready = sl.SortedPer(buddiesAlready, func(lhs *User, rhs *User) int {
+		if lhs.Offline && !rhs.Offline {
+			return math.MaxInt
+		} else if rhs.Offline && !lhs.Offline {
+			return math.MinInt
+		}
+		lhs_last_seen, rhs_last_seen := *lhs.LastSeen, *rhs.LastSeen
+		lhs_last_seen.Set(DtAtZeroSecsUtc)
+		rhs_last_seen.Set(DtAtZeroSecsUtc)
+		return int(rhs_last_seen.Time().UnixNano() - lhs_last_seen.Time().UnixNano())
+	})
+
 	for _, buddy_request := range buddyRequestsMade {
 		buddy_request.Auth.SetId(0)
 		buddy_request.Btw = ""
