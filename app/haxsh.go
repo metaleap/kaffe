@@ -48,7 +48,7 @@ func OnBeforeListenAndServe() {
 	yodb.Upsert[yojobs.JobDef](ctx, yojobs.JobDefName, &yojobs.JobDef{
 		Name:                             "exampleJob",
 		JobTypeId:                        "yojobs.ExampleJobType",
-		MaxTaskRetries:                   2,
+		MaxTaskRetries:                   1,
 		DeleteAfterDays:                  1,
 		TimeoutSecsTaskRun:               2,
 		TimeoutSecsJobRunPrepAndFinalize: 3,
