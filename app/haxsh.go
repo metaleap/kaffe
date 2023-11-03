@@ -4,7 +4,9 @@ import (
 	"os"
 
 	. "yo/cfg"
+	. "yo/ctx"
 	yodb "yo/db"
+	yojobs "yo/jobs"
 	. "yo/srv"
 )
 
@@ -31,10 +33,23 @@ func Init() {
 		yodb.ReadOnly[PostField]{PostBy},
 		yodb.Index[PostField]{PostBy, PostTo},
 	)
+
 }
 
 func OnBeforeListenAndServe() {
 	if devModeInitMockUsers != nil {
 		go devModeInitMockUsers()
 	}
+
+	ctx := NewCtxNonHttp(yojobs.TimeoutLong, false, "")
+	defer ctx.OnDone(nil)
+	yodb.Upsert[yojobs.JobDef](ctx, yojobs.JobDefName, &yojobs.JobDef{
+		Name:                             "exampleJob",
+		JobTypeId:                        "yojobs.ExampleJobType",
+		MaxTaskRetries:                   2,
+		DeleteAfterDays:                  1,
+		TimeoutSecsTaskRun:               2,
+		TimeoutSecsJobRunPrepAndFinalize: 3,
+		Schedules:                        yodb.Arr[yodb.Text]{"* * * * *"},
+	})
 }
