@@ -113,23 +113,27 @@ async function fetchPostsRecent(oneOff?: boolean) {
             while (uiPeriodPicker.options.length > 1)
                 uiPeriodPicker.options.remove(1)
             isArchiveBrowsing.val = false
-            const periods = (await yo.apiPostPeriods({ WithUserIds: selectedBuddy.val ? [selectedBuddy.val] : [] })).Periods ?? []
+            const periods = (await yo.apiPostMonthsUtc({ WithUserIds: selectedBuddy.val ? [selectedBuddy.val] : [] })).Periods ?? []
             for (const period of periods) {
-                const dt = new Date(period)
-                uiPeriodPicker.options.add(htm.option({ 'value': period }, `${dt.getFullYear()} — ${dt.toLocaleDateString('default', { month: 'long' })}`))
+                const dt = new Date(period.Year!, (period.Month!) - 1, 1, 0, 0, 0, 0)
+                uiPeriodPicker.options.add(htm.option({ 'value': JSON.stringify(period) }, `${dt.getFullYear()} — ${dt.toLocaleDateString('default', { month: 'long' })}`))
             }
         }
 
         const fetch_archived_posts = (uiPeriodPicker.selectedIndex > 0)
         if (fetch_archived_posts) {
-            fetchPostsSinceDt = (uiPeriodPicker.selectedOptions[0].value)
-            if ((!oneOff) && (uiPosts.posts.length > 0) && (new Date(fetchPostsSinceDt).getTime() < firstOfMonth))
-                return // the month selected is before the current month and was already fetched. there'll be no updates so bugging out.
+            const period: yo.YearAndMonth = JSON.parse(uiPeriodPicker.selectedOptions[0].value)
+            const dt = new Date(period.Year!, (period.Month!) - 1, 1, 0, 0, 0, 0)
+            const is_earlier_month_than_current = (dt.getTime() < firstOfMonth)
+            if ((!oneOff) && (uiPosts.posts.length > 0) && is_earlier_month_than_current)
+                return // the month selected is before the current month and was already fetched.
+            else if (!is_earlier_month_than_current) // current-month while in archive view...
+                oneOff = false // ...so ensuring interval activates at the end of this function (in case user just jumped here from an earlier month)
         }
         const result = fetch_archived_posts
-            ? await yo.apiPostsForPeriod({
+            ? await yo.apiPostsForMonthUtc({
                 OnlyBy: selectedBuddy.val ? [selectedBuddy.val] : [],
-                From: fetchPostsSinceDt,
+                Period: JSON.parse(uiPeriodPicker.selectedOptions[0].value),
             })
             : await yo.apiPostsRecent({
                 OnlyBy: selectedBuddy.val ? [selectedBuddy.val] : [],

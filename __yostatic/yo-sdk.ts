@@ -162,6 +162,18 @@ export async function apiPostDelete(payload?: postDelete_In, formData?: FormData
 }
 export type PostDeleteErr = typeof errsPostDelete[number]
 
+const errsPostMonthsUtc = ['MissingOrExcessiveContentLength', 'TimedOut', 'Unauthorized'] as const
+export async function apiPostMonthsUtc(payload?: postMonthsUtc_In, formData?: FormData, query?: {[_:string]:string}): Promise<postMonthsUtc_Out> {
+	try {
+		return await req<postMonthsUtc_In, postMonthsUtc_Out, PostMonthsUtcErr>('_/postMonthsUtc', payload, formData, query)
+	} catch(err: any) {
+		if (err && err['body_text'] && (errsPostMonthsUtc.indexOf(err.body_text) >= 0))
+			throw(new Err<PostMonthsUtcErr>(err.body_text as PostMonthsUtcErr))
+		throw(err)
+	}
+}
+export type PostMonthsUtcErr = typeof errsPostMonthsUtc[number]
+
 const errsPostNew = ['MissingOrExcessiveContentLength', 'PostNew_ExpectedEmptyFilesFieldWithUploadedFilesInMultipartForm', 'PostNew_ExpectedNonEmptyPost', 'PostNew_ExpectedOnlyBuddyRecipients', 'TimedOut', 'Unauthorized'] as const
 export async function apiPostNew(payload?: Post, formData?: FormData, query?: {[_:string]:string}): Promise<Return_yo_db_I64_> {
 	try {
@@ -173,18 +185,6 @@ export async function apiPostNew(payload?: Post, formData?: FormData, query?: {[
 	}
 }
 export type PostNewErr = typeof errsPostNew[number]
-
-const errsPostPeriods = ['MissingOrExcessiveContentLength', 'TimedOut', 'Unauthorized'] as const
-export async function apiPostPeriods(payload?: postPeriods_In, formData?: FormData, query?: {[_:string]:string}): Promise<postPeriods_Out> {
-	try {
-		return await req<postPeriods_In, postPeriods_Out, PostPeriodsErr>('_/postPeriods', payload, formData, query)
-	} catch(err: any) {
-		if (err && err['body_text'] && (errsPostPeriods.indexOf(err.body_text) >= 0))
-			throw(new Err<PostPeriodsErr>(err.body_text as PostPeriodsErr))
-		throw(err)
-	}
-}
-export type PostPeriodsErr = typeof errsPostPeriods[number]
 
 const errsPostsDeleted = ['MissingOrExcessiveContentLength', 'TimedOut', 'Unauthorized'] as const
 export async function apiPostsDeleted(payload?: postsDeleted_In, formData?: FormData, query?: {[_:string]:string}): Promise<postsDeleted_Out> {
@@ -198,17 +198,17 @@ export async function apiPostsDeleted(payload?: postsDeleted_In, formData?: Form
 }
 export type PostsDeletedErr = typeof errsPostsDeleted[number]
 
-const errsPostsForPeriod = ['MissingOrExcessiveContentLength', 'PostsForPeriod_ExpectedPeriodGreater0AndLess33Days', 'TimedOut', 'Unauthorized'] as const
-export async function apiPostsForPeriod(payload?: ApiArgPeriod, formData?: FormData, query?: {[_:string]:string}): Promise<PostsListResult> {
+const errsPostsForMonthUtc = ['MissingOrExcessiveContentLength', 'TimedOut', 'Unauthorized'] as const
+export async function apiPostsForMonthUtc(payload?: ApiArgPeriod, formData?: FormData, query?: {[_:string]:string}): Promise<PostsListResult> {
 	try {
-		return await req<ApiArgPeriod, PostsListResult, PostsForPeriodErr>('_/postsForPeriod', payload, formData, query)
+		return await req<ApiArgPeriod, PostsListResult, PostsForMonthUtcErr>('_/postsForMonthUtc', payload, formData, query)
 	} catch(err: any) {
-		if (err && err['body_text'] && (errsPostsForPeriod.indexOf(err.body_text) >= 0))
-			throw(new Err<PostsForPeriodErr>(err.body_text as PostsForPeriodErr))
+		if (err && err['body_text'] && (errsPostsForMonthUtc.indexOf(err.body_text) >= 0))
+			throw(new Err<PostsForMonthUtcErr>(err.body_text as PostsForMonthUtcErr))
 		throw(err)
 	}
 }
-export type PostsForPeriodErr = typeof errsPostsForPeriod[number]
+export type PostsForMonthUtcErr = typeof errsPostsForMonthUtc[number]
 
 const errsPostsRecent = ['MissingOrExcessiveContentLength', 'TimedOut', 'Unauthorized'] as const
 export async function apiPostsRecent(payload?: postsRecent_In, formData?: FormData, query?: {[_:string]:string}): Promise<PostsListResult> {
@@ -313,9 +313,8 @@ export type UserField = 'Id' | 'DtMade' | 'DtMod' | 'LastSeen' | 'Auth' | 'PicFi
 export type UserAuthField = 'Id' | 'DtMade' | 'DtMod' | 'EmailAddr' | 'PwdForgotten'
 
 export type ApiArgPeriod = {
-	From?: Time
 	OnlyBy?: I64[]
-	Until?: Time
+	Period?: YearAndMonth
 }
 
 export type ApiNickOrEmailAddr = {
@@ -357,16 +356,21 @@ export type User = {
 	PicFileId?: string
 }
 
+export type YearAndMonth = {
+	Month?: U8
+	Year?: U16
+}
+
 export type postDelete_In = {
 	Id?: I64
 }
 
-export type postPeriods_In = {
+export type postMonthsUtc_In = {
 	WithUserIds?: I64[]
 }
 
-export type postPeriods_Out = {
-	Periods: Time[]
+export type postMonthsUtc_Out = {
+	Periods: YearAndMonth[]
 }
 
 export type postsDeleted_In = {
@@ -382,7 +386,6 @@ export type postsRecent_In = {
 	Since?: DateTime
 }
 
-export type Time = string
 export type userBuddiesAdd_In = {
 	NickOrEmailAddr?: string
 }

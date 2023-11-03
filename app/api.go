@@ -66,12 +66,12 @@ func init() {
 		"postsRecent": apiPostsRecent.
 			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
 
-		"postsForPeriod": apiPostsForPeriod.Checks(
-			Fails{Err: "ExpectedPeriodGreater0AndLess33Days", If: PostsForPeriodFrom.Equal(nil).Or(PostsForPeriodUntil.NotEqual(nil).And(PostsForPeriodUntil.LessOrEqual(PostsForPeriodFrom)))},
+		"postsForMonthUtc": apiPostsForMonthUtc.Checks(
+		// Fails{Err: "ExpectedValid", If: PostsForPeriodFrom.Equal(nil).Or(PostsForPeriodUntil.NotEqual(nil).And(PostsForPeriodUntil.LessOrEqual(PostsForPeriodFrom)))},
 		).
 			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
 
-		"postPeriods": apiPostPeriods.
+		"postMonthsUtc": apiPostMonthsUtc.
 			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
 
 		"postsDeleted": apiPostsDeleted.
@@ -157,19 +157,12 @@ var apiUserBuddiesAdd = api(func(this *ApiCtx[struct {
 })
 
 type ApiArgPeriod struct {
-	From   *time.Time
-	Until  *time.Time
+	Period YearAndMonth
 	OnlyBy []yodb.I64
 }
 
-var apiPostsForPeriod = api(func(this *ApiCtx[ApiArgPeriod, PostsListResult]) {
-	if this.Args.From == nil {
-		panic(ErrPostsForPeriod_ExpectedPeriodGreater0AndLess33Days)
-	}
-	if this.Args.Until == nil {
-		this.Args.Until = ToPtr(this.Args.From.AddDate(0, 1, 0))
-	}
-	this.Ret.Posts = postsFor(this.Ctx, userCur(this.Ctx), *this.Args.From, *this.Args.Until, this.Args.OnlyBy)
+var apiPostsForMonthUtc = api(func(this *ApiCtx[ApiArgPeriod, PostsListResult]) {
+	this.Ret.Posts = postsForMonthUtc(this.Ctx, userCur(this.Ctx), this.Args.Period, this.Args.OnlyBy)
 	this.Ret.augmentWithFileContentTypes()
 	this.Ret.NextSince = nil
 })
@@ -186,12 +179,12 @@ var apiPostsRecent = api(func(this *ApiCtx[struct {
 	this.Ret.augmentWithFileContentTypes()
 })
 
-var apiPostPeriods = api(func(this *ApiCtx[struct {
+var apiPostMonthsUtc = api(func(this *ApiCtx[struct {
 	WithUserIds []yodb.I64
 }, struct {
-	Periods []time.Time
+	Periods []YearAndMonth
 }]) {
-	this.Ret.Periods = postPeriods(this.Ctx, userCur(this.Ctx), this.Args.WithUserIds)
+	this.Ret.Periods = postMonthsUtc(this.Ctx, userCur(this.Ctx), this.Args.WithUserIds)
 })
 
 var apiPostsDeleted = api(func(this *ApiCtx[struct {

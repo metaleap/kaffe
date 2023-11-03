@@ -32,22 +32,28 @@ type PostsListResult struct {
 	UnreadCounts map[string]int64
 }
 
-func postsFor(ctx *Ctx, forUser *User, dtFrom time.Time, dtUntil time.Time, onlyThoseBy []yodb.I64) (ret []*Post) {
-	year := dtFrom.Year()
-	if (year < 2023) || ((year == 2023) && (dtFrom.Month() < 10)) || (dtUntil.Equal(dtFrom)) || (dtUntil.Before(dtFrom)) || (dtUntil.Sub(dtFrom) > (time.Hour * 24 * 33)) {
-		panic(ErrPostsForPeriod_ExpectedPeriodGreater0AndLess33Days)
-	}
-	query := dbQueryPostsForUser(forUser, onlyThoseBy).And(PostDtMade.GreaterOrEqual(dtFrom)).And(PostDtMade.LessThan(dtUntil))
+func postsForMonthUtc(ctx *Ctx, forUser *User, period YearAndMonth, onlyThoseBy []yodb.I64) (ret []*Post) {
+	first_of_that_month := time.Date(int(period.Year), time.Month(period.Month), 1, 0, 0, 0, 0, time.UTC)
+	first_of_following_month := first_of_that_month.AddDate(0, 1, 0)
+	query := dbQueryPostsForUser(forUser, onlyThoseBy).
+		And(PostDtMade.GreaterOrEqual(first_of_that_month)).
+		And(PostDtMade.LessThan(first_of_following_month))
 	return yodb.FindMany[Post](ctx, query, 0, nil, PostDtMade.Desc())
 }
 
-func postPeriods(ctx *Ctx, forUser *User, with []yodb.I64) (ret []time.Time) {
+type YearAndMonth struct {
+	Year  uint16
+	Month uint8
+}
+
+func postMonthsUtc(ctx *Ctx, forUser *User, with []yodb.I64) (ret []YearAndMonth) {
 	now_year, now_month, _ := time.Now().Date()
 	query := dbQueryPostsForUser(forUser, with)
 	post_earliest := yodb.FindOne[Post](ctx, query.And(PostDtMade.GreaterOrEqual(forUser.DtMade)), PostDtMade.Asc())
+	// first, gather all months since user sign-up
 	if post_earliest != nil {
-		year, month, day := post_earliest.DtMade.Time().Date()
-		ret = append(ret, time.Date(year, month, day, 0, 0, 0, 0, time.UTC))
+		year, month, _ := post_earliest.DtMade.Time().Date()
+		ret = append(ret, YearAndMonth{Year: uint16(year), Month: uint8(month)})
 		for {
 			if month++; month > time.December {
 				year, month = year+1, time.January
@@ -55,12 +61,17 @@ func postPeriods(ctx *Ctx, forUser *User, with []yodb.I64) (ret []time.Time) {
 			if (year > now_year) || ((year == now_year) && (month > now_month)) {
 				break
 			}
-			ret = append(ret, time.Date(year, month, 1, 0, 0, 0, 0, time.UTC))
+			ret = append(ret, YearAndMonth{Year: uint16(year), Month: uint8(month)})
 		}
 	}
+	// now, drop the ones without any posts
 	var idxs_to_drop []int
 	for i := 1; i < len(ret)-1; i++ {
-		have_post_in_month := yodb.Exists[Post](ctx, query.And(PostDtMade.GreaterOrEqual(ret[i])).And(PostDtMade.LessThan(ret[i+1])))
+		first_of_that_month := time.Date(int(ret[i].Year), time.Month(ret[i].Month), 1, 0, 0, 0, 0, time.UTC)
+		first_of_following_month := first_of_that_month.AddDate(0, 1, 0)
+		have_post_in_month := yodb.Exists[Post](ctx, query.
+			And(PostDtMade.GreaterOrEqual(first_of_that_month)).
+			And(PostDtMade.LessThan(first_of_following_month)))
 		if !have_post_in_month {
 			idxs_to_drop = append(idxs_to_drop, i)
 		}
