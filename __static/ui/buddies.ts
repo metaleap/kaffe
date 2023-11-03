@@ -31,7 +31,6 @@ export function create(): UiCtlBuddies {
         buddyRequestsBy: van.state([] as yo.User[]),
         update: (_) => update(me, _),
     }
-
     van.add(me.DOM, vanx.list(() => htm.div({ 'class': 'buddies' }), me.buddies, (it) => {
         const item = htm.div({
             'class': depends(() => 'buddy' + (haxsh.isSeeminglyOffline.val ? ' offline' : '') + (haxsh.buddySelected(it.val) ? ' selected' : '') + ((haxsh.buddyBadges[it.val.Id!].val) ? ' badged' : '') + ((haxsh.buddyBadgesAlt[it.val.Id!].val) ? ' badged-alt' : '')),
@@ -53,10 +52,6 @@ export function create(): UiCtlBuddies {
     return me
 }
 
-function isOffline(user: yo.User, now?: number) {
-    const last_seen = new Date(user.LastSeen ?? (user.DtMod!)).getTime()
-    return (((now ?? youtil.dtNow()) - last_seen) > 77777)
-}
 
 export function userPicFileUrl(user?: yo.User, fallBackToEmoji = "🦜", toRoundedSvgFavIcon = false) {
     if (user && !user.Auth)
@@ -67,7 +62,7 @@ export function userPicFileUrl(user?: yo.User, fallBackToEmoji = "🦜", toRound
 }
 
 export function userDomAttrsBuddy(user?: yo.User, userIdHint?: number) {
-    if (!user)
+    if (!(user))
         return {
             'class': 'buddy-pic offline',
             'title': `(ex-buddy #${userIdHint ?? -1} — or bug)`,
@@ -80,7 +75,9 @@ export function userDomAttrsBuddy(user?: yo.User, userIdHint?: number) {
             'style': `background-image: url('${userPicFileUrl(user)}')`,
         }
     return {
-        'class': depends(() => 'buddy-pic' + ((haxsh.isSeeminglyOffline.val || isOffline(user)) ? ' offline' : '')),
+        'class': depends(() => {
+            return 'buddy-pic' + ((haxsh.isSeeminglyOffline.val || user.Offline) ? ' offline' : '')
+        }),
         'title': `${user.Nick}${((!user.Btw) ? '' : (' — ' + user.Btw))}`,
         'style': `background-image: url('${userPicFileUrl(user)}')`,
     }
@@ -103,6 +100,14 @@ export function userDomAttrsSelf() {
 function update(me: UiCtlBuddies, buddiesInfo: yo.userBuddies_Out) {
     me.buddyRequestsBy.val = buddiesInfo.BuddyRequestsBy ?? []
     const buddies = buddiesInfo.Buddies ?? []
+    const offline_buddies = buddies.filter(_ => _.Offline)
+    let have_changes = false
+    for (const user of offline_buddies) {
+        const old = me.buddies.find(_ => (_.Id === user.Id))
+        if (old && (old.Offline !== user.Offline))
+            have_changes = true
+    }
+
     const move_selected_top = false // actually irritating ux-wise, so decided-against for now
     if (move_selected_top) {
         const is_selected: { [_: number]: boolean } = {}
@@ -121,7 +126,8 @@ function update(me: UiCtlBuddies, buddiesInfo: yo.userBuddies_Out) {
             }
         }
     }
-    if (!youtil.deepEq(buddies, me.buddies.filter(_ => true), false, false))
+
+    if (have_changes || !youtil.deepEq(buddies, me.buddies.filter(_ => true), false, false))
         vanx.replace(me.buddies, (_: yo.User[]) => buddies)
 }
 

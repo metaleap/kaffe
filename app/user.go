@@ -34,6 +34,7 @@ type User struct {
 	byBuddyDtLastMsgCheck yodb.JsonMap[*yodb.DateTime]
 
 	BtwEmoji string // for API consumers, not in DB
+	Offline  bool   // dito
 }
 
 func userUpdate(ctx *Ctx, upd *User, byCurUserInCtx bool, inclEmptyOrMissingFields bool, onlyFields ...UserField) {
@@ -85,7 +86,10 @@ func userCur(ctx *Ctx) (ret *User) {
 }
 
 func (me *User) augmentAfterLoaded() *User {
-	me.BtwEmoji = emojiUnescaped(string(me.Btw))
+	me.Offline, me.BtwEmoji = true, emojiUnescaped(string(me.Btw))
+	if me.LastSeen != nil {
+		me.Offline = time.Since(*me.LastSeen.Time()) > (11 * time.Second)
+	}
 	return me
 }
 

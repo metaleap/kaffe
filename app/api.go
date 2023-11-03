@@ -144,7 +144,7 @@ var apiUserBuddies = api(func(this *ApiCtx[Void, struct {
 	BuddyRequestsBy []*User
 }]) {
 	var buddy_requests_made []*User
-	this.Ret.Buddies, buddy_requests_made, this.Ret.BuddyRequestsBy = userBuddies(this.Ctx, userCur(this.Ctx), true)
+	this.Ret.Buddies, buddy_requests_made, this.Ret.BuddyRequestsBy = userBuddies(this.Ctx, userCur(this.Ctx))
 	this.Ret.Buddies = append(this.Ret.Buddies, buddy_requests_made...)
 })
 

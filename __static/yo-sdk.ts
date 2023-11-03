@@ -353,6 +353,7 @@ export type User = {
 	Id?: I64
 	LastSeen?: DateTime
 	Nick?: string
+	Offline?: boolean
 	PicFileId?: string
 }
 

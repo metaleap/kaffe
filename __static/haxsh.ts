@@ -78,7 +78,7 @@ async function fetchBuddies(oneOff?: boolean) {
     try {
         const result = await yo.apiUserBuddies()
         isSeeminglyOffline.val = false
-        if (!userSelf.val) // fetch only *after* the above because apiUserBy needs cur-user email-addr, which isn't cookied
+        if (!userSelf.val) // fetch only *after* the above because apiUserBy needs cur-user email-addr, which isn't cookied (but headered)
             reloadUserSelf() // no need to await really
         if (result.Buddies && result.Buddies.length)
             for (const user of result.Buddies) {
