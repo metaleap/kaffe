@@ -4,10 +4,11 @@ import (
 	. "yo/ctx"
 	yodb "yo/db"
 	q "yo/db/query"
+	. "yo/util"
 	"yo/util/sl"
 )
 
-func userBuddies(ctx *Ctx, forUser *User) (buddiesAlready []*User, buddyRequestsMade []*User, buddyRequestsBy []*User) {
+func userBuddies(ctx *Ctx, forUser *User, normalizeLastSeenBySecond bool) (buddiesAlready []*User, buddyRequestsMade []*User, buddyRequestsBy []*User) {
 	query := q.InArr(forUser.Id, UserBuddies)
 	if len(forUser.Buddies) > 0 {
 		query = query.Or(UserId.In(forUser.Buddies.ToAnys()...))
@@ -23,6 +24,13 @@ func userBuddies(ctx *Ctx, forUser *User) (buddiesAlready []*User, buddyRequests
 		}
 	}
 
+	if normalizeLastSeenBySecond {
+		for _, buddy := range buddiesAlready {
+			if buddy.LastSeen != nil {
+				buddy.LastSeen.Set(DtAtZeroNanosUtc)
+			}
+		}
+	}
 	for _, buddy_request := range buddyRequestsMade {
 		buddy_request.Auth.SetId(0)
 		buddy_request.Btw = ""

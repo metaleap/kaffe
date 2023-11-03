@@ -8,10 +8,10 @@ import * as uiuserpopup from './ui/user_popup.js'
 import * as uilogindialog from './ui/login_dialog.js'
 
 
-const fetchBuddiesIntervalMs = 4321
-const fetchPostsDeletedIntervalMs = 6789
 const fetchPostsIntervalMsWhenVisible = 2345
 const fetchPostsIntervalMsWhenHidden = 4321
+const fetchPostsDeletedIntervalMs = fetchPostsIntervalMsWhenHidden * 2
+const fetchBuddiesIntervalMs = 4321
 let fetchPostsIntervalMsCur = fetchPostsIntervalMsWhenVisible
 let fetchPostsSinceDt: string | undefined
 let fetchesPaused = false // true while signed out
