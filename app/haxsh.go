@@ -11,7 +11,7 @@ import (
 )
 
 var devModeInitMockUsers func()
-var jobs yojobs.Engine
+var jobs = yojobs.NewEngine(yojobs.Options{})
 
 func init() {
 	AppApiUrlPrefix = "_/"
@@ -42,6 +42,7 @@ func OnBeforeListenAndServe() {
 		go devModeInitMockUsers()
 	}
 
+	// ensure app-defined job-defs before starting jobs engine
 	ctx := NewCtxNonHttp(yojobs.TimeoutLong, false, "")
 	defer ctx.OnDone(nil)
 	yodb.Upsert[yojobs.JobDef](ctx, yojobs.JobDefName, &yojobs.JobDef{
@@ -53,6 +54,5 @@ func OnBeforeListenAndServe() {
 		TimeoutSecsJobRunPrepAndFinalize: 3,
 		Schedules:                        yodb.Arr[yodb.Text]{"* * * * *"},
 	})
-	jobs = yojobs.NewEngine(yojobs.Options{})
 	go jobs.Resume()
 }
