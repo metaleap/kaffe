@@ -7,12 +7,10 @@ import (
 	. "yo/ctx"
 	yodb "yo/db"
 	yojobs "yo/jobs"
-	yomail "yo/mail"
 	. "yo/srv"
 )
 
 var devModeInitMockUsers func()
-var jobs = yojobs.NewEngine(yojobs.Options{})
 
 func init() {
 	AppApiUrlPrefix = "_/"
@@ -49,7 +47,6 @@ func OnBeforeListenAndServe() {
 		defer ctx.OnDone(nil)
 
 		yodb.Upsert[yojobs.JobDef](ctx, &yojobs.ExampleJobDef)
-		yodb.Upsert[yojobs.JobDef](ctx, &yomail.MailReqJobDef)
 	}
-	go jobs.Resume()
+	go yojobs.Default.Resume()
 }
