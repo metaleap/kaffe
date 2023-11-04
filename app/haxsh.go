@@ -7,6 +7,7 @@ import (
 	. "yo/ctx"
 	yodb "yo/db"
 	yojobs "yo/jobs"
+	yomail "yo/mail"
 	. "yo/srv"
 )
 
@@ -48,6 +49,7 @@ func OnBeforeListenAndServe() {
 		defer ctx.OnDone(nil)
 
 		yodb.Upsert[yojobs.JobDef](ctx, &yojobs.ExampleJobDef)
+		yodb.Upsert[yojobs.JobDef](ctx, &yomail.MailReqJobDef)
 	}
 	go jobs.Resume()
 }
