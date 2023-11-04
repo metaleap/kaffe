@@ -45,13 +45,14 @@ func OnBeforeListenAndServe() {
 	// ensure app-defined job-defs before starting jobs engine
 	ctx := NewCtxNonHttp(yojobs.TimeoutLong, false, "")
 	defer ctx.OnDone(nil)
+	ctx.Db.PrintRawSqlInDevMode = true
 	yodb.Upsert[yojobs.JobDef](ctx, &yojobs.JobDef{
 		Name:                             "exampleJob",
 		JobTypeId:                        "yojobs.ExampleJobType",
-		MaxTaskRetries:                   1,
+		MaxTaskRetries:                   2,
 		DeleteAfterDays:                  1,
 		TimeoutSecsTaskRun:               2,
-		TimeoutSecsJobRunPrepAndFinalize: 3,
+		TimeoutSecsJobRunPrepAndFinalize: 4,
 		Schedules:                        yodb.Arr[yodb.Text]{"* * * * *"},
 	})
 	go jobs.Resume()
