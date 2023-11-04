@@ -43,9 +43,10 @@ func OnBeforeListenAndServe() {
 	}
 
 	// ensure app-defined job-defs before starting jobs engine
-	if false {
+	{
 		ctx := NewCtxNonHttp(yojobs.TimeoutLong, false, "")
 		defer ctx.OnDone(nil)
+
 		yodb.Upsert[yojobs.JobDef](ctx, &yojobs.ExampleJobDef)
 	}
 	go jobs.Resume()
