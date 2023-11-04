@@ -42,19 +42,11 @@ func OnBeforeListenAndServe() {
 		go devModeInitMockUsers()
 	}
 
+	// ensure app-defined job-defs before starting jobs engine
 	if false {
-		// ensure app-defined job-defs before starting jobs engine
 		ctx := NewCtxNonHttp(yojobs.TimeoutLong, false, "")
 		defer ctx.OnDone(nil)
-		yodb.Upsert[yojobs.JobDef](ctx, &yojobs.JobDef{
-			Name:                             "exampleJob",
-			JobTypeId:                        "yojobs.ExampleJobType",
-			MaxTaskRetries:                   2,
-			DeleteAfterDays:                  1,
-			TimeoutSecsTaskRun:               2,
-			TimeoutSecsJobRunPrepAndFinalize: 4,
-			Schedules:                        yojobs.ScheduleOncePerMinute,
-		})
+		yodb.Upsert[yojobs.JobDef](ctx, &yojobs.ExampleJobDef)
 	}
 	go jobs.Resume()
 }
