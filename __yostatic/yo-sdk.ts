@@ -320,7 +320,7 @@ export type JobRunField = 'Id' | 'DtMade' | 'DtMod' | 'Version' | 'JobTypeId' | 
 
 export type JobTaskField = 'Id' | 'DtMade' | 'DtMod' | 'Version' | 'JobTypeId' | 'JobRun' | 'StartTime' | 'FinishTime' | 'Attempts'
 
-export type MailReqField = 'Id' | 'DtMade' | 'DtMod' | 'TmplId' | 'TmplArgs' | 'MailTo' | 'MailCc' | 'MailBcc'
+export type MailReqField = 'Id' | 'DtMade' | 'DtMod' | 'TmplId' | 'TmplArgs' | 'MailTo'
 
 export type ApiArgPeriod = {
 	OnlyBy?: I64[]

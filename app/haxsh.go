@@ -10,6 +10,9 @@ import (
 	. "yo/srv"
 )
 
+const appDomain = "sesh.cafe"
+const appHref = "https://" + appDomain
+
 var devModeInitMockUsers func()
 
 func init() {
