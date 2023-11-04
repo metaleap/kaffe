@@ -53,7 +53,7 @@ export function create(setSignUpOrPwdForgotNotice: (_: string) => void) {
     }
 
     const in_user_name = htm.input({ 'placeholder': '(nick or email address)' })
-    const in_password = htm.input({ 'type': 'password', 'placeholder': '(password: keep blank if forgotten OR to sign up)' })
+    const in_password = htm.input({ 'type': 'password', 'placeholder': '(password: keep blank to sign up — or if forgotten)' })
     const in_password_new = htm.input({ 'type': 'password', 'placeholder': '(only to change password: new one here, old one above)' })
     const dialog = htm.dialog({ 'class': 'login-popup' },
         htm.form({ 'onsubmit': () => false },

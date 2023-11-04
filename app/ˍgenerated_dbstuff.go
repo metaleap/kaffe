@@ -24,7 +24,6 @@ const (
 	UserAuth_DtMade           UserField = "Auth.DtMade"
 	UserAuth_DtMod            UserField = "Auth.DtMod"
 	UserAuth_EmailAddr        UserField = "Auth.EmailAddr"
-	UserAuth_PwdForgotten     UserField = "Auth.PwdForgotten"
 	userAuth_pwdHashed        UserField = "Auth.pwdHashed"
 )
 
