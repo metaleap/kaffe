@@ -69,6 +69,11 @@ body a {
     padding: 0.25em 0;
 }
 
+.buddy.offline,
+.buddy-self.offline {
+    cursor: default;
+}
+
 .haxsh-buddies .badged::before {
     content: attr(data-badge);
     position: absolute;

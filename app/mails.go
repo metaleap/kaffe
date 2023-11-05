@@ -1,6 +1,7 @@
 package haxsh
 
 import (
+	. "yo/cfg"
 	yodb "yo/db"
 	yoauth "yo/feat_auth"
 	yojobs "yo/jobs"
@@ -11,23 +12,25 @@ import (
 const mailTmplVarHref = "href"
 const mailTmplVarReqTime = "req_time"
 
-var mailTmpl = `
+var mailTmpl = str.Trim(`
 Hi {` + yoauth.MailTmplVarName + `},
 
-you (or someone trolling you) requested that you {action} at {` + mailTmplVarHref + `}.
+you (or someone trolling you) requested that you {action} at ` + appDomain + `.
 
-If you did not request this (at around {` + mailTmplVarReqTime + `} UTC), simply delete this email.
+Just delete this if you did not request this (at around {` + mailTmplVarReqTime + `} UTC).
 
-Otherwise, go to {` + mailTmplVarHref + `} and enter the following 2 passwords:
+Else, go to {` + mailTmplVarHref + `} and enter your email address plus the following 2 passwords:
 
-1. Under "old password", this unique one-time password below, best via copy-and-paste:
+First, this below auto-generated one-time code below, best via copy-and-paste:
 
 {` + yoauth.MailTmplVarTmpPwd + `}
 
-2. under "new password", your own chosen password for future logins.
+Secondly, your own chosen password for future logins (no shorter than ` + str.FromInt(Cfg.YO_AUTH_PWD_MIN_LEN) + ` characters).
+
 
 Rock on!
-`
+
+`)
 
 func init() {
 	yomail.Templates[yoauth.MailTmplIdSignUp] = &yomail.Templ{
@@ -49,7 +52,7 @@ func init() {
 		if user != nil {
 			tmplArgsToPopulate[yoauth.MailTmplVarName] = string(user.Nick)
 		}
-		tmplArgsToPopulate[mailTmplVarHref] = "https://sesh.cafe"
+		tmplArgsToPopulate[mailTmplVarHref] = appHref + "?needPwd"
 		tmplArgsToPopulate[mailTmplVarReqTime] = reqTime.Time().Format("15:04:05")
 	}
 }

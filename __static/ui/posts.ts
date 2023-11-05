@@ -34,11 +34,13 @@ export function create(): UiCtlPosts {
         'class': depends(() => 'post-content' + (haxsh.isSeeminglyOffline.val ? ' offline' : '') + (is_sending.val ? ' sending' : '') + (is_empty.val ? ' empty' : '')),
         'contenteditable': depends(() => ((is_sending.val || haxsh.isArchiveBrowsing.val || !haxsh.userSelf.val) ? 'false' : 'true')),
         'autofocus': true, 'spellcheck': false, 'autocorrect': 'off', 'tabindex': 1,
-        'title': depends(() => (!haxsh.userSelf.val) ? (haxsh.signUpOrPwdForgotNotice.val || "Sign in or sign up to resume confabulations:") : (haxsh.isArchiveBrowsing.val
-            ? "Browsing archives. To chat, switch back to 'Fresh'."
-            : (haxsh.selectedBuddy.val
-                ? `Chat with ${haxsh.userById(haxsh.selectedBuddy.val)?.Nick || "?"}`
-                : "This goes to all buddies. (For 1-to-1 chat, select a buddy on the right.)"))),
+        'title': depends(() =>
+            haxsh.isSeeminglyOffline.val ? "You seem to be offline, or our backend is. Or hax0rs, or a meteor strike on The Cloud, or TEOTWAWKI, or an innocent cosmic ray... but it's probably your router resetting."
+                : ((!haxsh.userSelf.val) ? (haxsh.signUpOrPwdForgotNotice.val || "Sign in or sign up to resume confabulations:") : (haxsh.isArchiveBrowsing.val
+                    ? "Browsing archives. To chat, switch back to 'Fresh'."
+                    : (haxsh.selectedBuddy.val
+                        ? `Chat with ${haxsh.userById(haxsh.selectedBuddy.val)?.Nick || "?"}`
+                        : "This goes to all buddies. (For 1-to-1 chat, select a buddy on the right.)")))),
         'oninput': () => {
             is_empty.val = (htm_post_entry.innerHTML === "") || (htm_post_entry.innerHTML === "<br>")
         },

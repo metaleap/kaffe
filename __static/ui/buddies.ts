@@ -45,10 +45,10 @@ export function create(): UiCtlBuddies {
     }))
     van.add(me.DOM, htm.div({
         'style': depends(() => haxsh.userSelf.val ? '' : 'display:none'),
-        'class': depends(() => 'buddy' + (me.buddyRequestsBy.val.length ? ' badged' : '')),
+        'class': depends(() => 'buddy' + (me.buddyRequestsBy.val.length ? ' badged' : '') + (haxsh.isSeeminglyOffline.val ? ' offline' : '')),
         'data-badge': depends(() => me.buddyRequestsBy.val.length || ""),
-        'onclick': () => showBuddiesDialog(me),
-    }, htm.div({ 'class': 'buddy-pic', 'title': "Manage buddies", 'style': `background-image: url('${userPicFileUrl(undefined, "👥")}')` })))
+        'onclick': () => { if (!haxsh.isSeeminglyOffline.val) showBuddiesDialog(me) },
+    }, htm.div({ 'class': depends(() => 'buddy-pic' + (haxsh.isSeeminglyOffline.val ? ' offline' : '')), 'title': "Manage buddies", 'style': `background-image: url('${userPicFileUrl(undefined, "👥")}')` })))
     return me
 }
 

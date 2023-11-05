@@ -6,6 +6,7 @@ import * as haxsh from '../haxsh.js'
 
 
 export function create(setSignUpOrPwdForgotNotice: (_: string) => void) {
+    const is_from_signup_or_pwd_reset_mail = location.search.includes('needPwd')
     const on_btn_clicked = async () => {
         if (!(in_user_name.value = in_user_name.value.trim()))
             return
@@ -52,9 +53,17 @@ export function create(setSignUpOrPwdForgotNotice: (_: string) => void) {
         }
     }
 
-    const in_user_name = htm.input({ 'placeholder': '(nick or email address)' })
-    const in_password = htm.input({ 'type': 'password', 'placeholder': '(password: keep blank to sign up — or if forgotten)' })
-    const in_password_2 = htm.input({ 'type': 'password', 'placeholder': '(only to change password: new one here, old one above)' })
+    const in_user_name = htm.input({ 'placeholder': "(nick or email address)" })
+    const in_password = htm.input({
+        'type': 'password', 'placeholder':
+            is_from_signup_or_pwd_reset_mail ? "(paste the auto-generated one-time code from your confirmation email)"
+                : "(password: keep blank to sign up — or if forgotten)"
+    })
+    const in_password_2 = htm.input({
+        'type': 'password', 'placeholder':
+            is_from_signup_or_pwd_reset_mail ? `(choose your preferred new sign-in password, min. ? characters)`
+                : "(only to change password: new one here, old one above)"
+    })
     const dialog = htm.dialog({ 'class': 'login-popup' },
         htm.form({ 'onsubmit': () => false },
             htm.button({ 'type': 'submit', 'class': 'save', 'title': "Sign in or sign up now", 'onclick': _ => on_btn_clicked() }, "✅"),
