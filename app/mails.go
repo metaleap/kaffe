@@ -40,7 +40,7 @@ func init() {
 	}
 	yomail.Templates[yoauth.MailTmplIdPwdForgot] = &yomail.Templ{
 		Vars:    []string{mailTmplVarHref, mailTmplVarReqTime, yoauth.MailTmplVarTmpPwd, yoauth.MailTmplVarName},
-		Subject: "Your password-reset request at " + appDomain,
+		Subject: "Your reset request at " + appDomain,
 		Body:    str.Repl(mailTmpl, str.Dict{"action": "reset your password"}),
 	}
 

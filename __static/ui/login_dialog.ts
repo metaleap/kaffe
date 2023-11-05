@@ -53,16 +53,16 @@ export function create(setSignUpOrPwdForgotNotice: (_: string) => void) {
         }
     }
 
-    const in_user_name = htm.input({ 'placeholder': "(nick or email address)" })
+    const in_user_name = htm.input({ 'placeholder': "(your nick or email address)" })
     const in_password = htm.input({
         'type': 'password', 'placeholder':
             is_from_signup_or_pwd_reset_mail ? "(paste the auto-generated one-time code from your confirmation email)"
-                : "(password: keep blank to sign up — or if forgotten)"
+                : "(your account password: keep blank to sign up — OR if forgotten)"
     })
     const in_password_2 = htm.input({
         'type': 'password', 'placeholder':
-            is_from_signup_or_pwd_reset_mail ? `(choose your preferred new sign-in password, min. ? characters)`
-                : "(only to change password: new one here, old one above)"
+            is_from_signup_or_pwd_reset_mail ? `(choose your preferred new sign-in password, min. ${yo.Cfg_YO_AUTH_PWD_MIN_LEN} characters)`
+                : `(ONLY to change password: new one here, old one above, min. ${yo.Cfg_YO_AUTH_PWD_MIN_LEN} characters)`
     })
     const dialog = htm.dialog({ 'class': 'login-popup' }, htm.form({ 'onsubmit': () => false },
         htm.button({ 'type': 'submit', 'class': 'save', 'title': "Sign in or sign up now", 'onclick': _ => on_btn_clicked() }, "✅"),
