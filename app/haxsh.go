@@ -6,8 +6,11 @@ import (
 	. "yo/cfg"
 	. "yo/ctx"
 	yodb "yo/db"
+	yoauth "yo/feat_auth"
 	yojobs "yo/jobs"
 	. "yo/srv"
+	. "yo/util"
+	"yo/util/str"
 )
 
 const appDomain = "sesh.cafe"
@@ -23,6 +26,19 @@ func init() {
 	StaticFileFilters["picRounded"] = imageRoundedSvgOfPng
 	for dir_name, dir_path := range Cfg.STATIC_FILE_STORAGE_DIRS {
 		StaticFileDirs[dir_name] = os.DirFS(dir_path)
+	}
+	OnBeforeServingStaticFile = func(ctx *Ctx) {
+		var is_anon *bool
+		for static_dir_name := range StaticFileDirs {
+			if str.Begins(ctx.Http.UrlPath, static_dir_name) {
+				if is_anon == nil {
+					is_anon = ToPtr(yoauth.IsNotCurrentlyLoggedIn(ctx))
+				}
+				if *is_anon {
+					panic(ErrUnauthorized)
+				}
+			}
+		}
 	}
 }
 

@@ -48,38 +48,38 @@ func init() {
 		"userBy": apiUserBy.Checks(
 			Fails{Err: "ExpectedEitherNickNameOrEmailAddr", If: UserByEmailAddr.Equal("").And(UserByNickName.Equal(""))},
 		).
-			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
+			FailIf(yoauth.IsNotCurrentlyLoggedIn, ErrUnauthorized),
 
 		"userUpdate": apiUserUpdate.IsMultipartForm().
 			CouldFailWith(":"+yodb.ErrSetDbUpdate, "NicknameAlreadyExists", "ExpectedNonEmptyNickname").
 			Checks(
 				Fails{Err: ErrDbUpdExpectedIdGt0, If: UserUpdateId.LessOrEqual(0)},
 			).
-			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
+			FailIf(yoauth.IsNotCurrentlyLoggedIn, ErrUnauthorized),
 
 		"userBuddies": apiUserBuddies.
-			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
+			FailIf(yoauth.IsNotCurrentlyLoggedIn, ErrUnauthorized),
 
 		"userBuddiesAdd": apiUserBuddiesAdd.
 			CouldFailWith(":"+yodb.ErrSetDbUpdate).
 			Checks(
 				Fails{Err: "ExpectedEitherNickNameOrEmailAddr", If: UserBuddiesAddNickOrEmailAddr.Equal("")},
 			).
-			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
+			FailIf(yoauth.IsNotCurrentlyLoggedIn, ErrUnauthorized),
 
 		"postsRecent": apiPostsRecent.
-			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
+			FailIf(yoauth.IsNotCurrentlyLoggedIn, ErrUnauthorized),
 
 		"postsForMonthUtc": apiPostsForMonthUtc.Checks(
 		// Fails{Err: "ExpectedValid", If: PostsForPeriodFrom.Equal(nil).Or(PostsForPeriodUntil.NotEqual(nil).And(PostsForPeriodUntil.LessOrEqual(PostsForPeriodFrom)))},
 		).
-			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
+			FailIf(yoauth.IsNotCurrentlyLoggedIn, ErrUnauthorized),
 
 		"postMonthsUtc": apiPostMonthsUtc.
-			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
+			FailIf(yoauth.IsNotCurrentlyLoggedIn, ErrUnauthorized),
 
 		"postsDeleted": apiPostsDeleted.
-			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
+			FailIf(yoauth.IsNotCurrentlyLoggedIn, ErrUnauthorized),
 
 		"postNew": apiPostNew.IsMultipartForm().
 			CouldFailWith("ExpectedNonEmptyPost").
@@ -87,12 +87,12 @@ func init() {
 				Fails{Err: "ExpectedOnlyBuddyRecipients", If: q.ArrAreAnyIn(PostTo, q.OpLeq, 0)},
 				Fails{Err: "ExpectedEmptyFilesFieldWithUploadedFilesInMultipartForm", If: PostFiles.ArrLen().NotEqual(0)},
 			).
-			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
+			FailIf(yoauth.IsNotCurrentlyLoggedIn, ErrUnauthorized),
 
 		"postDelete": apiPostDelete.Checks(
 			Fails{Err: "InvalidPostId", If: PostDeleteId.LessOrEqual(0)},
 		).
-			FailIf(yoauth.CurrentlyNotLoggedIn, ErrUnauthorized),
+			FailIf(yoauth.IsNotCurrentlyLoggedIn, ErrUnauthorized),
 	})
 }
 
