@@ -2,7 +2,7 @@
 export const Cfg_YO_API_IMPL_TIMEOUT_MS = 4000
 export const Cfg_YO_AUTH_PWD_MIN_LEN = 6
 
-// prelude-yo-sdk.ts next, more generated code afterwards
+// prelude-yo-sdk.ts below, more generated code afterwards
 export type I8 = number
 export type I16 = number
 export type I32 = number
@@ -17,7 +17,7 @@ export type F64 = number
 
 export let userEmailAddr = ''
 export let reqTimeoutMsForJsonApis = 4321
-export let reqTimeoutMsForMultipartForms = 54321
+export let reqTimeoutMsForMultipartForms = 123456
 export let reqMaxReqPayloadSizeMb = 0           // declaration only, generated code sets the value
 export let errMaxReqPayloadSizeExceeded = ""    // declaration only, generated code sets the value
 
@@ -152,7 +152,7 @@ function qGreaterThan(x: QueryVal, y: QueryVal): QueryExpr { return { __yoQOp: '
 function qGreaterOrEqual(x: QueryVal, y: QueryVal): QueryExpr { return { __yoQOp: 'GE', __yoQOperands: [x, y] } as QueryExpr }
 function qIn(x: QueryVal, ...set: QueryVal[]): QueryExpr { return { __yoQOp: 'IN', __yoQOperands: [x].concat(set) } as QueryExpr }
 
-// prelude-yo-sdk.ts ends, the rest is generated code:
+// prelude-yo-sdk.ts ends, the rest below is fully generated code only:
 
 reqTimeoutMsForJsonApis = Cfg_YO_API_IMPL_TIMEOUT_MS
 

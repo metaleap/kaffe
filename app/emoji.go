@@ -1364,4 +1364,6 @@ var emojiKnown = str.Dict{
 	":zipper_mouth_face:":                "&#x1f910;",
 	":zombie:":                           "&#x1f9df;",
 	":zzz:":                              "&#x1f4a4",
+	":phil:":                             "&#x1f6ac;",
+	":frevd:":                            "&#x2615;",
 }
