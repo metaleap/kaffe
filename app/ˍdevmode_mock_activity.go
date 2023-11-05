@@ -98,7 +98,7 @@ func mockSomeActivity() {
 	ctx.TimingsNoPrintInDevMode = true
 
 	if must_log_in_first {
-		ViaHttp[ApiUserSignIn, Void](apiUserSignIn, ctx, &ApiUserSignIn{
+		ViaHttp[ApiUserSignInOrReset, Void](apiUserSignInOrReset, ctx, &ApiUserSignInOrReset{
 			ApiNickOrEmailAddr: ApiNickOrEmailAddr{NickOrEmailAddr: user_email_addr}, PasswordPlain: "foobar",
 		}, user_client)
 	}

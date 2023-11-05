@@ -258,17 +258,17 @@ export async function apiUserBy(payload?: userBy_In, formData?: FormData, query?
 }
 export type UserByErr = typeof errsUserBy[number]
 
-const errsUserSignIn = ['MissingOrExcessiveContentLength', 'TimedOut', 'UserSignIn_ExpectedPasswordAndNickOrEmailAddr', 'UserSignIn_WrongPassword', '___yo_authLogin_AccountDoesNotExist', '___yo_authLogin_EmailInvalid', '___yo_authLogin_EmailRequiredButMissing', '___yo_authLogin_OkButFailedToCreateSignedToken', '___yo_authLogin_WrongPassword'] as const
-export async function apiUserSignIn(payload?: ApiUserSignIn, formData?: FormData, query?: {[_:string]:string}): Promise<Void> {
+const errsUserSignInOrReset = ['MissingOrExcessiveContentLength', 'TimedOut', 'UserSignInOrReset_ExpectedPasswordAndNickOrEmailAddr', 'UserSignInOrReset_WrongPassword', '___yo_authLogin_AccountDoesNotExist', '___yo_authLogin_EmailInvalid', '___yo_authLogin_EmailRequiredButMissing', '___yo_authLogin_OkButFailedToCreateSignedToken', '___yo_authLogin_WrongPassword'] as const
+export async function apiUserSignInOrReset(payload?: ApiUserSignInOrReset, formData?: FormData, query?: {[_:string]:string}): Promise<Void> {
 	try {
-		return await req<ApiUserSignIn, Void, UserSignInErr>('_/userSignIn', payload, formData, query)
+		return await req<ApiUserSignInOrReset, Void, UserSignInOrResetErr>('_/userSignInOrReset', payload, formData, query)
 	} catch(err: any) {
-		if (err && err['body_text'] && (errsUserSignIn.indexOf(err.body_text) >= 0))
-			throw(new Err<UserSignInErr>(err.body_text as UserSignInErr))
+		if (err && err['body_text'] && (errsUserSignInOrReset.indexOf(err.body_text) >= 0))
+			throw(new Err<UserSignInOrResetErr>(err.body_text as UserSignInOrResetErr))
 		throw(err)
 	}
 }
-export type UserSignInErr = typeof errsUserSignIn[number]
+export type UserSignInOrResetErr = typeof errsUserSignInOrReset[number]
 
 const errsUserSignOut = ['MissingOrExcessiveContentLength', 'TimedOut'] as const
 export async function apiUserSignOut(payload?: Void, formData?: FormData, query?: {[_:string]:string}): Promise<Void> {
@@ -312,7 +312,7 @@ export type UserField = 'Id' | 'DtMade' | 'DtMod' | 'LastSeen' | 'Auth' | 'PicFi
 
 export type UserAuthField = 'Id' | 'DtMade' | 'DtMod' | 'EmailAddr'
 
-export type UserPwdReqField = 'Id' | 'DtMade' | 'DtMod' | 'EmailAddr' | 'DoneId'
+export type UserPwdReqField = 'Id' | 'DtMade' | 'DtMod' | 'EmailAddr' | 'DoneMailReqId'
 
 export type JobDefField = 'Id' | 'DtMade' | 'DtMod' | 'Name' | 'JobTypeId' | 'Disabled' | 'AllowManualJobRuns' | 'Schedules' | 'TimeoutSecsTaskRun' | 'TimeoutSecsJobRunPrepAndFinalize' | 'MaxTaskRetries' | 'DeleteAfterDays' | 'StoreAndRunTasklessJobs'
 
@@ -331,9 +331,10 @@ export type ApiNickOrEmailAddr = {
 	NickOrEmailAddr?: string
 }
 
-export type ApiUserSignIn = {
+export type ApiUserSignInOrReset = {
 	NickOrEmailAddr?: string
-	PasswordPlain?: string
+	PasswordNewPlain?: string
+	PasswordOldPlain?: string
 }
 
 export type Post = {

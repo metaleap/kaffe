@@ -25,20 +25,24 @@ func init() {
 		"userSignOut": apiUserSignOut.
 			CouldFailWith(":" + yoauth.MethodPathLogout),
 
-		"userSignIn": apiUserSignIn.
-			CouldFailWith(":"+yoauth.MethodPathLogin).
-			Checks(
-				Fails{Err: "ExpectedPasswordAndNickOrEmailAddr", If: UserSignInNickOrEmailAddr.Equal("").Or(UserSignInPasswordPlain.Equal(""))},
-				Fails{Err: "WrongPassword",
-					If: UserSignInPasswordPlain.StrLen().LessThan(Cfg.YO_AUTH_PWD_MIN_LEN).Or(
-						UserSignInPasswordPlain.StrLen().GreaterThan(Cfg.YO_AUTH_PWD_MAX_LEN))},
-			),
-
 		"userSignUpOrForgotPassword": apiUserSignUpOrForgotPassword.
 			CouldFailWith(":"+yoauth.MethodPathRegister).
 			Checks(
 				Fails{Err: "EmailRequiredButMissing", If: UserSignUpOrForgotPasswordNickOrEmailAddr.Equal("")},
 				Fails{Err: "EmailInvalid", If: yoauth.IsEmailishEnough(UserSignUpOrForgotPasswordNickOrEmailAddr).Not()},
+			),
+
+		"userSignInOrReset": apiUserSignInOrReset.
+			CouldFailWith(":"+yoauth.MethodPathLogin).
+			Checks(
+				Fails{Err: "ExpectedPasswordAndNickOrEmailAddr", If: UserSignInOrResetNickOrEmailAddr.Equal("").Or(UserSignInOrResetPasswordPlain.Equal(""))},
+				Fails{Err: "WrongPassword",
+					If: UserSignInOrResetPasswordPlain.StrLen().LessThan(Cfg.YO_AUTH_PWD_MIN_LEN).Or(
+						UserSignInOrResetPasswordPlain.StrLen().GreaterThan(Cfg.YO_AUTH_PWD_MAX_LEN)).Or(
+						UserSignInOrResetPassword2Plain.StrLen().GreaterThan(0).And(
+							UserSignInOrResetPassword2Plain.StrLen().LessThan(Cfg.YO_AUTH_PWD_MIN_LEN).Or(
+								UserSignInOrResetPassword2Plain.StrLen().GreaterThan(Cfg.YO_AUTH_PWD_MAX_LEN)))),
+				},
 			),
 
 		"userBy": apiUserBy.Checks(
@@ -96,10 +100,10 @@ var apiUserSignOut = api(func(this *ApiCtx[Void, Void]) {
 	Do(yoauth.ApiUserLogout, this.Ctx, this.Args)
 })
 
-var apiUserSignIn = api(func(this *ApiCtx[ApiUserSignIn, Void]) {
+var apiUserSignInOrReset = api(func(this *ApiCtx[ApiUserSignInOrReset, Void]) {
 	this.Ctx.DbTx()
 	this.Args.ensureEmailAddr(this.Ctx, Err___yo_authLogin_AccountDoesNotExist, Err___yo_authLogin_EmailInvalid)
-	Do(yoauth.ApiUserLogin, this.Ctx, &yoauth.ApiAccountPayload{EmailAddr: this.Args.NickOrEmailAddr, PasswordPlain: this.Args.PasswordPlain})
+	Do(yoauth.ApiUserLogin, this.Ctx, &yoauth.ApiAccountPayload{EmailAddr: this.Args.NickOrEmailAddr, PasswordOldPlain: this.Args.PasswordPlain, PasswordNewPlain: this.Args.Password2Plain})
 })
 
 var apiUserSignUpOrForgotPassword = api(func(this *ApiCtx[ApiNickOrEmailAddr, Void]) {
@@ -265,9 +269,10 @@ func apiHandleUploadedFiles(ctx *Ctx, fieldName string, maxNumFiles int, transfo
 	return
 }
 
-type ApiUserSignIn struct {
+type ApiUserSignInOrReset struct {
 	ApiNickOrEmailAddr
-	PasswordPlain string
+	PasswordPlain  string
+	Password2Plain string
 }
 
 type ApiNickOrEmailAddr struct {
