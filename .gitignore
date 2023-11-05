@@ -1,6 +1,6 @@
 *.js
 *__debug_bin*
-
+__static/postfiles/*
 *.exe
 *.exe~
 *.dll
