@@ -1,12 +1,6 @@
+go.sum
+.tmp
 *.js
+.env
 *__debug_bin*
 __static/postfiles/*
-*.exe
-*.exe~
-*.dll
-*.so
-*.dylib
-*.test
-*.out
-go.work
-.env
