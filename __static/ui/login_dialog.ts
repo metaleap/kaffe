@@ -11,15 +11,15 @@ export function create(setSignUpOrPwdForgotNotice: (_: string) => void) {
             return
         in_user_name.disabled = true
         in_password.disabled = true
-        in_password_new.disabled = true
+        in_password_2.disabled = true
         in_password.value = in_password.value.trim()
-        in_password_new.value = in_password_new.value.trim()
+        in_password_2.value = in_password_2.value.trim()
         try {
             const is_signup_or_pwd_forgotten = (!in_password.value.length)
             if (is_signup_or_pwd_forgotten)
                 await yo.apiUserSignUpOrForgotPassword({ NickOrEmailAddr: in_user_name.value })
             else
-                await yo.apiUserSignIn({ NickOrEmailAddr: in_user_name.value, PasswordPlain: in_password.value })
+                await yo.apiUserSignInOrReset({ NickOrEmailAddr: in_user_name.value, PasswordPlain: in_password.value, Password2Plain: in_password_2.value })
             if (is_signup_or_pwd_forgotten) {
                 const notice = `An email will be sent to '${in_user_name.value}' within minutes, with the link to complete the sign-up or password-reset.`
                 setSignUpOrPwdForgotNotice(notice)
@@ -30,15 +30,15 @@ export function create(setSignUpOrPwdForgotNotice: (_: string) => void) {
         } catch (err) {
             in_user_name.disabled = false
             in_password.disabled = false
-            in_password_new.disabled = false
-            if (!haxsh.knownErr<yo.UserSignInErr | yo.UserSignUpOrForgotPasswordErr>(err, (err) => {
+            in_password_2.disabled = false
+            if (!haxsh.knownErr<yo.UserSignInOrResetErr | yo.UserSignUpOrForgotPasswordErr>(err, (err) => {
                 switch (err) {
-                    case '___yo_authLogin_AccountDoesNotExist':
-                    case '___yo_authLogin_WrongPassword':
-                    case '___yo_authLogin_EmailInvalid':
-                    case '___yo_authLogin_EmailRequiredButMissing':
-                    case 'UserSignIn_ExpectedPasswordAndNickOrEmailAddr':
-                    case 'UserSignIn_WrongPassword':
+                    case '___yo_authLoginOrFinalizePwdReset_AccountDoesNotExist':
+                    case '___yo_authLoginOrFinalizePwdReset_WrongPassword':
+                    case '___yo_authLoginOrFinalizePwdReset_EmailInvalid':
+                    case '___yo_authLoginOrFinalizePwdReset_EmailRequiredButMissing':
+                    case 'UserSignInOrReset_ExpectedPasswordAndNickOrEmailAddr':
+                    case 'UserSignInOrReset_WrongPassword':
                     case '___yo_authRegister_EmailInvalid':
                     case '___yo_authRegister_EmailRequiredButMissing':
                     case 'UserSignUpOrForgotPassword_EmailInvalid':
@@ -54,13 +54,13 @@ export function create(setSignUpOrPwdForgotNotice: (_: string) => void) {
 
     const in_user_name = htm.input({ 'placeholder': '(nick or email address)' })
     const in_password = htm.input({ 'type': 'password', 'placeholder': '(password: keep blank to sign up — or if forgotten)' })
-    const in_password_new = htm.input({ 'type': 'password', 'placeholder': '(only to change password: new one here, old one above)' })
+    const in_password_2 = htm.input({ 'type': 'password', 'placeholder': '(only to change password: new one here, old one above)' })
     const dialog = htm.dialog({ 'class': 'login-popup' },
         htm.form({ 'onsubmit': () => false },
             htm.button({ 'type': 'submit', 'class': 'save', 'title': "Sign in or sign up now", 'onclick': _ => on_btn_clicked() }, "✅"),
             in_user_name,
             in_password,
-            in_password_new,
+            in_password_2,
         ),
     )
     dialog.onclose = (evt) => {

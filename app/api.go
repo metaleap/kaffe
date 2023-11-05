@@ -33,7 +33,7 @@ func init() {
 			),
 
 		"userSignInOrReset": apiUserSignInOrReset.
-			CouldFailWith(":"+yoauth.MethodPathLogin).
+			CouldFailWith(":"+yoauth.MethodPathLoginOrFinalizePwdReset).
 			Checks(
 				Fails{Err: "ExpectedPasswordAndNickOrEmailAddr", If: UserSignInOrResetNickOrEmailAddr.Equal("").Or(UserSignInOrResetPasswordPlain.Equal(""))},
 				Fails{Err: "WrongPassword",
@@ -102,13 +102,13 @@ var apiUserSignOut = api(func(this *ApiCtx[Void, Void]) {
 
 var apiUserSignInOrReset = api(func(this *ApiCtx[ApiUserSignInOrReset, Void]) {
 	this.Ctx.DbTx()
-	this.Args.ensureEmailAddr(this.Ctx, Err___yo_authLogin_AccountDoesNotExist, Err___yo_authLogin_EmailInvalid)
-	Do(yoauth.ApiUserLogin, this.Ctx, &yoauth.ApiAccountPayload{EmailAddr: this.Args.NickOrEmailAddr, PasswordOldPlain: this.Args.PasswordPlain, PasswordNewPlain: this.Args.Password2Plain})
+	this.Args.ensureEmailAddr(this.Ctx, Err___yo_authLoginOrFinalizePwdReset_AccountDoesNotExist, Err___yo_authLoginOrFinalizePwdReset_EmailInvalid)
+	Do(yoauth.ApiUserLoginOrFinalizePwdReset, this.Ctx, &yoauth.ApiAccountPayload{EmailAddr: this.Args.NickOrEmailAddr, PasswordPlain: this.Args.PasswordPlain, Password2Plain: this.Args.Password2Plain})
 })
 
 var apiUserSignUpOrForgotPassword = api(func(this *ApiCtx[ApiNickOrEmailAddr, Void]) {
 	this.Ctx.DbTx()
-	this.Args.ensureEmailAddr(this.Ctx, Err___yo_authLogin_AccountDoesNotExist, ErrUserSignUpOrForgotPassword_EmailInvalid)
+	this.Args.ensureEmailAddr(this.Ctx, Err___yo_authLoginOrFinalizePwdReset_AccountDoesNotExist, ErrUserSignUpOrForgotPassword_EmailInvalid)
 	yoauth.UserPregisterOrForgotPassword(this.Ctx, this.Args.NickOrEmailAddr)
 })
 
