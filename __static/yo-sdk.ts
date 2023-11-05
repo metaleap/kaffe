@@ -258,7 +258,7 @@ export async function apiUserBy(payload?: userBy_In, formData?: FormData, query?
 }
 export type UserByErr = typeof errsUserBy[number]
 
-const errsUserSignInOrReset = ['MissingOrExcessiveContentLength', 'TimedOut', 'UserSignInOrReset_ExpectedPasswordAndNickOrEmailAddr', 'UserSignInOrReset_WrongPassword', '___yo_authLoginOrFinalizePwdReset_AccountDoesNotExist', '___yo_authLoginOrFinalizePwdReset_EmailInvalid', '___yo_authLoginOrFinalizePwdReset_EmailRequiredButMissing', '___yo_authLoginOrFinalizePwdReset_OkButFailedToCreateSignedToken', '___yo_authLoginOrFinalizePwdReset_WrongPassword'] as const
+const errsUserSignInOrReset = ['MissingOrExcessiveContentLength', 'TimedOut', 'UserSignInOrReset_ExpectedPasswordAndNickOrEmailAddr', 'UserSignInOrReset_WrongPassword', '___yo_authLoginOrFinalizePwdReset_AccountDoesNotExist', '___yo_authLoginOrFinalizePwdReset_EmailInvalid', '___yo_authLoginOrFinalizePwdReset_EmailRequiredButMissing', '___yo_authLoginOrFinalizePwdReset_NewPasswordExpectedToDiffer', '___yo_authLoginOrFinalizePwdReset_NewPasswordInvalid', '___yo_authLoginOrFinalizePwdReset_NewPasswordTooLong', '___yo_authLoginOrFinalizePwdReset_NewPasswordTooShort', '___yo_authLoginOrFinalizePwdReset_OkButFailedToCreateSignedToken', '___yo_authLoginOrFinalizePwdReset_WrongPassword'] as const
 export async function apiUserSignInOrReset(payload?: ApiUserSignInOrReset, formData?: FormData, query?: {[_:string]:string}): Promise<Void> {
 	try {
 		return await req<ApiUserSignInOrReset, Void, UserSignInOrResetErr>('_/userSignInOrReset', payload, formData, query)
