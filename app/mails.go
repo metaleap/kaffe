@@ -20,11 +20,11 @@ If you did not request this (at around {` + mailTmplVarReqTime + `} UTC), simply
 
 Otherwise, go to {` + mailTmplVarHref + `} and enter the following 2 passwords:
 
-1. Under "old password": this unique one-time password, best via copy-and-paste:
+1. Under "old password", this unique one-time password below, best via copy-and-paste:
 
 {` + yoauth.MailTmplVarTmpPwd + `}
 
-2. under "new password": your own chosen password for future logins.
+2. under "new password", your own chosen password for future logins.
 
 Rock on!
 `

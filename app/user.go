@@ -78,7 +78,10 @@ func userCur(ctx *Ctx) (ret *User) {
 	if ret, _ = ctx.Get(ctxKeyCurUser, nil).(*User); ret == nil {
 		_, user_auth_id := yoauth.CurrentlyLoggedInUser(ctx)
 		if user_auth_id != 0 {
-			ret = yodb.FindOne[User](ctx, UserAuth.Equal(user_auth_id)).augmentAfterLoaded()
+			ret = yodb.FindOne[User](ctx, UserAuth.Equal(user_auth_id))
+			if ret != nil {
+				ret = ret.augmentAfterLoaded()
+			}
 			ctx.Set(ctxKeyCurUser, ret)
 		}
 	}
