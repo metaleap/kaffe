@@ -70,9 +70,7 @@ func init() {
 		"postsRecent": apiPostsRecent.
 			FailIf(yoauth.IsNotCurrentlyLoggedIn, ErrUnauthorized),
 
-		"postsForMonthUtc": apiPostsForMonthUtc.Checks(
-		// Fails{Err: "ExpectedValid", If: PostsForPeriodFrom.Equal(nil).Or(PostsForPeriodUntil.NotEqual(nil).And(PostsForPeriodUntil.LessOrEqual(PostsForPeriodFrom)))},
-		).
+		"postsForMonthUtc": apiPostsForMonthUtc.
 			FailIf(yoauth.IsNotCurrentlyLoggedIn, ErrUnauthorized),
 
 		"postMonthsUtc": apiPostMonthsUtc.
