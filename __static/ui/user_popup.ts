@@ -87,10 +87,10 @@ export function create(user: yo.User): UiCtlUserPopup {
     }
     const btn_close = htm.button({ 'type': 'button', 'class': 'close', 'title': "Close", 'onclick': _ => me.DOM.close() }, "❎")
     const btn_sign_out = (!is_self) ? undefined : htm.button({ 'type': 'button', 'class': 'exit', 'title': "Sign out", 'onclick': () => haxsh.userSignOut(true) }, "🚫")
-    const btn_save = (!is_self) ? undefined : htm.button({ 'type': 'button', 'class': 'save', 'title': "Save changes", 'onclick': save_changes }, "✅")
+    const btn_save = (!is_self) ? undefined : htm.button({ 'type': 'submit', 'class': 'save', 'title': "Save changes", 'onclick': save_changes }, "✅")
 
     const me: UiCtlUserPopup = {
-        DOM: htm.dialog({ 'class': 'user-popup' },
+        DOM: htm.dialog({ 'class': 'user-popup' }, htm.form({ 'onsubmit': () => false },
             btn_close,
             btn_sign_out,
             btn_save,
@@ -106,7 +106,7 @@ export function create(user: yo.User): UiCtlUserPopup {
                 htm.label({ 'for': 'darklite' }, "UI Dark/Light:"),
                 htm_input_darklite,
             )),
-        )
+        ))
     }
     me.DOM.onclose = () => {
         if (is_self)

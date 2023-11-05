@@ -18,7 +18,7 @@ export function create(): UiCtlBuddies {
     const me: UiCtlBuddies = {
         DOM: htm.div({ 'class': 'haxsh-buddies' },
             htm.div({
-                'class': depends(() => 'buddy-self' + ((haxsh.selectedBuddy.val === 0) ? ' selected' : '') + ((haxsh.buddyBadges[0].val) ? ' badged' : '') + ((haxsh.buddyBadgesAlt[0].val) ? ' badged-alt' : '')),
+                'class': depends(() => 'buddy-self' + ((haxsh.selectedBuddy.val === 0) ? ' selected' : '') + (haxsh.isSeeminglyOffline.val ? ' offline' : '') + ((haxsh.buddyBadges[0].val) ? ' badged' : '') + ((haxsh.buddyBadgesAlt[0].val) ? ' badged-alt' : '')),
                 'data-badge': depends(() => (haxsh.buddyBadges[0].val) || ""),
                 'data-badge-alt': depends(() => (haxsh.buddyBadgesAlt[0].val) || ""),
                 'onclick': () => {

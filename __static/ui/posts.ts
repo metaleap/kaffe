@@ -35,7 +35,7 @@ export function create(): UiCtlPosts {
         'contenteditable': depends(() => ((is_sending.val || haxsh.isArchiveBrowsing.val || !haxsh.userSelf.val) ? 'false' : 'true')),
         'autofocus': true, 'spellcheck': false, 'autocorrect': 'off', 'tabindex': 1,
         'title': depends(() =>
-            haxsh.isSeeminglyOffline.val ? "You seem to be offline, or our backend is. Or hax0rs, or a meteor strike on The Cloud, or TEOTWAWKI, or an innocent cosmic ray... but it's probably your router resetting."
+            haxsh.isSeeminglyOffline.val ? "You seem to be offline, or our backend is. Or hax0rs, or a meteor strike on The Cloud, or TEOTWAWKI, or an stray cosmic ray... but it's probably your router resetting."
                 : ((!haxsh.userSelf.val) ? (haxsh.signUpOrPwdForgotNotice.val || "Sign in or sign up to resume confabulations:") : (haxsh.isArchiveBrowsing.val
                     ? "Browsing archives. To chat, switch back to 'Fresh'."
                     : (haxsh.selectedBuddy.val

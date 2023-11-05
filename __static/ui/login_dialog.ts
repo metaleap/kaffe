@@ -64,14 +64,12 @@ export function create(setSignUpOrPwdForgotNotice: (_: string) => void) {
             is_from_signup_or_pwd_reset_mail ? `(choose your preferred new sign-in password, min. ? characters)`
                 : "(only to change password: new one here, old one above)"
     })
-    const dialog = htm.dialog({ 'class': 'login-popup' },
-        htm.form({ 'onsubmit': () => false },
-            htm.button({ 'type': 'submit', 'class': 'save', 'title': "Sign in or sign up now", 'onclick': _ => on_btn_clicked() }, "✅"),
-            in_user_name,
-            in_password,
-            in_password_2,
-        ),
-    )
+    const dialog = htm.dialog({ 'class': 'login-popup' }, htm.form({ 'onsubmit': () => false },
+        htm.button({ 'type': 'submit', 'class': 'save', 'title': "Sign in or sign up now", 'onclick': _ => on_btn_clicked() }, "✅"),
+        in_user_name,
+        in_password,
+        in_password_2,
+    ))
     dialog.onclose = (evt) => {
         if (!haxsh.signUpOrPwdForgotNotice.val)
             setTimeout(() => {

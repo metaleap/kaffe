@@ -71,7 +71,7 @@ body a {
 
 .buddy.offline,
 .buddy-self.offline {
-    cursor: default;
+    cursor: default !important;
 }
 
 .haxsh-buddies .badged::before {
