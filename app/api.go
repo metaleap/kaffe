@@ -103,7 +103,19 @@ var apiUserSignOut = api(func(this *ApiCtx[Void, Void]) {
 var apiUserSignInOrReset = api(func(this *ApiCtx[ApiUserSignInOrReset, Void]) {
 	this.Ctx.DbTx()
 	this.Args.ensureEmailAddr(this.Ctx, Err___yo_authLoginOrFinalizePwdReset_AccountDoesNotExist, Err___yo_authLoginOrFinalizePwdReset_EmailInvalid)
-	Do(yoauth.ApiUserLoginOrFinalizePwdReset, this.Ctx, &yoauth.ApiAccountPayload{EmailAddr: this.Args.NickOrEmailAddr, PasswordPlain: this.Args.PasswordPlain, Password2Plain: this.Args.Password2Plain})
+	user_auth := Do(yoauth.ApiUserLoginOrFinalizePwdReset, this.Ctx, &yoauth.ApiAccountPayload{EmailAddr: this.Args.NickOrEmailAddr, PasswordPlain: this.Args.PasswordPlain, Password2Plain: this.Args.Password2Plain})
+	user := userCur(this.Ctx)
+	if user == nil { // this was a new-user-sign-up rather than an existing-user-pwd-reset
+		user_nick := user_auth.EmailAddr[:str.Idx(user_auth.EmailAddr.String(), '@')]
+		user = &User{LastSeen: yodb.DtNow(), Nick: user_nick}
+		for n := 1; yodb.Exists[User](this.Ctx, UserNick.Equal(user.Nick)); n++ {
+			user.Nick = user_nick + yodb.Text(str.FromInt(n))
+		}
+		user.Nick = user_nick
+		user.Auth.SetId(user_auth.Id)
+		_ = yodb.CreateOne[User](this.Ctx, user)
+		this.Ctx.Set(ctxKeyCurUser, user)
+	}
 })
 
 var apiUserSignUpOrForgotPassword = api(func(this *ApiCtx[ApiNickOrEmailAddr, Void]) {
