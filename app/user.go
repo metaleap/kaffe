@@ -78,10 +78,7 @@ func userCur(ctx *Ctx) (ret *User) {
 	if ret, _ = ctx.Get(ctxKeyCurUser, nil).(*User); ret == nil {
 		_, user_auth_id := yoauth.CurrentlyLoggedInUser(ctx)
 		if user_auth_id != 0 {
-			ret = yodb.FindOne[User](ctx, UserAuth.Equal(user_auth_id))
-			if ret != nil {
-				ret = ret.augmentAfterLoaded()
-			}
+			ret = yodb.FindOne[User](ctx, UserAuth.Equal(user_auth_id)).augmentAfterLoaded()
 			ctx.Set(ctxKeyCurUser, ret)
 		}
 	}
@@ -89,9 +86,11 @@ func userCur(ctx *Ctx) (ret *User) {
 }
 
 func (me *User) augmentAfterLoaded() *User {
-	me.Offline, me.BtwEmoji = true, emojiUnescaped(string(me.Btw))
-	if me.LastSeen != nil {
-		me.Offline = time.Since(*me.LastSeen.Time()) > (11 * time.Second)
+	if me != nil {
+		me.Offline, me.BtwEmoji = true, emojiUnescaped(string(me.Btw))
+		if me.LastSeen != nil {
+			me.Offline = time.Since(*me.LastSeen.Time()) > (11 * time.Second)
+		}
 	}
 	return me
 }
