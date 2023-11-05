@@ -93,6 +93,8 @@ func init() {
 			Fails{Err: "InvalidPostId", If: PostDeleteId.LessOrEqual(0)},
 		).
 			FailIf(yoauth.IsNotCurrentlyLoggedIn, ErrUnauthorized),
+
+		"postEmojiFullList": apiPostEmojiFullList,
 	})
 }
 
@@ -239,6 +241,13 @@ var apiPostDelete = api(func(this *ApiCtx[struct {
 	Id yodb.I64
 }, Void]) {
 	_ = postDelete(this.Ctx, this.Args.Id)
+})
+
+var apiPostEmojiFullList = api(func(this *ApiCtx[Void, Return[map[string]string]]) {
+	this.Ret.Result = make(map[string]string, len(emojiKnown))
+	for emoji_code := range emojiKnown {
+		this.Ret.Result[emoji_code] = emojiUnescaped(emoji_code)
+	}
 })
 
 func (me *PostsListResult) augmentWithFileContentTypes() {

@@ -169,6 +169,18 @@ export async function apiPostDelete(payload?: postDelete_In, formData?: FormData
 }
 export type PostDeleteErr = typeof errsPostDelete[number]
 
+const errsPostEmojiFullList = ['MissingOrExcessiveContentLength', 'TimedOut'] as const
+export async function apiPostEmojiFullList(payload?: Void, formData?: FormData, query?: {[_:string]:string}): Promise<Return_map_string_string_> {
+	try {
+		return await req<Void, Return_map_string_string_, PostEmojiFullListErr>('_/postEmojiFullList', payload, formData, query)
+	} catch(err: any) {
+		if (err && err['body_text'] && (errsPostEmojiFullList.indexOf(err.body_text) >= 0))
+			throw(new Err<PostEmojiFullListErr>(err.body_text as PostEmojiFullListErr))
+		throw(err)
+	}
+}
+export type PostEmojiFullListErr = typeof errsPostEmojiFullList[number]
+
 const errsPostMonthsUtc = ['MissingOrExcessiveContentLength', 'TimedOut', 'Unauthorized'] as const
 export async function apiPostMonthsUtc(payload?: postMonthsUtc_In, formData?: FormData, query?: {[_:string]:string}): Promise<postMonthsUtc_Out> {
 	try {
@@ -430,6 +442,10 @@ export type ApiUpdateArgs_haxsh_app_User_haxsh_app_UserField_ = {
 }
 
 export type DateTime = string
+export type Return_map_string_string_ = {
+	Result: { [_:string]: string }
+}
+
 export type Return_yo_db_I64_ = {
 	Result: I64
 }
