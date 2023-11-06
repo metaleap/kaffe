@@ -23,7 +23,7 @@ var cleanUpJobDef = yojobs.JobDef{
 	TimeoutSecsJobRunPrepAndFinalize: 123,
 	Disabled:                         false,
 	DeleteAfterDays:                  1,
-	MaxTaskRetries:                   0, //     123,
+	MaxTaskRetries:                   1, // keep low, the to-dos will anyway resurface for the next job run
 }
 
 type cleanUpJob Void
@@ -87,7 +87,6 @@ func (me cleanUpJob) TaskDetails(ctx *yojobs.Context, stream func([]yojobs.TaskD
 }
 
 func (me cleanUpJob) TaskResults(ctx *yojobs.Context, taskDetails yojobs.TaskDetails) yojobs.TaskResults {
-	panic("TMP_NOT_YET")
 	task_details, ret := taskDetails.(*cleanUpTaskDetails), &cleanUpTaskResults{}
 
 	// file deletions
@@ -104,12 +103,11 @@ func (me cleanUpJob) TaskResults(ctx *yojobs.Context, taskDetails yojobs.TaskDet
 
 	// post deletions
 	if task_details.User != 0 {
-		dt_ago := me.dtCutOff()
-		posts := yodb.FindMany[Post](ctx.Ctx,
-			PostBy.Equal(task_details.User).And(PostDtMade.LessThan(dt_ago)),
-			0, PostFields(PostId))
-		num_rows_affected := yodb.Delete[Post](ctx.Ctx, PostId.In(sl.To(posts, func(it *Post) yodb.I64 { return it.Id }).ToAnys()...))
-		ret.NumPostsDeleted += int(num_rows_affected)
+		post_ids := yodb.Ids[User](ctx.Ctx, PostBy.Equal(task_details.User).And(PostDtMade.LessThan(me.dtCutOff())))
+		if len(post_ids) > 0 {
+			num_rows_affected := yodb.Delete[Post](ctx.Ctx, PostId.In(post_ids.ToAnys()...))
+			ret.NumPostsDeleted += int(num_rows_affected)
+		}
 	}
 	return ret
 }
