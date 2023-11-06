@@ -50,28 +50,27 @@ func (cleanUpJob) JobResults(_ *yojobs.Context) (func(*yojobs.JobTask, *bool), f
 }
 
 func (cleanUpJob) TaskDetails(ctx *yojobs.Context, stream func([]yojobs.TaskDetails)) {
+	// file-deletion job tasks from pending file-deletion reqs
 	stream(sl.To(
 		yodb.FindMany[fileDelReq](ctx.Ctx, nil, 0, nil),
 		func(it *fileDelReq) yojobs.TaskDetails {
 			return &cleanUpTaskDetails{FileDelReq: it.Id}
 		}))
 
-	user_ids := make([]yodb.I64, 0, 128)
-	do_push := func() {
-		stream(sl.To(user_ids, func(it yodb.I64) yojobs.TaskDetails {
-			return &cleanUpTaskDetails{User: it}
+	// post-deletion job tasks from non-vip users that have old posts
+	user_ids := make(sl.Buf[User], 0, 128)
+	do_push := func(users []*User) {
+		stream(sl.To(users, func(it *User) yojobs.TaskDetails {
+			return &cleanUpTaskDetails{User: it.Id}
 		}))
 	}
 	dt_ago := time.Now().AddDate(0, 0, -CfgGet[int](cfgEnvNameDeletePostsOlderThanDays))
-	yodb.Each[User](ctx.Ctx, userVip.Equal(false), 0, nil, func(rec *User, enough *bool) {
-		if yodb.Exists[Post](ctx.Ctx, PostDtMade.LessThan(dt_ago)) {
-			if len(user_ids) == cap(user_ids) {
-				do_push()
-				user_ids = user_ids[:0]
-			}
+	yodb.Each[User](ctx.Ctx, userVip.Equal(false), 0, nil, func(user *User, enough *bool) {
+		if yodb.Exists[Post](ctx.Ctx, PostDtMade.LessThan(dt_ago).And(PostBy.Equal(user.Id))) {
+			user_ids.OnNext(user, do_push)
 		}
 	})
-	do_push()
+	user_ids.OnNext(nil, do_push)
 }
 
 func (me cleanUpJob) TaskResults(ctx *yojobs.Context, taskDetails yojobs.TaskDetails) yojobs.TaskResults {
