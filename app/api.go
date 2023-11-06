@@ -269,9 +269,12 @@ func (me *PostsListResult) augmentWithFileContentTypes() {
 	}
 }
 
+func userUploadedFilePath(fileId string) string {
+	return filepath.Join(Cfg.STATIC_FILE_STORAGE_DIRS["_postfiles"], fileId)
+}
+
 func apiHandleUploadedFiles(ctx *Ctx, fieldName string, maxNumFiles int, transform func([]byte) []byte) (fileNames []yodb.Text, filePaths []string) {
 	if files := ctx.Http.Req.MultipartForm.File[fieldName]; len(files) > 0 {
-		dst_dir_path := Cfg.STATIC_FILE_STORAGE_DIRS["_postfiles"]
 		for i, file := range files {
 			if (maxNumFiles > 0) && (i == maxNumFiles) {
 				break
@@ -291,7 +294,7 @@ func apiHandleUploadedFiles(ctx *Ctx, fieldName string, maxNumFiles int, transfo
 				data = transform(data)
 			}
 			dst_file_name := str.FromI64(rand.Int63n(math.MaxInt64), 36) + "_" + str.FromI64(time.Now().UnixNano(), 36) + "_" + str.FromI64(file.Size, 36) + "__yo__" + file.Filename
-			dst_file_path := filepath.Join(dst_dir_path, dst_file_name)
+			dst_file_path := userUploadedFilePath(dst_file_name)
 			WriteFile(dst_file_path, data)
 			fileNames, filePaths = append(fileNames, yodb.Text(dst_file_name)), append(filePaths, dst_file_path)
 		}
