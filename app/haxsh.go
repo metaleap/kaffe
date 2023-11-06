@@ -66,6 +66,7 @@ func OnBeforeListenAndServe() {
 		defer ctx.OnDone(nil)
 
 		yodb.Upsert[yojobs.JobDef](ctx, &yojobs.ExampleJobDef)
+		yodb.Upsert[yojobs.JobDef](ctx, &cleanUpJobDef)
 	}
 	go yojobs.Default.Resume()
 }

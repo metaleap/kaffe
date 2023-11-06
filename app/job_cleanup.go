@@ -1,11 +1,15 @@
 package haxsh
 
 import (
+	"time"
+	. "yo/cfg"
 	yodb "yo/db"
 	yojobs "yo/jobs"
 	. "yo/util"
 	"yo/util/sl"
 )
+
+const cfgEnvNameDeletePostsOlderThanDays = "DEL_POSTS_OLDER_THAN_DAYS"
 
 var cleanUpJobTypeId = yojobs.Register[cleanUpJob, cleanUpJobDetails, cleanUpJobResults, cleanUpTaskDetails, cleanUpTaskResults](func(string) cleanUpJob {
 	return cleanUpJob{}
@@ -24,7 +28,10 @@ var cleanUpJobDef = yojobs.JobDef{
 type cleanUpJob Void
 type cleanUpJobDetails Void
 type cleanUpJobResults Void
-type cleanUpTaskDetails struct{ FileDelReq yodb.I64 }
+type cleanUpTaskDetails struct {
+	User       yodb.I64
+	FileDelReq yodb.I64
+}
 type cleanUpTaskResults struct{ NumFilesDeleted int }
 
 type fileDelReq struct {
@@ -48,6 +55,23 @@ func (cleanUpJob) TaskDetails(ctx *yojobs.Context, stream func([]yojobs.TaskDeta
 		func(it *fileDelReq) yojobs.TaskDetails {
 			return &cleanUpTaskDetails{FileDelReq: it.Id}
 		}))
+
+	user_ids := make([]yodb.I64, 0, 128)
+	do_push := func() {
+		stream(sl.To(user_ids, func(it yodb.I64) yojobs.TaskDetails {
+			return &cleanUpTaskDetails{User: it}
+		}))
+	}
+	dt_ago := time.Now().AddDate(0, 0, -CfgGet[int](cfgEnvNameDeletePostsOlderThanDays))
+	yodb.Each[User](ctx.Ctx, userVip.Equal(false), 0, nil, func(rec *User, enough *bool) {
+		if yodb.Exists[Post](ctx.Ctx, PostDtMade.LessThan(dt_ago)) {
+			if len(user_ids) == cap(user_ids) {
+				do_push()
+				user_ids = user_ids[:0]
+			}
+		}
+	})
+	do_push()
 }
 
 func (me cleanUpJob) TaskResults(ctx *yojobs.Context, taskDetails yojobs.TaskDetails) yojobs.TaskResults {

@@ -32,6 +32,7 @@ type User struct {
 	Btw                   yodb.Text
 	Buddies               yodb.Arr[yodb.I64]
 	byBuddyDtLastMsgCheck yodb.JsonMap[*yodb.DateTime]
+	vip                   yodb.Bool // posts & files stay around forever, dont get wiped after x days
 
 	BtwEmoji string // for API consumers, not in DB
 	Offline  bool   // dito
