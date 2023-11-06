@@ -90,3 +90,36 @@ func (me PostField) NotEqual(a1 interface{}) q.Query       { return ((q.F)(me)).
 func (me PostField) NotIn(a1 ...interface{}) q.Query       { return ((q.F)(me)).NotIn(a1...) }
 func (me PostField) NotInArr(a1 interface{}) q.Query       { return ((q.F)(me)).NotInArr(a1) }
 func (me PostField) StrLen(a1 ...interface{}) q.Operand    { return ((q.F)(me)).StrLen(a1...) }
+
+func fileDelReqFields(fields ...fileDelReqField) []q.F { return sl.To(fields, fileDelReqField.F) }
+
+type fileDelReqField q.F
+
+const (
+	fileDelReqId        fileDelReqField = "Id"
+	fileDelReqDtMade    fileDelReqField = "DtMade"
+	fileDelReqDtMod     fileDelReqField = "DtMod"
+	fileDelReqFileNames fileDelReqField = "FileNames"
+)
+
+func (me fileDelReqField) ArrLen(a1 ...interface{}) q.Operand { return ((q.F)(me)).ArrLen(a1...) }
+func (me fileDelReqField) Asc() q.OrderBy                     { return ((q.F)(me)).Asc() }
+func (me fileDelReqField) Desc() q.OrderBy                    { return ((q.F)(me)).Desc() }
+func (me fileDelReqField) Equal(a1 interface{}) q.Query       { return ((q.F)(me)).Equal(a1) }
+func (me fileDelReqField) Eval(a1 interface{}, a2 func(q.C) q.F) interface{} {
+	return ((q.F)(me)).Eval(a1, a2)
+}
+func (me fileDelReqField) F() q.F { return ((q.F)(me)).F() }
+func (me fileDelReqField) GreaterOrEqual(a1 interface{}) q.Query {
+	return ((q.F)(me)).GreaterOrEqual(a1)
+}
+func (me fileDelReqField) GreaterThan(a1 interface{}) q.Query { return ((q.F)(me)).GreaterThan(a1) }
+func (me fileDelReqField) In(a1 ...interface{}) q.Query       { return ((q.F)(me)).In(a1...) }
+func (me fileDelReqField) InArr(a1 interface{}) q.Query       { return ((q.F)(me)).InArr(a1) }
+func (me fileDelReqField) LessOrEqual(a1 interface{}) q.Query { return ((q.F)(me)).LessOrEqual(a1) }
+func (me fileDelReqField) LessThan(a1 interface{}) q.Query    { return ((q.F)(me)).LessThan(a1) }
+func (me fileDelReqField) Not() q.Query                       { return ((q.F)(me)).Not() }
+func (me fileDelReqField) NotEqual(a1 interface{}) q.Query    { return ((q.F)(me)).NotEqual(a1) }
+func (me fileDelReqField) NotIn(a1 ...interface{}) q.Query    { return ((q.F)(me)).NotIn(a1...) }
+func (me fileDelReqField) NotInArr(a1 interface{}) q.Query    { return ((q.F)(me)).NotInArr(a1) }
+func (me fileDelReqField) StrLen(a1 ...interface{}) q.Operand { return ((q.F)(me)).StrLen(a1...) }

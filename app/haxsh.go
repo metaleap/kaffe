@@ -52,7 +52,7 @@ func Init() {
 		yodb.ReadOnly[PostField]{PostBy},
 		yodb.Index[PostField]{PostBy, PostTo},
 	)
-
+	yodb.Ensure[fileDelReq, fileDelReqField]("", nil, false)
 }
 
 func OnBeforeListenAndServe() {

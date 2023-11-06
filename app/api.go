@@ -137,14 +137,18 @@ var apiUserBy = api(func(this *ApiCtx[struct {
 })
 
 var apiUserUpdate = api(func(this *ApiCtx[yodb.ApiUpdateArgs[User, UserField], Void]) {
-	_, user_auth_id := yoauth.CurrentlyLoggedInUser(this.Ctx)
-	this.Args.Changes.Id = this.Args.Id
-	this.Args.Changes.Auth.SetId(user_auth_id)
+	user_cur := userCur(this.Ctx)
+	if user_cur == nil {
+		panic(ErrUnauthorized)
+	}
+	this.Args.Changes.Id = user_cur.Id
+	this.Args.Changes.Auth.SetId(user_cur.Auth.Id())
 
-	uploaded_file_names, uploaded_file_paths := apiHandleUploadedFiles(this.Ctx, "picfile", 1, imageSquared)
-	for i, file_name := range uploaded_file_names {
-		old_file_path := filepath.Join(filepath.Dir(uploaded_file_paths[i]), string(userCur(this.Ctx).PicFileId))
-		DelFile(old_file_path)
+	uploaded_file_names, _ := apiHandleUploadedFiles(this.Ctx, "picfile", 1, imageSquared)
+	for _, file_name := range uploaded_file_names {
+		if (user_cur.PicFileId != "") && (user_cur.PicFileId != this.Args.Changes.PicFileId) {
+			yodb.CreateOne[fileDelReq](this.Ctx, &fileDelReq{FileNames: yodb.Arr[yodb.Text]{user_cur.PicFileId}})
+		}
 		this.Args.Changes.PicFileId = file_name
 		if len(this.Args.ChangedFields) > 0 {
 			this.Args.ChangedFields = sl.With(this.Args.ChangedFields, UserPicFileId)
@@ -238,7 +242,15 @@ var apiPostNew = api(func(this *ApiCtx[Post, Return[yodb.I64]]) {
 var apiPostDelete = api(func(this *ApiCtx[struct {
 	Id yodb.I64
 }, Void]) {
-	_ = postDelete(this.Ctx, this.Args.Id)
+	post := yodb.ById[Post](this.Ctx, this.Args.Id)
+	if post == nil {
+		return
+	}
+	user_cur := userCur(this.Ctx)
+	if (user_cur == nil) || (post.By.Id() != user_cur.Id) {
+		panic(ErrUnauthorized)
+	}
+	_ = postDelete(this.Ctx, post)
 })
 
 var apiPostEmojiFullList = api(func(this *ApiCtx[Void, Return[map[string]string]]) {

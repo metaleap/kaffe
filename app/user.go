@@ -53,9 +53,7 @@ func userUpdate(ctx *Ctx, upd *User, byCurUserInCtx bool, inclEmptyOrMissingFiel
 	if byCurUserInCtx {
 		upd.LastSeen = yodb.DtNow()
 	}
-	if 0 == yodb.Update[User](ctx, upd, nil, !inclEmptyOrMissingFields, sl.To(onlyFields, UserField.F)...) {
-		panic("nochanges in " + str.GoLike(onlyFields) + "?" + str.GoLike(upd) + "vs." + str.GoLike(userCur(ctx)))
-	}
+	_ = yodb.Update[User](ctx, upd, nil, !inclEmptyOrMissingFields, sl.To(onlyFields, UserField.F)...)
 }
 
 func userByEmailAddr(ctx *Ctx, emailAddr string) *User {

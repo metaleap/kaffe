@@ -148,8 +148,9 @@ func postsDeleted(ctx *Ctx, postIds []yodb.I64) (ret []yodb.I64) {
 	return
 }
 
-func postDelete(ctx *Ctx, postId yodb.I64) bool {
-	return (yodb.Delete[Post](ctx, PostId.Equal(postId)) > 0)
+func postDelete(ctx *Ctx, post *Post) bool {
+	yodb.CreateOne[fileDelReq](ctx, &fileDelReq{FileNames: post.Files})
+	return (yodb.Delete[Post](ctx, PostId.Equal(post.Id)) > 0)
 }
 
 func postNew(ctx *Ctx, post *Post, byCurUserInCtx bool) yodb.I64 {
