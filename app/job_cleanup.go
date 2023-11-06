@@ -1,6 +1,7 @@
 package haxsh
 
 import (
+	"sync"
 	"time"
 	. "yo/cfg"
 	yodb "yo/db"
@@ -17,12 +18,12 @@ var cleanUpJobTypeId = yojobs.Register[cleanUpJob, cleanUpJobDetails, cleanUpJob
 var cleanUpJobDef = yojobs.JobDef{
 	Name:                             yodb.Text(ReflType[cleanUpJob]().String()),
 	JobTypeId:                        yodb.Text(cleanUpJobTypeId),
-	Schedules:                        yodb.Arr[yodb.Text]{"0 3 * * *"}, // nightly, 3am
+	Schedules:                        yojobs.ScheduleOncePerMinute, //   yodb.Arr[yodb.Text]{"0 3 * * *"}, // nightly, 3am
 	TimeoutSecsTaskRun:               11,
 	TimeoutSecsJobRunPrepAndFinalize: 123,
 	Disabled:                         false,
 	DeleteAfterDays:                  1,
-	MaxTaskRetries:                   123,
+	MaxTaskRetries:                   0, //     123,
 }
 
 type cleanUpJob Void
@@ -32,7 +33,10 @@ type cleanUpTaskDetails struct {
 	User       yodb.I64
 	FileDelReq yodb.I64
 }
-type cleanUpTaskResults struct{ NumFilesDeleted int }
+type cleanUpTaskResults struct {
+	NumPostsDeleted int
+	NumFilesDeleted int
+}
 
 type fileDelReq struct {
 	Id        yodb.I64
@@ -49,32 +53,48 @@ func (cleanUpJob) JobResults(_ *yojobs.Context) (func(*yojobs.JobTask, *bool), f
 	return nil, nil
 }
 
-func (cleanUpJob) TaskDetails(ctx *yojobs.Context, stream func([]yojobs.TaskDetails)) {
+func (cleanUpJob) dtCutOff() time.Time {
+	return time.Now().AddDate(0, 0, -CfgGet[int](cfgEnvNameDeletePostsOlderThanDays))
+}
+
+var tmp sync.Mutex
+
+func (me cleanUpJob) TaskDetails(ctx *yojobs.Context, stream func([]yojobs.TaskDetails)) {
+	tmp.Lock()
+	defer tmp.Unlock()
+	// post-deletion job tasks from non-vip users that have old posts
+	users := make(sl.Buf[User], 0, 128)
+	do_push := func(users []*User) {
+		stream(sl.To(users, func(it *User) yojobs.TaskDetails {
+			return &cleanUpTaskDetails{User: it.Id}
+		}))
+	}
+	dt_ago := me.dtCutOff()
+
+	yodb.Each[User](ctx.Ctx, userVip.Equal(false), 0, nil, func(user *User, enough *bool) {
+		ctx.Db.PrintRawSqlInDevMode = true
+		if yodb.Exists[Post](ctx.Ctx, PostBy.Equal(user.Id).And(PostDtMade.LessThan(dt_ago))) {
+			println(">>>>>>>>>>>>>>2")
+			users.OnNext(user, do_push)
+			println(">>>>>>>>>>>>>>3")
+		}
+		ctx.Db.PrintRawSqlInDevMode = false
+	})
+	users.Done(do_push)
+
 	// file-deletion job tasks from pending file-deletion reqs
 	stream(sl.To(
 		yodb.FindMany[fileDelReq](ctx.Ctx, nil, 0, nil),
 		func(it *fileDelReq) yojobs.TaskDetails {
 			return &cleanUpTaskDetails{FileDelReq: it.Id}
 		}))
-
-	// post-deletion job tasks from non-vip users that have old posts
-	user_ids := make(sl.Buf[User], 0, 128)
-	do_push := func(users []*User) {
-		stream(sl.To(users, func(it *User) yojobs.TaskDetails {
-			return &cleanUpTaskDetails{User: it.Id}
-		}))
-	}
-	dt_ago := time.Now().AddDate(0, 0, -CfgGet[int](cfgEnvNameDeletePostsOlderThanDays))
-	yodb.Each[User](ctx.Ctx, userVip.Equal(false), 0, nil, func(user *User, enough *bool) {
-		if yodb.Exists[Post](ctx.Ctx, PostDtMade.LessThan(dt_ago).And(PostBy.Equal(user.Id))) {
-			user_ids.OnNext(user, do_push)
-		}
-	})
-	user_ids.OnNext(nil, do_push)
 }
 
 func (me cleanUpJob) TaskResults(ctx *yojobs.Context, taskDetails yojobs.TaskDetails) yojobs.TaskResults {
+	panic("TMP_NOT_YET")
 	task_details, ret := taskDetails.(*cleanUpTaskDetails), &cleanUpTaskResults{}
+
+	// file deletions
 	file_del_req := yodb.ById[fileDelReq](ctx.Ctx, task_details.FileDelReq)
 	if file_del_req != nil {
 		for _, file_name := range file_del_req.FileNames {
@@ -84,6 +104,16 @@ func (me cleanUpJob) TaskResults(ctx *yojobs.Context, taskDetails yojobs.TaskDet
 			}
 		}
 		yodb.Delete[fileDelReq](ctx.Ctx, fileDelReqId.Equal(file_del_req.Id))
+	}
+
+	// post deletions
+	if task_details.User != 0 {
+		dt_ago := me.dtCutOff()
+		posts := yodb.FindMany[Post](ctx.Ctx,
+			PostBy.Equal(task_details.User).And(PostDtMade.LessThan(dt_ago)),
+			0, PostFields(PostId))
+		num_rows_affected := yodb.Delete[Post](ctx.Ctx, PostId.In(sl.To(posts, func(it *Post) yodb.I64 { return it.Id }).ToAnys()...))
+		ret.NumPostsDeleted += int(num_rows_affected)
 	}
 	return ret
 }
