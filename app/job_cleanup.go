@@ -63,24 +63,20 @@ func (me cleanUpJob) TaskDetails(ctx *yojobs.Context, stream func([]yojobs.TaskD
 	tmp.Lock()
 	defer tmp.Unlock()
 	// post-deletion job tasks from non-vip users that have old posts
-	users := make(sl.Buf[User], 0, 128)
-	do_push := func(users []*User) {
-		stream(sl.To(users, func(it *User) yojobs.TaskDetails {
-			return &cleanUpTaskDetails{User: it.Id}
+	user_ids := make(sl.Buf[yodb.I64], 0, 128)
+	do_push := func(users []*yodb.I64) {
+		stream(sl.To(users, func(it *yodb.I64) yojobs.TaskDetails {
+			return &cleanUpTaskDetails{User: *it}
 		}))
 	}
 	dt_ago := me.dtCutOff()
 
-	yodb.Each[User](ctx.Ctx, userVip.Equal(false), 0, nil, func(user *User, enough *bool) {
-		ctx.Db.PrintRawSqlInDevMode = true
-		if yodb.Exists[Post](ctx.Ctx, PostBy.Equal(user.Id).And(PostDtMade.LessThan(dt_ago))) {
-			println(">>>>>>>>>>>>>>2")
-			users.OnNext(user, do_push)
-			println(">>>>>>>>>>>>>>3")
+	for _, user_id := range yodb.Ids[User](ctx.Ctx, userVip.Equal(false).And(UserLastSeen.GreaterThan(UserDtMod))) {
+		if yodb.Exists[Post](ctx.Ctx, PostBy.Equal(user_id).And(PostDtMade.LessThan(dt_ago))) {
+			user_ids.OnNext(&user_id, do_push)
 		}
-		ctx.Db.PrintRawSqlInDevMode = false
-	})
-	users.Done(do_push)
+	}
+	user_ids.Done(do_push)
 
 	// file-deletion job tasks from pending file-deletion reqs
 	stream(sl.To(
