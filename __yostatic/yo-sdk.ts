@@ -334,13 +334,13 @@ export type UserField = 'Id' | 'DtMade' | 'DtMod' | 'LastSeen' | 'Auth' | 'PicFi
 
 export type fileDelReqField = 'Id' | 'DtMade' | 'DtMod' | 'FileNames'
 
-export type ErrEntryField = 'Id' | 'DtMade' | 'DtMod' | 'Err' | 'ErrDbRollback' | 'CtxVals' | 'HttpUrlPath' | 'HttpFullUri' | 'NumCaught'
+export type ErrEntryField = 'Id' | 'DtMade' | 'DtMod' | 'Err' | 'ErrDbRollback' | 'CtxVals' | 'HttpUrlPath' | 'HttpFullUri' | 'NumCaught' | 'JobRunId' | 'JobTaskId'
 
 export type UserAuthField = 'Id' | 'DtMade' | 'DtMod' | 'EmailAddr'
 
 export type UserPwdReqField = 'Id' | 'DtMade' | 'DtMod' | 'EmailAddr' | 'DoneMailReqId' | 'DtFinalized'
 
-export type JobDefField = 'Id' | 'DtMade' | 'DtMod' | 'Name' | 'JobTypeId' | 'Disabled' | 'AllowManualJobRuns' | 'Schedules' | 'TimeoutSecsTaskRun' | 'TimeoutSecsJobRunPrepAndFinalize' | 'MaxTaskRetries' | 'DeleteAfterDays' | 'StoreAndRunTasklessJobs'
+export type JobDefField = 'Id' | 'DtMade' | 'DtMod' | 'Name' | 'JobTypeId' | 'Disabled' | 'AllowManualJobRuns' | 'Schedules' | 'TimeoutSecsTaskRun' | 'TimeoutSecsJobRunPrepAndFinalize' | 'MaxTaskRetries' | 'DeleteAfterDays' | 'RunTasklessJobs'
 
 export type JobRunField = 'Id' | 'DtMade' | 'DtMod' | 'Version' | 'JobTypeId' | 'JobDef' | 'DueTime' | 'StartTime' | 'FinishTime' | 'AutoScheduled' | 'ScheduledNextAfter' | 'DurationPrepSecs' | 'DurationFinalizeSecs'
 
