@@ -1,10 +1,10 @@
 package haxsh
 
 import (
-	"sync"
 	"time"
 	. "yo/cfg"
 	yodb "yo/db"
+	q "yo/db/query"
 	yojobs "yo/jobs"
 	. "yo/util"
 	"yo/util/sl"
@@ -18,8 +18,8 @@ var cleanUpJobTypeId = yojobs.Register[cleanUpJob, cleanUpJobDetails, cleanUpJob
 var cleanUpJobDef = yojobs.JobDef{
 	Name:                             yodb.Text(ReflType[cleanUpJob]().String()),
 	JobTypeId:                        yodb.Text(cleanUpJobTypeId),
-	Schedules:                        yojobs.ScheduleOncePerMinute, //   yodb.Arr[yodb.Text]{"0 3 * * *"}, // nightly, 3am
-	TimeoutSecsTaskRun:               11,
+	Schedules:                        yojobs.ScheduleOncePerMinute, //    yodb.Arr[yodb.Text]{"0 3 * * *"}, // nightly, 3am
+	TimeoutSecsTaskRun:               123,
 	TimeoutSecsJobRunPrepAndFinalize: 123,
 	Disabled:                         false,
 	DeleteAfterDays:                  1,
@@ -57,11 +57,14 @@ func (cleanUpJob) dtCutOff() time.Time {
 	return time.Now().AddDate(0, 0, -CfgGet[int](cfgEnvNameDeletePostsOlderThanDays))
 }
 
-var tmp sync.Mutex
-
 func (me cleanUpJob) TaskDetails(ctx *yojobs.Context, stream func([]yojobs.TaskDetails)) {
-	tmp.Lock()
-	defer tmp.Unlock()
+	// file-deletion job tasks from pending file-deletion reqs
+	stream(sl.To(
+		yodb.Ids[fileDelReq](ctx.Ctx, nil),
+		func(id yodb.I64) yojobs.TaskDetails {
+			return &cleanUpTaskDetails{FileDelReq: id}
+		}))
+
 	// post-deletion job tasks from non-vip users that have old posts
 	user_ids := make(sl.Buf[yodb.I64], 0, 128)
 	do_push := func(users []*yodb.I64) {
@@ -70,7 +73,6 @@ func (me cleanUpJob) TaskDetails(ctx *yojobs.Context, stream func([]yojobs.TaskD
 		}))
 	}
 	dt_ago := me.dtCutOff()
-
 	for _, user_id := range yodb.Ids[User](ctx.Ctx, userVip.Equal(false).And(UserLastSeen.GreaterThan(UserDtMod))) {
 		if yodb.Exists[Post](ctx.Ctx, PostBy.Equal(user_id).And(PostDtMade.LessThan(dt_ago))) {
 			user_ids.OnNext(&user_id, do_push)
@@ -78,12 +80,6 @@ func (me cleanUpJob) TaskDetails(ctx *yojobs.Context, stream func([]yojobs.TaskD
 	}
 	user_ids.Done(do_push)
 
-	// file-deletion job tasks from pending file-deletion reqs
-	stream(sl.To(
-		yodb.FindMany[fileDelReq](ctx.Ctx, nil, 0, nil),
-		func(it *fileDelReq) yojobs.TaskDetails {
-			return &cleanUpTaskDetails{FileDelReq: it.Id}
-		}))
 }
 
 func (me cleanUpJob) TaskResults(ctx *yojobs.Context, taskDetails yojobs.TaskDetails) yojobs.TaskResults {
@@ -102,8 +98,21 @@ func (me cleanUpJob) TaskResults(ctx *yojobs.Context, taskDetails yojobs.TaskDet
 
 	// post deletions
 	if task_details.User != 0 {
-		num_rows_affected := yodb.Delete[Post](ctx.Ctx, PostBy.Equal(task_details.User).And(PostDtMade.LessThan(me.dtCutOff())))
+		query := PostBy.Equal(task_details.User).And(PostDtMade.LessThan(me.dtCutOff()))
+		num_rows_affected := yodb.Delete[Post](ctx.Ctx, query.And(q.ArrIsEmpty(PostTo)))
 		ret.NumPostsDeleted += int(num_rows_affected)
+
+		var del_post_ids sl.Of[yodb.I64]
+		for _, post := range yodb.FindMany[Post](ctx.Ctx, query, 0, PostFields(PostId, PostTo)) {
+			any_vip := yodb.Exists[User](ctx.Ctx, UserId.In(post.To.ToAnys()...).And(userVip.Equal(true)))
+			if !any_vip {
+				del_post_ids = append(del_post_ids, post.Id)
+			}
+		}
+		if len(del_post_ids) > 0 {
+			num_rows_affected := yodb.Delete[Post](ctx.Ctx, query.And(PostId.In(del_post_ids.ToAnys()...)))
+			ret.NumPostsDeleted += int(num_rows_affected)
+		}
 	}
 	return ret
 }

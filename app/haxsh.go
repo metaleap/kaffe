@@ -2,6 +2,7 @@ package haxsh
 
 import (
 	"os"
+	"time"
 
 	. "yo/cfg"
 	. "yo/ctx"
@@ -45,6 +46,7 @@ func init() {
 func Init() {
 	yodb.Ensure[User, UserField]("", nil, false,
 		yodb.ReadOnly[UserField]{UserAuth},
+		yodb.Index[UserField]{UserLastSeen},
 		yodb.Unique[UserField]{UserAuth, UserNick},
 		yodb.NoUpdTrigger[UserField]{UserLastSeen, userByBuddyDtLastMsgCheck},
 	)
@@ -69,4 +71,15 @@ func OnBeforeListenAndServe() {
 		yodb.Upsert[yojobs.JobDef](ctx, &cleanUpJobDef)
 	}
 	go yojobs.Default.Resume()
+
+	// ensure configured vip users are so in db
+	user_email_addrs_vip := CfgGet[[]string]("VIP_USER_EMAIL_ADDRS")
+	for _, email_addr := range user_email_addrs_vip {
+		ctx := NewCtxNonHttp(time.Minute, false, "")
+		defer ctx.OnDone(nil)
+		if user := userByEmailAddr(ctx, email_addr); (user != nil) && (!user.vip) {
+			user.vip = true
+			yodb.Update[User](ctx, user, nil, false, UserFields(userVip)...)
+		}
+	}
 }
