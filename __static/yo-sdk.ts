@@ -334,6 +334,8 @@ export type UserField = 'Id' | 'DtMade' | 'DtMod' | 'LastSeen' | 'Auth' | 'PicFi
 
 export type fileDelReqField = 'Id' | 'DtMade' | 'DtMod' | 'FileNames'
 
+export type ErrEntryField = 'Id' | 'DtMade' | 'DtMod' | 'Err' | 'ErrDbRollback' | 'CtxVals' | 'HttpUrlPath' | 'HttpFullUri' | 'NumCaught'
+
 export type UserAuthField = 'Id' | 'DtMade' | 'DtMod' | 'EmailAddr'
 
 export type UserPwdReqField = 'Id' | 'DtMade' | 'DtMod' | 'EmailAddr' | 'DoneMailReqId' | 'DtFinalized'
