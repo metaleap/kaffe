@@ -70,7 +70,6 @@ func OnBeforeListenAndServe() {
 		yodb.Upsert[yojobs.JobDef](ctx, &yojobs.ExampleJobDef)
 		yodb.Upsert[yojobs.JobDef](ctx, &cleanUpJobDef)
 	}
-	go yojobs.Default.Resume()
 
 	// ensure configured vip users are so in db
 	user_email_addrs_vip := CfgGet[[]string]("VIP_USER_EMAIL_ADDRS")
