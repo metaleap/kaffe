@@ -20,6 +20,9 @@ import (
 	"yo/util/str"
 )
 
+const apiMethodNameUserUpdate = "userUpdate"
+const apiMethodNameUserBuddiesAdd = "userBuddiesAdd"
+
 func init() {
 	Apis(ApiMethods{
 		"userSignOut": apiUserSignOut.
@@ -50,7 +53,7 @@ func init() {
 		).
 			FailIf(yoauth.IsNotCurrentlyLoggedIn, ErrUnauthorized),
 
-		"userUpdate": apiUserUpdate.IsMultipartForm().
+		apiMethodNameUserUpdate: apiUserUpdate.IsMultipartForm().
 			CouldFailWith(":"+yodb.ErrSetDbUpdate, "NicknameAlreadyExists", "ExpectedNonEmptyNickname").
 			Checks(
 				Fails{Err: ErrDbUpdExpectedIdGt0, If: UserUpdateId.LessOrEqual(0)},
@@ -60,7 +63,7 @@ func init() {
 		"userBuddies": apiUserBuddies.
 			FailIf(yoauth.IsNotCurrentlyLoggedIn, ErrUnauthorized),
 
-		"userBuddiesAdd": apiUserBuddiesAdd.
+		apiMethodNameUserBuddiesAdd: apiUserBuddiesAdd.
 			CouldFailWith(":"+yodb.ErrSetDbUpdate).
 			Checks(
 				Fails{Err: "ExpectedEitherNickNameOrEmailAddr", If: UserBuddiesAddNickOrEmailAddr.Equal("")},
