@@ -67,6 +67,7 @@ func mockSomeActivity() {
 	if !mockLiveActivity { // for turning off on-the-fly during debugging
 		return
 	}
+
 	const sec_half = time.Second / 2
 	defer time.AfterFunc(sec_half+time.Duration(rand.Intn(int(2*sec_half))), mockSomeActivity)
 
@@ -96,6 +97,9 @@ func mockSomeActivity() {
 	defer ctx.OnDone(nil)
 	ctx.DbTx()
 	ctx.TimingsNoPrintInDevMode = true
+	if rand.Intn(44) == 0 {
+		panic("MOCK DICE ERROR")
+	}
 
 	if must_log_in_first {
 		ViaHttp[ApiUserSignInOrReset, Void](apiUserSignInOrReset, ctx, &ApiUserSignInOrReset{
@@ -114,6 +118,9 @@ func mockSomeActivity() {
 	}
 
 	user := userByEmailAddr(ctx, user_email_addr)
+	if user == nil {
+		panic("how come user email addr '" + user_email_addr + "' gone?!")
+	}
 	switch _ = user; action {
 	case "changeBtw":
 		orig := user.Btw
