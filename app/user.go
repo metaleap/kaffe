@@ -16,6 +16,7 @@ const ctxKeyCurUser = "haxshCurUser"
 
 func init() {
 	PostApiHandling = append(PostApiHandling, Middleware{"userSetLastSeen", func(ctx *Ctx) {
+		println("<<<<<<<<<<<<>>>>>>>>>>>>><" + ctx.Http.UrlPath + ">>>>>>><<<<<<<<<<<")
 		by_buddy_last_msg_check, _ := ctx.Get(ctxKeyByBuddyLastMsgCheck, nil).(yodb.JsonMap[*yodb.DateTime])
 		user_auth_id := ctx.Get(yoauth.CtxKeyAuthId, yodb.I64(0)).(yodb.I64)
 		go userSetLastSeen(user_auth_id, by_buddy_last_msg_check)
@@ -104,12 +105,14 @@ func userSetLastSeen(auth_id yodb.I64, byBuddyDtLastMsgCheck yodb.JsonMap[*yodb.
 	defer ctx.OnDone(nil)
 	ctx.ErrNoNotifyOf = []Err{ErrTimedOut}
 	ctx.TimingsNoPrintInDevMode = true
-	upd := &User{byBuddyDtLastMsgCheck: byBuddyDtLastMsgCheck}
-	upd.Auth.SetId(auth_id)
-	// upd.LastSeen = yodb.DtNow() // userUpdate call does it anyway
-	only_fields := []UserField{UserLastSeen}
-	if byBuddyDtLastMsgCheck != nil {
-		only_fields = append(only_fields, userByBuddyDtLastMsgCheck)
-	}
-	userUpdate(ctx, upd, false, only_fields...)
+	Try(func() { // for total silence of this operation on errs even in dev-mode outputs
+		upd := &User{byBuddyDtLastMsgCheck: byBuddyDtLastMsgCheck}
+		upd.Auth.SetId(auth_id)
+		// upd.LastSeen = yodb.DtNow() // userUpdate call does it anyway
+		only_fields := []UserField{UserLastSeen}
+		if byBuddyDtLastMsgCheck != nil {
+			only_fields = append(only_fields, userByBuddyDtLastMsgCheck)
+		}
+		userUpdate(ctx, upd, false, only_fields...)
+	}, nil)
 }
