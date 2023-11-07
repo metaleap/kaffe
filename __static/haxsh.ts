@@ -45,7 +45,7 @@ let uiPeriodPicker: HTMLSelectElement =
 
 export function main() {
     document.onvisibilitychange = () => {
-        const is_hidden = ((document.visibilityState === 'hidden') || document.hidden), now = new Date().getTime()
+        const is_hidden = ((document.visibilityState === 'hidden') || document.hidden), now = Date.now()
         const became_visible = (!is_hidden) && (browserTabInvisibleSince !== 0)
         browserTabInvisibleSince = (!is_hidden) ? 0 : ((browserTabInvisibleSince === 0) ? now : browserTabInvisibleSince)
         fetchPostsIntervalMsCur = is_hidden ? fetchPostsIntervalMsWhenHidden : fetchPostsIntervalMsWhenVisible

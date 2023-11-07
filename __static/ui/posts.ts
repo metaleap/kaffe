@@ -252,7 +252,7 @@ function htmlToSend(me: UiCtlPosts, ignoreOffline?: boolean) {
 
 export function update(me: UiCtlPosts, newOrUpdatedPosts: yo.Post[], clearOld?: boolean, sansIds: number[] = []) {
     let num_fresh = 0, last_ago_str = ""
-    const now = new Date().getTime(), old_posts = me.posts.filter(_ => true)
+    const now = Date.now(), old_posts = me.posts.filter(_ => true)
     const all_new_posts: yo.Post[] = newOrUpdatedPosts.filter(post_upd =>
         !old_posts.some(post_old => (post_old.Id === post_upd.Id)))
     const new_posts_merged_with_old = clearOld ? all_new_posts : all_new_posts.concat(old_posts
