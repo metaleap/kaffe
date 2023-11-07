@@ -2,9 +2,9 @@ package haxsh
 
 import (
 	. "yo/cfg"
+	. "yo/ctx"
 	yodb "yo/db"
 	yoauth "yo/feat_auth"
-	yojobs "yo/jobs"
 	yomail "yo/mail"
 	"yo/util/str"
 )
@@ -44,10 +44,10 @@ func init() {
 		Body:    str.Repl(mailTmpl, str.Dict{"action": "reset your password"}),
 	}
 
-	yoauth.AppSideTmplPopulate = func(ctx *yojobs.Context, reqTime *yodb.DateTime, emailAddr yodb.Text, existingMaybe *yoauth.UserAuth, tmplArgsToPopulate yodb.JsonMap[string]) {
+	yoauth.AppSideTmplPopulate = func(ctx *Ctx, reqTime *yodb.DateTime, emailAddr yodb.Text, existingMaybe *yoauth.UserAuth, tmplArgsToPopulate yodb.JsonMap[string]) {
 		var user *User
 		if existingMaybe != nil {
-			user = yodb.FindOne[User](ctx.Ctx, UserAuth.Equal(existingMaybe.Id))
+			user = yodb.FindOne[User](ctx, UserAuth.Equal(existingMaybe.Id))
 		}
 		if user != nil {
 			tmplArgsToPopulate[yoauth.MailTmplVarName] = string(user.Nick)
