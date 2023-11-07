@@ -21,7 +21,7 @@ import (
 
 var mockLiveActivity = true
 
-const mockNumReqsPerSecApprox = 22 // max ~111 for outside-vscode `go run`s, <44 in vscode dlv debug runs (due to default Postgres container's conn-limits setup)
+const mockNumReqsPerSecApprox = 11
 const mockUsersNumTotal = 12345
 const mockFilesDirPath = "__static/postfiles"
 
@@ -97,9 +97,6 @@ func mockSomeActivity() {
 	defer ctx.OnDone(nil)
 	ctx.DbTx()
 	ctx.TimingsNoPrintInDevMode = true
-	if rand.Intn(44) == 0 {
-		panic("MOCK DICE ERROR")
-	}
 
 	if must_log_in_first {
 		ViaHttp[ApiUserSignInOrReset, Void](apiUserSignInOrReset, ctx, &ApiUserSignInOrReset{
