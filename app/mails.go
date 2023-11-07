@@ -34,12 +34,10 @@ Rock on!
 
 func init() {
 	yomail.Templates[yoauth.MailTmplIdSignUp] = &yomail.Templ{
-		Vars:    []string{mailTmplVarHref, mailTmplVarReqTime, yoauth.MailTmplVarTmpPwd, yoauth.MailTmplVarName},
 		Subject: "Your sign-up request at " + appDomain,
 		Body:    str.Repl(mailTmpl, str.Dict{"action": "sign up"}),
 	}
 	yomail.Templates[yoauth.MailTmplIdPwdForgot] = &yomail.Templ{
-		Vars:    []string{mailTmplVarHref, mailTmplVarReqTime, yoauth.MailTmplVarTmpPwd, yoauth.MailTmplVarName},
 		Subject: "Your reset request at " + appDomain,
 		Body:    str.Repl(mailTmpl, str.Dict{"action": "reset your password"}),
 	}
