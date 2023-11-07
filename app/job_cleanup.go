@@ -50,7 +50,7 @@ func (me cleanUpJob) JobDetails(ctx *Ctx) yojobs.JobDetails {
 	return nil
 }
 
-func (cleanUpJob) JobResults(_ *Ctx) (func(*yojobs.JobTask, *bool), func() yojobs.JobResults) {
+func (cleanUpJob) JobResults(_ *Ctx) (func(func() *Ctx, *yojobs.JobTask, *bool), func() yojobs.JobResults) {
 	return nil, nil
 }
 
