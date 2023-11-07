@@ -66,20 +66,19 @@ func (me cleanUpJob) TaskDetails(ctx *yojobs.Context, stream func([]yojobs.TaskD
 		}))
 
 	// post-deletion job tasks from non-vip users that have old posts
-	user_ids := make(sl.Buf[yodb.I64], 0, 128)
-	do_push := func(users []*yodb.I64) {
-		stream(sl.To(users, func(it *yodb.I64) yojobs.TaskDetails {
-			return &cleanUpTaskDetails{User: *it}
+	user_ids := make(sl.Of[yodb.I64], 0, 128)
+	do_push := func(users []yodb.I64) {
+		stream(sl.To(users, func(it yodb.I64) yojobs.TaskDetails {
+			return &cleanUpTaskDetails{User: it}
 		}))
 	}
 	dt_ago := me.dtCutOff()
 	for _, user_id := range yodb.Ids[User](ctx.Ctx, userVip.Equal(false).And(UserLastSeen.GreaterThan(UserDtMod))) {
 		if yodb.Exists[Post](ctx.Ctx, PostBy.Equal(user_id).And(PostDtMade.LessThan(dt_ago))) {
-			user_ids.OnNext(&user_id, do_push)
+			user_ids.BufNext(user_id, do_push)
 		}
 	}
-	user_ids.Done(do_push)
-
+	user_ids.BufDone(do_push)
 }
 
 func (me cleanUpJob) TaskResults(ctx *yojobs.Context, taskDetails yojobs.TaskDetails) yojobs.TaskResults {
