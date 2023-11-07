@@ -85,7 +85,7 @@ func mockSomeActivity() {
 		}
 		user_client = mockUsersLoggedIn[user_email_addr]
 		busy[user_email_addr] = true
-		if must_log_in_first = (user_client == nil); must_log_in_first {
+		if must_log_in_first = (user_client == nil) || (0 == len(user_client.Jar.Cookies(nil))); must_log_in_first {
 			user_client = NewClient()
 			mockUsersLoggedIn[user_email_addr] = user_client
 		}

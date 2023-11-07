@@ -57,9 +57,9 @@ func userBuddies(ctx *Ctx, forUser *User, normalizeLastSeenBySecond bool) (buddi
 }
 
 func userAddBuddy(ctx *Ctx, forUser *User, nickOrEmailAddr string) *User {
-	user := yodb.FindOne[User](ctx, UserNick.Equal(nickOrEmailAddr).Or(UserAuth_EmailAddr.Equal(nickOrEmailAddr)))
-	if (user != nil) && !sl.Has(forUser.Buddies, user.Id) {
-		userUpdate(ctx, &User{Id: forUser.Id, Buddies: sl.With(forUser.Buddies, user.Id)}, true, false, UserBuddies)
+	buddy_to_be := yodb.FindOne[User](ctx, UserNick.Equal(nickOrEmailAddr).Or(UserAuth_EmailAddr.Equal(nickOrEmailAddr)))
+	if (buddy_to_be != nil) && !sl.Has(forUser.Buddies, buddy_to_be.Id) {
+		userUpdate(ctx, &User{Id: forUser.Id, Buddies: sl.With(forUser.Buddies, buddy_to_be.Id)}, false, UserBuddies)
 	}
-	return user
+	return buddy_to_be
 }

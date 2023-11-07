@@ -15,8 +15,9 @@ const ctxKeyCurUser = "haxshCurUser"
 
 func init() {
 	PostApiHandling = append(PostApiHandling, Middleware{"userSetLastSeen", func(ctx *Ctx) {
-		by_buddy_last_msg_check, _ := ctx.Get("by_buddy_last_msg_check", nil).(yodb.JsonMap[*yodb.DateTime])
-		go userSetLastSeen(ctx.Get(yoauth.CtxKeyAuthId, yodb.I64(0)).(yodb.I64), by_buddy_last_msg_check)
+		by_buddy_last_msg_check, _ := ctx.Get(ctxKeyByBuddyLastMsgCheck, nil).(yodb.JsonMap[*yodb.DateTime])
+		user_auth_id := ctx.Get(yoauth.CtxKeyAuthId, yodb.I64(0)).(yodb.I64)
+		go userSetLastSeen(user_auth_id, by_buddy_last_msg_check)
 	}})
 }
 
@@ -38,7 +39,7 @@ type User struct {
 	Offline  bool   // dito
 }
 
-func userUpdate(ctx *Ctx, upd *User, byCurUserInCtx bool, inclEmptyOrMissingFields bool, onlyFields ...UserField) {
+func userUpdate(ctx *Ctx, upd *User, inclEmptyOrMissingFields bool, onlyFields ...UserField) {
 	ctx.DbTx()
 	upd.Btw.Set(str.Trim)
 	if (len(onlyFields) == 0) || sl.Has(onlyFields, UserBuddies) {
@@ -51,10 +52,10 @@ func userUpdate(ctx *Ctx, upd *User, byCurUserInCtx bool, inclEmptyOrMissingFiel
 			panic(ErrUserUpdate_NicknameAlreadyExists)
 		}
 	}
-	if byCurUserInCtx {
-		upd.LastSeen = yodb.DtNow()
+	if upd.LastSeen = yodb.DtNow(); len(onlyFields) > 0 {
+		onlyFields = sl.With(onlyFields, UserLastSeen)
 	}
-	_ = yodb.Update[User](ctx, upd, nil, !inclEmptyOrMissingFields, sl.To(onlyFields, UserField.F)...)
+	_ = yodb.Update[User](ctx, upd, nil, !inclEmptyOrMissingFields, UserFields(onlyFields...)...)
 }
 
 func userByEmailAddr(ctx *Ctx, emailAddr string) *User {
@@ -76,7 +77,7 @@ func userById(ctx *Ctx, id yodb.I64) *User {
 func userCur(ctx *Ctx) (ret *User) {
 	if ret, _ = ctx.Get(ctxKeyCurUser, nil).(*User); ret == nil {
 		_, user_auth_id := yoauth.CurrentlyLoggedInUser(ctx)
-		if user_auth_id != 0 {
+		if user_auth_id > 0 {
 			ret = yodb.FindOne[User](ctx, UserAuth.Equal(user_auth_id)).augmentAfterLoaded()
 			ctx.Set(ctxKeyCurUser, ret)
 		}
@@ -98,15 +99,16 @@ func userSetLastSeen(auth_id yodb.I64, byBuddyDtLastMsgCheck yodb.JsonMap[*yodb.
 	if auth_id == 0 {
 		return
 	}
-	ctx := NewCtxNonHttp(3*time.Second, false, "userSetLastSeen")
+	ctx := NewCtxNonHttp(time.Second, false, "userSetLastSeen")
 	defer ctx.OnDone(nil)
+	ctx.ErrNoNotifyOf = sl.With(ctx.ErrNoNotifyOf, ErrTimedOut)
 	ctx.TimingsNoPrintInDevMode = true
 	upd := &User{byBuddyDtLastMsgCheck: byBuddyDtLastMsgCheck}
 	upd.Auth.SetId(auth_id)
-	upd.LastSeen = yodb.DtNow()
+	// upd.LastSeen = yodb.DtNow() // userUpdate call does it anyway
 	only_fields := []UserField{UserLastSeen}
 	if byBuddyDtLastMsgCheck != nil {
 		only_fields = append(only_fields, userByBuddyDtLastMsgCheck)
 	}
-	userUpdate(ctx, upd, true, false, only_fields...)
+	userUpdate(ctx, upd, false, only_fields...)
 }

@@ -155,7 +155,7 @@ var apiUserUpdate = api(func(this *ApiCtx[yodb.ApiUpdateArgs[User, UserField], V
 		}
 		break
 	}
-	userUpdate(this.Ctx, &this.Args.Changes, true, (len(this.Args.ChangedFields) > 0), this.Args.ChangedFields...)
+	userUpdate(this.Ctx, &this.Args.Changes, (len(this.Args.ChangedFields) > 0), this.Args.ChangedFields...)
 })
 
 var apiUserBuddies = api(func(this *ApiCtx[Void, struct {
@@ -236,7 +236,7 @@ var apiPostNew = api(func(this *ApiCtx[Post, Return[yodb.I64]]) {
 		}
 	}
 
-	this.Ret.Result = postNew(this.Ctx, this.Args, true)
+	this.Ret.Result = postNew(this.Ctx, this.Args)
 })
 
 var apiPostDelete = api(func(this *ApiCtx[struct {

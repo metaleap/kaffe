@@ -13,6 +13,8 @@ import (
 	"yo/util/str"
 )
 
+const ctxKeyByBuddyLastMsgCheck = "by_buddy_last_msg_check"
+
 type Post struct {
 	Id     yodb.I64
 	DtMade *yodb.DateTime
@@ -133,7 +135,7 @@ func postsRecent(ctx *Ctx, forUser *User, since *yodb.DateTime, onlyThoseBy []yo
 		if len(onlyThoseBy) == 0 {
 			forUser.byBuddyDtLastMsgCheck[""] = ret.NextSince
 		}
-		ctx.Set("by_buddy_last_msg_check", forUser.byBuddyDtLastMsgCheck)
+		ctx.Set(ctxKeyByBuddyLastMsgCheck, forUser.byBuddyDtLastMsgCheck)
 	}
 	return ret
 }
@@ -155,24 +157,15 @@ func postDelete(ctx *Ctx, post *Post) bool {
 	return (yodb.Delete[Post](ctx, PostId.Equal(post.Id)) > 0)
 }
 
-func postNew(ctx *Ctx, post *Post, byCurUserInCtx bool) yodb.I64 {
+func postNew(ctx *Ctx, post *Post) yodb.I64 {
 	ctx.DbTx()
 
 	var user *User
-	post_by_user_id := post.By.Id()
-	if byCurUserInCtx || (post_by_user_id <= 0) {
-		user = userCur(ctx)
-		post_by_user_id = user.Id
-		post.By.SetId(user.Id)
-	}
-	if post_by_user_id <= 0 {
+	user = userCur(ctx)
+	if user == nil { // no user cookie
 		panic(ErrUnauthorized)
 	}
-	if user == nil {
-		if user = userById(ctx, post_by_user_id); user == nil {
-			panic(ErrUnauthorized)
-		}
-	}
+	post.By.SetId(user.Id)
 
 	post.Htm = yodb.Text(str.Replace(post.Htm.String(), str.Dict{
 		"script": "sсriрt", // homoglyphs for c and p so no post has <script> or javascript://
