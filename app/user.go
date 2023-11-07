@@ -17,11 +17,12 @@ const ctxKeyCurUser = "haxshCurUser"
 func init() {
 	PostApiHandling = append(PostApiHandling, Middleware{"userSetLastSeen", func(ctx *Ctx) {
 		if (ctx.Http.UrlPath == AppApiUrlPrefix+apiMethodNameUserUpdate) || (ctx.Http.UrlPath == AppApiUrlPrefix+apiMethodNameUserBuddiesAdd) {
-			return
+			return // dont set last-seen for calls that already just did it
 		}
-		by_buddy_last_msg_check, _ := ctx.Get(ctxKeyByBuddyLastMsgCheck, nil).(yodb.JsonMap[*yodb.DateTime])
-		user_auth_id := ctx.Get(yoauth.CtxKeyAuthId, yodb.I64(0)).(yodb.I64)
-		go userSetLastSeen(user_auth_id, by_buddy_last_msg_check)
+		if user_auth_id := ctx.Get(yoauth.CtxKeyAuthId, yodb.I64(0)).(yodb.I64); user_auth_id > 0 {
+			by_buddy_last_msg_check, _ := ctx.Get(ctxKeyByBuddyLastMsgCheck, nil).(yodb.JsonMap[*yodb.DateTime])
+			go userSetLastSeen(user_auth_id, by_buddy_last_msg_check)
+		}
 	}})
 }
 
@@ -100,9 +101,6 @@ func (me *User) augmentAfterLoaded() *User {
 }
 
 func userSetLastSeen(auth_id yodb.I64, byBuddyDtLastMsgCheck yodb.JsonMap[*yodb.DateTime]) {
-	if auth_id == 0 {
-		return
-	}
 	ctx := NewCtxNonHttp(time.Second, false, "userSetLastSeen")
 	defer ctx.OnDone(nil)
 	ctx.ErrNoNotifyOf = []Err{ErrTimedOut}
