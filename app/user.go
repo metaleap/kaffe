@@ -7,6 +7,7 @@ import (
 	yodb "yo/db"
 	yoauth "yo/feat_auth"
 	. "yo/srv"
+	. "yo/util"
 	"yo/util/sl"
 	"yo/util/str"
 )
@@ -101,7 +102,7 @@ func userSetLastSeen(auth_id yodb.I64, byBuddyDtLastMsgCheck yodb.JsonMap[*yodb.
 	}
 	ctx := NewCtxNonHttp(time.Second, false, "userSetLastSeen")
 	defer ctx.OnDone(nil)
-	ctx.ErrNoNotifyOf = sl.With(ctx.ErrNoNotifyOf, ErrTimedOut)
+	ctx.ErrNoNotifyOf = []Err{ErrTimedOut}
 	ctx.TimingsNoPrintInDevMode = true
 	upd := &User{byBuddyDtLastMsgCheck: byBuddyDtLastMsgCheck}
 	upd.Auth.SetId(auth_id)
