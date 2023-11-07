@@ -174,6 +174,10 @@ func postNew(ctx *Ctx, post *Post, byCurUserInCtx bool) yodb.I64 {
 		}
 	}
 
+	post.Htm = yodb.Text(str.Replace(post.Htm.String(), str.Dict{
+		"script": "sсriрt", // homoglyphs for c and p so no post has <script> or javascript://
+		"style":  "stуlе",  // homoglyphs for y and e so no post changes everyone's stylesheet
+	}))
 	if len(post.To) > 0 {
 		if sl.Any(post.To, func(it yodb.I64) bool { return !sl.Has(user.Buddies, it) }) {
 			panic(ErrPostNew_ExpectedOnlyBuddyRecipients)
