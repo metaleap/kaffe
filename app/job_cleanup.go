@@ -19,7 +19,7 @@ var cleanUpJobTypeId = yojobs.Register[cleanUpJob, cleanUpJobDetails, cleanUpJob
 var cleanUpJobDef = yojobs.JobDef{
 	Name:                             yodb.Text(ReflType[cleanUpJob]().String()),
 	JobTypeId:                        yodb.Text(cleanUpJobTypeId),
-	Schedules:                        yojobs.ScheduleOncePerMinute, //    yodb.Arr[yodb.Text]{"0 3 * * *"}, // nightly, 3am
+	Schedules:                        yojobs.ScheduleOncePerDay,
 	TimeoutSecsTaskRun:               123,
 	TimeoutSecsJobRunPrepAndFinalize: 123,
 	Disabled:                         false,
