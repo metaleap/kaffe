@@ -45,7 +45,6 @@ type User struct {
 }
 
 func userUpdate(ctx *Ctx, upd *User, inclEmptyOrMissingFields bool, onlyFields ...UserField) {
-	ctx.DbTx()
 	upd.Btw.Set(str.Trim)
 	if (len(onlyFields) == 0) || sl.Has(onlyFields, UserBuddies) {
 		upd.Buddies.EnsureAllUnique(nil)
@@ -53,7 +52,9 @@ func userUpdate(ctx *Ctx, upd *User, inclEmptyOrMissingFields bool, onlyFields .
 	if upd.Nick = yodb.Text(str.Replace(string(upd.Nick), str.Dict{"@": ""})); (len(onlyFields) == 0) || sl.Has(onlyFields, UserNick) {
 		if upd.Nick.Set(str.Trim); upd.Nick == "" {
 			panic(ErrUserUpdate_ExpectedNonEmptyNickname)
-		} else if yodb.Exists[User](ctx, UserNick.Equal(upd.Nick).And(UserId.NotEqual(upd.Id))) {
+		}
+		ctx.DbTx()
+		if yodb.Exists[User](ctx, UserNick.Equal(upd.Nick).And(UserId.NotEqual(upd.Id))) {
 			panic(ErrUserUpdate_NicknameAlreadyExists)
 		}
 	}
@@ -102,17 +103,16 @@ func (me *User) augmentAfterLoaded() *User {
 
 func userSetLastSeen(auth_id yodb.I64, byBuddyDtLastMsgCheck yodb.JsonMap[*yodb.DateTime]) {
 	ctx := NewCtxNonHttp(time.Second, false, "userSetLastSeen")
-	defer ctx.OnDone(nil)
-	ctx.ErrNoNotifyOf = []Err{ErrTimedOut}
+	defer func() { _ = recover(); ctx.OnDone(nil) }() // for total silence of this operation on errs even in dev-mode outputs (rare tho it is)
+	ctx.DbNoLoggingInDevMode()
 	ctx.TimingsNoPrintInDevMode = true
-	Try(func() { // for total silence of this operation on errs even in dev-mode outputs
-		upd := &User{byBuddyDtLastMsgCheck: byBuddyDtLastMsgCheck}
-		upd.Auth.SetId(auth_id)
-		// upd.LastSeen = yodb.DtNow() // userUpdate call does it anyway
-		only_fields := []UserField{UserLastSeen}
-		if byBuddyDtLastMsgCheck != nil {
-			only_fields = append(only_fields, userByBuddyDtLastMsgCheck)
-		}
-		userUpdate(ctx, upd, false, only_fields...)
-	}, nil)
+	ctx.ErrNoNotifyOf = []Err{ErrTimedOut}
+	upd := &User{byBuddyDtLastMsgCheck: byBuddyDtLastMsgCheck}
+	upd.Auth.SetId(auth_id)
+	// upd.LastSeen = yodb.DtNow() // userUpdate call does it anyway
+	only_fields := []UserField{UserLastSeen}
+	if byBuddyDtLastMsgCheck != nil {
+		only_fields = append(only_fields, userByBuddyDtLastMsgCheck)
+	}
+	userUpdate(ctx, upd, false, only_fields...)
 }

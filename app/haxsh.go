@@ -3,6 +3,7 @@ package haxsh
 import (
 	"os"
 	"time"
+	"yo"
 
 	. "yo/cfg"
 	. "yo/ctx"
@@ -20,6 +21,7 @@ const appHref = "https://" + appDomain
 var devModeInitMockUsers func()
 
 func init() {
+	yo.AppPkgPath = haxshPkg.PkgPath()
 	AppApiUrlPrefix = "_/"
 	AppSideStaticRePathFor = func(requestPath string) string {
 		return "__static/haxsh.html"
