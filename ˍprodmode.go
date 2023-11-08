@@ -2,7 +2,9 @@
 
 package main
 
-import "embed"
+import (
+	"embed"
+)
 
 //go:embed __yostatic
 var staticFsYo embed.FS
