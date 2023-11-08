@@ -3,4 +3,3 @@ go.sum
 *.js
 .env
 *__debug_bin*
-__static/postfiles/*
