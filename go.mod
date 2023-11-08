@@ -1,4 +1,4 @@
-module haxsh
+module kaffe
 
 go 1.21.3
 
@@ -7,4 +7,4 @@ go 1.21.3
 
 // go 1.21.3
 // use ./yo
-// use ./haxsh
+// use ./kaffe

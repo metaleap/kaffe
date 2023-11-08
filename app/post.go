@@ -1,4 +1,4 @@
-package haxsh
+package kaffe
 
 import (
 	"sync"

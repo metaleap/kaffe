@@ -1,4 +1,4 @@
-package haxsh
+package kaffe
 
 import (
 	"time"
@@ -12,7 +12,7 @@ import (
 	"yo/util/str"
 )
 
-const ctxKeyCurUser = "haxshCurUser"
+const ctxKeyCurUser = "kaffeCurUser"
 
 func init() {
 	PostApiHandling = append(PostApiHandling, Middleware{"userSetLastSeen", func(ctx *Ctx) {

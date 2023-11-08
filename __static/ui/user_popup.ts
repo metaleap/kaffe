@@ -2,7 +2,7 @@ import van from '../../__yostatic/vanjs/van-1.2.3.debug.js'
 const htm = van.tags
 
 import * as yo from '../yo-sdk.js'
-import * as haxsh from '../haxsh.js'
+import * as kaffe from '../kaffe.js'
 
 import * as uibuddies from './buddies.js'
 
@@ -25,7 +25,7 @@ export function setLiveDarklite(value?: string | number) {
 export function create(user: yo.User): UiCtlUserPopup {
     const on_darklite_slider_change = () =>
         setLiveDarklite(htm_input_darklite.value)
-    const is_self = (haxsh.userSelf.val) && (haxsh.userSelf.val.Id === user.Id),
+    const is_self = (kaffe.userSelf.val) && (kaffe.userSelf.val.Id === user.Id),
         htm_input_nick = htm.input({ 'type': 'text', 'class': 'nick', 'value': user.Nick!, 'placeholder': '(Nick)', 'spellcheck': false, 'autocorrect': 'off' }),
         htm_input_btw = htm.input({ 'type': 'text', 'class': 'btw', 'value': user.Btw ?? '', 'placeholder': '(Your hover statement here)', 'spellcheck': false, 'autocorrect': 'off' }),
         htm_input_pic = htm.input({ 'type': 'file', 'name': 'picfile', 'id': 'picfile', 'accept': 'image/*' }),
@@ -73,10 +73,10 @@ export function create(user: yo.User): UiCtlUserPopup {
                     }, ChangedFields: ['Btw', 'Nick']
                 }, form_data)
                 did_save = true
-                haxsh.reloadUserSelf()
+                kaffe.reloadUserSelf()
             } catch (err) {
-                if (!haxsh.knownErr<yo.UserUpdateErr>(err, haxsh.handleKnownErrMaybe<yo.UserUpdateErr>))
-                    haxsh.onErrOther(err, true)
+                if (!kaffe.knownErr<yo.UserUpdateErr>(err, kaffe.handleKnownErrMaybe<yo.UserUpdateErr>))
+                    kaffe.onErrOther(err, true)
             } finally {
                 for (const htm_node of htm_nodes_to_disable)
                     htm_node.disabled = false
@@ -86,7 +86,7 @@ export function create(user: yo.User): UiCtlUserPopup {
             me.DOM.close()
     }
     const btn_close = htm.button({ 'type': 'button', 'class': 'close', 'title': "Close", 'onclick': _ => me.DOM.close() }, "❎")
-    const btn_sign_out = (!is_self) ? undefined : htm.button({ 'type': 'button', 'class': 'exit', 'title': "Sign out", 'onclick': () => haxsh.userSignOut(true) }, "🚫")
+    const btn_sign_out = (!is_self) ? undefined : htm.button({ 'type': 'button', 'class': 'exit', 'title': "Sign out", 'onclick': () => kaffe.userSignOut(true) }, "🚫")
     const btn_save = (!is_self) ? undefined : htm.button({ 'type': 'submit', 'class': 'save', 'title': "Save changes", 'onclick': save_changes }, "✅")
 
     const me: UiCtlUserPopup = {

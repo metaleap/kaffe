@@ -4,7 +4,7 @@ const htm = van.tags, depends = van.derive
 
 import * as yo from '../yo-sdk.js'
 import * as youtil from '../../__yostatic/util.js'
-import * as haxsh from '../haxsh.js'
+import * as kaffe from '../kaffe.js'
 import * as util from '../util.js'
 
 export type UiCtlBuddies = {
@@ -16,14 +16,14 @@ export type UiCtlBuddies = {
 
 export function create(): UiCtlBuddies {
     const me: UiCtlBuddies = {
-        DOM: htm.div({ 'class': 'haxsh-buddies' },
+        DOM: htm.div({ 'class': 'kaffe-buddies' },
             htm.div({
-                'class': depends(() => 'buddy-self' + ((haxsh.selectedBuddy.val === 0) ? ' selected' : '') + (haxsh.isSeeminglyOffline.val ? ' offline' : '') + ((haxsh.buddyBadges[0].val) ? ' badged' : '') + ((haxsh.buddyBadgesAlt[0].val) ? ' badged-alt' : '')),
-                'data-badge': depends(() => (haxsh.buddyBadges[0].val) || ""),
-                'data-badge-alt': depends(() => (haxsh.buddyBadgesAlt[0].val) || ""),
+                'class': depends(() => 'buddy-self' + ((kaffe.selectedBuddy.val === 0) ? ' selected' : '') + (kaffe.isSeeminglyOffline.val ? ' offline' : '') + ((kaffe.buddyBadges[0].val) ? ' badged' : '') + ((kaffe.buddyBadgesAlt[0].val) ? ' badged-alt' : '')),
+                'data-badge': depends(() => (kaffe.buddyBadges[0].val) || ""),
+                'data-badge-alt': depends(() => (kaffe.buddyBadgesAlt[0].val) || ""),
                 'onclick': () => {
-                    if (!haxsh.isSeeminglyOffline.val)
-                        haxsh.buddySelected(undefined, true)
+                    if (!kaffe.isSeeminglyOffline.val)
+                        kaffe.buddySelected(undefined, true)
                 },
             }, htm.div(userDomAttrsSelf())),
         ),
@@ -33,22 +33,22 @@ export function create(): UiCtlBuddies {
     }
     van.add(me.DOM, vanx.list(() => htm.div({ 'class': 'buddies' }), me.buddies, (it) => {
         const item = htm.div({
-            'class': depends(() => 'buddy' + (haxsh.isSeeminglyOffline.val ? ' offline' : '') + (haxsh.buddySelected(it.val) ? ' selected' : '') + ((haxsh.buddyBadges[it.val.Id!].val) ? ' badged' : '') + ((haxsh.buddyBadgesAlt[it.val.Id!].val) ? ' badged-alt' : '')),
-            'data-badge': depends(() => (haxsh.buddyBadges[it.val.Id!].val) || ""),
-            'data-badge-alt': depends(() => (haxsh.buddyBadgesAlt[it.val.Id!].val) || ""),
+            'class': depends(() => 'buddy' + (kaffe.isSeeminglyOffline.val ? ' offline' : '') + (kaffe.buddySelected(it.val) ? ' selected' : '') + ((kaffe.buddyBadges[it.val.Id!].val) ? ' badged' : '') + ((kaffe.buddyBadgesAlt[it.val.Id!].val) ? ' badged-alt' : '')),
+            'data-badge': depends(() => (kaffe.buddyBadges[it.val.Id!].val) || ""),
+            'data-badge-alt': depends(() => (kaffe.buddyBadgesAlt[it.val.Id!].val) || ""),
         }, htm.div(userDomAttrsBuddy(it.val)))
         item.onclick = () => {
-            if (!haxsh.isSeeminglyOffline.val)
-                haxsh.buddySelected(it.val, true)
+            if (!kaffe.isSeeminglyOffline.val)
+                kaffe.buddySelected(it.val, true)
         }
         return item
     }))
     van.add(me.DOM, htm.div({
-        'style': depends(() => haxsh.userSelf.val ? '' : 'display:none'),
-        'class': depends(() => 'buddy' + (me.buddyRequestsBy.val.length ? ' badged' : '') + (haxsh.isSeeminglyOffline.val ? ' offline' : '')),
+        'style': depends(() => kaffe.userSelf.val ? '' : 'display:none'),
+        'class': depends(() => 'buddy' + (me.buddyRequestsBy.val.length ? ' badged' : '') + (kaffe.isSeeminglyOffline.val ? ' offline' : '')),
         'data-badge': depends(() => me.buddyRequestsBy.val.length || ""),
-        'onclick': () => { if (!haxsh.isSeeminglyOffline.val) showBuddiesDialog(me) },
-    }, htm.div({ 'class': depends(() => 'buddy-pic' + (haxsh.isSeeminglyOffline.val ? ' offline' : '')), 'title': "Manage buddies", 'style': `background-image: url('${userPicFileUrl(undefined, "👥")}')` })))
+        'onclick': () => { if (!kaffe.isSeeminglyOffline.val) showBuddiesDialog(me) },
+    }, htm.div({ 'class': depends(() => 'buddy-pic' + (kaffe.isSeeminglyOffline.val ? ' offline' : '')), 'title': "Manage buddies", 'style': `background-image: url('${userPicFileUrl(undefined, "👥")}')` })))
     return me
 }
 
@@ -76,7 +76,7 @@ export function userDomAttrsBuddy(user?: yo.User, userIdHint?: number) {
         }
     return {
         'class': depends(() => {
-            return 'buddy-pic' + ((haxsh.isSeeminglyOffline.val || user.Offline) ? ' offline' : '')
+            return 'buddy-pic' + ((kaffe.isSeeminglyOffline.val || user.Offline) ? ' offline' : '')
         }),
         'title': `${user.Nick}${((!user.Btw) ? '' : (' — ' + user.Btw))}`,
         'style': `background-image: url('${userPicFileUrl(user)}')`,
@@ -85,13 +85,13 @@ export function userDomAttrsBuddy(user?: yo.User, userIdHint?: number) {
 
 export function userDomAttrsSelf() {
     return {
-        'class': depends(() => 'buddy-pic self' + (haxsh.isSeeminglyOffline.val ? ' offline' : '')),
+        'class': depends(() => 'buddy-pic self' + (kaffe.isSeeminglyOffline.val ? ' offline' : '')),
         'title': depends(() => {
-            const user_self = haxsh.userSelf.val
+            const user_self = kaffe.userSelf.val
             return (!user_self) ? "(you)" : `${user_self.Nick}${((!user_self.Btw) ? '' : (' — ' + user_self.Btw))}`
         }),
         'style': depends(() => {
-            const user_self = haxsh.userSelf.val
+            const user_self = kaffe.userSelf.val
             return `background-image: url('${userPicFileUrl(user_self)}')`
         }),
     }
@@ -113,7 +113,7 @@ function update(me: UiCtlBuddies, buddiesInfo: yo.userBuddies_Out) {
         const is_selected: { [_: number]: boolean } = {}
         for (let i = 0; i < buddies.length; i++) {
             const buddy = buddies[i]
-            is_selected[buddy.Id!] = haxsh.buddySelected(buddy)
+            is_selected[buddy.Id!] = kaffe.buddySelected(buddy)
             if ((i > 0) && (is_selected[buddy.Id!])) {
                 for (let j = 0; j < i; j++) {
                     const earlier = buddies[j]
@@ -145,8 +145,8 @@ async function showBuddiesDialog(me: UiCtlBuddies) {
                     else
                         alert(`Done. Until '${nick_or_email_addr}' confirms, they'll appear offline in your buddy list.`)
                 } catch (err) {
-                    if (!haxsh.knownErr<yo.UserBuddiesAddErr>(err, haxsh.handleKnownErrMaybe<yo.UserBuddiesAddErr>))
-                        haxsh.onErrOther(err, true)
+                    if (!kaffe.knownErr<yo.UserBuddiesAddErr>(err, kaffe.handleKnownErrMaybe<yo.UserBuddiesAddErr>))
+                        kaffe.onErrOther(err, true)
                 }
         }
     }
@@ -157,8 +157,8 @@ async function showBuddiesDialog(me: UiCtlBuddies) {
         htmCheckbox.style.cursor = 'wait'
         htmCheckbox.disabled = true
         try {
-            await haxsh.reloadUserSelf()
-            const user_self = haxsh.userSelf?.val
+            await kaffe.reloadUserSelf()
+            const user_self = kaffe.userSelf?.val
             if (!user_self)
                 return
             if ((!user_self.Buddies) || !user_self.Buddies.some(_ => (_ === user.Id!))) {
@@ -168,10 +168,10 @@ async function showBuddiesDialog(me: UiCtlBuddies) {
             }
             htmCheckbox.checked = true
             alert(`You're now buddies with '${user.Nick ?? '?'}', go chat them up!`)
-            await haxsh.reloadUserSelf()
+            await kaffe.reloadUserSelf()
         } catch (err) {
-            if (!haxsh.knownErr<yo.UserUpdateErr>(err, haxsh.handleKnownErrMaybe<yo.UserUpdateErr>))
-                haxsh.onErrOther(err, true)
+            if (!kaffe.knownErr<yo.UserUpdateErr>(err, kaffe.handleKnownErrMaybe<yo.UserUpdateErr>))
+                kaffe.onErrOther(err, true)
         } finally {
             htmCheckbox.style.removeProperty('cursor')
         }

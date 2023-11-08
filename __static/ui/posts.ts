@@ -4,7 +4,7 @@ const htm = van.tags, depends = van.derive
 
 import * as yo from '../yo-sdk.js'
 import * as youtil from '../../__yostatic/util.js'
-import * as haxsh from '../haxsh.js'
+import * as kaffe from '../kaffe.js'
 import * as uibuddies from './buddies.js'
 import * as util from '../util.js'
 
@@ -31,15 +31,15 @@ export function create(): UiCtlPosts {
     let me: UiCtlPosts
     const files_to_post: vanx.Reactive<UpFile[]> = vanx.reactive([] as UpFile[])
     const htm_post_entry = htm.div({
-        'class': depends(() => 'post-content' + (haxsh.isSeeminglyOffline.val ? ' offline' : '') + (is_sending.val ? ' sending' : '') + (is_empty.val ? ' empty' : '')),
-        'contenteditable': depends(() => ((is_sending.val || haxsh.isArchiveBrowsing.val || !haxsh.userSelf.val) ? 'false' : 'true')),
+        'class': depends(() => 'post-content' + (kaffe.isSeeminglyOffline.val ? ' offline' : '') + (is_sending.val ? ' sending' : '') + (is_empty.val ? ' empty' : '')),
+        'contenteditable': depends(() => ((is_sending.val || kaffe.isArchiveBrowsing.val || !kaffe.userSelf.val) ? 'false' : 'true')),
         'autofocus': true, 'spellcheck': false, 'autocorrect': 'off', 'tabindex': 1,
         'title': depends(() =>
-            haxsh.isSeeminglyOffline.val ? "You seem to be offline, or our backend is. Or hax0rs, or a meteor strike on The Cloud, or TEOTWAWKI, or an stray cosmic ray... but it's probably your router resetting."
-                : ((!haxsh.userSelf.val) ? (haxsh.signUpOrPwdForgotNotice.val || "Sign in or sign up to resume confabulations:") : (haxsh.isArchiveBrowsing.val
+            kaffe.isSeeminglyOffline.val ? "You seem to be offline, or our backend is. Or hax0rs, or a meteor strike on The Cloud, or TEOTWAWKI, or an stray cosmic ray... but it's probably your router resetting."
+                : ((!kaffe.userSelf.val) ? (kaffe.signUpOrPwdForgotNotice.val || "Sign in or sign up to resume confabulations:") : (kaffe.isArchiveBrowsing.val
                     ? "Browsing archives. To chat, switch back to 'Fresh'."
-                    : (haxsh.selectedBuddy.val
-                        ? `Chat with ${haxsh.userById(haxsh.selectedBuddy.val)?.Nick || "?"}`
+                    : (kaffe.selectedBuddy.val
+                        ? `Chat with ${kaffe.userById(kaffe.selectedBuddy.val)?.Nick || "?"}`
                         : "This goes to all buddies. (For 1-to-1 chat, select a buddy on the right.)")))),
         'oninput': () => {
             is_empty.val = (htm_post_entry.innerHTML === "") || (htm_post_entry.innerHTML === "<br>")
@@ -53,14 +53,14 @@ export function create(): UiCtlPosts {
             }
         },
     }, "")
-    const button_disabled = () => (haxsh.isSeeminglyOffline.val || (is_deleting.val > 0) || is_sending.val || !haxsh.userSelf.val)
+    const button_disabled = () => (kaffe.isSeeminglyOffline.val || (is_deleting.val > 0) || is_sending.val || !kaffe.userSelf.val)
     const htm_input_file = htm.input({ 'type': 'file', 'multiple': true, 'onchange': () => onFilesAdded(me, files_to_post, htm_input_file) })
     me = {
         _htmPostInput: htm_post_entry,
         isSending: is_sending,
         isRequestingDeletion: is_deleting,
         upFilesNative: [],
-        DOM: htm.div({ 'class': 'haxsh-posts' },
+        DOM: htm.div({ 'class': 'kaffe-posts' },
             htm.div({ 'class': 'self-post' },
                 htm.div({ 'class': 'post' },
                     htm.div({ 'class': 'post-head' },
@@ -82,9 +82,9 @@ Don't share privacy-sensitive/highly-personal stuff (if you care), we don't prot
                     htm_input_file,
                     htm.div({},
                         htm_post_entry,
-                        vanx.list(() => { return htm.div({ 'class': 'haxsh-post-files' }) }, files_to_post, (_) => {
+                        vanx.list(() => { return htm.div({ 'class': 'kaffe-post-files' }) }, files_to_post, (_) => {
                             const icon = _.val.type.includes('/') ? (fileContentTypeIcons[_.val.type.substring(0, _.val.type.indexOf('/'))]) : ""
-                            return htm.a({ 'class': 'haxsh-post-file', 'title': `${_.val.name + '\n'}${(_.val.size / (1024 * 1024)).toFixed(3)}MB` },
+                            return htm.a({ 'class': 'kaffe-post-file', 'title': `${_.val.name + '\n'}${(_.val.size / (1024 * 1024)).toFixed(3)}MB` },
                                 (icon ? htm.div({}, icon) : undefined),
                                 htm.span({}, _.val.name,
                                     htm.span({}, _.val.type || '(unknown type)',
@@ -104,13 +104,13 @@ Don't share privacy-sensitive/highly-personal stuff (if you care), we don't prot
         const post = it.val
         let inner_html = post.Htm ?? ''
         if (post.Files && post.Files.length) {
-            const htm_files = htm.div({ 'class': 'haxsh-post-files' },
+            const htm_files = htm.div({ 'class': 'kaffe-post-files' },
                 ...post.Files.map((file_name_full, idx) => {
                     const idx_sep = file_name_full.indexOf("__yo__")
                     const file_name_show = (idx_sep < 0) ? file_name_full : file_name_full.substring(idx_sep + "__yo__".length)
                     const file_content_type = post.FileContentTypes![idx],
                         file_url = `/_postfiles/${encodeURIComponent(file_name_full)}`
-                    const htm_file_link = htm.a({ 'class': 'haxsh-post-file', 'target': '_blank', 'href': file_url, 'data-filename': file_name_show, 'data-filetype': file_content_type })
+                    const htm_file_link = htm.a({ 'class': 'kaffe-post-file', 'target': '_blank', 'href': file_url, 'data-filename': file_name_show, 'data-filetype': file_content_type })
                     if (file_content_type !== "") {
                         const icon = fileContentTypeIcons[file_content_type.substring(0, file_content_type.indexOf('/'))]
                         van.add(htm_file_link, (icon !== fileContentTypeIcons['image']) ? htm.div({}, icon)
@@ -134,14 +134,14 @@ Don't share privacy-sensitive/highly-personal stuff (if you care), we don't prot
                     (a as HTMLAnchorElement).onclick = () => openMediaPopup(a.getAttribute('href')!, a.getAttribute('data-filename')!, true)
             })
 
-        const post_by = haxsh.userByPost(post), post_dt = new Date(post.DtMade!)
-        const is_own_post = (post_by?.Id === haxsh.userSelf.val?.Id) || false,
+        const post_by = kaffe.userByPost(post), post_dt = new Date(post.DtMade!)
+        const is_own_post = (post_by?.Id === kaffe.userSelf.val?.Id) || false,
             dt_str = post_dt.toLocaleDateString() + " at " + post_dt.toLocaleTimeString()
         return htm.div({ 'class': 'post', 'title': dt_str },
             htm.div({ 'class': 'post-head' },
                 htm.div({
                     ...is_own_post ? uibuddies.userDomAttrsSelf() : uibuddies.userDomAttrsBuddy(post_by, post.By),
-                    'onclick': () => haxsh.userShowPopup(is_own_post ? undefined : post_by),
+                    'onclick': () => kaffe.userShowPopup(is_own_post ? undefined : post_by),
                 }),
                 htm.div({ 'class': 'post-ago', 'title': dt_str }, post._uxStrAgo),
             ),
@@ -212,7 +212,7 @@ async function deletePost(me: UiCtlPosts, postId: number) {
     const post = me.posts[post_idx]
     if (post)
         post._isDel = true
-    await haxsh.deletePost(postId)
+    await kaffe.deletePost(postId)
     update(me, me.posts)
     me.isRequestingDeletion.val = 0
 }
@@ -223,7 +223,7 @@ async function sendNew(me: UiCtlPosts, upFilesOwn: vanx.Reactive<UpFile[]>, isEm
         return
 
     me.isSending.val = true
-    const ok = await haxsh.sendNewPost(post_html, me.upFilesNative.filter(_ => (_ ? true : false)).map(_ => (_ as File)))
+    const ok = await kaffe.sendNewPost(post_html, me.upFilesNative.filter(_ => (_ ? true : false)).map(_ => (_ as File)))
     me.isSending.val = false
     if (ok) {
         me._htmPostInput.innerHTML = ''
@@ -236,7 +236,7 @@ async function sendNew(me: UiCtlPosts, upFilesOwn: vanx.Reactive<UpFile[]>, isEm
 }
 
 function htmlToSend(me: UiCtlPosts, ignoreOffline?: boolean) {
-    if (haxsh.isSeeminglyOffline.val && !ignoreOffline)
+    if (kaffe.isSeeminglyOffline.val && !ignoreOffline)
         return ""
     let post_html = me._htmPostInput.innerHTML
     {   // firefox-only (seemingly) quirks:
@@ -268,10 +268,10 @@ export function update(me: UiCtlPosts, newOrUpdatedPosts: yo.Post[], clearOld?: 
             let post_ago_str = util.timeAgoStr(post_time, now, true, "")
             if (post_ago_str === last_ago_str)
                 post_ago_str = ""
-            const user_cur = haxsh.userSelf
-            const is_fresh = (old_posts.length > 0) && ((haxsh.browserTabInvisibleSince === 0)
+            const user_cur = kaffe.userSelf
+            const is_fresh = (old_posts.length > 0) && ((kaffe.browserTabInvisibleSince === 0)
                 ? ((now - post_time) < freshnessDurationMsWhenVisible)
-                : (post_time >= haxsh.browserTabInvisibleSince)) && ((!user_cur.val) || (post.By!) != (user_cur.val.Id))
+                : (post_time >= kaffe.browserTabInvisibleSince)) && ((!user_cur.val) || (post.By!) != (user_cur.val.Id))
             if (is_fresh)
                 num_fresh++
             const ret: PostAug = { ...post, _uxStrAgo: post_ago_str, _isDel: false, _isFresh: is_fresh }

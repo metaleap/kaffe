@@ -1,4 +1,4 @@
-package haxsh
+package kaffe
 
 import (
 	"os"
@@ -21,10 +21,10 @@ const appHref = "https://" + appDomain
 var devModeInitMockUsers func()
 
 func init() {
-	yo.AppPkgPath = haxshPkg.PkgPath()
+	yo.AppPkgPath = kaffePkg.PkgPath()
 	AppApiUrlPrefix = "_/"
 	AppSideStaticRePathFor = func(requestPath string) string {
-		return "__static/haxsh.html"
+		return "__static/kaffe.html"
 	}
 	StaticFileFilters["picRounded"] = imageRoundedSvgOfPng
 	for dir_name, dir_path := range Cfg.STATIC_FILE_STORAGE_DIRS {

@@ -1,6 +1,6 @@
 //go:build debug
 
-package haxsh
+package kaffe
 
 import (
 	"math/rand"

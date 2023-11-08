@@ -2,7 +2,7 @@ import van from '../../__yostatic/vanjs/van-1.2.3.debug.js'
 const htm = van.tags
 
 import * as yo from '../yo-sdk.js'
-import * as haxsh from '../haxsh.js'
+import * as kaffe from '../kaffe.js'
 
 
 export function create(setSignUpOrPwdForgotNotice: (_: string) => void) {
@@ -32,7 +32,7 @@ export function create(setSignUpOrPwdForgotNotice: (_: string) => void) {
             in_user_name.disabled = false
             in_password.disabled = false
             in_password_2.disabled = false
-            if (!haxsh.knownErr<yo.UserSignInOrResetErr | yo.UserSignUpOrForgotPasswordErr>(err, (err) => {
+            if (!kaffe.knownErr<yo.UserSignInOrResetErr | yo.UserSignUpOrForgotPasswordErr>(err, (err) => {
                 switch (err) {
                     case '___yo_authLoginOrFinalizePwdReset_AccountDoesNotExist':
                     case '___yo_authLoginOrFinalizePwdReset_WrongPassword':
@@ -49,7 +49,7 @@ export function create(setSignUpOrPwdForgotNotice: (_: string) => void) {
                 }
                 return false
             }))
-                haxsh.onErrOther(err, true)
+                kaffe.onErrOther(err, true)
         }
     }
 
@@ -71,9 +71,9 @@ export function create(setSignUpOrPwdForgotNotice: (_: string) => void) {
         in_password_2,
     ))
     dialog.onclose = (evt) => {
-        if (!haxsh.signUpOrPwdForgotNotice.val)
+        if (!kaffe.signUpOrPwdForgotNotice.val)
             setTimeout(() => {
-                if (!haxsh.signUpOrPwdForgotNotice.val)
+                if (!kaffe.signUpOrPwdForgotNotice.val)
                     dialog.showModal()
             }, 1234)
     }

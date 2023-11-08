@@ -35,7 +35,7 @@ body a {
     color: var(--sigcol) !important;
 }
 
-.haxsh-buddies {
+.kaffe-buddies {
     z-index: 999;
     position: fixed;
     right: 0;
@@ -50,16 +50,16 @@ body a {
     background-color: var(--bgoff1);
 }
 
-.haxsh-buddies:hover {
+.kaffe-buddies:hover {
     scrollbar-width: thin;
     -ms-overflow-style: auto;
 }
 
-.haxsh-buddies::-webkit-scrollbar {
+.kaffe-buddies::-webkit-scrollbar {
     display: none;
 }
 
-.haxsh-buddies>div.buddies {
+.kaffe-buddies>div.buddies {
     margin: 4.32em 0 0 0;
     padding: 0;
 }
@@ -74,7 +74,7 @@ body a {
     cursor: default !important;
 }
 
-.haxsh-buddies .badged::before {
+.kaffe-buddies .badged::before {
     content: attr(data-badge);
     position: absolute;
     background-color: var(--sigcol);
@@ -92,7 +92,7 @@ body a {
     display: inline-block;
 }
 
-.haxsh-buddies .badged-alt::after {
+.kaffe-buddies .badged-alt::after {
     color: #ffffff;
     z-index: 99999;
     width: 1.23em;
@@ -143,7 +143,7 @@ body a {
     opacity: 0.77;
 }
 
-.haxsh-buddies>div.buddy-self {
+.kaffe-buddies>div.buddy-self {
     cursor: pointer;
     z-index: 9999;
     background-color: var(--bgoff1);
@@ -153,16 +153,16 @@ body a {
     height: 4.11em;
 }
 
-.haxsh-buddies>div.buddy-self.selected {
+.kaffe-buddies>div.buddy-self.selected {
     background-color: var(--bgcolor);
 }
 
-.haxsh-posts {
+.kaffe-posts {
     margin-right: 3.88em;
     padding-bottom: 3.21em;
 }
 
-.haxsh-posts>div {
+.kaffe-posts>div {
     clear: left;
     margin-left: auto;
     margin-right: auto;
@@ -170,7 +170,7 @@ body a {
     margin-top: 4.77em;
 }
 
-.haxsh-posts>div.self-post {
+.kaffe-posts>div.self-post {
     /* background: linear-gradient(180deg, var(--bgcolor) 77%, transparent); */
     background-color: color-mix(in hsl, var(--bgcolor), transparent 22%);
     position: fixed;
@@ -183,24 +183,24 @@ body a {
     margin-top: calc(-4.77em - 1.88em);
 }
 
-.haxsh-posts .post {
+.kaffe-posts .post {
     clear: left;
     margin-top: 1.88em;
     margin-left: 0.44em;
     padding-right: 0.22em;
 }
 
-.haxsh-posts>div.self-post .post {
+.kaffe-posts>div.self-post .post {
     padding-right: 1.44em;
 }
 
-.haxsh-posts>div.self-post .post-content {
+.kaffe-posts>div.self-post .post-content {
     min-height: 2.34em;
     max-height: 12.34em;
     margin-right: 3.88em;
 }
 
-.haxsh-posts>div.self-post .post-content.empty::before {
+.kaffe-posts>div.self-post .post-content.empty::before {
     content: attr(title);
     color: var(--bgoff3);
     cursor: text;
@@ -209,11 +209,11 @@ body a {
     overflow: hidden;
 }
 
-.haxsh-posts>div.self-post .post-content.offline {
+.kaffe-posts>div.self-post .post-content.offline {
     background-color: var(--bgsub10);
 }
 
-.haxsh-posts .post-head {
+.kaffe-posts .post-head {
     float: left;
     overflow: hidden;
     white-space: nowrap;
@@ -221,7 +221,7 @@ body a {
     width: 1.23em;
 }
 
-.haxsh-posts .post-buttons {
+.kaffe-posts .post-buttons {
     float: right;
     margin-left: 0.44em;
     margin-top: 0.11em;
@@ -278,7 +278,7 @@ button {
     background-color: var(--bgoff1);
 }
 
-.haxsh-posts .post-content {
+.kaffe-posts .post-content {
     font-size: 1em !important;
     background-color: var(--bgadd10);
     border-left: 1px solid var(--bgoff4);
@@ -294,32 +294,32 @@ button {
     resize: none;
 }
 
-.haxsh-posts .feed .post-content.fresh {
+.kaffe-posts .feed .post-content.fresh {
     background-color: var(--sigcol) !important;
 }
 
-.haxsh-posts .feed .post-content.deleting {
+.kaffe-posts .feed .post-content.deleting {
     text-decoration: line-through;
 }
 
-.haxsh-posts .post-content *:not(.haxsh-post-files, .haxsh-post-files *) {
+.kaffe-posts .post-content *:not(.kaffe-post-files, .kaffe-post-files *) {
     font-size: 1em !important;
 }
 
-.haxsh-posts .post-content img,
-.haxsh-posts .post-content video,
-.haxsh-posts .post-content svg {
+.kaffe-posts .post-content img,
+.kaffe-posts .post-content video,
+.kaffe-posts .post-content svg {
     display: block;
     margin-left: auto;
     margin-right: auto;
     max-width: 77% !important;
 }
 
-.haxsh-posts .post-content::-webkit-scrollbar {
+.kaffe-posts .post-content::-webkit-scrollbar {
     display: none;
 }
 
-.haxsh-posts .post-ago {
+.kaffe-posts .post-ago {
     float: left;
     color: var(--bgoff3);
     width: 1.23em;
@@ -329,7 +329,7 @@ button {
     transform: rotate(180deg);
 }
 
-.haxsh-posts .buddy-pic {
+.kaffe-posts .buddy-pic {
     display: inline-block;
     cursor: pointer;
     margin: 0;
@@ -337,21 +337,21 @@ button {
     height: 1.23em;
 }
 
-.haxsh-post-files {
+.kaffe-post-files {
     display: flex;
     flex-direction: row;
     justify-content: center;
     flex-wrap: wrap;
 }
 
-.self-post .haxsh-post-files {
+.self-post .kaffe-post-files {
     margin-right: 1.55em;
     overflow-y: auto;
     overflow-x: hidden;
     max-height: 7.89em;
 }
 
-.self-post .haxsh-post-files button {
+.self-post .kaffe-post-files button {
     display: inline-block;
 }
 
@@ -359,12 +359,12 @@ button {
     display: none;
 }
 
-.self-post .haxsh-post-file {
+.self-post .kaffe-post-file {
     padding-bottom: 0;
     max-width: 44%;
 }
 
-.haxsh-post-file {
+.kaffe-post-file {
     max-width: 88%;
     overflow: hidden;
     text-align: center;
@@ -379,12 +379,12 @@ button {
     clear: both;
 }
 
-.haxsh-post-file>div {
+.kaffe-post-file>div {
     font-size: 2em;
     float: left;
 }
 
-.haxsh-post-file>div.image {
+.kaffe-post-file>div.image {
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
@@ -392,7 +392,7 @@ button {
     height: 100%;
 }
 
-.haxsh-post-file>span {
+.kaffe-post-file>span {
     display: inline-block;
     padding: 0em 0.22em 0.22em 0.22em;
     max-width: 77%;
@@ -400,7 +400,7 @@ button {
     text-overflow: ellipsis;
 }
 
-.haxsh-post-file>span>span {
+.kaffe-post-file>span>span {
     display: block;
     color: var(--bgoff3);
     font-weight: normal;
