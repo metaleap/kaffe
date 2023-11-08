@@ -15,7 +15,7 @@ import (
 	"yo/util/str"
 )
 
-const appDomain = "sesh.cafe"
+const appDomain = "kaffe.up.railway.app"
 const appHref = "https://" + appDomain
 
 var devModeInitMockUsers func()
