@@ -99,15 +99,20 @@ func (me cleanUpJob) TaskResults(ctx *Ctx, taskDetails yojobs.TaskDetails) yojob
 	// post deletions
 	if task_details.User != 0 {
 		query := PostBy.Equal(task_details.User).And(PostDtMade.LessThan(me.dtCutOff()))
-		num_rows_affected := yodb.Delete[Post](ctx, query.And(q.ArrIsEmpty(PostTo)))
+		num_rows_affected := yodb.Delete[Post](ctx, query.And(q.ArrIsEmpty(PostTo)).And(q.ArrIsEmpty(PostFiles)))
 		ret.NumPostsDeleted += int(num_rows_affected)
 
 		var del_post_ids sl.Of[yodb.I64]
+		var del_file_ids yodb.Arr[yodb.Text]
 		for _, post := range yodb.FindMany[Post](ctx, query, 0, PostFields(PostId, PostTo)) {
 			any_vip := yodb.Exists[User](ctx, UserId.In(post.To.ToAnys()...).And(userVip.Equal(true)))
 			if !any_vip {
 				del_post_ids = append(del_post_ids, post.Id)
+				del_file_ids = append(del_file_ids, post.Files...)
 			}
+		}
+		if len(del_file_ids) > 0 {
+			yodb.CreateOne[fileDelReq](ctx, &fileDelReq{FileNames: del_file_ids})
 		}
 		if len(del_post_ids) > 0 {
 			num_rows_affected := yodb.Delete[Post](ctx, query.And(PostId.In(del_post_ids.ToAnys()...)))
