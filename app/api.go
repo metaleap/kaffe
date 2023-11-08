@@ -298,7 +298,7 @@ func apiHandleUploadedFiles(ctx *Ctx, fieldName string, maxNumFiles int, transfo
 			}
 			dst_file_name := str.FromI64(rand.Int63n(math.MaxInt64), 36) + "_" + str.FromI64(time.Now().UnixNano(), 36) + "_" + str.FromI64(file.Size, 36) + "__yo__" + file.Filename
 			dst_file_path := userUploadedFilePath(dst_file_name)
-			WriteFile(dst_file_path, data)
+			FileWrite(dst_file_path, data)
 			fileNames, filePaths = append(fileNames, yodb.Text(dst_file_name)), append(filePaths, dst_file_path)
 		}
 	}
