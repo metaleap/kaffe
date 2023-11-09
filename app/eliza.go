@@ -54,7 +54,7 @@ func elizaReplyShortlyTo(postId yodb.I64) {
 	})
 }
 
-func elizaEnsuerUser() {
+func elizaEnsureUser() {
 	if avatar_file_path := filepath.Join(Cfg.STATIC_FILE_STORAGE_DIRS["_postfiles"], elizaUser.picFileName); !IsFile(avatar_file_path) {
 		FileCopy(If(IsDevMode, elizaUser.picFileName, "/"+elizaUser.picFileName), avatar_file_path)
 	}
@@ -75,6 +75,6 @@ func elizaEnsuerUser() {
 			Btw:       yodb.Text(elizaUser.btw),
 		}
 		user.Auth.SetId(auth_id)
-		_ = yodb.CreateOne[User](ctx, user)
+		elizaUser.id = yodb.CreateOne[User](ctx, user)
 	}
 }

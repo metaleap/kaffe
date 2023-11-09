@@ -68,7 +68,7 @@ func OnBeforeListenAndServe() {
 		ctx.OnDone(nil)
 	}
 
-	elizaEnsuerUser()
+	elizaEnsureUser()
 
 	// ensure configured vip users are so in db
 	user_email_addrs_vip := CfgGet[[]string]("VIP_USER_EMAIL_ADDRS")
