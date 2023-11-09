@@ -228,7 +228,7 @@ var apiPostNew = api(func(this *ApiCtx[Post, Return[yodb.I64]]) {
 			for _, quot := range []string{"\"", "'"} {
 				if idx1 := str.IdxSub(tok, quot+needle); idx1 >= 0 {
 					if idx2 := str.IdxSub(tok[idx1+1:], quot) + idx1 + 1; idx2 > idx1 {
-						uris[tok] = tok[:idx1+len(quot)] + "about:blank" + tok[idx2:]
+						uris[tok] = tok[:idx1+len(quot)] + "data:noThxPlzKbai" + tok[idx2:]
 					}
 				}
 			}

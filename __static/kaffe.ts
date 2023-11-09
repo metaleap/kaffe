@@ -317,7 +317,7 @@ export function handleKnownErrMaybe<T extends string>(err: T): boolean {
             uiDialogLogin.showModal()
             return true
         case 'MissingOrExcessiveContentLength':
-            alert("To share something over " + yo.reqMaxReqPayloadSizeMb + "MB, host it elsewhere and share the link instead.")
+            alert("To share something over " + yo.reqMaxReqMultipartSizeMb + "MB, host it elsewhere and share the link instead.")
             return true
         case 'UserUpdate_NicknameAlreadyExists':
             alert(`Nick already taken — but, look... '${userSelf.val?.Nick}' ain't so shabby either!`)
