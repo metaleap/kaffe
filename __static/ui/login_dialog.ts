@@ -56,7 +56,7 @@ export function create(setSignUpOrPwdForgotNotice: (_: string) => void) {
     const in_user_name = htm.input({ 'placeholder': "(your nick or email address)" })
     const in_password = htm.input({
         'type': 'password', 'placeholder':
-            is_from_signup_or_pwd_reset_mail ? "(paste the auto-generated one-time code from your confirmation email)"
+            is_from_signup_or_pwd_reset_mail ? "(paste the one-time code from your confirmation email)"
                 : "(your account password: keep blank to sign up — OR if forgotten)"
     })
     const in_password_2 = htm.input({
