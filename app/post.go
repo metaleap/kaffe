@@ -166,28 +166,37 @@ func postDelete(ctx *Ctx, post *Post) bool {
 	return (yodb.Delete[Post](ctx, PostId.Equal(post.Id)) > 0)
 }
 
-func postNew(ctx *Ctx, post *Post) yodb.I64 {
+func postNew(ctx *Ctx, post *Post, userById yodb.I64) yodb.I64 {
 	ctx.DbTx()
 
-	var user *User
-	user = userCur(ctx)
-	if user == nil { // no user cookie
+	var user_by *User
+	if userById <= 0 {
+		user_by = userCur(ctx)
+	} else {
+		user_by = yodb.ById[User](ctx, userById)
+	}
+	if user_by == nil { // no user cookie
 		panic(ErrUnauthorized)
 	}
-	post.By.SetId(user.Id)
+	post.By.SetId(user_by.Id)
 
 	post.Htm = yodb.Text(str.Replace(post.Htm.String(), str.Dict{
 		"script": "sсriрt", // homoglyphs for c and p so no post has <script> or javascript://
 		"style":  "stуlе",  // homoglyphs for y and e so no post changes everyone's stylesheet
 	}))
 	if len(post.To) > 0 {
-		if sl.Any(post.To, func(it yodb.I64) bool { return !sl.Has(user.Buddies, it) }) {
+		if sl.Any(post.To, func(it yodb.I64) bool { return !sl.Has(user_by.Buddies, it) }) {
+			println(str.FmtV(user_by.Buddies), " VS. ", str.FmtV(post.To))
 			panic(ErrPostNew_ExpectedOnlyBuddyRecipients)
 		}
-		post.To = sl.Sorted(sl.With(post.To, user.Id))
+		post.To = sl.Sorted(sl.With(post.To, user_by.Id))
 	}
 
-	return yodb.CreateOne(ctx, post)
+	post_id := yodb.CreateOne(ctx, post)
+	if sl.Has(post.To, elizaUser.id) {
+		elizaReplyShortlyTo(post_id)
+	}
+	return post_id
 }
 
 func dbQueryPostsForUser(forUser *User, onlyThoseBy sl.Of[yodb.I64]) q.Query {

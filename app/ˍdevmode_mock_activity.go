@@ -39,7 +39,7 @@ var mockUsersNever = map[string]bool{
 }
 
 func init() {
-	yo.AppSideBuildTimeContainerFileNames = append(yo.AppSideBuildTimeContainerFileNames, elizaAvatarImageFileName)
+	yo.AppSideBuildTimeContainerFileNames = append(yo.AppSideBuildTimeContainerFileNames, elizaUser.picFileName)
 
 	if !mockLiveActivity {
 		return

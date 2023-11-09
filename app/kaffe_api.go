@@ -224,6 +224,14 @@ var apiPostNew = api(func(this *ApiCtx[Post, Return[yodb.I64]]) {
 	{
 		uris, toks := str.Dict{}, str.Split(string(this.Args.Htm), " ")
 		for _, tok := range toks {
+			const needle = "data:"
+			for _, quot := range []string{"\"", "'"} {
+				if idx1 := str.IdxSub(tok, quot+needle); idx1 >= 0 {
+					if idx2 := str.IdxSub(tok[idx1+1:], quot) + idx1 + 1; idx2 > idx1 {
+						uris[tok] = tok[:idx1+len(quot)] + "about:blank" + tok[idx2:]
+					}
+				}
+			}
 			if !str.Has(tok, "://") {
 				continue
 			}
@@ -240,7 +248,7 @@ var apiPostNew = api(func(this *ApiCtx[Post, Return[yodb.I64]]) {
 		}
 	}
 
-	this.Ret.Result = postNew(this.Ctx, this.Args)
+	this.Ret.Result = postNew(this.Ctx, this.Args, 0)
 })
 
 var apiPostDelete = api(func(this *ApiCtx[struct {
