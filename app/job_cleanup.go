@@ -2,6 +2,7 @@ package kaffe
 
 import (
 	"time"
+
 	. "yo/cfg"
 	. "yo/ctx"
 	yodb "yo/db"
@@ -46,7 +47,7 @@ type fileDelReq struct {
 	FileNames yodb.Arr[yodb.Text]
 }
 
-func (me cleanUpJob) JobDetails(ctx *Ctx) yojobs.JobDetails {
+func (cleanUpJob) JobDetails(ctx *Ctx) yojobs.JobDetails {
 	return nil
 }
 
