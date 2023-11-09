@@ -58,7 +58,7 @@ export function userPicFileUrl(user?: yo.User, fallBackToEmoji = "🦜", toRound
         fallBackToEmoji = "👤"
     if (!(user && user.PicFileId))
         return util.svgTextIconDataHref(fallBackToEmoji)
-    return '/_postfiles/' + user.PicFileId + (toRoundedSvgFavIcon ? '?picRounded=true' : '')
+    return '/_postfiles/' + user.PicFileId + (toRoundedSvgFavIcon ? ('?picRounded=' + user.PicFileId + '.svg') : '')
 }
 
 export function userDomAttrsBuddy(user?: yo.User, userIdHint?: number) {

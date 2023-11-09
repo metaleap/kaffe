@@ -23,7 +23,7 @@ func init() {
 	AppSideStaticRePathFor = func(requestPath string) string {
 		return "__static/kaffe.html"
 	}
-	StaticFileFilters["picRounded"] = imageRoundedSvgOfPng
+	StaticFileFilters["picRounded"] = imageRoundedSvgOfImage
 	for dir_name, dir_path := range Cfg.STATIC_FILE_STORAGE_DIRS {
 		StaticFileDirs[dir_name] = os.DirFS(dir_path)
 	}
