@@ -25,7 +25,7 @@ First, this below one-time code, best via copy-and-paste:
 
 {` + yoauth.MailTmplVarTmpPwd + `}
 
-Secondly, your own chosen password for future logins (no shorter than ` + str.FromInt(Cfg.YO_AUTH_PWD_MIN_LEN) + ` characters).
+Secondly, your own chosen password for future logins (min. length ` + str.FromInt(Cfg.YO_AUTH_PWD_MIN_LEN) + ` characters).
 
 
 Rock on!
