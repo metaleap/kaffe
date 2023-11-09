@@ -77,4 +77,20 @@ func elizaEnsureUser() {
 		user.Auth.SetId(auth_id)
 		elizaUser.id = yodb.CreateOne[User](ctx, user)
 	}
+	time.AfterFunc(time.Minute, elizaEnsureBuddies)
+}
+
+func elizaEnsureBuddies() {
+	defer time.AfterFunc(time.Minute, elizaEnsureBuddies)
+
+	ctx := NewCtxNonHttp(yojobs.Timeout1Min, false, "")
+	defer ctx.OnDone(nil)
+	eliza_user := yodb.ById[User](ctx, elizaUser.id)
+	buddy_requests := yodb.FindMany[User](ctx, q.ArrAreAnyIn(UserBuddies, q.OpEq, elizaUser.id).And(UserId.NotIn(eliza_user.Buddies.ToAnys()...)), 0, UserFields(UserId))
+	for _, user := range buddy_requests {
+		eliza_user.Buddies = append(eliza_user.Buddies, user.Id)
+	}
+	if len(buddy_requests) > 0 {
+		yodb.Update[User](ctx, eliza_user, nil, false, UserFields(UserBuddies)...)
+	}
 }
