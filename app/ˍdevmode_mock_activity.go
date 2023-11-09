@@ -215,6 +215,7 @@ func mockEnsureUser(i int) yodb.I64 {
 		user.LastSeen = yodb.DtNow()
 
 		ctx.Timings.Step("insert new user")
+		user.gravatarChecked = true
 		user.Id = yodb.CreateOne[User](ctx, user)
 	}
 	mockUsersAllByEmail[user_email_addr] = user.Id

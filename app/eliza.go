@@ -12,6 +12,7 @@ import (
 	yoauth "yo/feat_auth"
 	yojobs "yo/jobs"
 	. "yo/util"
+	"yo/util/sl"
 
 	"github.com/NortySpock/eliza-go/eliza"
 )
@@ -85,7 +86,9 @@ func elizaEnsureUser() {
 }
 
 func elizaEnsureBuddies() {
-	defer time.AfterFunc(time.Minute, elizaEnsureBuddies)
+	// usually, anyone adding eliza as buddy gets added back in `elizaAddBuddy`, but with a few secs artificial delay.
+	// if server restarted before that delay elapsed, this infrequent worker will remedy such rare fluke situations.
+	defer time.AfterFunc(time.Hour, elizaEnsureBuddies)
 
 	ctx := NewCtxNonHttp(time.Minute, false, "")
 	defer ctx.OnDone(nil)
@@ -97,7 +100,7 @@ func elizaEnsureBuddies() {
 	}
 	buddy_requests := yodb.FindMany[User](ctx, user_query, 0, UserFields(UserId))
 	for _, user := range buddy_requests {
-		eliza_user.Buddies = append(eliza_user.Buddies, user.Id)
+		eliza_user.Buddies = sl.With(eliza_user.Buddies, user.Id)
 	}
 	if len(buddy_requests) > 0 {
 		eliza_user.LastSeen = yodb.DtNow()
