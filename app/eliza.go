@@ -12,7 +12,6 @@ import (
 	yoauth "yo/feat_auth"
 	yojobs "yo/jobs"
 	. "yo/util"
-	"yo/util/str"
 
 	"github.com/NortySpock/eliza-go/eliza"
 )
@@ -52,6 +51,10 @@ func elizaReplyShortlyTo(postId yodb.I64) {
 			To:  yodb.Arr[yodb.I64]{post.By.Id()},
 			Htm: yodb.Text(reply_text),
 		}, elizaUser.id)
+
+		eliza_user := yodb.ById[User](ctx, elizaUser.id)
+		eliza_user.LastSeen = yodb.DtNow()
+		yodb.Update[User](ctx, eliza_user, nil, false, UserFields(UserLastSeen)...)
 	})
 }
 
@@ -86,20 +89,18 @@ func elizaEnsureBuddies() {
 
 	ctx := NewCtxNonHttp(time.Minute, false, "")
 	defer ctx.OnDone(nil)
-	println("EEB1", elizaUser.id)
 	eliza_user := yodb.ById[User](ctx, elizaUser.id)
-	println("EEB2", str.FmtV(eliza_user.Buddies))
 
 	user_query := q.ArrAreAny(UserBuddies, q.OpEq, elizaUser.id)
 	if len(eliza_user.Buddies) > 0 {
 		user_query = user_query.And(UserId.NotIn(eliza_user.Buddies.ToAnys()...))
 	}
 	buddy_requests := yodb.FindMany[User](ctx, user_query, 0, UserFields(UserId))
-	println("EEB3", str.FmtV(buddy_requests))
 	for _, user := range buddy_requests {
 		eliza_user.Buddies = append(eliza_user.Buddies, user.Id)
 	}
 	if len(buddy_requests) > 0 {
-		yodb.Update[User](ctx, eliza_user, nil, false, UserFields(UserBuddies)...)
+		eliza_user.LastSeen = yodb.DtNow()
+		yodb.Update[User](ctx, eliza_user, nil, false, UserFields(UserBuddies, UserLastSeen)...)
 	}
 }
