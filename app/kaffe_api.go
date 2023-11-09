@@ -1,6 +1,7 @@
 package kaffe
 
 import (
+	"encoding/base64"
 	"io"
 	"math"
 	"math/rand"
@@ -148,7 +149,7 @@ var apiUserUpdate = api(func(this *ApiCtx[yodb.ApiUpdateArgs[User, UserField], V
 	this.Args.Changes.Id = user_cur.Id
 	this.Args.Changes.Auth.SetId(user_cur.Auth.Id())
 
-	uploaded_file_names, _ := apiHandleUploadedFiles(this.Ctx, "picfile", 1, imageSquared)
+	uploaded_file_names, _ := apiHandleUploadedFiles(this.Ctx, "picfile", 1, imageSquared, nil)
 	for _, file_name := range uploaded_file_names {
 		if (user_cur.PicFileId != "") && (user_cur.PicFileId != this.Args.Changes.PicFileId) {
 			yodb.CreateOne[fileDelReq](this.Ctx, &fileDelReq{FileNames: yodb.Arr[yodb.Text]{user_cur.PicFileId}})
@@ -219,16 +220,28 @@ var apiPostsDeleted = api(func(this *ApiCtx[struct {
 })
 
 var apiPostNew = api(func(this *ApiCtx[Post, Return[yodb.I64]]) {
-	this.Args.Files, _ = apiHandleUploadedFiles(this.Ctx, "files", 0, nil)
-
-	{
+	data_files := map[string][]byte{}
+	{ // html processing
 		uris, toks := str.Dict{}, str.Split(string(this.Args.Htm), " ")
 		for _, tok := range toks {
 			const needle = "data:"
 			for _, quot := range []string{"\"", "'"} {
 				if idx1 := str.IdxSub(tok, quot+needle); idx1 >= 0 {
 					if idx2 := str.IdxSub(tok[idx1+1:], quot) + idx1 + 1; idx2 > idx1 {
-						uris[tok] = tok[:idx1+len(quot)] + "data:noThxPlzKbai" + tok[idx2:]
+						/*<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABR8AAAX4CAYAAAA3gL7m*/
+						proto_and_data := tok[idx1+len(quot)+len(needle) : idx2]
+						if idx3 := str.IdxSub(proto_and_data, ";"); idx3 < 0 {
+							uris[tok] = tok[:idx1+len(quot)] + "data:nope" + tok[idx2:]
+						} else {
+							data_payload := proto_and_data[idx3+1:]
+							data_bytes := []byte(data_payload)
+							if needle2 := "base64,"; str.Begins(data_payload, needle2) {
+								data_bytes, _ = base64.StdEncoding.DecodeString(data_payload[len(needle2):])
+							}
+							up_file_name := userUploadedFileNameNew("__yodata__"+str.FromInt(len(data_files)), int64(len(data_bytes)))
+							data_files[up_file_name] = data_bytes
+							uris[tok] = tok[:idx1+len(quot)] + "/_postfiles/" + up_file_name + tok[idx2:]
+						}
 					}
 				}
 			}
@@ -248,6 +261,7 @@ var apiPostNew = api(func(this *ApiCtx[Post, Return[yodb.I64]]) {
 		}
 	}
 
+	this.Args.Files, _ = apiHandleUploadedFiles(this.Ctx, "files", 0, nil, data_files)
 	this.Ret.Result = postNew(this.Ctx, this.Args, 0)
 })
 
@@ -285,7 +299,16 @@ func userUploadedFilePath(fileId string) string {
 	return filepath.Join(Cfg.STATIC_FILE_STORAGE_DIRS["_postfiles"], fileId)
 }
 
-func apiHandleUploadedFiles(ctx *Ctx, fieldName string, maxNumFiles int, transform func([]byte) []byte) (fileNames []yodb.Text, filePaths []string) {
+func userUploadedFileNameNew(origFileName string, origFileSize int64) string {
+	return str.FromI64(rand.Int63n(math.MaxInt64), 36) + "_" + str.FromI64(time.Now().UnixNano(), 36) + "_" + str.FromI64(origFileSize, 36) + "__yo__" + origFileName
+}
+
+func apiHandleUploadedFiles(ctx *Ctx, fieldName string, maxNumFiles int, transform func([]byte) []byte, additionalFiles map[string][]byte) (fileNames []yodb.Text, filePaths []string) {
+	handle_file := func(dstFileName string, fileBytes []byte) {
+		dst_file_path := userUploadedFilePath(dstFileName)
+		FileWrite(dst_file_path, fileBytes)
+		fileNames, filePaths = append(fileNames, yodb.Text(dstFileName)), append(filePaths, dst_file_path)
+	}
 	if files := ctx.Http.Req.MultipartForm.File[fieldName]; len(files) > 0 {
 		for i, file := range files {
 			if (maxNumFiles > 0) && (i == maxNumFiles) {
@@ -305,11 +328,14 @@ func apiHandleUploadedFiles(ctx *Ctx, fieldName string, maxNumFiles int, transfo
 			if transform != nil {
 				data = transform(data)
 			}
-			dst_file_name := str.FromI64(rand.Int63n(math.MaxInt64), 36) + "_" + str.FromI64(time.Now().UnixNano(), 36) + "_" + str.FromI64(file.Size, 36) + "__yo__" + file.Filename
-			dst_file_path := userUploadedFilePath(dst_file_name)
-			FileWrite(dst_file_path, data)
-			fileNames, filePaths = append(fileNames, yodb.Text(dst_file_name)), append(filePaths, dst_file_path)
+			handle_file(userUploadedFileNameNew(file.Filename, file.Size), data)
 		}
+	}
+	for file_name, file_bytes := range additionalFiles {
+		if transform != nil {
+			file_bytes = transform(file_bytes)
+		}
+		handle_file(file_name, file_bytes)
 	}
 	return
 }

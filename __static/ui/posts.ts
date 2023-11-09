@@ -103,9 +103,10 @@ Don't share privacy-sensitive/highly-personal stuff (if you care), we don't prot
     van.add(me.DOM, vanx.list(() => htm.div({ 'class': 'feed' }), me.posts, (it) => {
         const post = it.val
         let inner_html = post.Htm ?? ''
-        if (post.Files && post.Files.length) {
+        const post_files = (post.Files ?? []).filter(_ => !_.includes('__yodata__'))
+        if (post_files && post_files.length) {
             const htm_files = htm.div({ 'class': 'kaffe-post-files' },
-                ...post.Files.map((file_name_full, idx) => {
+                ...post_files.map((file_name_full, idx) => {
                     const idx_sep = file_name_full.indexOf("__yo__")
                     const file_name_show = (idx_sep < 0) ? file_name_full : file_name_full.substring(idx_sep + "__yo__".length)
                     const file_content_type = post.FileContentTypes![idx],
