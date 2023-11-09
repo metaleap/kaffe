@@ -44,7 +44,7 @@ export function create(setSignUpOrPwdForgotNotice: (_: string) => void) {
                     case '___yo_authRegister_EmailRequiredButMissing':
                     case 'UserSignUpOrForgotPassword_EmailInvalid':
                     case 'UserSignUpOrForgotPassword_EmailRequiredButMissing':
-                        alert("There's surely a typo in there, please double-check and try again.")
+                        alert("There's surely a typo in there, please double-check and try again.\n\n(Note: keep password fields BLANK for sign-up or password-reset!)")
                         return true
                 }
                 return false
