@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"sync"
 	"time"
+	"yo"
 
 	. "yo/ctx"
 	yodb "yo/db"
@@ -38,6 +39,8 @@ var mockUsersNever = map[string]bool{
 }
 
 func init() {
+	yo.AppSideBuildTimeContainerFileNames = append(yo.AppSideBuildTimeContainerFileNames, elizaAvatarImageFileName)
+
 	if !mockLiveActivity {
 		return
 	}

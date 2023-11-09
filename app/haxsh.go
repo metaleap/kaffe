@@ -61,14 +61,14 @@ func OnBeforeListenAndServe() {
 		go devModeInitMockUsers()
 	}
 
-	// ensure app-defined job-defs before starting jobs engine
-	{
+	{ // ensure app-defined job-defs before starting jobs engine
 		ctx := NewCtxNonHttp(yojobs.Timeout1Min, false, "")
-		defer ctx.OnDone(nil)
-
 		yodb.Upsert[yojobs.JobDef](ctx, &yojobs.ExampleJobDef)
 		yodb.Upsert[yojobs.JobDef](ctx, &cleanUpJobDef)
+		ctx.OnDone(nil)
 	}
+
+	elizaEnsuerUser()
 
 	// ensure configured vip users are so in db
 	user_email_addrs_vip := CfgGet[[]string]("VIP_USER_EMAIL_ADDRS")
