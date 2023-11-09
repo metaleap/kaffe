@@ -12,6 +12,7 @@ import (
 	yoauth "yo/feat_auth"
 	yojobs "yo/jobs"
 	. "yo/util"
+	"yo/util/str"
 
 	"github.com/NortySpock/eliza-go/eliza"
 )
@@ -42,7 +43,7 @@ func elizaReplyShortlyTo(postId yodb.I64) {
 			return
 		}
 
-		last_reply := yodb.FindOne[Post](ctx, PostBy.Equal(elizaUser.id).And(q.ArrAreAnyIn(PostTo, q.OpEq, post.By.Id())), PostDtMade.Desc())
+		last_reply := yodb.FindOne[Post](ctx, PostBy.Equal(elizaUser.id).And(q.ArrAreAny(PostTo, q.OpEq, post.By.Id())), PostDtMade.Desc())
 		reply_text := eliza.ReplyTo(string(post.Htm))
 		for (last_reply != nil) && (reply_text == last_reply.Htm.String()) {
 			reply_text = eliza.ReplyTo(string(post.Htm))
@@ -83,10 +84,18 @@ func elizaEnsureUser() {
 func elizaEnsureBuddies() {
 	defer time.AfterFunc(time.Minute, elizaEnsureBuddies)
 
-	ctx := NewCtxNonHttp(yojobs.Timeout1Min, false, "")
+	ctx := NewCtxNonHttp(time.Minute, false, "")
 	defer ctx.OnDone(nil)
+	println("EEB1", elizaUser.id)
 	eliza_user := yodb.ById[User](ctx, elizaUser.id)
-	buddy_requests := yodb.FindMany[User](ctx, q.ArrAreAnyIn(UserBuddies, q.OpEq, elizaUser.id).And(UserId.NotIn(eliza_user.Buddies.ToAnys()...)), 0, UserFields(UserId))
+	println("EEB2", str.FmtV(eliza_user.Buddies))
+
+	user_query := q.ArrAreAny(UserBuddies, q.OpEq, elizaUser.id)
+	if len(eliza_user.Buddies) > 0 {
+		user_query = user_query.And(UserId.NotIn(eliza_user.Buddies.ToAnys()...))
+	}
+	buddy_requests := yodb.FindMany[User](ctx, user_query, 0, UserFields(UserId))
+	println("EEB3", str.FmtV(buddy_requests))
 	for _, user := range buddy_requests {
 		eliza_user.Buddies = append(eliza_user.Buddies, user.Id)
 	}

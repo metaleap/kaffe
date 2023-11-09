@@ -85,7 +85,7 @@ func init() {
 		"postNew": apiPostNew.IsMultipartForm().
 			CouldFailWith("ExpectedNonEmptyPost").
 			Checks(
-				Fails{Err: "ExpectedOnlyBuddyRecipients", If: q.ArrAreAnyIn(PostTo, q.OpLeq, 0)},
+				Fails{Err: "ExpectedOnlyBuddyRecipients", If: q.ArrAreAny(PostTo, q.OpLeq, 0)},
 				Fails{Err: "ExpectedEmptyFilesFieldWithUploadedFilesInMultipartForm", If: PostFiles.ArrLen().NotEqual(0)},
 			).
 			FailIf(yoauth.IsNotCurrentlyLoggedIn, ErrUnauthorized),
