@@ -19,7 +19,7 @@ func init() {
 		if (ctx.Http.UrlPath == AppApiUrlPrefix+apiMethodNameUserUpdate) || (ctx.Http.UrlPath == AppApiUrlPrefix+apiMethodNameUserBuddiesAdd) {
 			return // dont set last-seen for calls that already just did it
 		}
-		if user_auth_id := ctx.Get(yoauth.CtxKeyAuthId, yodb.I64(0)).(yodb.I64); user_auth_id > 0 {
+		if _, user_auth_id := yoauth.CurrentlyLoggedInUser(ctx); user_auth_id > 0 {
 			by_buddy_last_msg_check, _ := ctx.Get(ctxKeyByBuddyLastMsgCheck, nil).(yodb.JsonMap[*yodb.DateTime])
 			go userSetLastSeen(user_auth_id, by_buddy_last_msg_check)
 		}

@@ -35,6 +35,9 @@ type PostsListResult struct {
 }
 
 func postsForMonthUtc(ctx *Ctx, forUser *User, period YearAndMonth, onlyThoseBy []yodb.I64) (ret []*Post) {
+	if forUser == nil {
+		return
+	}
 	first_of_that_month := time.Date(int(period.Year), time.Month(period.Month), 1, 0, 0, 0, 0, time.UTC)
 	first_of_following_month := first_of_that_month.AddDate(0, 1, 0)
 	query := dbQueryPostsForUser(forUser, onlyThoseBy).
@@ -49,6 +52,9 @@ type YearAndMonth struct {
 }
 
 func postMonthsUtc(ctx *Ctx, forUser *User, with []yodb.I64) (ret []YearAndMonth) {
+	if forUser == nil {
+		return
+	}
 	now_year, now_month, _ := time.Now().Date()
 	query := dbQueryPostsForUser(forUser, with)
 	post_earliest := yodb.FindOne[Post](ctx, query.And(PostDtMade.GreaterOrEqual(forUser.DtMade)), PostDtMade.Asc())
@@ -83,6 +89,9 @@ func postMonthsUtc(ctx *Ctx, forUser *User, with []yodb.I64) (ret []YearAndMonth
 }
 
 func postsRecent(ctx *Ctx, forUser *User, since *yodb.DateTime, onlyThoseBy []yodb.I64) *PostsListResult {
+	if forUser == nil {
+		return nil
+	}
 	if (since != nil) && (since.Time().After(time.Now()) || since.Time().Before(*forUser.DtMade.Time())) {
 		since = nil
 	}

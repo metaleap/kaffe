@@ -19,7 +19,7 @@ import (
 	"yo/util/str"
 )
 
-var mockLiveActivity = true
+var mockLiveActivity = false
 
 const mockNumReqsPerSecApprox = 11
 const mockUsersNumTotal = 12345
@@ -38,6 +38,9 @@ var mockUsersNever = map[string]bool{
 }
 
 func init() {
+	if !mockLiveActivity {
+		return
+	}
 	devModeInitMockUsers = func() {
 		// ensure all users exist
 		for i := 1; i <= mockUsersNumTotal; i++ {

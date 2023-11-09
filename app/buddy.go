@@ -10,6 +10,9 @@ import (
 )
 
 func userBuddies(ctx *Ctx, forUser *User, normalizeLastSeenBySecond bool) (buddiesAlready []*User, buddyRequestsMade []*User, buddyRequestsBy []*User) {
+	if forUser == nil {
+		return
+	}
 	query := q.InArr(forUser.Id, UserBuddies)
 	if len(forUser.Buddies) > 0 {
 		query = query.Or(UserId.In(forUser.Buddies.ToAnys()...))
@@ -57,6 +60,9 @@ func userBuddies(ctx *Ctx, forUser *User, normalizeLastSeenBySecond bool) (buddi
 }
 
 func userAddBuddy(ctx *Ctx, forUser *User, nickOrEmailAddr string) *User {
+	if forUser == nil {
+		return nil
+	}
 	buddy_to_be := yodb.FindOne[User](ctx, UserNick.Equal(nickOrEmailAddr).Or(UserAuth_EmailAddr.Equal(nickOrEmailAddr)))
 	if (buddy_to_be != nil) && !sl.Has(forUser.Buddies, buddy_to_be.Id) {
 		userUpdate(ctx, &User{Id: forUser.Id, Buddies: sl.With(forUser.Buddies, buddy_to_be.Id)}, false, UserBuddies)
