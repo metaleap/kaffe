@@ -15,9 +15,6 @@ import (
 	"yo/util/str"
 )
 
-const appDomain = "kaffe.up.railway.app"
-const appHref = "https://" + appDomain
-
 var devModeInitMockUsers func()
 
 func init() {
