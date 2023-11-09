@@ -25,7 +25,7 @@ var elizaUser = struct {
 }{"eliza.png", 0, "eliza", "eliza@metaleap.net", "I'm Weizenbaum's O.G. chatbot (Go impl by mattshiel & NortySpock & kennysong)"}
 
 func elizaAddBuddy(userNick string) {
-	DoAfter(time.Second*time.Duration(4+rand.Intn(7)), func() {
+	DoAfter(time.Second*time.Duration(3+rand.Intn(4)), func() {
 		ctx := NewCtxNonHttp(time.Minute, false, "")
 		defer ctx.OnDone(nil)
 		user_eliza := userById(ctx, elizaUser.id)
