@@ -41,7 +41,13 @@ func userBuddies(ctx *Ctx, forUser *User, normalizeLastSeenBySecond bool) (buddi
 		} else if rhs.Offline && !lhs.Offline {
 			return math.MinInt
 		}
-		lhs_last_seen, rhs_last_seen := *lhs.LastSeen, *rhs.LastSeen
+		lhs_last_seen, rhs_last_seen := *lhs.DtMod, *rhs.DtMod
+		if lhs.LastSeen != nil {
+			lhs_last_seen = *lhs.LastSeen
+		}
+		if rhs.LastSeen != nil {
+			rhs_last_seen = *rhs.LastSeen
+		}
 		lhs_last_seen.Set(DtAtZeroSecsUtc)
 		rhs_last_seen.Set(DtAtZeroSecsUtc)
 		return int(rhs_last_seen.Time().UnixNano() - lhs_last_seen.Time().UnixNano())

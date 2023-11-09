@@ -209,6 +209,7 @@ func mockEnsureUser(i int) yodb.I64 {
 			user.Buddies = yodb.Arr[yodb.I64]{123, 234}
 		}
 		user.Auth.SetId(auth_id)
+		user.LastSeen = yodb.DtNow()
 
 		ctx.Timings.Step("insert new user")
 		user.Id = yodb.CreateOne[User](ctx, user)

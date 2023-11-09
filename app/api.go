@@ -116,6 +116,7 @@ var apiUserSignInOrReset = api(func(this *ApiCtx[ApiUserSignInOrReset, Void]) {
 		}
 		user.Nick = user_nick
 		user.Auth.SetId(user_auth.Id)
+		user.LastSeen = yodb.DtNow()
 		_ = yodb.CreateOne[User](this.Ctx, user)
 	}
 })
