@@ -8,6 +8,7 @@ import (
 	. "yo/cfg"
 	. "yo/ctx"
 	yodb "yo/db"
+	q "yo/db/query"
 	yoauth "yo/feat_auth"
 	yojobs "yo/jobs"
 	. "yo/util"
@@ -33,7 +34,7 @@ func elizaAddBuddy(userNick string) {
 }
 
 func elizaReplyShortlyTo(postId yodb.I64) {
-	DoAfter(time.Second*time.Duration(11+rand.Intn(11)), func() {
+	DoAfter(time.Second*time.Duration(1+rand.Intn(1)), func() {
 		ctx := NewCtxNonHttp(time.Minute, false, "")
 		defer ctx.OnDone(nil)
 		post := yodb.ById[Post](ctx, postId)
@@ -41,7 +42,11 @@ func elizaReplyShortlyTo(postId yodb.I64) {
 			return
 		}
 
+		last_reply := yodb.FindOne[Post](ctx, PostBy.Equal(elizaUser.id).And(q.ArrAreAnyIn(PostTo, q.OpEq, post.By.Id())), PostDtMade.Desc())
 		reply_text := eliza.ReplyTo(string(post.Htm))
+		for (last_reply != nil) && (reply_text == last_reply.Htm.String()) {
+			reply_text = eliza.ReplyTo(string(post.Htm))
+		}
 		postNew(ctx, &Post{
 			To:  yodb.Arr[yodb.I64]{post.By.Id()},
 			Htm: yodb.Text(reply_text),

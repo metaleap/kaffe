@@ -187,13 +187,14 @@ func postNew(ctx *Ctx, post *Post, userById yodb.I64) yodb.I64 {
 	if len(post.To) > 0 {
 		if sl.Any(post.To, func(it yodb.I64) bool { return !sl.Has(user_by.Buddies, it) }) {
 			println(str.FmtV(user_by.Buddies), " VS. ", str.FmtV(post.To))
+			ctx.DevModeNoCatch = true
 			panic(ErrPostNew_ExpectedOnlyBuddyRecipients)
 		}
 		post.To = sl.Sorted(sl.With(post.To, user_by.Id))
 	}
 
 	post_id := yodb.CreateOne(ctx, post)
-	if sl.Has(post.To, elizaUser.id) {
+	if (post.By.Id() != elizaUser.id) && sl.Has(post.To, elizaUser.id) {
 		elizaReplyShortlyTo(post_id)
 	}
 	return post_id
