@@ -1,3 +1,5 @@
+import * as yo from './yo-sdk.js'
+
 export function svgTextIconDataHref(emoji: string): string {
     return 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="0em" y="0.9em" font-size="80">' + emoji + '</text></svg>'
 }
@@ -17,4 +19,14 @@ export function timeAgoStr(when: number, now: number, noSecs: boolean, suffix = 
     if (diff <= day)
         return `${Math.floor(diff / hour)}h${suffix}`
     return `${Math.floor(diff / day)}d${suffix}`
+}
+
+export function domLive<T extends { Id?: yo.I64 }>(outer: HTMLElement, perItem: (_: T) => HTMLElement, initial: T[]) {
+    const ret = {
+        update: (items: T[]) => {
+
+        }
+    }
+    ret.update(initial)
+    return ret
 }

@@ -1,4 +1,4 @@
-import van, { State } from '../__yostatic/vanjs/van-1.2.3.js'
+import van, { State } from '../__yostatic/vanjs/van-1.2.6.js'
 const htm = van.tags
 
 import * as yo from './yo-sdk.js'

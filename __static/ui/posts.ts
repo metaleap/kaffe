@@ -1,4 +1,4 @@
-import van, { State } from '../../__yostatic/vanjs/van-1.2.3.js'
+import van, { State } from '../../__yostatic/vanjs/van-1.2.6.js'
 import * as vanx from '../../__yostatic/vanjs/van-x.js'
 const htm = van.tags, depends = van.derive
 
