@@ -167,8 +167,6 @@ func postDelete(ctx *Ctx, post *Post) bool {
 }
 
 func postNew(ctx *Ctx, post *Post, userById yodb.I64) yodb.I64 {
-	ctx.DbTx()
-
 	var user_by *User
 	if userById <= 0 {
 		user_by = userCur(ctx)

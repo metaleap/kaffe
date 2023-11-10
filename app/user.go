@@ -54,7 +54,7 @@ func userUpdate(ctx *Ctx, upd *User, inclEmptyOrMissingFields bool, onlyFields .
 		if upd.Nick.Set(str.Trim); upd.Nick == "" {
 			panic(ErrUserUpdate_ExpectedNonEmptyNickname)
 		}
-		ctx.DbTx()
+		ctx.DbTx(true)
 		if yodb.Exists[User](ctx, UserNick.Equal(upd.Nick).And(UserId.NotEqual(upd.Id))) {
 			panic(ErrUserUpdate_NicknameAlreadyExists)
 		}

@@ -69,7 +69,7 @@ func elizaEnsureUser() {
 	if user_auth := yoauth.ByEmailAddr(ctx, elizaUser.emailAddr); user_auth != nil {
 		elizaUser.id = yodb.FindOne[User](ctx, UserAuth.Equal(user_auth.Id)).Id
 	} else {
-		ctx.DbTx()
+		ctx.DbTx(true)
 		auth_id := yodb.CreateOne[yoauth.UserAuth](ctx, &yoauth.UserAuth{
 			EmailAddr: yodb.Text(elizaUser.emailAddr),
 		})

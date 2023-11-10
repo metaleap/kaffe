@@ -101,7 +101,6 @@ func mockSomeActivity() {
 
 	ctx := NewCtxNonHttp(time.Minute, false, user_email_addr+" "+action)
 	defer ctx.OnDone(nil)
-	ctx.DbTx()
 	ctx.TimingsNoPrintInDevMode = true
 
 	if must_log_in_first {
@@ -120,6 +119,7 @@ func mockSomeActivity() {
 		}, user_client)
 	}
 
+	ctx.DbTx(false)
 	user := userByEmailAddr(ctx, user_email_addr)
 	if user == nil {
 		panic("how come user email addr '" + user_email_addr + "' gone?!")
@@ -193,7 +193,7 @@ func mockEnsureUser(i int) yodb.I64 {
 	user_email_addr := str.Fmt("foo%d@bar.baz", i)
 	ctx := NewCtxNonHttp(time.Minute, false, user_email_addr)
 	defer ctx.OnDone(nil)
-	ctx.DbTx()
+	ctx.DbTx(false)
 	ctx.TimingsNoPrintInDevMode = true
 
 	ctx.Timings.Step("check exists")
