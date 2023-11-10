@@ -43,19 +43,24 @@ export function domLive<T extends { Id?: any }>(outer: () => Element, initial: T
             for (const del_node of del_nodes)
                 del_node.replaceWith()
             // ignoring changes in sort order for now here, actual node-(re)create ops per item
-            for (const i in initial.filter(_ => true)) {
+            const new_nodes = [] as Element[]
+            for (let i = 0; i < initial.length; i++) {
                 const item = initial[i]
                 const node_old = me.lastNodes[item.Id!], item_old = me.lastItems[item.Id!]
                 if (!youtil.deepEq(item, item_old, false, false)) {
                     let node = node_old
                     if (node)  // change dom node
                         node.replaceWith(perItem(item))
-                    else  // new dom append
-                        node = perItem(item) // not yet in dom, happens further down during sort-order-ensuring
+                    else { // new dom append
+                        node = perItem(item)
+                        new_nodes.push(node)
+                    }
                     me.lastNodes[item.Id!] = node
                 }
                 me.lastItems[item.Id!] = item
             }
+            if (new_nodes.length > 0)
+                me.outer.append(...new_nodes)
             // ensure up-to-date sort order
             for (let i = 0, l = (items.length - 1); i < l; i++) {
                 const node_this = me.lastNodes[items[i].Id!], node_next = me.lastNodes[items[i + 1].Id!]
