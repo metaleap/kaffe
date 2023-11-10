@@ -306,7 +306,7 @@ func userUploadedFileNameNew(origFileName string, origFileSize int64) string {
 func apiHandleUploadedFiles(ctx *Ctx, fieldName string, maxNumFiles int, transform func([]byte) []byte, additionalFiles map[string][]byte) (fileNames []yodb.Text, filePaths []string) {
 	handle_file := func(dstFileName string, fileBytes []byte) {
 		dst_file_path := userUploadedFilePath(dstFileName)
-		FileWrite(dst_file_path, fileBytes)
+		FsWrite(dst_file_path, fileBytes)
 		fileNames, filePaths = append(fileNames, yodb.Text(dstFileName)), append(filePaths, dst_file_path)
 	}
 	if files := ctx.Http.Req.MultipartForm.File[fieldName]; len(files) > 0 {

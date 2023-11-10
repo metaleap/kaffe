@@ -89,8 +89,8 @@ func (me cleanUpJob) TaskResults(ctx *Ctx, taskDetails yojobs.TaskDetails) yojob
 	file_del_req := yodb.ById[fileDelReq](ctx, task_details.FileDelReq)
 	if file_del_req != nil {
 		for _, file_name := range file_del_req.FileNames {
-			if file_path := userUploadedFilePath(file_name.String()); IsFile(file_path) {
-				DelFile(file_path)
+			if file_path := userUploadedFilePath(file_name.String()); FsIsFile(file_path) {
+				FsDelFile(file_path)
 				ret.NumFilesDeleted++
 			}
 		}

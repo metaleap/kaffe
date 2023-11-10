@@ -60,8 +60,8 @@ func elizaReplyShortlyTo(postId yodb.I64) {
 }
 
 func elizaEnsureUser() {
-	if avatar_file_path := filepath.Join(Cfg.STATIC_FILE_STORAGE_DIRS["_postfiles"], elizaUser.picFileName); !IsFile(avatar_file_path) {
-		FileCopy(If(IsDevMode, elizaUser.picFileName, "/"+elizaUser.picFileName), avatar_file_path)
+	if avatar_file_path := filepath.Join(Cfg.STATIC_FILE_STORAGE_DIRS["_postfiles"], elizaUser.picFileName); !FsIsFile(avatar_file_path) {
+		FsCopy(If(IsDevMode, elizaUser.picFileName, "/"+elizaUser.picFileName), avatar_file_path)
 	}
 
 	ctx := NewCtxNonHttp(yojobs.Timeout1Min, false, "")

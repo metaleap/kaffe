@@ -71,8 +71,8 @@ func (me gravatarJob) TaskResults(ctx *Ctx, taskDetails yojobs.TaskDetails) yojo
 					src_raw := buf.Bytes()
 					if img, _, _ := image.Decode(&buf); img != nil {
 						file_name := "gravatar_" + hash_of_email_addr
-						if file_path := filepath.Join(Cfg.STATIC_FILE_STORAGE_DIRS["_postfiles"], file_name); !IsFile(file_path) {
-							FileWrite(file_path, src_raw)
+						if file_path := filepath.Join(Cfg.STATIC_FILE_STORAGE_DIRS["_postfiles"], file_name); !FsIsFile(file_path) {
+							FsWrite(file_path, src_raw)
 						}
 						user.PicFileId = yodb.Text(file_name)
 					}
