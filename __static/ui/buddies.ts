@@ -1,5 +1,4 @@
 import van, { State } from '../../__yostatic/vanjs/van-1.2.6.js'
-import * as vanx from '../../__yostatic/vanjs/van-x.js'
 const htm = van.tags, depends = van.derive
 
 import * as yo from '../yo-sdk.js'
@@ -9,13 +8,17 @@ import * as util from '../util.js'
 
 export type UiCtlBuddies = {
     DOM: HTMLElement
-    buddies: vanx.Reactive<yo.User[]>
+    buddies: yo.User[]
+    buddiesLister: util.DomLive<yo.User>
     buddyRequestsBy: State<yo.User[]>
     update: (_: yo.userBuddies_Out) => void
 }
 
 export function create(): UiCtlBuddies {
     const me: UiCtlBuddies = {
+        update: (_) => update(me, _),
+        buddies: [] as yo.User[],
+        buddyRequestsBy: van.state([] as yo.User[]),
         DOM: htm.div({ 'class': 'kaffe-buddies' },
             htm.div({
                 'class': depends(() => 'buddy-self' + ((kaffe.selectedBuddy.val === 0) ? ' selected' : '') + (kaffe.isSeeminglyOffline.val ? ' offline' : '') + ((kaffe.buddyBadges[0].val) ? ' badged' : '') + ((kaffe.buddyBadgesAlt[0].val) ? ' badged-alt' : '')),
@@ -27,23 +30,21 @@ export function create(): UiCtlBuddies {
                 },
             }, htm.div(userDomAttrsSelf())),
         ),
-        buddies: vanx.reactive([] as yo.User[]),
-        buddyRequestsBy: van.state([] as yo.User[]),
-        update: (_) => update(me, _),
+        buddiesLister: util.domLive<yo.User>(() => htm.div({ 'class': 'buddies' }), [], (it) => {
+            const item = htm.div({
+                'class': depends(() => 'buddy' + (kaffe.isSeeminglyOffline.val ? ' offline' : '') + (kaffe.buddySelected(it) ? ' selected' : '') + ((kaffe.buddyBadges[it.Id!].val) ? ' badged' : '') + ((kaffe.buddyBadgesAlt[it.Id!].val) ? ' badged-alt' : '')),
+                'data-badge': depends(() => (kaffe.buddyBadges[it.Id!].val) || ""),
+                'data-badge-alt': depends(() => (kaffe.buddyBadgesAlt[it.Id!].val) || ""),
+            }, htm.div(userDomAttrsBuddy(it)))
+            item.onclick = () => {
+                if (!kaffe.isSeeminglyOffline.val)
+                    kaffe.buddySelected(it, true)
+            }
+            return item
+        })
     }
-    van.add(me.DOM, vanx.list(() => htm.div({ 'class': 'buddies' }), me.buddies, (it) => {
-        const item = htm.div({
-            'class': depends(() => 'buddy' + (kaffe.isSeeminglyOffline.val ? ' offline' : '') + (kaffe.buddySelected(it.val) ? ' selected' : '') + ((kaffe.buddyBadges[it.val.Id!].val) ? ' badged' : '') + ((kaffe.buddyBadgesAlt[it.val.Id!].val) ? ' badged-alt' : '')),
-            'data-badge': depends(() => (kaffe.buddyBadges[it.val.Id!].val) || ""),
-            'data-badge-alt': depends(() => (kaffe.buddyBadgesAlt[it.val.Id!].val) || ""),
-        }, htm.div(userDomAttrsBuddy(it.val)))
-        item.onclick = () => {
-            if (!kaffe.isSeeminglyOffline.val)
-                kaffe.buddySelected(it.val, true)
-        }
-        return item
-    }))
-    van.add(me.DOM, htm.div({
+
+    van.add(me.DOM, me.buddiesLister.outer, htm.div({
         'style': depends(() => kaffe.userSelf.val ? '' : 'display:none'),
         'class': depends(() => 'buddy' + (me.buddyRequestsBy.val.length ? ' badged' : '') + (kaffe.isSeeminglyOffline.val ? ' offline' : '')),
         'data-badge': depends(() => me.buddyRequestsBy.val.length || ""),
@@ -128,7 +129,7 @@ function update(me: UiCtlBuddies, buddiesInfo: yo.userBuddies_Out) {
     }
 
     if (have_changes || !youtil.deepEq(buddies, me.buddies.filter(_ => true), false, false))
-        vanx.replace(me.buddies, (_: yo.User[]) => buddies)
+        me.buddiesLister.update(buddies)
 }
 
 async function showBuddiesDialog(me: UiCtlBuddies) {
