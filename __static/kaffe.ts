@@ -187,13 +187,13 @@ export function userById(id: number) {
     const user_self = userSelf.val
     if (user_self && (user_self.Id === id))
         return user_self
-    return uiBuddies.buddies.find(_ => (_.Id === id))
+    return uiBuddies.buddies.all.find(_ => (_.Id === id))
 }
 export function userByPost(post: yo.Post) {
     const user_self = userSelf.val
     if (user_self && (user_self.Id === post.By))
         return user_self
-    return uiBuddies.buddies.find(_ => (_.Id === post.By))
+    return uiBuddies.buddies.all.find(_ => (_.Id === post.By))
 }
 
 export async function sendNewPost(html: string, files?: File[]) {
@@ -240,7 +240,7 @@ export async function deletePost(id: number) {
 function browserTabTitleRefresh() {
     const user_self = userSelf.val, user_buddy = userById(selectedBuddy.val)
     const buddies_and_self = (user_buddy && user_self) ? [user_buddy, user_self]
-        : uiBuddies.buddies.concat(user_self ? [user_self] : [])
+        : uiBuddies.buddies.all.concat(user_self ? [user_self] : [])
     const new_title = ((isSeeminglyOffline.val ? '(disconnected)' : ((uiPosts.numFreshPosts === 0) ? '' : `(${uiPosts.numFreshPosts})`))
         + ' ' + (buddies_and_self.map(_ => _.Nick).join(', '))).trim()
     if (new_title !== document.title)

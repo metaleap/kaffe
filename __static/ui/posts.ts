@@ -18,6 +18,7 @@ export type UiCtlPosts = {
     isSending: State<boolean>
     isRequestingDeletion: State<number>
     upFilesNative: (File | null)[]
+    upFilesOwn: util.DomLive<UpFile>
 }
 
 type PostAug = yo.Post & {
@@ -29,13 +30,13 @@ type PostAug = yo.Post & {
 export function create(): UiCtlPosts {
     const is_sending = van.state(false), is_deleting = van.state(0), is_empty = van.state(true)
     let me: UiCtlPosts
-    const files_to_post: vanx.Reactive<UpFile[]> = vanx.reactive([] as UpFile[])
+    const files_to_post: UpFile[] = []
     const htm_post_entry = htm.div({
         'class': depends(() => 'post-content' + (kaffe.isSeeminglyOffline.val ? ' offline' : '') + (is_sending.val ? ' sending' : '') + (is_empty.val ? ' empty' : '')),
         'contenteditable': depends(() => ((is_sending.val || kaffe.isArchiveBrowsing.val || !kaffe.userSelf.val) ? 'false' : 'true')),
         'autofocus': true, 'spellcheck': false, 'autocorrect': 'off', 'tabindex': 1,
         'title': depends(() =>
-            kaffe.isSeeminglyOffline.val ? "You seem to be offline, or our backend is. Or hax0rs, or a meteor strike on The Cloud, or TEOTWAWKI, or an stray cosmic ray... but it's probably your router resetting."
+            kaffe.isSeeminglyOffline.val ? "You seem to be offline, or our backend is. Or hax0rs, or a meteor strike on The Cloud, or TEOTWAWKI, or a stray cosmic ray... but it's probably your router resetting."
                 : ((!kaffe.userSelf.val) ? (kaffe.signUpOrPwdForgotNotice.val || "Sign in or sign up to resume confabulations:") : (kaffe.isArchiveBrowsing.val
                     ? "Browsing archives. To chat, switch back to 'Fresh'."
                     : (kaffe.selectedBuddy.val
@@ -48,18 +49,29 @@ export function create(): UiCtlPosts {
             if (['Enter', 'NumpadEnter'].includes(evt.code) && !(evt.shiftKey || evt.ctrlKey || evt.altKey || evt.metaKey)) {
                 evt.preventDefault()
                 evt.stopPropagation()
-                sendNew(me, files_to_post, is_empty)
+                sendNew(me, me.upFilesOwn.all, is_empty)
                 return false
             }
         },
     }, "")
     const button_disabled = () => (kaffe.isSeeminglyOffline.val || (is_deleting.val > 0) || is_sending.val || !kaffe.userSelf.val)
-    const htm_input_file = htm.input({ 'type': 'file', 'multiple': true, 'onchange': () => onFilesAdded(me, files_to_post, htm_input_file) })
+    const htm_input_file = htm.input({ 'type': 'file', 'multiple': true, 'onchange': () => onFilesAdded(me, htm_input_file) })
+    const up_files_own = util.domLive<UpFile>(htm.div({ 'class': 'kaffe-post-files' }), [], (_: UpFile) => {
+        const icon = _.type.includes('/') ? (fileContentTypeIcons[_.type.substring(0, _.type.indexOf('/'))]) : ""
+        return htm.a({ 'class': 'kaffe-post-file', 'title': `${_.name + '\n'}${(_.size / (1024 * 1024)).toFixed(3)}MB` },
+            (icon ? htm.div({}, icon) : undefined),
+            htm.span({}, _.name,
+                htm.span({}, _.type || '(unknown type)',
+                    htm.button({
+                        'class': 'button delete', 'type': 'button', 'title': 'Remove', 'disabled': depends(button_disabled), 'onclick': () => removeUpFile(me, _)
+                    }))))
+    }, 'idx')
     me = {
         _htmPostInput: htm_post_entry,
         isSending: is_sending,
         isRequestingDeletion: is_deleting,
         upFilesNative: [],
+        upFilesOwn: up_files_own,
         DOM: htm.div({ 'class': 'kaffe-posts' },
             htm.div({ 'class': 'self-post' },
                 htm.div({ 'class': 'post' },
@@ -82,16 +94,7 @@ Don't share privacy-sensitive/highly-personal stuff (if you care), we don't prot
                     htm_input_file,
                     htm.div({},
                         htm_post_entry,
-                        vanx.list(() => { return htm.div({ 'class': 'kaffe-post-files' }) }, files_to_post, (_) => {
-                            const icon = _.val.type.includes('/') ? (fileContentTypeIcons[_.val.type.substring(0, _.val.type.indexOf('/'))]) : ""
-                            return htm.a({ 'class': 'kaffe-post-file', 'title': `${_.val.name + '\n'}${(_.val.size / (1024 * 1024)).toFixed(3)}MB` },
-                                (icon ? htm.div({}, icon) : undefined),
-                                htm.span({}, _.val.name,
-                                    htm.span({}, _.val.type || '(unknown type)',
-                                        htm.button({
-                                            'class': 'button delete', 'type': 'button', 'title': 'Remove', 'disabled': depends(button_disabled), 'onclick': () => removeUpFile(me, files_to_post, _.val)
-                                        }))))
-                        }),
+                        up_files_own.outer,
                     ),
                 ),
             ),
@@ -177,30 +180,27 @@ function hasUpFiles(me: UiCtlPosts) {
 
 type UpFile = { name: string, type: string, idx: number, size: number, lastModified: number }
 
-function onFilesAdded(me: UiCtlPosts, upFilesOwn: vanx.Reactive<UpFile[]>, htmInputFile: HTMLInputElement) {
-    vanx.replace(upFilesOwn, (prevFiles: UpFile[]) => {
-        const ret = prevFiles.filter(_ => true)
-        const likely_dupls: string[] = []
-        for (let i = 0; i < htmInputFile.files!.length; i++) {
-            const file = htmInputFile.files!.item(i)
-            if (file) {
-                if (ret.some(_ => (_.name === file.name) && (_.type === file.type) && (youtil.fEq(_.size, file.size)) && (youtil.fEq(_.lastModified, file.lastModified))))
-                    likely_dupls.push(file.name)
-                ret.push({ idx: me.upFilesNative.length, name: file.name, type: file.type, size: file.size, lastModified: file.lastModified })
-                me.upFilesNative.push(file)
-            }
+function onFilesAdded(me: UiCtlPosts, htmInputFile: HTMLInputElement) {
+    const files = me.upFilesOwn.all
+    const likely_dupls: string[] = []
+    for (let i = 0; i < htmInputFile.files!.length; i++) {
+        const file = htmInputFile.files!.item(i)
+        if (file) {
+            if (files.some(_ => (_.name === file.name) && (_.type === file.type) && (youtil.fEq(_.size, file.size)) && (youtil.fEq(_.lastModified, file.lastModified))))
+                likely_dupls.push(file.name)
+            files.push({ idx: me.upFilesNative.length, name: file.name, type: file.type, size: file.size, lastModified: file.lastModified })
+            me.upFilesNative.push(file)
         }
-        if (likely_dupls.length)
-            alert("Detected probable (but not byte-by-byte-compared) duplicate files, please double-check and remove any duplicates:\n\n· " + likely_dupls.join('\n· '))
-        return ret
-    })
+    }
+    if (likely_dupls.length)
+        alert("Detected probable (but not byte-by-byte-compared) duplicate files, please double-check and remove any duplicates:\n\n· " + likely_dupls.join('\n· '))
+
+    me.upFilesOwn.onUpdated(files)
 }
 
-function removeUpFile(me: UiCtlPosts, upFilesOwn: vanx.Reactive<UpFile[]>, upFile: UpFile) {
+function removeUpFile(me: UiCtlPosts, upFile: UpFile) {
     me.upFilesNative[upFile.idx] = null
-    vanx.replace(upFilesOwn, (prevFiles: UpFile[]) => {
-        return prevFiles.filter(_ => (_.idx !== upFile.idx))
-    })
+    me.upFilesOwn.onUpdated(me.upFilesOwn.all.filter(_ => (_.idx !== upFile.idx)))
 }
 
 async function deletePost(me: UiCtlPosts, postId: number) {
@@ -218,7 +218,7 @@ async function deletePost(me: UiCtlPosts, postId: number) {
     me.isRequestingDeletion.val = 0
 }
 
-async function sendNew(me: UiCtlPosts, upFilesOwn: vanx.Reactive<UpFile[]>, isEmptyStateToSet: State<boolean>) {
+async function sendNew(me: UiCtlPosts, upFilesOwn: UpFile[], isEmptyStateToSet: State<boolean>) {
     const post_html = htmlToSend(me)
     if ((!(post_html && post_html.length)) && !hasUpFiles(me))
         return
@@ -229,7 +229,7 @@ async function sendNew(me: UiCtlPosts, upFilesOwn: vanx.Reactive<UpFile[]>, isEm
     if (ok) {
         me._htmPostInput.innerHTML = ''
         me.upFilesNative = []
-        vanx.replace(upFilesOwn, () => [])
+        me.upFilesOwn.onUpdated([])
         window.scrollTo(0, 0)
         isEmptyStateToSet.val = true
     }

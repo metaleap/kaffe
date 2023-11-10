@@ -8,8 +8,7 @@ import * as util from '../util.js'
 
 export type UiCtlBuddies = {
     DOM: HTMLElement
-    buddies: yo.User[]
-    buddiesLister: util.DomLive<yo.User>
+    buddies: util.DomLive<yo.User>
     buddyRequestsBy: State<yo.User[]>
     update: (_: yo.userBuddies_Out) => void
 }
@@ -17,8 +16,19 @@ export type UiCtlBuddies = {
 export function create(): UiCtlBuddies {
     const me: UiCtlBuddies = {
         update: (_) => update(me, _),
-        buddies: [] as yo.User[],
         buddyRequestsBy: van.state([] as yo.User[]),
+        buddies: util.domLive<yo.User>(htm.div({ 'class': 'buddies' }), [], (it) => {
+            const item = htm.div({
+                'class': depends(() => 'buddy' + (kaffe.isSeeminglyOffline.val ? ' offline' : '') + (kaffe.buddySelected(it) ? ' selected' : '') + ((kaffe.buddyBadges[it.Id!].val) ? ' badged' : '') + ((kaffe.buddyBadgesAlt[it.Id!].val) ? ' badged-alt' : '')),
+                'data-badge': depends(() => (kaffe.buddyBadges[it.Id!].val) || ""),
+                'data-badge-alt': depends(() => (kaffe.buddyBadgesAlt[it.Id!].val) || ""),
+            }, htm.div(userDomAttrsBuddy(it)))
+            item.onclick = () => {
+                if (!kaffe.isSeeminglyOffline.val)
+                    kaffe.buddySelected(it, true)
+            }
+            return item
+        }),
         DOM: htm.div({ 'class': 'kaffe-buddies' },
             htm.div({
                 'class': depends(() => 'buddy-self' + ((kaffe.selectedBuddy.val === 0) ? ' selected' : '') + (kaffe.isSeeminglyOffline.val ? ' offline' : '') + ((kaffe.buddyBadges[0].val) ? ' badged' : '') + ((kaffe.buddyBadgesAlt[0].val) ? ' badged-alt' : '')),
@@ -30,21 +40,9 @@ export function create(): UiCtlBuddies {
                 },
             }, htm.div(userDomAttrsSelf())),
         ),
-        buddiesLister: util.domLive<yo.User>(() => htm.div({ 'class': 'buddies' }), [], (it) => {
-            const item = htm.div({
-                'class': depends(() => 'buddy' + (kaffe.isSeeminglyOffline.val ? ' offline' : '') + (kaffe.buddySelected(it) ? ' selected' : '') + ((kaffe.buddyBadges[it.Id!].val) ? ' badged' : '') + ((kaffe.buddyBadgesAlt[it.Id!].val) ? ' badged-alt' : '')),
-                'data-badge': depends(() => (kaffe.buddyBadges[it.Id!].val) || ""),
-                'data-badge-alt': depends(() => (kaffe.buddyBadgesAlt[it.Id!].val) || ""),
-            }, htm.div(userDomAttrsBuddy(it)))
-            item.onclick = () => {
-                if (!kaffe.isSeeminglyOffline.val)
-                    kaffe.buddySelected(it, true)
-            }
-            return item
-        })
     }
 
-    van.add(me.DOM, me.buddiesLister.outer, htm.div({
+    van.add(me.DOM, me.buddies.outer, htm.div({
         'style': depends(() => kaffe.userSelf.val ? '' : 'display:none'),
         'class': depends(() => 'buddy' + (me.buddyRequestsBy.val.length ? ' badged' : '') + (kaffe.isSeeminglyOffline.val ? ' offline' : '')),
         'data-badge': depends(() => me.buddyRequestsBy.val.length || ""),
@@ -104,7 +102,7 @@ function update(me: UiCtlBuddies, buddiesInfo: yo.userBuddies_Out) {
     const offline_buddies = buddies.filter(_ => _.Offline)
     let have_changes = false
     for (const user of offline_buddies) {
-        const old = me.buddies.find(_ => (_.Id === user.Id))
+        const old = me.buddies.all.find(_ => (_.Id === user.Id))
         if (old && (old.Offline !== user.Offline))
             have_changes = true
     }
@@ -128,15 +126,15 @@ function update(me: UiCtlBuddies, buddiesInfo: yo.userBuddies_Out) {
         }
     }
 
-    if (have_changes || !youtil.deepEq(buddies, me.buddies.filter(_ => true), false, false))
-        me.buddiesLister.onUpdated(me.buddies = buddies)
+    if (have_changes || !youtil.deepEq(buddies, me.buddies.all.filter(_ => true), false, false))
+        me.buddies.onUpdated(buddies)
 }
 
 async function showBuddiesDialog(me: UiCtlBuddies) {
     const add_new_buddy = async () => {
         let nick_or_email_addr = prompt("New buddy's nick or email address?", "")
         if (nick_or_email_addr && nick_or_email_addr.length && (nick_or_email_addr = nick_or_email_addr.trim())) {
-            if (me.buddies.filter(_ => true).some(_ => _.Nick === nick_or_email_addr))
+            if (me.buddies.all.filter(_ => true).some(_ => _.Nick === nick_or_email_addr))
                 alert(`A buddy request for '${nick_or_email_addr}' had already been placed at an earlier time, but your eagerness is commendable.`)
             else
                 try {
