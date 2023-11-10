@@ -23,7 +23,7 @@ var gravatarJobTypeId = yojobs.Register[gravatarJob, gravatarJobDetails, gravata
 var gravatarJobDef = yojobs.JobDef{
 	Name:                             yodb.Text(ReflType[gravatarJob]().String()),
 	JobTypeId:                        yodb.Text(gravatarJobTypeId),
-	Schedules:                        yojobs.ScheduleOncePerMinute,
+	Schedules:                        yojobs.ScheduleOncePerHour,
 	TimeoutSecsTaskRun:               22,
 	TimeoutSecsJobRunPrepAndFinalize: 44,
 	Disabled:                         false,
@@ -68,11 +68,11 @@ func (me gravatarJob) TaskResults(ctx *Ctx, taskDetails yojobs.TaskDetails) yojo
 				defer resp.Body.Close()
 				var buf bytes.Buffer
 				if _, _ = io.Copy(&buf, resp.Body); buf.Len() > 0 {
-					buf := buf.Bytes()
-					if img, _, _ := image.Decode(bytes.NewReader(buf)); img != nil {
+					src_raw := buf.Bytes()
+					if img, _, _ := image.Decode(&buf); img != nil {
 						file_name := "gravatar_" + hash_of_email_addr
 						if file_path := filepath.Join(Cfg.STATIC_FILE_STORAGE_DIRS["_postfiles"], file_name); !IsFile(file_path) {
-							FileWrite(file_path, buf)
+							FileWrite(file_path, src_raw)
 						}
 						user.PicFileId = yodb.Text(file_name)
 					}
