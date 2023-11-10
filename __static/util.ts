@@ -33,7 +33,7 @@ export function domLive<T extends { Id?: any }>(outer: () => Element, initial: T
             // any old items fully gone, hence dom nodes to remove?
             const del_nodes: Element[] = []
             for (const id in me.lastItems) {
-                if (!initial.some(_ => (_.Id!) == id)) { // no `===` here due to string-vs-number
+                if (!initial.some(_ => (_.Id!) == id)) { // no `===` here due to string-vs-number ambiguity
                     const node_old = me.lastNodes[id]
                     del_nodes.push(node_old)
                     delete me.lastNodes[id]
@@ -43,7 +43,6 @@ export function domLive<T extends { Id?: any }>(outer: () => Element, initial: T
             for (const del_node of del_nodes)
                 del_node.replaceWith()
             // ignoring changes in sort order for now here, actual node-(re)create ops per item
-            const new_nodes = [] as Element[]
             for (const i in initial.filter(_ => true)) {
                 const item = initial[i]
                 const node_old = me.lastNodes[item.Id!], item_old = me.lastItems[item.Id!]
@@ -51,19 +50,17 @@ export function domLive<T extends { Id?: any }>(outer: () => Element, initial: T
                     let node = node_old
                     if (node)  // change dom node
                         node.replaceWith(perItem(item))
-                    else { // new dom append
-                        node = perItem(item)
-                        new_nodes.push(node)
-                    }
+                    else  // new dom append
+                        node = perItem(item) // not yet in dom, happens further down during sort-order-ensuring
                     me.lastNodes[item.Id!] = node
                 }
                 me.lastItems[item.Id!] = item
             }
-            if (new_nodes.length > 0)
-                me.outer.append(...new_nodes)
             // ensure up-to-date sort order
-            if (me.outer.hasChildNodes()) {
-
+            for (let i = 0, l = (items.length - 1); i < l; i++) {
+                const node_this = me.lastNodes[items[i].Id!], node_next = me.lastNodes[items[i + 1].Id!]
+                if (node_this.nextElementSibling !== node_next)
+                    me.outer.insertBefore(node_this, node_next)
             }
         }
     }
