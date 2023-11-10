@@ -63,7 +63,7 @@ export function userPicFileUrl(user?: yo.User, fallBackToEmoji = "🦜", toRound
 }
 
 export function userDomAttrsBuddy(user?: yo.User, userIdHint?: number) {
-    if (!(user))
+    if (!user)
         return {
             'class': 'buddy-pic offline',
             'title': `(ex-buddy #${userIdHint ?? -1} — or bug)`,
@@ -129,7 +129,7 @@ function update(me: UiCtlBuddies, buddiesInfo: yo.userBuddies_Out) {
     }
 
     if (have_changes || !youtil.deepEq(buddies, me.buddies.filter(_ => true), false, false))
-        me.buddiesLister.update(buddies)
+        me.buddiesLister.onUpdated(me.buddies = buddies)
 }
 
 async function showBuddiesDialog(me: UiCtlBuddies) {

@@ -25,17 +25,21 @@ export function timeAgoStr(when: number, now: number, noSecs: boolean, suffix = 
 export type DomLive<T extends { Id?: any }> = {
     outer: Element
     itemCount: State<number>
-    update: (_: T[]) => void
+    onUpdated: (_: T[]) => void
 }
 
 export function domLive<T extends { Id?: any }>(outer: () => Element, initial: T[], perItem: (_: T) => Element): DomLive<T> {
-    const me = {
+    type _DomLive = DomLive<T> & {
+        _lastNodes: { [_: string]: Element }
+        _lastItems: { [_: string]: T }
+    }
+    const me: _DomLive = {
         _lastNodes: {} as { [_: string]: Element },
         _lastItems: {} as { [_: string]: T },
 
         itemCount: van.state(initial.length),
         outer: outer(),
-        update: (items: T[]) => {
+        onUpdated: (items: T[]) => {
             me.itemCount.val = items.length
             // any old items fully gone, hence dom nodes to remove?
             const del_nodes: Element[] = []
@@ -74,6 +78,6 @@ export function domLive<T extends { Id?: any }>(outer: () => Element, initial: T
             }
         }
     }
-    me.update(initial)
+    me.onUpdated(initial)
     return me
 }

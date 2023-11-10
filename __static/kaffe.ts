@@ -189,9 +189,9 @@ export function userById(id: number) {
         return user_self
     return uiBuddies.buddies.find(_ => (_.Id === id))
 }
-export function userByPost(post?: yo.Post) {
+export function userByPost(post: yo.Post) {
     const user_self = userSelf.val
-    if ((!post) || (user_self && (user_self.Id === post.By)))
+    if (user_self && (user_self.Id === post.By))
         return user_self
     return uiBuddies.buddies.find(_ => (_.Id === post.By))
 }
