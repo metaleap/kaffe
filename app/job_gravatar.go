@@ -23,7 +23,7 @@ var gravatarJobTypeId = yojobs.Register[gravatarJob, gravatarJobDetails, gravata
 var gravatarJobDef = yojobs.JobDef{
 	Name:                             yodb.Text(ReflType[gravatarJob]().String()),
 	JobTypeId:                        yodb.Text(gravatarJobTypeId),
-	Schedules:                        yojobs.ScheduleOncePerHour,
+	Schedules:                        If(IsDevMode, yojobs.ScheduleOncePerMinute, yojobs.ScheduleOncePerHour),
 	TimeoutSecsTaskRun:               22,
 	TimeoutSecsJobRunPrepAndFinalize: 44,
 	Disabled:                         false,

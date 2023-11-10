@@ -20,9 +20,9 @@ var cleanUpJobTypeId = yojobs.Register[cleanUpJob, cleanUpJobDetails, cleanUpJob
 var cleanUpJobDef = yojobs.JobDef{
 	Name:                             yodb.Text(ReflType[cleanUpJob]().String()),
 	JobTypeId:                        yodb.Text(cleanUpJobTypeId),
-	Schedules:                        yojobs.ScheduleOncePerDay,
-	TimeoutSecsTaskRun:               123,
-	TimeoutSecsJobRunPrepAndFinalize: 123,
+	Schedules:                        If(IsDevMode, yojobs.ScheduleOncePerMinute, yojobs.ScheduleOncePerDay),
+	TimeoutSecsTaskRun:               11,
+	TimeoutSecsJobRunPrepAndFinalize: 22,
 	Disabled:                         false,
 	DeleteAfterDays:                  1,
 	MaxTaskRetries:                   1, // keep low, the to-dos will anyway resurface for the next job run
