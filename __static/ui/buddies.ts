@@ -42,7 +42,7 @@ export function create(): UiCtlBuddies {
         ),
     }
 
-    van.add(me.DOM, me.buddies.outer, htm.div({
+    van.add(me.DOM, me.buddies.domNode, htm.div({
         'style': depends(() => kaffe.userSelf.val ? '' : 'display:none'),
         'class': depends(() => 'buddy' + (me.buddyRequestsBy.val.length ? ' badged' : '') + (kaffe.isSeeminglyOffline.val ? ' offline' : '')),
         'data-badge': depends(() => me.buddyRequestsBy.val.length || ""),

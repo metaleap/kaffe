@@ -125,7 +125,7 @@ async function fetchPostsRecent(oneOff?: boolean) {
             const period: yo.YearAndMonth = JSON.parse(uiPeriodPicker.selectedOptions[0].value)
             const dt = new Date(period.Year!, (period.Month!) - 1, 1, 0, 0, 0, 0)
             const is_earlier_month_than_current = (dt.getTime() < firstOfMonth)
-            if ((!oneOff) && (uiPosts.posts.length > 0) && is_earlier_month_than_current)
+            if ((!oneOff) && (uiPosts.posts.all.length > 0) && is_earlier_month_than_current)
                 return // the month selected is before the current month and was already fetched.
             else if (!is_earlier_month_than_current) // current-month while in archive view...
                 oneOff = false // ...so ensuring interval activates at the end of this function (in case user just jumped here from an earlier month)
@@ -166,13 +166,13 @@ async function fetchPostsRecent(oneOff?: boolean) {
 async function fetchPostsDeleted() {
     if (fetchesPaused)
         return
-    const post_ids = uiPosts.posts.filter(_ => true).map(_ => _.Id!)
+    const post_ids = uiPosts.posts.all.filter(_ => true).map(_ => _.Id!)
     if (post_ids.length)
         try {
             const post_ids_deleted = (await yo.apiPostsDeleted({ OutOfPostIds: post_ids })).DeletedPostIds
             isSeeminglyOffline.val = false
             if (post_ids_deleted && post_ids_deleted.length)
-                uiposts.update(uiPosts, uiPosts.posts.filter(_ => !post_ids_deleted.includes(_.Id!)), false, post_ids_deleted)
+                uiposts.update(uiPosts, uiPosts.posts.all.filter(_ => !post_ids_deleted.includes(_.Id!)), false, post_ids_deleted)
         } catch (err) {
             if (!knownErr<yo.PostsDeletedErr>(err, handleKnownErrMaybe<yo.PostsDeletedErr>))
                 onErrOther(err)

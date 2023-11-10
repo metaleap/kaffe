@@ -1,5 +1,4 @@
 import van, { State } from '../../__yostatic/vanjs/van-1.2.6.js'
-import * as vanx from '../../__yostatic/vanjs/van-x.js'
 const htm = van.tags, depends = van.derive
 
 import * as yo from '../yo-sdk.js'
@@ -13,7 +12,7 @@ const freshnessDurationMsWhenVisible = 3456
 export type UiCtlPosts = {
     DOM: HTMLElement
     _htmPostInput: HTMLElement
-    posts: vanx.Reactive<PostAug[]>
+    posts: util.DomLive<PostAug>
     numFreshPosts: number
     isSending: State<boolean>
     isRequestingDeletion: State<number>
@@ -94,70 +93,68 @@ Don't share privacy-sensitive/highly-personal stuff (if you care), we don't prot
                     htm_input_file,
                     htm.div({},
                         htm_post_entry,
-                        up_files_own.outer,
+                        up_files_own.domNode,
                     ),
                 ),
             ),
         ),
         numFreshPosts: 0,
-        posts: vanx.reactive([] as PostAug[]),
-    }
+        posts: util.domLive<PostAug>(htm.div({ 'class': 'feed' }), [], (post) => {
+            let inner_html = post.Htm ?? ''
+            const post_files = (post.Files ?? []).filter(_ => !_.includes('__yodata__'))
+            if (post_files && post_files.length) {
+                const htm_files = htm.div({ 'class': 'kaffe-post-files' },
+                    ...post_files.map((file_name_full, idx) => {
+                        const idx_sep = file_name_full.indexOf("__yo__")
+                        const file_name_show = (idx_sep < 0) ? file_name_full : file_name_full.substring(idx_sep + "__yo__".length)
+                        const file_content_type = post.FileContentTypes![idx],
+                            file_url = `/_postfiles/${encodeURIComponent(file_name_full)}`
+                        const htm_file_link = htm.a({ 'class': 'kaffe-post-file', 'target': '_blank', 'href': file_url, 'data-filename': file_name_show, 'data-filetype': file_content_type })
+                        if (file_content_type !== "") {
+                            const icon = fileContentTypeIcons[file_content_type.substring(0, file_content_type.indexOf('/'))]
+                            van.add(htm_file_link, (icon !== fileContentTypeIcons['image']) ? htm.div({}, icon)
+                                : htm.div({ 'class': 'image', 'style': `background-image:url('${file_url}')` }))
+                        }
+                        van.add(htm_file_link, htm.span({}, file_name_show, (file_content_type === "") ? undefined : htm.span({}, file_content_type)))
+                        return htm_file_link
+                    })
+                )
+                inner_html += htm_files.outerHTML
+            }
 
-    van.add(me.DOM, vanx.list(() => htm.div({ 'class': 'feed' }), me.posts, (it) => {
-        const post = it.val
-        let inner_html = post.Htm ?? ''
-        const post_files = (post.Files ?? []).filter(_ => !_.includes('__yodata__'))
-        if (post_files && post_files.length) {
-            const htm_files = htm.div({ 'class': 'kaffe-post-files' },
-                ...post_files.map((file_name_full, idx) => {
-                    const idx_sep = file_name_full.indexOf("__yo__")
-                    const file_name_show = (idx_sep < 0) ? file_name_full : file_name_full.substring(idx_sep + "__yo__".length)
-                    const file_content_type = post.FileContentTypes![idx],
-                        file_url = `/_postfiles/${encodeURIComponent(file_name_full)}`
-                    const htm_file_link = htm.a({ 'class': 'kaffe-post-file', 'target': '_blank', 'href': file_url, 'data-filename': file_name_show, 'data-filetype': file_content_type })
-                    if (file_content_type !== "") {
-                        const icon = fileContentTypeIcons[file_content_type.substring(0, file_content_type.indexOf('/'))]
-                        van.add(htm_file_link, (icon !== fileContentTypeIcons['image']) ? htm.div({}, icon)
-                            : htm.div({ 'class': 'image', 'style': `background-image:url('${file_url}')` }))
-                    }
-                    van.add(htm_file_link, htm.span({}, file_name_show, (file_content_type === "") ? undefined : htm.span({}, file_content_type)))
-                    return htm_file_link
+            const htm_post = htm.div({ 'class': depends(() => ('post-content' + ((post._isDel || (me.isRequestingDeletion.val === (post.Id!))) ? ' deleting' : (post._isFresh ? ' fresh' : '')))) })
+            htm_post.innerHTML = inner_html
+            const htm_file_link_nodes = htm_post.querySelectorAll("a[data-filetype]")
+            if (htm_file_link_nodes)
+                htm_file_link_nodes.forEach((a) => {
+                    if (a.getAttribute('data-filetype')!.startsWith('image/'))
+                        (a as HTMLAnchorElement).onclick = () => openMediaPopup(a.getAttribute('href')!, a.getAttribute('data-filename')!, false)
+                    else if (a.getAttribute('data-filetype')!.startsWith('video/'))
+                        (a as HTMLAnchorElement).onclick = () => openMediaPopup(a.getAttribute('href')!, a.getAttribute('data-filename')!, true)
                 })
+
+            const post_by = kaffe.userByPost(post), post_dt = new Date(post.DtMade!)
+            const is_own_post = (post_by?.Id === kaffe.userSelf.val?.Id) || false,
+                dt_str = post_dt.toLocaleDateString() + " at " + post_dt.toLocaleTimeString()
+            return htm.div({ 'class': 'post', 'title': dt_str },
+                htm.div({ 'class': 'post-head' },
+                    htm.div({
+                        ...is_own_post ? uibuddies.userDomAttrsSelf() : uibuddies.userDomAttrsBuddy(post_by, post.By),
+                        'onclick': () => kaffe.userShowPopup(is_own_post ? undefined : post_by),
+                    }),
+                    htm.div({ 'class': 'post-ago', 'title': dt_str }, post._uxStrAgo),
+                ),
+                htm.div({ 'class': 'post-buttons' },
+                    htm.button({
+                        'type': 'button', 'class': 'button delete', 'title': "Delete", 'style': `visibility:${is_own_post ? 'visible' : 'hidden'}`,
+                        'disabled': depends(button_disabled), 'onclick': () => deletePost(me, post.Id!),
+                    }),
+                ),
+                htm_post,
             )
-            inner_html += htm_files.outerHTML
-        }
-
-        const htm_post = htm.div({ 'class': depends(() => ('post-content' + ((post._isDel || (me.isRequestingDeletion.val === (post.Id!))) ? ' deleting' : (post._isFresh ? ' fresh' : '')))) })
-        htm_post.innerHTML = inner_html
-        const htm_file_link_nodes = htm_post.querySelectorAll("a[data-filetype]")
-        if (htm_file_link_nodes)
-            htm_file_link_nodes.forEach((a) => {
-                if (a.getAttribute('data-filetype')!.startsWith('image/'))
-                    (a as HTMLAnchorElement).onclick = () => openMediaPopup(a.getAttribute('href')!, a.getAttribute('data-filename')!, false)
-                else if (a.getAttribute('data-filetype')!.startsWith('video/'))
-                    (a as HTMLAnchorElement).onclick = () => openMediaPopup(a.getAttribute('href')!, a.getAttribute('data-filename')!, true)
-            })
-
-        const post_by = kaffe.userByPost(post), post_dt = new Date(post.DtMade!)
-        const is_own_post = (post_by?.Id === kaffe.userSelf.val?.Id) || false,
-            dt_str = post_dt.toLocaleDateString() + " at " + post_dt.toLocaleTimeString()
-        return htm.div({ 'class': 'post', 'title': dt_str },
-            htm.div({ 'class': 'post-head' },
-                htm.div({
-                    ...is_own_post ? uibuddies.userDomAttrsSelf() : uibuddies.userDomAttrsBuddy(post_by, post.By),
-                    'onclick': () => kaffe.userShowPopup(is_own_post ? undefined : post_by),
-                }),
-                htm.div({ 'class': 'post-ago', 'title': dt_str }, post._uxStrAgo),
-            ),
-            htm.div({ 'class': 'post-buttons' },
-                htm.button({
-                    'type': 'button', 'class': 'button delete', 'title': "Delete", 'style': `visibility:${is_own_post ? 'visible' : 'hidden'}`,
-                    'disabled': depends(button_disabled), 'onclick': () => deletePost(me, post.Id!),
-                }),
-            ),
-            htm_post,
-        )
-    }))
+        })
+    }
+    van.add(me.DOM, me.posts.domNode)
     return me
 }
 
@@ -206,15 +203,15 @@ function removeUpFile(me: UiCtlPosts, upFile: UpFile) {
 async function deletePost(me: UiCtlPosts, postId: number) {
     if (!confirm("Sure to delete?"))
         return
-    const post_idx = me.posts.findIndex(_ => (_ && (_.Id === postId)))
+    const post_idx = me.posts.all.findIndex(_ => (_ && (_.Id === postId)))
     if (post_idx < 0)
         return
     me.isRequestingDeletion.val = postId
-    const post = me.posts[post_idx]
+    const post = me.posts.all[post_idx]
     if (post)
         post._isDel = true
     await kaffe.deletePost(postId)
-    update(me, me.posts)
+    update(me, me.posts.all)
     me.isRequestingDeletion.val = 0
 }
 
@@ -253,7 +250,7 @@ function htmlToSend(me: UiCtlPosts, ignoreOffline?: boolean) {
 
 export function update(me: UiCtlPosts, newOrUpdatedPosts: yo.Post[], clearOld?: boolean, sansIds: number[] = []) {
     let num_fresh = 0, last_ago_str = ""
-    const now = Date.now(), old_posts = me.posts.filter(_ => true)
+    const now = Date.now(), old_posts = me.posts.all.filter(_ => true)
     const all_new_posts: yo.Post[] = newOrUpdatedPosts.filter(post_upd =>
         !old_posts.some(post_old => (post_old.Id === post_upd.Id)))
     const new_posts_merged_with_old = clearOld ? all_new_posts : all_new_posts.concat(old_posts
@@ -282,7 +279,7 @@ export function update(me: UiCtlPosts, newOrUpdatedPosts: yo.Post[], clearOld?: 
         })
     me.numFreshPosts = num_fresh
     if (!youtil.deepEq(old_posts, fresh_feed, true, false))
-        vanx.replace(me.posts, (_: PostAug[]) => fresh_feed)
+        me.posts.onUpdated(fresh_feed)
     if (fresh_feed.length > 0)
         return fresh_feed[0]
     return undefined

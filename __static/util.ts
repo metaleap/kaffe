@@ -24,13 +24,13 @@ export function timeAgoStr(when: number, now: number, noSecs: boolean, suffix = 
 
 export type DomLive<T extends { [_: string]: any }> = {
     all: T[]
-    outer: Element
+    domNode: Element
     itemCount: State<number>
     timeLastModifiedDomWise: State<number>
     onUpdated: (_: T[]) => void
 }
 
-export function domLive<T extends { [_: string]: any }>(outer: Element, initial: T[], perItem: (_: T) => Element, identPropName = 'Id'): DomLive<T> {
+export function domLive<T extends { [_: string]: any }>(domNode: Element, initial: T[], perItem: (_: T) => Element, identPropName = 'Id'): DomLive<T> {
     const id = identPropName
     type _DomLive = DomLive<T> & {
         _lastNodes: { [_: string]: Element }
@@ -43,9 +43,8 @@ export function domLive<T extends { [_: string]: any }>(outer: Element, initial:
         all: initial,
         itemCount: van.state(initial.length),
         timeLastModifiedDomWise: van.state(0),
-        outer: outer,
+        domNode: domNode,
         onUpdated: (items: T[]) => {
-            me.itemCount.val = items.length
             let dom_modified = false
             // any old items fully gone, hence dom nodes to remove?
             const del_nodes: Element[] = []
@@ -62,7 +61,7 @@ export function domLive<T extends { [_: string]: any }>(outer: Element, initial:
                     del_node.replaceWith()
             // ignoring changes in sort order for now here, actual node-(re)create ops per item
             const new_nodes = [] as Element[]
-            for (let i = 0; i < items.length; i++) {
+            for (let i = 0, l = items.length; i < l; i++) {
                 const item = items[i]
                 const node_old = me._lastNodes[item[id]!], item_old = me._lastItems[item[id]!]
                 if (!youtil.deepEq(item, item_old, false, false)) {
@@ -77,18 +76,20 @@ export function domLive<T extends { [_: string]: any }>(outer: Element, initial:
             }
             if (new_nodes.length > 0) {
                 dom_modified = true
-                me.outer.append(...new_nodes)
+                me.domNode.append(...new_nodes)
             }
+            window.requestAnimationFrame(() => { })
             // ensure up-to-date sort order
             for (let i = 0, l = (items.length - 1); i < l; i++) {
                 const node_this = me._lastNodes[items[i][id]!], node_next = me._lastNodes[items[i + 1][id]!]
                 if (node_this.nextElementSibling !== node_next) {
                     dom_modified = true
-                    me.outer.insertBefore(node_this, node_next)
+                    me.domNode.insertBefore(node_this, node_next)
                 }
             }
 
             me.all = items
+            me.itemCount.val = items.length
             if (dom_modified)
                 me.timeLastModifiedDomWise.val = Date.now()
         }
