@@ -20,7 +20,7 @@ import (
 	"yo/util/str"
 )
 
-var mockLiveActivity = true
+var mockLiveActivity = false
 
 const mockNumReqsPerSecApprox = 11
 const mockUsersNumTotal = 12345
