@@ -25,7 +25,7 @@ var elizaUser = struct {
 	btw         string
 }{"eliza.png", 0, "eliza", "eliza@metaleap.net", "I'm Weizenbaum's O.G. chatbot (Go impl by mattshiel & NortySpock & kennysong)"}
 
-func elizaAddBuddy(userNick string) {
+func elizaAddBuddyBack(userNick string) {
 	DoAfter(time.Second*time.Duration(3+rand.Intn(4)), func() {
 		ctx := NewCtxNonHttp(time.Minute, false, "")
 		defer ctx.OnDone(nil)
@@ -86,14 +86,14 @@ func elizaEnsureUser() {
 }
 
 func elizaEnsureBuddies() {
-	// usually, anyone adding eliza as buddy gets added back in `elizaAddBuddy`, but with a few secs artificial delay.
+	// usually, anyone adding eliza as buddy gets added back in `elizaAddBuddyBack`, but with a few secs artificial delay.
 	// if server restarted before that delay elapsed, this infrequent worker will remedy such rare fluke situations.
 	defer time.AfterFunc(time.Hour, elizaEnsureBuddies)
 
 	ctx := NewCtxNonHttp(time.Minute, false, "")
 	defer ctx.OnDone(nil)
-	eliza_user := yodb.ById[User](ctx, elizaUser.id)
 
+	eliza_user := yodb.ById[User](ctx, elizaUser.id)
 	user_query := q.ArrAreAny(UserBuddies, q.OpEq, elizaUser.id)
 	if len(eliza_user.Buddies) > 0 {
 		user_query = user_query.And(UserId.NotIn(eliza_user.Buddies.ToAnys()...))

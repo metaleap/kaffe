@@ -33,9 +33,10 @@ var mockUsersAllById = map[yodb.I64]string{}
 var mockUsersAllByEmail = map[string]yodb.I64{}
 var mockUsersLoggedIn = map[string]*http.Client{}
 var mockUsersNever = map[string]bool{
-	"foo123@bar.baz": true,
-	"foo234@bar.baz": true,
-	"foo321@bar.baz": true,
+	"foo123@bar.baz":    true,
+	"foo234@bar.baz":    true,
+	"foo321@bar.baz":    true,
+	elizaUser.emailAddr: true,
 }
 
 func mockFilesDirPath() string { return Cfg.STATIC_FILE_STORAGE_DIRS["_postfiles"] }
