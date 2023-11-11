@@ -2,6 +2,7 @@ import van, { State } from '../__yostatic/vanjs/van-1.2.6.js'
 const htm = van.tags
 
 import * as yo from './yo-sdk.js'
+import * as youtil from '../__yostatic/util.js'
 import * as uibuddies from './ui/buddies.js'
 import * as uiposts from './ui/posts.js'
 import * as uiuserpopup from './ui/user_popup.js'
@@ -294,15 +295,11 @@ export function userShowPopup(user?: yo.User) {
 export function onErrOther(err: any, showAlert?: boolean) {
     if (isSeeminglyOffline.val = !showAlert)
         browserTabTitleRefresh()
-    const err_json = JSON.stringify(err), err_str_1 = err.toString(), err_str_2 = `${err}`,
-        err_msg = err.knownErr || err.message ||
-            ((err_str_1 && (err_str_1 !== '[object Object]')) ? err_str_1 :
-                ((err_str_2 && (err_str_2 !== '[object Object]')) ? err_str_2
-                    : err_json))
+    const err_msg = youtil.errStr(err)
     if (showAlert)
         alert("Try again shortly, because this attempt errored with: " + err_msg)
     else
-        console.warn(err, err_json, err_msg)
+        console.warn(err, JSON.stringify(err), err_msg)
 }
 export function knownErr<T extends string>(err: any, ifSo: (_: T) => boolean): boolean {
     const yo_err = err as yo.Err<T>
