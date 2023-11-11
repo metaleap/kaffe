@@ -23,32 +23,32 @@ export function timeAgoStr(when: number, now: number, noSecs: boolean, suffix = 
 }
 
 export type DomLive<T extends { [_: string]: any }> = {
-    all: T[]
     domNode: Element
+    all: T[]
     itemCount: State<number>
     timeLastModifiedDomWise: State<number>
-    onUpdated: (_: T[]) => void
+    replaceWith: (_: T[]) => void
 }
 
 export function domLive<T extends { [_: string]: any }>(domNode: Element, initial: T[], perItem: (_: T) => Element, identPropName = 'Id'): DomLive<T> {
     type _DomLive = DomLive<T> & {
-        _lastNodes: { [_: string]: Element }
-        _lastItems: { [_: string]: T }
+        _lastNodes: { [_: string | number]: Element }
+        _lastItems: { [_: string | number]: T }
     }
     const me: _DomLive = {
-        _lastNodes: {} as { [_: string]: Element },
-        _lastItems: {} as { [_: string]: T },
+        _lastNodes: {} as { [_: string | number]: Element },
+        _lastItems: {} as { [_: string | number]: T },
 
         all: initial,
         itemCount: van.state(initial.length),
         timeLastModifiedDomWise: van.state(0),
         domNode: domNode,
-        onUpdated: (items: T[]) => {
+        replaceWith: (items: T[]) => {
             let dom_muts = false
-            // any old items fully gone, hence dom nodes to remove?
+            // find dom nodes to remove, then remove them
             const del_nodes: Element[] = []
             for (const id in me._lastItems) {
-                if (!items.some(_ => (_[identPropName]!) == id)) { // no `===` here due to string-vs-number ambiguity
+                if (!items.some(_ => (id == (_[identPropName]!)))) { // no `===` here due to string-vs-number ambiguity
                     const node_old = me._lastNodes[id]
                     del_nodes.push(node_old)
                     delete me._lastNodes[id]
@@ -62,22 +62,22 @@ export function domLive<T extends { [_: string]: any }>(domNode: Element, initia
             const new_nodes = [] as Element[]
             for (let i = 0, l = items.length; i < l; i++) {
                 const item = items[i]
-                const node_old = me._lastNodes[item[identPropName]!], item_old = me._lastItems[item[identPropName]!]
+                const item_id = item[identPropName]!
+                const node_old = me._lastNodes[item_id], item_old = me._lastItems[item_id]
                 if (!youtil.deepEq(item, item_old, false, false)) {
-                    const node_now = perItem(item)
+                    const node_new = perItem(item)
                     if (!node_old) // new dom append
-                        new_nodes.push(node_now)
+                        new_nodes.push(node_new)
                     else  // change dom node
-                        node_old.replaceWith(node_now)
-                    me._lastNodes[item[identPropName]!] = node_now
+                        node_old.replaceWith(node_new)
+                    me._lastNodes[item_id] = node_new
                 }
-                me._lastItems[item[identPropName]!] = item
+                me._lastItems[item_id] = item
             }
             if (new_nodes.length > 0) {
                 dom_muts = true
                 me.domNode.append(...new_nodes)
             }
-            window.requestAnimationFrame(() => { })
             // ensure up-to-date sort order
             for (let i = 0, l = (items.length - 1); i < l; i++) {
                 const node_this = me._lastNodes[items[i][identPropName]!], node_next = me._lastNodes[items[i + 1][identPropName]!]
@@ -93,6 +93,6 @@ export function domLive<T extends { [_: string]: any }>(domNode: Element, initia
                 me.timeLastModifiedDomWise.val = Date.now()
         }
     }
-    me.onUpdated(initial)
+    me.replaceWith(initial)
     return me
 }

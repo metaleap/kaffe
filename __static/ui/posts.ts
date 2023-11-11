@@ -192,12 +192,12 @@ function onFilesAdded(me: UiCtlPosts, htmInputFile: HTMLInputElement) {
     if (likely_dupls.length)
         alert("Detected probable (but not byte-by-byte-compared) duplicate files, please double-check and remove any duplicates:\n\n· " + likely_dupls.join('\n· '))
 
-    me.upFilesOwn.onUpdated(files)
+    me.upFilesOwn.replaceWith(files)
 }
 
 function removeUpFile(me: UiCtlPosts, upFile: UpFile) {
     me.upFilesNative[upFile.idx] = null
-    me.upFilesOwn.onUpdated(me.upFilesOwn.all.filter(_ => (_.idx !== upFile.idx)))
+    me.upFilesOwn.replaceWith(me.upFilesOwn.all.filter(_ => (_.idx !== upFile.idx)))
 }
 
 async function deletePost(me: UiCtlPosts, postId: number) {
@@ -226,7 +226,7 @@ async function sendNew(me: UiCtlPosts, upFilesOwn: UpFile[], isEmptyStateToSet: 
     if (ok) {
         me._htmPostInput.innerHTML = ''
         me.upFilesNative = []
-        me.upFilesOwn.onUpdated([])
+        me.upFilesOwn.replaceWith([])
         window.scrollTo(0, 0)
         isEmptyStateToSet.val = true
     }
@@ -279,7 +279,7 @@ export function update(me: UiCtlPosts, newOrUpdatedPosts: yo.Post[], clearOld?: 
         })
     me.numFreshPosts = num_fresh
     if (!youtil.deepEq(old_posts, fresh_feed, true, false))
-        me.posts.onUpdated(fresh_feed)
+        me.posts.replaceWith(fresh_feed)
     if (fresh_feed.length > 0)
         return fresh_feed[0]
     return undefined

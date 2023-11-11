@@ -42,12 +42,16 @@ export function create(): UiCtlBuddies {
         ),
     }
 
-    van.add(me.DOM, me.buddies.domNode, htm.div({
-        'style': depends(() => kaffe.userSelf.val ? '' : 'display:none'),
-        'class': depends(() => 'buddy' + (me.buddyRequestsBy.val.length ? ' badged' : '') + (kaffe.isSeeminglyOffline.val ? ' offline' : '')),
-        'data-badge': depends(() => me.buddyRequestsBy.val.length || ""),
-        'onclick': () => { if (!kaffe.isSeeminglyOffline.val) showBuddiesDialog(me) },
-    }, htm.div({ 'class': depends(() => 'buddy-pic' + (kaffe.isSeeminglyOffline.val ? ' offline' : '')), 'title': "Manage buddies", 'style': `background-image: url('${userPicFileUrl(undefined, "👥")}')` })))
+    van.add(me.DOM,
+        me.buddies.domNode,
+        htm.div({
+            'style': depends(() => kaffe.userSelf.val ? '' : 'display:none'),
+            'class': depends(() => 'buddy' + (me.buddyRequestsBy.val.length ? ' badged' : '') + (kaffe.isSeeminglyOffline.val ? ' offline' : '')),
+            'data-badge': depends(() => me.buddyRequestsBy.val.length || ""),
+            'onclick': () => { if (!kaffe.isSeeminglyOffline.val) showBuddiesDialog(me) },
+        },
+            htm.div({ 'class': depends(() => 'buddy-pic' + (kaffe.isSeeminglyOffline.val ? ' offline' : '')), 'title': "Manage buddies", 'style': `background-image: url('${userPicFileUrl(undefined, "👥")}')` })),
+    )
     return me
 }
 
@@ -127,7 +131,7 @@ function update(me: UiCtlBuddies, buddiesInfo: yo.userBuddies_Out) {
     }
 
     if (have_changes || !youtil.deepEq(buddies, me.buddies.all.filter(_ => true), false, false))
-        me.buddies.onUpdated(buddies)
+        me.buddies.replaceWith(buddies)
 }
 
 async function showBuddiesDialog(me: UiCtlBuddies) {
