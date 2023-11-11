@@ -65,7 +65,7 @@ export function main() {
 export async function reloadUserSelf() {
     if (yo.userEmailAddr) {
         userSelf.val = undefined // in case of failure, a later buddy-fetch will re-attempt a fresh reload — but only with this assignment in place
-        const user_self = await yo.apiUserBy({ EmailAddr: yo.userEmailAddr })
+        const user_self = await yo.api__userBy({ EmailAddr: yo.userEmailAddr })
         isSeeminglyOffline.val = false
         userSelf.val = user_self
         buddyBadgesAlt[0].val = user_self.BtwEmoji ?? ""
@@ -76,7 +76,7 @@ async function fetchBuddies(oneOff?: boolean) {
     if (fetchesPaused && !oneOff)
         return
     try {
-        const result = await yo.apiUserBuddies()
+        const result = await yo.api__userBuddies()
         isSeeminglyOffline.val = false
         if (!userSelf.val) // fetch only *after* the above because apiUserBy needs cur-user email-addr, which isn't cookied (but headered)
             reloadUserSelf() // no need to await really
@@ -95,7 +95,7 @@ async function fetchBuddies(oneOff?: boolean) {
             setTimeout(fetchPostsDeleted, fetchPostsDeletedIntervalMs)
         }
     } catch (err) {
-        if (!knownErr<yo.UserBuddiesErr>(err, handleKnownErrMaybe<yo.UserBuddiesErr>))
+        if (!knownErr<yo.__userBuddiesErr>(err, handleKnownErrMaybe<yo.__userBuddiesErr>))
             onErrOther(err)
     }
 
@@ -113,7 +113,7 @@ async function fetchPostsRecent(oneOff?: boolean) {
             while (uiPeriodPicker.options.length > 1)
                 uiPeriodPicker.options.remove(1)
             isArchiveBrowsing.val = false
-            const periods = (await yo.apiPostMonthsUtc({ WithUserIds: selectedBuddy.val ? [selectedBuddy.val] : [] })).Periods ?? []
+            const periods = (await yo.api__postMonthsUtc({ WithUserIds: selectedBuddy.val ? [selectedBuddy.val] : [] })).Periods ?? []
             for (const period of periods) {
                 const dt = new Date(period.Year!, (period.Month!) - 1, 1, 0, 0, 0, 0)
                 uiPeriodPicker.options.add(htm.option({ 'value': JSON.stringify(period) }, `${dt.getFullYear()} — ${dt.toLocaleDateString('default', { month: 'long' })}`))
@@ -131,11 +131,11 @@ async function fetchPostsRecent(oneOff?: boolean) {
                 oneOff = false // ...so ensuring interval activates at the end of this function (in case user just jumped here from an earlier month)
         }
         const result = fetch_archived_posts
-            ? await yo.apiPostsForMonthUtc({
+            ? await yo.api__postsForMonthUtc({
                 OnlyBy: selectedBuddy.val ? [selectedBuddy.val] : [],
                 Period: JSON.parse(uiPeriodPicker.selectedOptions[0].value),
             })
-            : await yo.apiPostsRecent({
+            : await yo.api__postsRecent({
                 OnlyBy: selectedBuddy.val ? [selectedBuddy.val] : [],
                 Since: fetchPostsSinceDt,
             })
@@ -156,7 +156,7 @@ async function fetchPostsRecent(oneOff?: boolean) {
                     buddyBadges[buddy_id] = van.state(badge_text)
             }
     } catch (err) {
-        if (!knownErr<yo.PostsRecentErr>(err, handleKnownErrMaybe<yo.PostsRecentErr>))
+        if (!knownErr<yo.__postsRecentErr>(err, handleKnownErrMaybe<yo.__postsRecentErr>))
             onErrOther(err)
     }
     if ((!fetchesPaused) && !oneOff)
@@ -169,12 +169,12 @@ async function fetchPostsDeleted() {
     const post_ids = uiPosts.posts.all.filter(_ => true).map(_ => _.Id!)
     if (post_ids.length)
         try {
-            const post_ids_deleted = (await yo.apiPostsDeleted({ OutOfPostIds: post_ids })).DeletedPostIds
+            const post_ids_deleted = (await yo.api__postsDeleted({ OutOfPostIds: post_ids })).DeletedPostIds
             isSeeminglyOffline.val = false
             if (post_ids_deleted && post_ids_deleted.length)
                 uiposts.update(uiPosts, uiPosts.posts.all.filter(_ => !post_ids_deleted.includes(_.Id!)), false, post_ids_deleted)
         } catch (err) {
-            if (!knownErr<yo.PostsDeletedErr>(err, handleKnownErrMaybe<yo.PostsDeletedErr>))
+            if (!knownErr<yo.__postsDeletedErr>(err, handleKnownErrMaybe<yo.__postsDeletedErr>))
                 onErrOther(err)
         }
     if (!fetchesPaused)
@@ -206,7 +206,7 @@ export async function sendNewPost(html: string, files?: File[]) {
         if (files && files.length)
             for (const file of files)
                 form_data.append('files', file)
-        const resp = await yo.apiPostNew({
+        const resp = await yo.api__postNew({
             By: user_self.Id,
             To: (!selectedBuddy.val) ? [] : [selectedBuddy.val],
             Htm: html,
@@ -214,7 +214,7 @@ export async function sendNewPost(html: string, files?: File[]) {
         isSeeminglyOffline.val = false
         ok = (resp.Result > 0)
     } catch (err) {
-        if (!knownErr<yo.PostNewErr>(err, handleKnownErrMaybe<yo.PostNewErr>))
+        if (!knownErr<yo.__postNewErr>(err, handleKnownErrMaybe<yo.__postNewErr>))
             onErrOther(err)
     }
     if (ok)
@@ -225,11 +225,11 @@ export async function sendNewPost(html: string, files?: File[]) {
 export async function deletePost(id: number) {
     let ok = false
     try {
-        await yo.apiPostDelete({ Id: id })
+        await yo.api__postDelete({ Id: id })
         isSeeminglyOffline.val = false
         ok = true
     } catch (err) {
-        if (!knownErr<yo.PostDeleteErr>(err, handleKnownErrMaybe<yo.PostDeleteErr>))
+        if (!knownErr<yo.__postDeleteErr>(err, handleKnownErrMaybe<yo.__postDeleteErr>))
             onErrOther(err)
     }
     if (ok)
@@ -272,7 +272,7 @@ export async function userSignOut(confirmFirst: boolean) {
     if (confirmFirst && !confirm("Sure to sign out now?"))
         return
     try {
-        await yo.apiUserSignOut({})
+        await yo.api__userSignOut({})
         location.reload()
     } catch (err) {
         if (confirm('Failed to successfully sign out (at the server side), you can clear the Cookies for this domain or: try again?'))

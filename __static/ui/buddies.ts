@@ -10,7 +10,7 @@ export type UiCtlBuddies = {
     DOM: HTMLElement
     buddies: youtil.DomLive<yo.User>
     buddyRequestsBy: State<yo.User[]>
-    update: (_: yo.userBuddies_Out) => void
+    update: (_: yo.__userBuddies_Out) => void
 }
 
 export function create(): UiCtlBuddies {
@@ -100,7 +100,7 @@ export function userDomAttrsSelf() {
     }
 }
 
-function update(me: UiCtlBuddies, buddiesInfo: yo.userBuddies_Out) {
+function update(me: UiCtlBuddies, buddiesInfo: yo.__userBuddies_Out) {
     me.buddyRequestsBy.val = buddiesInfo.BuddyRequestsBy ?? []
     const buddies = buddiesInfo.Buddies ?? []
     const offline_buddies = buddies.filter(_ => _.Offline)
@@ -142,13 +142,13 @@ async function showBuddiesDialog(me: UiCtlBuddies) {
                 alert(`A buddy request for '${nick_or_email_addr}' had already been placed at an earlier time, but your eagerness is commendable.`)
             else
                 try {
-                    const result = await yo.apiUserBuddiesAdd({ NickOrEmailAddr: nick_or_email_addr })
+                    const result = await yo.api__userBuddiesAdd({ NickOrEmailAddr: nick_or_email_addr })
                     if (!result.Done)
                         alert(`No user '${nick_or_email_addr}' was found. Typo?`)
                     else
                         alert(`Done. Until '${nick_or_email_addr}' confirms, they'll appear offline in your buddy list.`)
                 } catch (err) {
-                    if (!kaffe.knownErr<yo.UserBuddiesAddErr>(err, kaffe.handleKnownErrMaybe<yo.UserBuddiesAddErr>))
+                    if (!kaffe.knownErr<yo.__userBuddiesAddErr>(err, kaffe.handleKnownErrMaybe<yo.__userBuddiesAddErr>))
                         kaffe.onErrOther(err, true)
                 }
         }
@@ -165,7 +165,7 @@ async function showBuddiesDialog(me: UiCtlBuddies) {
             if (!user_self)
                 return
             if ((!user_self.Buddies) || !user_self.Buddies.some(_ => (_ === user.Id!))) {
-                await yo.apiUserUpdate({
+                await yo.api__userUpdate({
                     Id: user_self.Id, Changes: { Buddies: [user.Id!].concat(user_self.Buddies ?? []) }, ChangedFields: ['Buddies']
                 }, new FormData())
             }
@@ -173,7 +173,7 @@ async function showBuddiesDialog(me: UiCtlBuddies) {
             alert(`You're now buddies with '${user.Nick ?? '?'}', go chat them up!`)
             await kaffe.reloadUserSelf()
         } catch (err) {
-            if (!kaffe.knownErr<yo.UserUpdateErr>(err, kaffe.handleKnownErrMaybe<yo.UserUpdateErr>))
+            if (!kaffe.knownErr<yo.__userUpdateErr>(err, kaffe.handleKnownErrMaybe<yo.__userUpdateErr>))
                 kaffe.onErrOther(err, true)
         } finally {
             htmCheckbox.style.removeProperty('cursor')

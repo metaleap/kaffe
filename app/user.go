@@ -16,7 +16,7 @@ const ctxKeyCurUser = "kaffeCurUser"
 
 func init() {
 	PostApiHandling = append(PostApiHandling, Middleware{"userSetLastSeen", func(ctx *Ctx) {
-		if (ctx.Http.UrlPath == AppApiUrlPrefix+apiMethodNameUserUpdate) || (ctx.Http.UrlPath == AppApiUrlPrefix+apiMethodNameUserBuddiesAdd) {
+		if (ctx.Http.UrlPath == apiMethodPathUserUpdate) || (ctx.Http.UrlPath == apiMethodPathUserBuddiesAdd) {
 			return // dont set last-seen for calls that already just did it
 		}
 		if _, user_auth_id := yoauth.CurrentlyLoggedInUser(ctx); user_auth_id > 0 {
@@ -52,10 +52,10 @@ func userUpdate(ctx *Ctx, upd *User, inclEmptyOrMissingFields bool, onlyFields .
 	}
 	if upd.Nick = yodb.Text(str.Replace(string(upd.Nick), str.Dict{"@": ""})); (len(onlyFields) == 0) || sl.Has(onlyFields, UserNick) {
 		if upd.Nick.Set(str.Trim); upd.Nick == "" {
-			panic(ErrUserUpdate_ExpectedNonEmptyNickname)
+			panic(Err__userUpdate_ExpectedNonEmptyNickname)
 		}
 		if yodb.Exists[User](ctx, UserNick.Equal(upd.Nick).And(UserId.NotEqual(upd.Id))) {
-			panic(ErrUserUpdate_NicknameAlreadyExists)
+			panic(Err__userUpdate_NicknameAlreadyExists)
 		}
 	}
 	if upd.LastSeen = yodb.DtNow(); len(onlyFields) > 0 {

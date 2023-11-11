@@ -18,9 +18,8 @@ var devModeInitMockUsers func()
 
 func init() {
 	yo.AppPkgPath = kaffePkg.PkgPath()
-	AppApiUrlPrefix = "_/"
-	AppSideStaticRePathFor = func(requestPath string) string {
-		return "__static/kaffe.html"
+	AppSideStaticRePathFor = func(reqUrlPath string) string {
+		return If(str.Begins(reqUrlPath, "_/"), "", "__static/kaffe.html")
 	}
 	StaticFileFilters["picRounded"] = imageRoundedSvgOfImage
 	OnBeforeServingStaticFile = func(ctx *Ctx) {

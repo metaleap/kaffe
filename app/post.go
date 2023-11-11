@@ -186,7 +186,7 @@ func postNew(ctx *Ctx, post *Post, userById yodb.I64) yodb.I64 {
 		if sl.Any(post.To, func(it yodb.I64) bool { return !sl.Has(user_by.Buddies, it) }) {
 			println(str.FmtV(user_by.Buddies), " VS. ", str.FmtV(post.To))
 			ctx.DevModeNoCatch = true
-			panic(ErrPostNew_ExpectedOnlyBuddyRecipients)
+			panic(Err__postNew_ExpectedOnlyBuddyRecipients)
 		}
 		post.To = sl.Sorted(sl.With(post.To, user_by.Id))
 	}

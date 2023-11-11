@@ -66,7 +66,7 @@ export function create(user: yo.User): UiCtlUserPopup {
             if (pic_has_changed)
                 form_data.append('picfile', htm_input_pic.files![0])
             try {
-                await yo.apiUserUpdate({
+                await yo.api__userUpdate({
                     Id: user.Id, Changes: {
                         Nick: htm_input_nick.value,
                         Btw: htm_input_btw.value,
@@ -75,7 +75,7 @@ export function create(user: yo.User): UiCtlUserPopup {
                 did_save = true
                 kaffe.reloadUserSelf()
             } catch (err) {
-                if (!kaffe.knownErr<yo.UserUpdateErr>(err, kaffe.handleKnownErrMaybe<yo.UserUpdateErr>))
+                if (!kaffe.knownErr<yo.__userUpdateErr>(err, kaffe.handleKnownErrMaybe<yo.__userUpdateErr>))
                     kaffe.onErrOther(err, true)
             } finally {
                 for (const htm_node of htm_nodes_to_disable)

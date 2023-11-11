@@ -21,69 +21,69 @@ import (
 	"yo/util/str"
 )
 
-const apiMethodNameUserUpdate = "userUpdate"
-const apiMethodNameUserBuddiesAdd = "userBuddiesAdd"
+const apiMethodPathUserUpdate = "_/userUpdate"
+const apiMethodPathUserBuddiesAdd = "_/userBuddiesAdd"
 
 func init() {
 	Apis(ApiMethods{
-		"userSignOut": apiUserSignOut.
+		"_/userSignOut": apiUserSignOut.
 			CouldFailWith(":" + yoauth.MethodPathLogout),
 
-		"userSignUpOrForgotPassword": apiUserSignUpOrForgotPassword.
+		"_/userSignUpOrForgotPassword": apiUserSignUpOrForgotPassword.
 			CouldFailWith(":"+yoauth.MethodPathRegister).
 			Checks(
-				Fails{Err: "EmailRequiredButMissing", If: UserSignUpOrForgotPasswordNickOrEmailAddr.Equal("")},
-				Fails{Err: "EmailInvalid", If: yoauth.IsEmailishEnough(UserSignUpOrForgotPasswordNickOrEmailAddr).Not()},
+				Fails{Err: "EmailRequiredButMissing", If: __userSignUpOrForgotPasswordNickOrEmailAddr.Equal("")},
+				Fails{Err: "EmailInvalid", If: yoauth.IsEmailishEnough(__userSignUpOrForgotPasswordNickOrEmailAddr).Not()},
 			),
 
-		"userSignInOrReset": apiUserSignInOrReset.
+		"_/userSignInOrReset": apiUserSignInOrReset.
 			CouldFailWith(":"+yoauth.MethodPathLoginOrFinalizePwdReset).
 			Checks(
-				Fails{Err: "ExpectedPasswordAndNickOrEmailAddr", If: UserSignInOrResetNickOrEmailAddr.Equal("").Or(UserSignInOrResetPasswordPlain.Equal(""))},
+				Fails{Err: "ExpectedPasswordAndNickOrEmailAddr", If: __userSignInOrResetNickOrEmailAddr.Equal("").Or(__userSignInOrResetPasswordPlain.Equal(""))},
 				Fails{Err: "WrongPassword",
-					If: UserSignInOrResetPasswordPlain.StrLen().LessThan(Cfg.YO_AUTH_PWD_MIN_LEN).Or(
-						UserSignInOrResetPasswordPlain.StrLen().GreaterThan(Cfg.YO_AUTH_PWD_MAX_LEN)).Or(
-						UserSignInOrResetPassword2Plain.StrLen().GreaterThan(0).And(
-							UserSignInOrResetPassword2Plain.StrLen().LessThan(Cfg.YO_AUTH_PWD_MIN_LEN).Or(
-								UserSignInOrResetPassword2Plain.StrLen().GreaterThan(Cfg.YO_AUTH_PWD_MAX_LEN)))),
+					If: __userSignInOrResetPasswordPlain.StrLen().LessThan(Cfg.YO_AUTH_PWD_MIN_LEN).Or(
+						__userSignInOrResetPasswordPlain.StrLen().GreaterThan(Cfg.YO_AUTH_PWD_MAX_LEN)).Or(
+						__userSignInOrResetPassword2Plain.StrLen().GreaterThan(0).And(
+							__userSignInOrResetPassword2Plain.StrLen().LessThan(Cfg.YO_AUTH_PWD_MIN_LEN).Or(
+								__userSignInOrResetPassword2Plain.StrLen().GreaterThan(Cfg.YO_AUTH_PWD_MAX_LEN)))),
 				},
 			),
 
-		"userBy": apiUserBy.Checks(
-			Fails{Err: "ExpectedEitherNickNameOrEmailAddr", If: UserByEmailAddr.Equal("").And(UserByNickName.Equal(""))},
+		"_/userBy": apiUserBy.Checks(
+			Fails{Err: "ExpectedEitherNickNameOrEmailAddr", If: __userByEmailAddr.Equal("").And(__userByNickName.Equal(""))},
 		).
 			FailIf(yoauth.IsNotCurrentlyLoggedIn, ErrUnauthorized),
 
-		apiMethodNameUserUpdate: apiUserUpdate.IsMultipartForm().
+		apiMethodPathUserUpdate: apiUserUpdate.IsMultipartForm().
 			CouldFailWith(":"+yodb.ErrSetDbUpdate, "NicknameAlreadyExists", "ExpectedNonEmptyNickname").
 			Checks(
-				Fails{Err: ErrDbUpdExpectedIdGt0, If: UserUpdateId.LessOrEqual(0)},
+				Fails{Err: ErrDbUpdExpectedIdGt0, If: __userUpdateId.LessOrEqual(0)},
 			).
 			FailIf(yoauth.IsNotCurrentlyLoggedIn, ErrUnauthorized),
 
-		"userBuddies": apiUserBuddies.
+		"_/userBuddies": apiUserBuddies.
 			FailIf(yoauth.IsNotCurrentlyLoggedIn, ErrUnauthorized),
 
-		apiMethodNameUserBuddiesAdd: apiUserBuddiesAdd.
+		apiMethodPathUserBuddiesAdd: apiUserBuddiesAdd.
 			CouldFailWith(":"+yodb.ErrSetDbUpdate).
 			Checks(
-				Fails{Err: "ExpectedEitherNickNameOrEmailAddr", If: UserBuddiesAddNickOrEmailAddr.Equal("")},
+				Fails{Err: "ExpectedEitherNickNameOrEmailAddr", If: __userBuddiesAddNickOrEmailAddr.Equal("")},
 			).
 			FailIf(yoauth.IsNotCurrentlyLoggedIn, ErrUnauthorized),
 
-		"postsRecent": apiPostsRecent.
+		"_/postsRecent": apiPostsRecent.
 			FailIf(yoauth.IsNotCurrentlyLoggedIn, ErrUnauthorized),
 
-		"postsForMonthUtc": apiPostsForMonthUtc.
+		"_/postsForMonthUtc": apiPostsForMonthUtc.
 			FailIf(yoauth.IsNotCurrentlyLoggedIn, ErrUnauthorized),
 
-		"postMonthsUtc": apiPostMonthsUtc.
+		"_/postMonthsUtc": apiPostMonthsUtc.
 			FailIf(yoauth.IsNotCurrentlyLoggedIn, ErrUnauthorized),
 
-		"postsDeleted": apiPostsDeleted.
+		"_/postsDeleted": apiPostsDeleted.
 			FailIf(yoauth.IsNotCurrentlyLoggedIn, ErrUnauthorized),
 
-		"postNew": apiPostNew.IsMultipartForm().
+		"_/postNew": apiPostNew.IsMultipartForm().
 			CouldFailWith("ExpectedNonEmptyPost").
 			Checks(
 				Fails{Err: "ExpectedOnlyBuddyRecipients", If: q.ArrAreAny(PostTo, q.OpLeq, 0)},
@@ -91,12 +91,12 @@ func init() {
 			).
 			FailIf(yoauth.IsNotCurrentlyLoggedIn, ErrUnauthorized),
 
-		"postDelete": apiPostDelete.Checks(
-			Fails{Err: "InvalidPostId", If: PostDeleteId.LessOrEqual(0)},
+		"_/postDelete": apiPostDelete.Checks(
+			Fails{Err: "InvalidPostId", If: __postDeleteId.LessOrEqual(0)},
 		).
 			FailIf(yoauth.IsNotCurrentlyLoggedIn, ErrUnauthorized),
 
-		"postEmojiFullList": apiPostEmojiFullList,
+		"_/postEmojiFullList": apiPostEmojiFullList,
 	})
 }
 
@@ -124,7 +124,7 @@ var apiUserSignInOrReset = api(func(this *ApiCtx[ApiUserSignInOrReset, Void]) {
 
 var apiUserSignUpOrForgotPassword = api(func(this *ApiCtx[ApiNickOrEmailAddr, Void]) {
 	this.Ctx.DbTx(true)
-	this.Args.ensureEmailAddr(this.Ctx, Err___yo_authLoginOrFinalizePwdReset_AccountDoesNotExist, ErrUserSignUpOrForgotPassword_EmailInvalid)
+	this.Args.ensureEmailAddr(this.Ctx, Err___yo_authLoginOrFinalizePwdReset_AccountDoesNotExist, Err__userSignUpOrForgotPassword_EmailInvalid)
 	yoauth.UserPregisterOrForgotPassword(this.Ctx, this.Args.NickOrEmailAddr)
 })
 
@@ -137,7 +137,7 @@ var apiUserBy = api(func(this *ApiCtx[struct {
 	} else if this.Args.EmailAddr != "" {
 		this.Ret = userByEmailAddr(this.Ctx, this.Args.EmailAddr)
 	} else {
-		panic(ErrUserBy_ExpectedEitherNickNameOrEmailAddr)
+		panic(Err__userBy_ExpectedEitherNickNameOrEmailAddr)
 	}
 })
 

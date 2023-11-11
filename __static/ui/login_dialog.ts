@@ -18,9 +18,9 @@ export function create(setSignUpOrPwdForgotNotice: (_: string) => void) {
         try {
             const is_signup_or_pwd_forgotten = (!in_password.value.length)
             if (is_signup_or_pwd_forgotten)
-                await yo.apiUserSignUpOrForgotPassword({ NickOrEmailAddr: in_user_name.value })
+                await yo.api__userSignUpOrForgotPassword({ NickOrEmailAddr: in_user_name.value })
             else
-                await yo.apiUserSignInOrReset({ NickOrEmailAddr: in_user_name.value, PasswordPlain: in_password.value, Password2Plain: in_password_2.value })
+                await yo.api__userSignInOrReset({ NickOrEmailAddr: in_user_name.value, PasswordPlain: in_password.value, Password2Plain: in_password_2.value })
             if (is_signup_or_pwd_forgotten) {
                 const notice = `An email will be sent to '${in_user_name.value}' within minutes, with the link to complete the sign-up or password-reset.`
                 setSignUpOrPwdForgotNotice(notice)
@@ -32,18 +32,18 @@ export function create(setSignUpOrPwdForgotNotice: (_: string) => void) {
             in_user_name.disabled = false
             in_password.disabled = false
             in_password_2.disabled = false
-            if (!kaffe.knownErr<yo.UserSignInOrResetErr | yo.UserSignUpOrForgotPasswordErr>(err, (err) => {
+            if (!kaffe.knownErr<yo.__userSignInOrResetErr | yo.__userSignUpOrForgotPasswordErr>(err, (err) => {
                 switch (err) {
                     case '___yo_authLoginOrFinalizePwdReset_AccountDoesNotExist':
                     case '___yo_authLoginOrFinalizePwdReset_WrongPassword':
                     case '___yo_authLoginOrFinalizePwdReset_EmailInvalid':
                     case '___yo_authLoginOrFinalizePwdReset_EmailRequiredButMissing':
-                    case 'UserSignInOrReset_ExpectedPasswordAndNickOrEmailAddr':
-                    case 'UserSignInOrReset_WrongPassword':
+                    case '__userSignInOrReset_ExpectedPasswordAndNickOrEmailAddr':
+                    case '__userSignInOrReset_WrongPassword':
                     case '___yo_authRegister_EmailInvalid':
                     case '___yo_authRegister_EmailRequiredButMissing':
-                    case 'UserSignUpOrForgotPassword_EmailInvalid':
-                    case 'UserSignUpOrForgotPassword_EmailRequiredButMissing':
+                    case '__userSignUpOrForgotPassword_EmailInvalid':
+                    case '__userSignUpOrForgotPassword_EmailRequiredButMissing':
                         alert("There's surely a typo in there, please double-check and try again.\n\n(Note: keep password fields BLANK for sign-up or password-reset!)")
                         return true
                 }
