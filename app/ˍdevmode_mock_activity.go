@@ -11,6 +11,7 @@ import (
 	"time"
 	"yo"
 
+	. "yo/cfg"
 	. "yo/ctx"
 	yodb "yo/db"
 	yoauth "yo/feat_auth"
@@ -24,7 +25,6 @@ var mockLiveActivity = true
 
 const mockNumReqsPerSecApprox = 11
 const mockUsersNumTotal = 12345
-const mockFilesDirPath = "/home/_/.cache/kaffe_postfiles"
 
 var mockUsersNumMaxBuddies = 22 + rand.Intn(22)
 var mockUserPicFiles = []string{"user0.png", "user1.jpg", "user2.png", "user3.jpg", "user4.png", "user5.jpg", "user6.png", "user7.jpg"}
@@ -37,6 +37,8 @@ var mockUsersNever = map[string]bool{
 	"foo234@bar.baz": true,
 	"foo321@bar.baz": true,
 }
+
+func mockFilesDirPath() string { return Cfg.STATIC_FILE_STORAGE_DIRS["_postfiles"] }
 
 func init() {
 	yo.AppSideBuildTimeContainerFileNames = append(yo.AppSideBuildTimeContainerFileNames, elizaUser.picFileName)
@@ -231,7 +233,7 @@ func mockGetFortune(maxLen int, ident bool) (ret string) {
 			args = append(args, "-n", str.FromInt(maxLen), "-s")
 		}
 		if did_alt = ((maxLen >= 77) || (maxLen <= 0)) && (rand.Intn(If(maxLen <= 0, 3, 2)) != 0); did_alt {
-			args = append(args, filepath.Join(mockFilesDirPath, "fortune_showerthoughts.txt"))
+			args = append(args, filepath.Join(mockFilesDirPath(), "fortune_showerthoughts.txt"))
 		}
 		cmd := exec.Command("fortune", args...)
 		output, err := cmd.CombinedOutput()
