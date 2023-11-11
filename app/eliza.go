@@ -18,12 +18,12 @@ import (
 )
 
 var elizaUser = struct {
-	picFileName string
 	id          yodb.I64
 	nick        string
 	emailAddr   string
+	picFileName string
 	btw         string
-}{"eliza.png", 0, "eliza", "eliza@metaleap.net", "I'm Weizenbaum's O.G. chatbot (Go impl by mattshiel & NortySpock & kennysong)"}
+}{0, "eliza", "eliza@metaleap.net", "eliza.png", "I'm Weizenbaum's O.G. chatbot (Go impl by mattshiel & NortySpock & kennysong)"}
 
 func elizaAddBuddyBack(userNick string) {
 	DoAfter(time.Second*time.Duration(3+rand.Intn(4)), func() {
