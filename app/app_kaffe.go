@@ -1,7 +1,6 @@
 package kaffe
 
 import (
-	"os"
 	"time"
 	"yo"
 
@@ -24,9 +23,6 @@ func init() {
 		return "__static/kaffe.html"
 	}
 	StaticFileFilters["picRounded"] = imageRoundedSvgOfImage
-	for dir_name, dir_path := range Cfg.STATIC_FILE_STORAGE_DIRS {
-		StaticFileDirs[dir_name] = os.DirFS(dir_path)
-	}
 	OnBeforeServingStaticFile = func(ctx *Ctx) {
 		var is_anon *bool
 		for static_dir_name := range StaticFileDirs {
