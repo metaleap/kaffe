@@ -2,7 +2,7 @@
 export const Cfg_YO_API_IMPL_TIMEOUT_MS = 4000
 export const Cfg_YO_AUTH_PWD_MIN_LEN = 6
 
-// prelude-yo-sdk.ts below, more generated code afterwards
+// prelude-yo-sdk.ts (non-generated) below, more generated code afterwards
 export type I8 = number
 export type I16 = number
 export type I32 = number
@@ -15,12 +15,15 @@ export type F32 = number
 export type F64 = number
 
 
+export let apiBaseUrl = ''
 export let userEmailAddr = ''
 export let reqTimeoutMsForJsonApis = 4321
 export let reqTimeoutMsForMultipartForms = 123456
 export let reqMaxReqPayloadSizeMb = 0           // declaration only, generated code sets the value
 export let reqMaxReqMultipartSizeMb = 0         // declaration only, generated code sets the value
 export let errMaxReqPayloadSizeExceeded = ""    // declaration only, generated code sets the value
+
+export function setApiBaseUrl(newApiBaseUrl: string) { apiBaseUrl = newApiBaseUrl }
 
 export async function req<TIn, TOut, TErr extends string>(methodPath: string, payload?: TIn | {}, formData?: FormData, urlQueryArgs?: { [_: string]: string }): Promise<TOut> {
     let rel_url = '/' + methodPath
@@ -48,7 +51,7 @@ export async function req<TIn, TOut, TErr extends string>(methodPath: string, pa
     } else if (payload_json.length > (1024 * 1024 * reqMaxReqPayloadSizeMb))
         throw new Err<TErr>(errMaxReqPayloadSizeExceeded as TErr)
 
-    const resp = await fetch(rel_url, {
+    const resp = await fetch(apiBaseUrl + rel_url, {
         method: 'POST', headers: (formData ? undefined : ({ 'Content-Type': 'application/json' })), body: (formData ? formData : payload_json),
         cache: 'no-store', mode: 'same-origin', redirect: 'error', signal: AbortSignal.timeout(formData ? reqTimeoutMsForMultipartForms : reqTimeoutMsForJsonApis),
     })
