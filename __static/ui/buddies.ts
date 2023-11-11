@@ -8,7 +8,7 @@ import * as util from '../util.js'
 
 export type UiCtlBuddies = {
     DOM: HTMLElement
-    buddies: util.DomLive<yo.User>
+    buddies: youtil.DomLive<yo.User>
     buddyRequestsBy: State<yo.User[]>
     update: (_: yo.userBuddies_Out) => void
 }
@@ -17,7 +17,7 @@ export function create(): UiCtlBuddies {
     const me: UiCtlBuddies = {
         update: (_) => update(me, _),
         buddyRequestsBy: van.state([] as yo.User[]),
-        buddies: util.domLive<yo.User>(htm.div({ 'class': 'buddies' }), [], (it) => {
+        buddies: youtil.domLive<yo.User>(htm.div({ 'class': 'buddies' }), [], (it) => {
             const item = htm.div({
                 'class': depends(() => 'buddy' + (kaffe.isSeeminglyOffline.val ? ' offline' : '') + (kaffe.buddySelected(it) ? ' selected' : '') + ((kaffe.buddyBadges[it.Id!].val) ? ' badged' : '') + ((kaffe.buddyBadgesAlt[it.Id!].val) ? ' badged-alt' : '')),
                 'data-badge': depends(() => (kaffe.buddyBadges[it.Id!].val) || ""),

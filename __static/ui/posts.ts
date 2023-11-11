@@ -12,12 +12,12 @@ const freshnessDurationMsWhenVisible = 3456
 export type UiCtlPosts = {
     DOM: HTMLElement
     _htmPostInput: HTMLElement
-    posts: util.DomLive<PostAug>
+    posts: youtil.DomLive<PostAug>
     numFreshPosts: number
     isSending: State<boolean>
     isRequestingDeletion: State<number>
     upFilesNative: (File | null)[]
-    upFilesOwn: util.DomLive<UpFile>
+    upFilesOwn: youtil.DomLive<UpFile>
 }
 
 type PostAug = yo.Post & {
@@ -55,7 +55,7 @@ export function create(): UiCtlPosts {
     }, "")
     const button_disabled = () => (kaffe.isSeeminglyOffline.val || (is_deleting.val > 0) || is_sending.val || !kaffe.userSelf.val)
     const htm_input_file = htm.input({ 'type': 'file', 'multiple': true, 'onchange': () => onFilesAdded(me, htm_input_file) })
-    const up_files_own = util.domLive<UpFile>(htm.div({ 'class': 'kaffe-post-files' }), [], (_: UpFile) => {
+    const up_files_own = youtil.domLive<UpFile>(htm.div({ 'class': 'kaffe-post-files' }), [], (_: UpFile) => {
         const icon = _.type.includes('/') ? (fileContentTypeIcons[_.type.substring(0, _.type.indexOf('/'))]) : ""
         return htm.a({ 'class': 'kaffe-post-file', 'title': `${_.name + '\n'}${(_.size / (1024 * 1024)).toFixed(3)}MB` },
             (icon ? htm.div({}, icon) : undefined),
@@ -99,7 +99,7 @@ Don't share privacy-sensitive/highly-personal stuff (if you care), we don't prot
             ),
         ),
         numFreshPosts: 0,
-        posts: util.domLive<PostAug>(htm.div({ 'class': 'feed' }), [], (post) => {
+        posts: youtil.domLive<PostAug>(htm.div({ 'class': 'feed' }), [], (post) => {
             let inner_html = post.Htm ?? ''
             const post_files = (post.Files ?? []).filter(_ => !_.includes('__yodata__'))
             if (post_files && post_files.length) {
