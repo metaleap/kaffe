@@ -82,6 +82,7 @@ func elizaEnsureUser() {
 		user.Auth.SetId(auth_id)
 		elizaUser.id = yodb.CreateOne[User](ctx, user)
 	}
+
 	time.AfterFunc(time.Minute, elizaEnsureBuddies)
 }
 
