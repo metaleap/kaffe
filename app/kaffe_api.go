@@ -100,11 +100,11 @@ func init() {
 	})
 }
 
-var apiUserSignOut = api(func(this *ApiCtx[Void, Void]) {
+var apiUserSignOut = api(func(this *ApiCtx[None, None]) {
 	Do(yoauth.ApiUserLogout, this.Ctx, this.Args)
 })
 
-var apiUserSignInOrReset = api(func(this *ApiCtx[ApiUserSignInOrReset, Void]) {
+var apiUserSignInOrReset = api(func(this *ApiCtx[ApiUserSignInOrReset, None]) {
 	this.Ctx.DbTx(true)
 	this.Args.ensureEmailAddr(this.Ctx, Err___yo_authLoginOrFinalizePwdReset_AccountDoesNotExist, Err___yo_authLoginOrFinalizePwdReset_EmailInvalid)
 	user_auth := Do(yoauth.ApiUserLoginOrFinalizePwdReset, this.Ctx, &yoauth.ApiAccountPayload{EmailAddr: this.Args.NickOrEmailAddr, PasswordPlain: this.Args.PasswordPlain, Password2Plain: this.Args.Password2Plain})
@@ -122,7 +122,7 @@ var apiUserSignInOrReset = api(func(this *ApiCtx[ApiUserSignInOrReset, Void]) {
 	}
 })
 
-var apiUserSignUpOrForgotPassword = api(func(this *ApiCtx[ApiNickOrEmailAddr, Void]) {
+var apiUserSignUpOrForgotPassword = api(func(this *ApiCtx[ApiNickOrEmailAddr, None]) {
 	this.Ctx.DbTx(true)
 	this.Args.ensureEmailAddr(this.Ctx, Err___yo_authLoginOrFinalizePwdReset_AccountDoesNotExist, Err__userSignUpOrForgotPassword_EmailInvalid)
 	yoauth.UserPregisterOrForgotPassword(this.Ctx, this.Args.NickOrEmailAddr)
@@ -141,7 +141,7 @@ var apiUserBy = api(func(this *ApiCtx[struct {
 	}
 })
 
-var apiUserUpdate = api(func(this *ApiCtx[yodb.ApiUpdateArgs[User, UserField], Void]) {
+var apiUserUpdate = api(func(this *ApiCtx[yodb.ApiUpdateArgs[User, UserField], None]) {
 	user_cur := userCur(this.Ctx)
 	if user_cur == nil {
 		panic(ErrUnauthorized)
@@ -163,7 +163,7 @@ var apiUserUpdate = api(func(this *ApiCtx[yodb.ApiUpdateArgs[User, UserField], V
 	userUpdate(this.Ctx, &this.Args.Changes, (len(this.Args.ChangedFields) > 0), this.Args.ChangedFields...)
 })
 
-var apiUserBuddies = api(func(this *ApiCtx[Void, struct {
+var apiUserBuddies = api(func(this *ApiCtx[None, struct {
 	Buddies         []*User
 	BuddyRequestsBy []*User
 }]) {
@@ -267,7 +267,7 @@ var apiPostNew = api(func(this *ApiCtx[Post, Return[yodb.I64]]) {
 
 var apiPostDelete = api(func(this *ApiCtx[struct {
 	Id yodb.I64
-}, Void]) {
+}, None]) {
 	post := yodb.ById[Post](this.Ctx, this.Args.Id)
 	if post == nil {
 		return
@@ -279,7 +279,7 @@ var apiPostDelete = api(func(this *ApiCtx[struct {
 	_ = postDelete(this.Ctx, post)
 })
 
-var apiPostEmojiFullList = api(func(this *ApiCtx[Void, Return[map[string]string]]) {
+var apiPostEmojiFullList = api(func(this *ApiCtx[None, Return[map[string]string]]) {
 	this.Ret.Result = make(map[string]string, len(emojiKnown))
 	for emoji_code := range emojiKnown {
 		this.Ret.Result[emoji_code] = emojiUnescaped(emoji_code)

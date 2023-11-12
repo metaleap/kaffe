@@ -168,9 +168,9 @@ reqMaxReqPayloadSizeMb = 1
 reqMaxReqMultipartSizeMb = 22
 
 const errs__postDelete = ['MissingOrExcessiveContentLength', 'TimedOut', 'Unauthorized', '__postDelete_InvalidPostId'] as const
-export async function api__postDelete(payload?: __postDelete_In, formData?: FormData, query?: {[_:string]:string}): Promise<Void> {
+export async function api__postDelete(payload?: __postDelete_In, formData?: FormData, query?: {[_:string]:string}): Promise<None> {
 	try {
-		return await req<__postDelete_In, Void, __postDeleteErr>('_/postDelete', payload, formData, query)
+		return await req<__postDelete_In, None, __postDeleteErr>('_/postDelete', payload, formData, query)
 	} catch(err: any) {
 		if (err && err['body_text'] && (errs__postDelete.indexOf(err.body_text) >= 0))
 			throw(new Err<__postDeleteErr>(err.body_text as __postDeleteErr))
@@ -180,9 +180,9 @@ export async function api__postDelete(payload?: __postDelete_In, formData?: Form
 export type __postDeleteErr = typeof errs__postDelete[number]
 
 const errs__postEmojiFullList = ['MissingOrExcessiveContentLength', 'TimedOut'] as const
-export async function api__postEmojiFullList(payload?: Void, formData?: FormData, query?: {[_:string]:string}): Promise<Return_map_string_string_> {
+export async function api__postEmojiFullList(payload?: None, formData?: FormData, query?: {[_:string]:string}): Promise<Return_map_string_string_> {
 	try {
-		return await req<Void, Return_map_string_string_, __postEmojiFullListErr>('_/postEmojiFullList', payload, formData, query)
+		return await req<None, Return_map_string_string_, __postEmojiFullListErr>('_/postEmojiFullList', payload, formData, query)
 	} catch(err: any) {
 		if (err && err['body_text'] && (errs__postEmojiFullList.indexOf(err.body_text) >= 0))
 			throw(new Err<__postEmojiFullListErr>(err.body_text as __postEmojiFullListErr))
@@ -252,9 +252,9 @@ export async function api__postsRecent(payload?: __postsRecent_In, formData?: Fo
 export type __postsRecentErr = typeof errs__postsRecent[number]
 
 const errs__userBuddies = ['MissingOrExcessiveContentLength', 'TimedOut', 'Unauthorized'] as const
-export async function api__userBuddies(payload?: Void, formData?: FormData, query?: {[_:string]:string}): Promise<__userBuddies_Out> {
+export async function api__userBuddies(payload?: None, formData?: FormData, query?: {[_:string]:string}): Promise<__userBuddies_Out> {
 	try {
-		return await req<Void, __userBuddies_Out, __userBuddiesErr>('_/userBuddies', payload, formData, query)
+		return await req<None, __userBuddies_Out, __userBuddiesErr>('_/userBuddies', payload, formData, query)
 	} catch(err: any) {
 		if (err && err['body_text'] && (errs__userBuddies.indexOf(err.body_text) >= 0))
 			throw(new Err<__userBuddiesErr>(err.body_text as __userBuddiesErr))
@@ -288,9 +288,9 @@ export async function api__userBy(payload?: __userBy_In, formData?: FormData, qu
 export type __userByErr = typeof errs__userBy[number]
 
 const errs__userSignInOrReset = ['MissingOrExcessiveContentLength', 'TimedOut', 'Unauthorized', '___yo_authLoginOrFinalizePwdReset_AccountDoesNotExist', '___yo_authLoginOrFinalizePwdReset_EmailInvalid', '___yo_authLoginOrFinalizePwdReset_EmailRequiredButMissing', '___yo_authLoginOrFinalizePwdReset_NewPasswordExpectedToDiffer', '___yo_authLoginOrFinalizePwdReset_NewPasswordInvalid', '___yo_authLoginOrFinalizePwdReset_NewPasswordTooLong', '___yo_authLoginOrFinalizePwdReset_NewPasswordTooShort', '___yo_authLoginOrFinalizePwdReset_OkButFailedToCreateSignedToken', '___yo_authLoginOrFinalizePwdReset_WrongPassword', '__userSignInOrReset_ExpectedPasswordAndNickOrEmailAddr', '__userSignInOrReset_WrongPassword'] as const
-export async function api__userSignInOrReset(payload?: ApiUserSignInOrReset, formData?: FormData, query?: {[_:string]:string}): Promise<Void> {
+export async function api__userSignInOrReset(payload?: ApiUserSignInOrReset, formData?: FormData, query?: {[_:string]:string}): Promise<None> {
 	try {
-		return await req<ApiUserSignInOrReset, Void, __userSignInOrResetErr>('_/userSignInOrReset', payload, formData, query)
+		return await req<ApiUserSignInOrReset, None, __userSignInOrResetErr>('_/userSignInOrReset', payload, formData, query)
 	} catch(err: any) {
 		if (err && err['body_text'] && (errs__userSignInOrReset.indexOf(err.body_text) >= 0))
 			throw(new Err<__userSignInOrResetErr>(err.body_text as __userSignInOrResetErr))
@@ -300,9 +300,9 @@ export async function api__userSignInOrReset(payload?: ApiUserSignInOrReset, for
 export type __userSignInOrResetErr = typeof errs__userSignInOrReset[number]
 
 const errs__userSignOut = ['MissingOrExcessiveContentLength', 'TimedOut'] as const
-export async function api__userSignOut(payload?: Void, formData?: FormData, query?: {[_:string]:string}): Promise<Void> {
+export async function api__userSignOut(payload?: None, formData?: FormData, query?: {[_:string]:string}): Promise<None> {
 	try {
-		return await req<Void, Void, __userSignOutErr>('_/userSignOut', payload, formData, query)
+		return await req<None, None, __userSignOutErr>('_/userSignOut', payload, formData, query)
 	} catch(err: any) {
 		if (err && err['body_text'] && (errs__userSignOut.indexOf(err.body_text) >= 0))
 			throw(new Err<__userSignOutErr>(err.body_text as __userSignOutErr))
@@ -312,9 +312,9 @@ export async function api__userSignOut(payload?: Void, formData?: FormData, quer
 export type __userSignOutErr = typeof errs__userSignOut[number]
 
 const errs__userSignUpOrForgotPassword = ['MissingOrExcessiveContentLength', 'TimedOut', '___yo_authRegister_EmailAddrAlreadyExists', '___yo_authRegister_EmailInvalid', '___yo_authRegister_EmailRequiredButMissing', '___yo_authRegister_PasswordInvalid', '___yo_authRegister_PasswordTooLong', '___yo_authRegister_PasswordTooShort', '__userSignUpOrForgotPassword_EmailInvalid', '__userSignUpOrForgotPassword_EmailRequiredButMissing'] as const
-export async function api__userSignUpOrForgotPassword(payload?: ApiNickOrEmailAddr, formData?: FormData, query?: {[_:string]:string}): Promise<Void> {
+export async function api__userSignUpOrForgotPassword(payload?: ApiNickOrEmailAddr, formData?: FormData, query?: {[_:string]:string}): Promise<None> {
 	try {
-		return await req<ApiNickOrEmailAddr, Void, __userSignUpOrForgotPasswordErr>('_/userSignUpOrForgotPassword', payload, formData, query)
+		return await req<ApiNickOrEmailAddr, None, __userSignUpOrForgotPasswordErr>('_/userSignUpOrForgotPassword', payload, formData, query)
 	} catch(err: any) {
 		if (err && err['body_text'] && (errs__userSignUpOrForgotPassword.indexOf(err.body_text) >= 0))
 			throw(new Err<__userSignUpOrForgotPasswordErr>(err.body_text as __userSignUpOrForgotPasswordErr))
@@ -324,9 +324,9 @@ export async function api__userSignUpOrForgotPassword(payload?: ApiNickOrEmailAd
 export type __userSignUpOrForgotPasswordErr = typeof errs__userSignUpOrForgotPassword[number]
 
 const errs__userUpdate = ['DbUpdExpectedIdGt0', 'DbUpdate_ExpectedChangesForUpdate', 'DbUpdate_ExpectedQueryForUpdate', 'MissingOrExcessiveContentLength', 'TimedOut', 'Unauthorized', '__userUpdate_ExpectedNonEmptyNickname', '__userUpdate_NicknameAlreadyExists'] as const
-export async function api__userUpdate(payload?: ApiUpdateArgs_kaffe_app_User_kaffe_app_UserField_, formData?: FormData, query?: {[_:string]:string}): Promise<Void> {
+export async function api__userUpdate(payload?: ApiUpdateArgs_kaffe_app_User_kaffe_app_UserField_, formData?: FormData, query?: {[_:string]:string}): Promise<None> {
 	try {
-		return await req<ApiUpdateArgs_kaffe_app_User_kaffe_app_UserField_, Void, __userUpdateErr>('_/userUpdate', payload, formData, query)
+		return await req<ApiUpdateArgs_kaffe_app_User_kaffe_app_UserField_, None, __userUpdateErr>('_/userUpdate', payload, formData, query)
 	} catch(err: any) {
 		if (err && err['body_text'] && (errs__userUpdate.indexOf(err.body_text) >= 0))
 			throw(new Err<__userUpdateErr>(err.body_text as __userUpdateErr))
@@ -456,13 +456,13 @@ export type ApiUpdateArgs_kaffe_app_User_kaffe_app_UserField_ = {
 }
 
 export type DateTime = string
+export type None = {
+}
+
 export type Return_map_string_string_ = {
 	Result: { [_:string]: string }
 }
 
 export type Return_yo_db_I64_ = {
 	Result: I64
-}
-
-export type Void = {
 }

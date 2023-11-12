@@ -107,7 +107,7 @@ func mockSomeActivity() {
 	ctx.TimingsNoPrintInDevMode = true
 
 	if must_log_in_first {
-		ViaHttp[ApiUserSignInOrReset, Void](apiUserSignInOrReset, ctx, &ApiUserSignInOrReset{
+		ViaHttp[ApiUserSignInOrReset, None](apiUserSignInOrReset, ctx, &ApiUserSignInOrReset{
 			ApiNickOrEmailAddr: ApiNickOrEmailAddr{NickOrEmailAddr: user_email_addr}, PasswordPlain: "foobar",
 		}, user_client)
 	}
@@ -115,7 +115,7 @@ func mockSomeActivity() {
 	do_update := func(curUser *User, upd *User, changedFields ...UserField) {
 		upd.Id = curUser.Id
 		upd.Auth.SetId(curUser.Auth.Id())
-		ViaHttp[yodb.ApiUpdateArgs[User, UserField], Void](apiUserUpdate, ctx, &yodb.ApiUpdateArgs[User, UserField]{
+		ViaHttp[yodb.ApiUpdateArgs[User, UserField], None](apiUserUpdate, ctx, &yodb.ApiUpdateArgs[User, UserField]{
 			Changes:       *upd,
 			Id:            curUser.Id,
 			ChangedFields: changedFields,

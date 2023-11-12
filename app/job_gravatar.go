@@ -31,9 +31,9 @@ var gravatarJobDef = yojobs.JobDef{
 	MaxTaskRetries:                   1, // keep low, the to-dos will anyway resurface for the next job run
 }
 
-type gravatarJob Void
-type gravatarJobDetails Void
-type gravatarJobResults Void
+type gravatarJob None
+type gravatarJobDetails None
+type gravatarJobResults None
 type gravatarTaskDetails struct {
 	UserId yodb.I64
 }

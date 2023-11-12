@@ -28,9 +28,9 @@ var cleanUpJobDef = yojobs.JobDef{
 	MaxTaskRetries:                   1, // keep low, the to-dos will anyway resurface for the next job run
 }
 
-type cleanUpJob Void
-type cleanUpJobDetails Void
-type cleanUpJobResults Void
+type cleanUpJob None
+type cleanUpJobDetails None
+type cleanUpJobResults None
 type cleanUpTaskDetails struct {
 	User       yodb.I64
 	FileDelReq yodb.I64
