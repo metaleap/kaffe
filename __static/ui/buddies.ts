@@ -3,12 +3,13 @@ const htm = van.tags, depends = van.derive
 
 import * as yo from '../yo-sdk.js'
 import * as youtil from '../../__yostatic/util.js'
+import * as youi from '../../__yostatic/youi.js'
 import * as kaffe from '../kaffe.js'
 import * as util from '../util.js'
 
 export type UiCtlBuddies = {
     DOM: HTMLElement
-    buddies: youtil.DomLive<yo.User>
+    buddies: youi.DomLive<yo.User>
     buddyRequestsBy: State<yo.User[]>
     update: (_: yo.__userBuddies_Out) => void
 }
@@ -17,7 +18,7 @@ export function create(): UiCtlBuddies {
     const me: UiCtlBuddies = {
         update: (_) => update(me, _),
         buddyRequestsBy: van.state([] as yo.User[]),
-        buddies: youtil.domLive<yo.User>(htm.div({ 'class': 'buddies' }), [], (it) => {
+        buddies: youi.domLive<yo.User>(htm.div({ 'class': 'buddies' }), [], (it) => {
             const item = htm.div({
                 'class': depends(() => 'buddy' + (kaffe.isSeeminglyOffline.val ? ' offline' : '') + (kaffe.buddySelected(it) ? ' selected' : '') + ((kaffe.buddyBadges[it.Id!].val) ? ' badged' : '') + ((kaffe.buddyBadgesAlt[it.Id!].val) ? ' badged-alt' : '')),
                 'data-badge': depends(() => (kaffe.buddyBadges[it.Id!].val) || ""),
