@@ -1,10 +1,10 @@
 package kaffe
 
 import (
+	yoauth "yo/auth"
 	. "yo/cfg"
 	. "yo/ctx"
 	yodb "yo/db"
-	yoauth "yo/feat_auth"
 	yomail "yo/mail"
 	"yo/util/str"
 )

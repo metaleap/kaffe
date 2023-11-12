@@ -3,9 +3,9 @@ package kaffe
 import (
 	"time"
 
+	yoauth "yo/auth"
 	. "yo/ctx"
 	yodb "yo/db"
-	yoauth "yo/feat_auth"
 	. "yo/srv"
 	. "yo/util"
 	"yo/util/sl"

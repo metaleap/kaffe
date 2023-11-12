@@ -11,10 +11,10 @@ import (
 	"time"
 	"yo"
 
+	yoauth "yo/auth"
 	. "yo/cfg"
 	. "yo/ctx"
 	yodb "yo/db"
-	yoauth "yo/feat_auth"
 	. "yo/srv"
 	. "yo/util"
 	"yo/util/sl"

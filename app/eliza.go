@@ -5,11 +5,11 @@ import (
 	"path/filepath"
 	"time"
 
+	yoauth "yo/auth"
 	. "yo/cfg"
 	. "yo/ctx"
 	yodb "yo/db"
 	q "yo/db/query"
-	yoauth "yo/feat_auth"
 	yojobs "yo/jobs"
 	. "yo/util"
 	"yo/util/sl"

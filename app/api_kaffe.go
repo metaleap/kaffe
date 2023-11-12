@@ -10,11 +10,11 @@ import (
 	"path/filepath"
 	"time"
 
+	yoauth "yo/auth"
 	. "yo/cfg"
 	. "yo/ctx"
 	yodb "yo/db"
 	q "yo/db/query"
-	yoauth "yo/feat_auth"
 	. "yo/srv"
 	. "yo/util"
 	"yo/util/sl"
