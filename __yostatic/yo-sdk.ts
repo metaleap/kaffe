@@ -343,7 +343,7 @@ export type fileDelReqField = 'Id' | 'DtMade' | 'DtMod' | 'FileNames'
 
 export type ErrEntryField = 'Id' | 'DtMade' | 'DtMod' | 'Err' | 'StackTrace' | 'CtxVals' | 'HttpUrlPath' | 'HttpFullUri' | 'NumCaught' | 'JobRunId' | 'JobTaskId' | 'DbTx'
 
-export type UserAuthField = 'Id' | 'DtMade' | 'DtMod' | 'EmailAddr'
+export type UserAuthField = 'Id' | 'DtMade' | 'DtMod' | 'EmailAddr' | 'FailedLoginAttempts'
 
 export type UserPwdReqField = 'Id' | 'DtMade' | 'DtMod' | 'EmailAddr' | 'DoneMailReqId'
 
