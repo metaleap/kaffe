@@ -49,7 +49,7 @@ func (gravatarJob) JobResults(_ *Ctx) (func(func() *Ctx, *yojobs.JobTask, *bool)
 }
 
 func (me gravatarJob) TaskDetails(ctx *Ctx, stream func([]yojobs.TaskDetails)) {
-	stream(sl.To(
+	stream(sl.As(
 		yodb.FindMany[User](ctx, userGravatarChecked.Equal(false).And(UserPicFileId.Equal("")), 44, UserFields(UserId), UserLastSeen.Desc()),
 		func(it *User) yojobs.TaskDetails { return &gravatarTaskDetails{UserId: it.Id} },
 	))

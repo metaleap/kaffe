@@ -61,7 +61,7 @@ func (cleanUpJob) dtCutOff() time.Time {
 
 func (me cleanUpJob) TaskDetails(ctx *Ctx, stream func([]yojobs.TaskDetails)) {
 	// file-deletion job tasks from pending file-deletion reqs
-	stream(sl.To(
+	stream(sl.As(
 		yodb.Ids[fileDelReq](ctx, nil),
 		func(id yodb.I64) yojobs.TaskDetails {
 			return &cleanUpTaskDetails{FileDelReq: id}
@@ -70,7 +70,7 @@ func (me cleanUpJob) TaskDetails(ctx *Ctx, stream func([]yojobs.TaskDetails)) {
 	// post-deletion job tasks from non-vip users that have old posts
 	user_ids := make(sl.Of[yodb.I64], 0, 128)
 	do_push := func(users []yodb.I64) {
-		stream(sl.To(users, func(it yodb.I64) yojobs.TaskDetails {
+		stream(sl.As(users, func(it yodb.I64) yojobs.TaskDetails {
 			return &cleanUpTaskDetails{User: it}
 		}))
 	}

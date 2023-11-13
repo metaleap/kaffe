@@ -5,7 +5,7 @@ import q "yo/db/query"
 
 import sl "yo/util/sl"
 
-func UserFields(fields ...UserField) []q.F { return sl.To(fields, UserField.F) }
+func UserFields(fields ...UserField) []q.F { return sl.As(fields, UserField.F) }
 
 type UserField q.F
 
@@ -51,7 +51,7 @@ func (me UserField) NotIn(a1 ...interface{}) q.Query       { return ((q.F)(me)).
 func (me UserField) NotInArr(a1 interface{}) q.Query       { return ((q.F)(me)).NotInArr(a1) }
 func (me UserField) StrLen(a1 ...interface{}) q.Operand    { return ((q.F)(me)).StrLen(a1...) }
 
-func PostFields(fields ...PostField) []q.F { return sl.To(fields, PostField.F) }
+func PostFields(fields ...PostField) []q.F { return sl.As(fields, PostField.F) }
 
 type PostField q.F
 
@@ -97,7 +97,7 @@ func (me PostField) NotIn(a1 ...interface{}) q.Query       { return ((q.F)(me)).
 func (me PostField) NotInArr(a1 interface{}) q.Query       { return ((q.F)(me)).NotInArr(a1) }
 func (me PostField) StrLen(a1 ...interface{}) q.Operand    { return ((q.F)(me)).StrLen(a1...) }
 
-func fileDelReqFields(fields ...fileDelReqField) []q.F { return sl.To(fields, fileDelReqField.F) }
+func fileDelReqFields(fields ...fileDelReqField) []q.F { return sl.As(fields, fileDelReqField.F) }
 
 type fileDelReqField q.F
 
