@@ -345,7 +345,7 @@ export type ErrEntryField = 'Id' | 'DtMade' | 'DtMod' | 'Err' | 'StackTrace' | '
 
 export type UserAuthField = 'Id' | 'DtMade' | 'DtMod' | 'EmailAddr'
 
-export type UserPwdReqField = 'Id' | 'DtMade' | 'DtMod' | 'EmailAddr' | 'DoneMailReqId' | 'DtFinalized'
+export type UserPwdReqField = 'Id' | 'DtMade' | 'DtMod' | 'EmailAddr' | 'DoneMailReqId'
 
 export type JobDefField = 'Id' | 'DtMade' | 'DtMod' | 'Name' | 'JobTypeId' | 'Disabled' | 'AllowManualJobRuns' | 'Schedules' | 'TimeoutSecsTaskRun' | 'TimeoutSecsJobRunPrepAndFinalize' | 'MaxTaskRetries' | 'DeleteAfterDays' | 'RunTasklessJobs'
 

@@ -18,7 +18,7 @@ var devModeInitMockUsers func()
 
 func init() {
 	yoauth.AutoLoginAfterSuccessfullyFinalizedSignUpOrPwdResetReq = true
-	yoauth.EnforceGenericErrors = false
+	yoauth.EnforceGenericizedErrors = false
 	yo.AppPkgPath = kaffePkg.PkgPath()
 	AppSideStaticRePathFor = func(reqUrlPath string) string {
 		return If(str.Begins(reqUrlPath, "_/"), "", "__static/kaffe.html")
