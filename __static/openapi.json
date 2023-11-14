@@ -1,8 +1,12 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "kaffe.local",
-    "version": "23.318"
+    "title": "kaffe.chat",
+    "version": "23.318",
+    "contact": {
+      "name": "Permalink",
+      "url": "https://kaffe.chat/__static/openapi.json"
+    }
   },
   "paths": {
     "/_/postDelete": {
@@ -33,17 +37,30 @@
         "requestBody": {
           "description": "__postDelete_In",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.None",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -76,17 +93,30 @@
         "requestBody": {
           "description": "yo/util.None",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.Return[map[string]string]",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -119,17 +149,30 @@
         "requestBody": {
           "description": "__postMonthsUtc_In",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "__postMonthsUtc_Out",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -162,17 +205,30 @@
         "requestBody": {
           "description": "kaffe/app.Post",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.Return[yo/db.I64]",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -205,17 +261,30 @@
         "requestBody": {
           "description": "__postsDeleted_In",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "__postsDeleted_Out",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -248,17 +317,30 @@
         "requestBody": {
           "description": "kaffe/app.ApiArgPeriod",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "kaffe/app.PostsListResult",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -291,17 +373,30 @@
         "requestBody": {
           "description": "__postsRecent_In",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "kaffe/app.PostsListResult",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -334,17 +429,30 @@
         "requestBody": {
           "description": "yo/util.None",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "__userBuddies_Out",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -377,17 +485,30 @@
         "requestBody": {
           "description": "__userBuddiesAdd_In",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "__userBuddiesAdd_Out",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -420,17 +541,30 @@
         "requestBody": {
           "description": "__userBy_In",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "kaffe/app.User",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -463,17 +597,30 @@
         "requestBody": {
           "description": "kaffe/app.ApiUserSignInOrReset",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.None",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -506,17 +653,30 @@
         "requestBody": {
           "description": "yo/util.None",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.None",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -549,17 +709,30 @@
         "requestBody": {
           "description": "kaffe/app.ApiNickOrEmailAddr",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.None",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -592,17 +765,30 @@
         "requestBody": {
           "description": "yo/db.ApiUpdateArgs[kaffe/app.User,kaffe/app.UserField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.None",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -635,17 +821,30 @@
         "requestBody": {
           "description": "yo/auth.ApiAccountPayload",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.None",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -678,17 +877,30 @@
         "requestBody": {
           "description": "yo/auth.ApiAccountPayload",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/auth.UserAuth",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -721,17 +933,30 @@
         "requestBody": {
           "description": "yo/util.None",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.None",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -764,17 +989,30 @@
         "requestBody": {
           "description": "yo/auth.ApiAccountPayload",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "___yo_authRegister_Out",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -807,17 +1045,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[yo.ErrEntry,yo.ErrEntryField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -850,17 +1101,30 @@
         "requestBody": {
           "description": "___yo_db_ErrEntry_createMany_In",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.None",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -893,17 +1157,30 @@
         "requestBody": {
           "description": "yo.ErrEntry",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.ObjRef[yo.ErrEntry]",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -936,17 +1213,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[yo.ErrEntry,yo.ErrEntryField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -979,17 +1269,30 @@
         "requestBody": {
           "description": "yo/db.ObjRef[yo.ErrEntry]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -1022,17 +1325,30 @@
         "requestBody": {
           "description": "yo/db.ObjRef[yo.ErrEntry]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo.ErrEntry",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -1065,17 +1381,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[yo.ErrEntry,yo.ErrEntryField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.Return[[]*yo.ErrEntry]",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -1108,17 +1437,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[yo.ErrEntry,yo.ErrEntryField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.Return[*yo.ErrEntry]",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -1151,17 +1493,30 @@
         "requestBody": {
           "description": "___yo_db_ErrEntry_updateMany_In",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -1194,17 +1549,30 @@
         "requestBody": {
           "description": "yo/db.ApiUpdateArgs[yo.ErrEntry,yo.ErrEntryField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -1237,17 +1605,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[yo/jobs.JobDef,yo/jobs.JobDefField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -1280,17 +1661,30 @@
         "requestBody": {
           "description": "___yo_db_JobDef_createMany_In",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.None",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -1323,17 +1717,30 @@
         "requestBody": {
           "description": "yo/jobs.JobDef",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.ObjRef[yo/jobs.JobDef]",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -1366,17 +1773,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[yo/jobs.JobDef,yo/jobs.JobDefField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -1409,17 +1829,30 @@
         "requestBody": {
           "description": "yo/db.ObjRef[yo/jobs.JobDef]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -1452,17 +1885,30 @@
         "requestBody": {
           "description": "yo/db.ObjRef[yo/jobs.JobDef]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/jobs.JobDef",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -1495,17 +1941,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[yo/jobs.JobDef,yo/jobs.JobDefField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.Return[[]*yo/jobs.JobDef]",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -1538,17 +1997,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[yo/jobs.JobDef,yo/jobs.JobDefField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.Return[*yo/jobs.JobDef]",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -1581,17 +2053,30 @@
         "requestBody": {
           "description": "___yo_db_JobDef_updateMany_In",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -1624,17 +2109,30 @@
         "requestBody": {
           "description": "yo/db.ApiUpdateArgs[yo/jobs.JobDef,yo/jobs.JobDefField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -1667,17 +2165,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[yo/jobs.JobRun,yo/jobs.JobRunField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -1710,17 +2221,30 @@
         "requestBody": {
           "description": "___yo_db_JobRun_createMany_In",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.None",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -1753,17 +2277,30 @@
         "requestBody": {
           "description": "yo/jobs.JobRun",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.ObjRef[yo/jobs.JobRun]",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -1796,17 +2333,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[yo/jobs.JobRun,yo/jobs.JobRunField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -1839,17 +2389,30 @@
         "requestBody": {
           "description": "yo/db.ObjRef[yo/jobs.JobRun]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -1882,17 +2445,30 @@
         "requestBody": {
           "description": "yo/db.ObjRef[yo/jobs.JobRun]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/jobs.JobRun",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -1925,17 +2501,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[yo/jobs.JobRun,yo/jobs.JobRunField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.Return[[]*yo/jobs.JobRun]",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -1968,17 +2557,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[yo/jobs.JobRun,yo/jobs.JobRunField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.Return[*yo/jobs.JobRun]",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -2011,17 +2613,30 @@
         "requestBody": {
           "description": "___yo_db_JobRun_updateMany_In",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -2054,17 +2669,30 @@
         "requestBody": {
           "description": "yo/db.ApiUpdateArgs[yo/jobs.JobRun,yo/jobs.JobRunField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -2097,17 +2725,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[yo/jobs.JobTask,yo/jobs.JobTaskField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -2140,17 +2781,30 @@
         "requestBody": {
           "description": "___yo_db_JobTask_createMany_In",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.None",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -2183,17 +2837,30 @@
         "requestBody": {
           "description": "yo/jobs.JobTask",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.ObjRef[yo/jobs.JobTask]",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -2226,17 +2893,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[yo/jobs.JobTask,yo/jobs.JobTaskField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -2269,17 +2949,30 @@
         "requestBody": {
           "description": "yo/db.ObjRef[yo/jobs.JobTask]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -2312,17 +3005,30 @@
         "requestBody": {
           "description": "yo/db.ObjRef[yo/jobs.JobTask]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/jobs.JobTask",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -2355,17 +3061,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[yo/jobs.JobTask,yo/jobs.JobTaskField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.Return[[]*yo/jobs.JobTask]",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -2398,17 +3117,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[yo/jobs.JobTask,yo/jobs.JobTaskField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.Return[*yo/jobs.JobTask]",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -2441,17 +3173,30 @@
         "requestBody": {
           "description": "___yo_db_JobTask_updateMany_In",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -2484,17 +3229,30 @@
         "requestBody": {
           "description": "yo/db.ApiUpdateArgs[yo/jobs.JobTask,yo/jobs.JobTaskField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -2527,17 +3285,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[yo/mail.MailReq,yo/mail.MailReqField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -2570,17 +3341,30 @@
         "requestBody": {
           "description": "___yo_db_MailReq_createMany_In",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.None",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -2613,17 +3397,30 @@
         "requestBody": {
           "description": "yo/mail.MailReq",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.ObjRef[yo/mail.MailReq]",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -2656,17 +3453,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[yo/mail.MailReq,yo/mail.MailReqField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -2699,17 +3509,30 @@
         "requestBody": {
           "description": "yo/db.ObjRef[yo/mail.MailReq]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -2742,17 +3565,30 @@
         "requestBody": {
           "description": "yo/db.ObjRef[yo/mail.MailReq]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/mail.MailReq",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -2785,17 +3621,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[yo/mail.MailReq,yo/mail.MailReqField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.Return[[]*yo/mail.MailReq]",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -2828,17 +3677,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[yo/mail.MailReq,yo/mail.MailReqField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.Return[*yo/mail.MailReq]",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -2871,17 +3733,30 @@
         "requestBody": {
           "description": "___yo_db_MailReq_updateMany_In",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -2914,17 +3789,30 @@
         "requestBody": {
           "description": "yo/db.ApiUpdateArgs[yo/mail.MailReq,yo/mail.MailReqField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -2957,17 +3845,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[kaffe/app.Post,kaffe/app.PostField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -3000,17 +3901,30 @@
         "requestBody": {
           "description": "___yo_db_Post_createMany_In",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.None",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -3043,17 +3957,30 @@
         "requestBody": {
           "description": "kaffe/app.Post",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.ObjRef[kaffe/app.Post]",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -3086,17 +4013,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[kaffe/app.Post,kaffe/app.PostField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -3129,17 +4069,30 @@
         "requestBody": {
           "description": "yo/db.ObjRef[kaffe/app.Post]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -3172,17 +4125,30 @@
         "requestBody": {
           "description": "yo/db.ObjRef[kaffe/app.Post]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "kaffe/app.Post",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -3215,17 +4181,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[kaffe/app.Post,kaffe/app.PostField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.Return[[]*kaffe/app.Post]",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -3258,17 +4237,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[kaffe/app.Post,kaffe/app.PostField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.Return[*kaffe/app.Post]",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -3301,17 +4293,30 @@
         "requestBody": {
           "description": "___yo_db_Post_updateMany_In",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -3344,17 +4349,30 @@
         "requestBody": {
           "description": "yo/db.ApiUpdateArgs[kaffe/app.Post,kaffe/app.PostField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -3387,17 +4405,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[kaffe/app.User,kaffe/app.UserField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -3430,17 +4461,30 @@
         "requestBody": {
           "description": "___yo_db_User_createMany_In",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.None",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -3473,17 +4517,30 @@
         "requestBody": {
           "description": "kaffe/app.User",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.ObjRef[kaffe/app.User]",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -3516,17 +4573,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[kaffe/app.User,kaffe/app.UserField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -3559,17 +4629,30 @@
         "requestBody": {
           "description": "yo/db.ObjRef[kaffe/app.User]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -3602,17 +4685,30 @@
         "requestBody": {
           "description": "yo/db.ObjRef[kaffe/app.User]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "kaffe/app.User",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -3645,17 +4741,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[kaffe/app.User,kaffe/app.UserField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.Return[[]*kaffe/app.User]",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -3688,17 +4797,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[kaffe/app.User,kaffe/app.UserField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.Return[*kaffe/app.User]",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -3731,17 +4853,30 @@
         "requestBody": {
           "description": "___yo_db_User_updateMany_In",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -3774,17 +4909,30 @@
         "requestBody": {
           "description": "yo/db.ApiUpdateArgs[kaffe/app.User,kaffe/app.UserField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -3817,17 +4965,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[yo/auth.UserAuth,yo/auth.UserAuthField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -3860,17 +5021,30 @@
         "requestBody": {
           "description": "___yo_db_UserAuth_createMany_In",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.None",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -3903,17 +5077,30 @@
         "requestBody": {
           "description": "yo/auth.UserAuth",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.ObjRef[yo/auth.UserAuth]",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -3946,17 +5133,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[yo/auth.UserAuth,yo/auth.UserAuthField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -3989,17 +5189,30 @@
         "requestBody": {
           "description": "yo/db.ObjRef[yo/auth.UserAuth]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -4032,17 +5245,30 @@
         "requestBody": {
           "description": "yo/db.ObjRef[yo/auth.UserAuth]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/auth.UserAuth",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -4075,17 +5301,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[yo/auth.UserAuth,yo/auth.UserAuthField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.Return[[]*yo/auth.UserAuth]",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -4118,17 +5357,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[yo/auth.UserAuth,yo/auth.UserAuthField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.Return[*yo/auth.UserAuth]",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -4161,17 +5413,30 @@
         "requestBody": {
           "description": "___yo_db_UserAuth_updateMany_In",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -4204,17 +5469,30 @@
         "requestBody": {
           "description": "yo/db.ApiUpdateArgs[yo/auth.UserAuth,yo/auth.UserAuthField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -4247,17 +5525,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[yo/auth.UserPwdReq,yo/auth.UserPwdReqField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -4290,17 +5581,30 @@
         "requestBody": {
           "description": "___yo_db_UserPwdReq_createMany_In",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.None",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -4333,17 +5637,30 @@
         "requestBody": {
           "description": "yo/auth.UserPwdReq",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.ObjRef[yo/auth.UserPwdReq]",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -4376,17 +5693,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[yo/auth.UserPwdReq,yo/auth.UserPwdReqField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -4419,17 +5749,30 @@
         "requestBody": {
           "description": "yo/db.ObjRef[yo/auth.UserPwdReq]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -4462,17 +5805,30 @@
         "requestBody": {
           "description": "yo/db.ObjRef[yo/auth.UserPwdReq]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/auth.UserPwdReq",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -4505,17 +5861,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[yo/auth.UserPwdReq,yo/auth.UserPwdReqField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.Return[[]*yo/auth.UserPwdReq]",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -4548,17 +5917,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[yo/auth.UserPwdReq,yo/auth.UserPwdReqField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.Return[*yo/auth.UserPwdReq]",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -4591,17 +5973,30 @@
         "requestBody": {
           "description": "___yo_db_UserPwdReq_updateMany_In",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -4634,17 +6029,30 @@
         "requestBody": {
           "description": "yo/db.ApiUpdateArgs[yo/auth.UserPwdReq,yo/auth.UserPwdReqField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -4677,17 +6085,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[kaffe/app.fileDelReq,kaffe/app.fileDelReqField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -4720,17 +6141,30 @@
         "requestBody": {
           "description": "___yo_db_fileDelReq_createMany_In",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.None",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -4763,17 +6197,30 @@
         "requestBody": {
           "description": "kaffe/app.fileDelReq",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.ObjRef[kaffe/app.fileDelReq]",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -4806,17 +6253,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[kaffe/app.fileDelReq,kaffe/app.fileDelReqField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -4849,17 +6309,30 @@
         "requestBody": {
           "description": "yo/db.ObjRef[kaffe/app.fileDelReq]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -4892,17 +6365,30 @@
         "requestBody": {
           "description": "yo/db.ObjRef[kaffe/app.fileDelReq]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "kaffe/app.fileDelReq",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -4935,17 +6421,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[kaffe/app.fileDelReq,kaffe/app.fileDelReqField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.Return[[]*kaffe/app.fileDelReq]",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -4978,17 +6477,30 @@
         "requestBody": {
           "description": "yo/db.argQuery[kaffe/app.fileDelReq,kaffe/app.fileDelReqField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.Return[*kaffe/app.fileDelReq]",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -5021,17 +6533,30 @@
         "requestBody": {
           "description": "___yo_db_fileDelReq_updateMany_In",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -5064,17 +6589,30 @@
         "requestBody": {
           "description": "yo/db.ApiUpdateArgs[kaffe/app.fileDelReq,kaffe/app.fileDelReqField]",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/db.retCount",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -5107,17 +6645,30 @@
         "requestBody": {
           "description": "___yo_db_getTable_In",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/util.Return[[]*yo/db.TableColumn]",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
@@ -5150,17 +6701,30 @@
         "requestBody": {
           "description": "yo/util.None",
           "required": true,
-          "content": null
+          "content": {
+            "application/json": {
+              "example": {}
+            }
+          }
         },
         "responses": {
           "200": {
             "description": "yo/srv.apiReflect",
             "headers": {
               "X-Yo-User": {
-                "description": "empty if not authenticated, else current user's account-identifying email address"
+                "description": "0 if not authenticated, else current user's ID",
+                "content": {
+                  "text/plain": {
+                    "example": "123"
+                  }
+                }
               }
             },
-            "content": null
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
           }
         }
       }
