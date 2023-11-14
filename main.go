@@ -8,7 +8,7 @@ import (
 
 func main() {
 	kaffe.Init() // keep in `main()`, dont move to `init()`
-	doListenAndServe := yo.Init(staticFsYo, staticFsApp)
+	doListenAndServe := yo.Init(staticFs_Yo, staticFs_App)
 	kaffe.OnBeforeListenAndServe()
 	doListenAndServe()
 }

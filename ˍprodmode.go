@@ -7,7 +7,7 @@ import (
 )
 
 //go:embed __yostatic
-var staticFsYo embed.FS
+var staticFs_Yo embed.FS
 
 //go:embed __static
-var staticFsApp embed.FS
+var staticFs_App embed.FS

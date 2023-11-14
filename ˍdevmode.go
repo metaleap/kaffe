@@ -7,5 +7,5 @@ import (
 	"os"
 )
 
-var staticFsYo fs.FS = os.DirFS(".")
-var staticFsApp fs.FS = os.DirFS(".")
+var staticFs_Yo fs.FS = os.DirFS(".")
+var staticFs_App fs.FS = os.DirFS(".")
