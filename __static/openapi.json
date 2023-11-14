@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "kaffe.chat",
-    "summary": "This JSON HTTP API has RPC rather than REST semantics. All operations are ´POST´, regardless of what CRUDs they might run (or not).",
-    "description": "\nOur convention-over-configuration designs yield a handful of request/response rules:\n- All request headers, URL query-string parameters and response headers are identical over the whole set of all operations. Only request and response bodies are operation-specific.\n- Request bodies **must never** be empty or the JSON `null`: the empty request body is the JSON `{}`.\n- Response bodies will never be empty, but may be the JSON `null`.\n- All request fields are by default optional and ommittable / `null`able, **any exceptions** to this are indicated by the operation's listed known-error responses.\n- The `Content-Length` request header is **required for all** operations.\n- The `Content-Type` request header is optional, but if present, must be correct with regards to both the operation's specification and the request body.\n- Any `multipart/form-data` operations:\n  - **always require** the following two form-fields: `files` for any binary file uploads, and `_` for the actual JSON request payload\n  - only the latter is elaborated in this doc, and always in the exact same way as done for all the `application/json` operations, **without** specifically mentioning the `_` form-field containing the `text/plain` of the full `application/json` request payload actually being elaborated here\n- All JSON object field names begin with an upper-case character, any example to the contrary indicates a \"free-style\" dictionary/hash-map \"object\".\n\nHow to read request/response example JSON values rendered in this doc:\n  - `true` indicates any `boolean` value, regardless of the actual real value in a call\n  - `\"someStr\"` indicates any `string` value\n  - date-time values are indicated by RFC3339-formatted `string` examples\n  - signed-integer `number`s are indicated by a negative-number example indicating the minimum (type-wise, not operation-specific) permissible value, with the maximum being the corresponding positive-number counterpart\n  - unsigned-integer `number`s are indicated by a positive-number example indicating the maximum (type-wise, not not operation-specific) permissible value, with the minimum being `0`\n  - floating-point `number`s are indicated by a positive-number example indicating the maximum (type-wise, not not operation-specific) permissible value, with the minimum being the corresponding negative-number counterpart\n\nMore about error responses:\n- All are `text/plain`.\n- In addition to those listed in this doc (thrown by the service under the indicated conditions), other error responses are at all times entirely technically-possible and not exhaustively documentable (feasibly), such as eg. DB / file-system / network disruptions. Those caught by the service will be `500`s, others (ie. from load-balancers / gateways / reverse-proxies etc. _in front of_ the service) might have _any_ HTTP status code whatsoever.\n- All the well-known (thrown rather than caught) errors listed here:\n  - have their code-identifier-compatible (spaceless ASCII) enumerant-name as their entire text response. Any others preserve simply their original (usually human-language) error message fully. Hence, error responses are inherently `switch/case`able\n  - have been recursively determined by code-path walking. Among them are some that logically could not possibly ever occur for that operation, yet identifying those (to filter them out of the listing) is (so far) out of scope for our `openapi.json` generation\n\t\t",
+    "summary": "This HTTP API has RPC rather than REST semantics. All operations are ´POST´, regardless of what CRUDs they might run (or not).",
+    "description": "\nOur backend stack's convention-over-configuration designs yield a few request/response rules that remain always in effect across all listed operations:\n- Whereas request and response bodies are operation-specific, all operations share the exact-same set of request headers, URL query-string parameters and response headers (albeit being elaborated here identically and redundantly for each individual operation).\n- Request bodies **must never** be empty or the JSON `null`: the empty request body is the JSON `{}`.\n- Response bodies will never be empty, but may be the JSON `null`.\n- Request and response bodies are always valid JSON values for _JSON objects_, ie. they're never immediately JSON arrays, `string`s, `number`s, or `boolean`s.\n- All request-object fields are by default optional and ommittable / `null`able, **any exceptions** to this are indicated by the operation's listed known-error responses.\n- The `Content-Length` request header is **required for all** operations.\n- The `Content-Type` request header is optional, but if present, must be correct with regards to both the operation's specification and the request body.\n- Any `multipart/form-data` operations:\n  - **always require** the following two form-fields: `files` for any binary file uploads, and `_` for the actual JSON request payload\n  - only the latter is elaborated in this doc, and always in the exact same way as done for all the `application/json` operations, **without** specifically mentioning the `_` form-field containing the `text/plain` of the full `application/json` request payload actually being elaborated here\n- All JSON object field names begin with an upper-case character, any example to the contrary indicates a \"free-style\" dictionary/hash-map \"object\".\n\nHow to read request/response example JSON values rendered in this doc:\n  - `true` indicates any `boolean` value, regardless of the actual real value in a call\n  - `\"someStr\"` indicates any `string` value\n  - date-time values are indicated by RFC3339-formatted `string` examples\n  - signed-integer `number`s are indicated by a negative-number example indicating the minimum (type-wise, not operation-specific) permissible value, with the maximum being the corresponding positive-number counterpart\n  - unsigned-integer `number`s are indicated by a positive-number example indicating the maximum (type-wise, not not operation-specific) permissible value, with the minimum being `0`\n  - floating-point `number`s are indicated by a positive-number example indicating the maximum (type-wise, not not operation-specific) permissible value, with the minimum being the corresponding negative-number counterpart\n\nMore about error responses:\n- All are `text/plain`.\n- In addition to those listed in this doc (thrown by the service under the indicated conditions), other error responses are at all times entirely technically-possible and not exhaustively documentable (feasibly), such as eg. DB / file-system / network disruptions. Those caught by the service will be `500`s, others (ie. from load-balancers / gateways / reverse-proxies etc. _in front of_ the service) might have _any_ HTTP status code whatsoever.\n- All the well-known (thrown rather than caught) errors listed here:\n  - have their code-identifier-compatible (spaceless ASCII) enumerant-name as their entire text response. Any others preserve simply their original (usually human-language) error message fully. Hence, error responses are inherently `switch/case`able\n  - have been recursively determined by code-path walking. Among them are some that logically could not possibly ever occur for that operation, yet identifying those (to filter them out of the listing) is (so far) out of scope for our `openapi.json` generation\n\t\t",
     "version": "23.318",
     "contact": {
       "name": "Permalink",
@@ -556,8 +556,8 @@
             "application/json": {
               "example": {
                 "Id": -9007199254740991,
-                "DtMade": "2023-11-14T17:45:22.562172103Z",
-                "DtMod": "2023-11-14T17:45:22.562175528Z",
+                "DtMade": "2023-11-14T17:58:21.155815792Z",
+                "DtMod": "2023-11-14T17:58:21.155819196Z",
                 "By": {},
                 "To": [
                   -9007199254740991
@@ -992,8 +992,8 @@
                   "Posts": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-14T17:45:22.562268946Z",
-                      "DtMod": "2023-11-14T17:45:22.56227149Z",
+                      "DtMade": "2023-11-14T17:58:21.155909961Z",
+                      "DtMod": "2023-11-14T17:58:21.155912535Z",
                       "By": 0,
                       "To": [
                         -9007199254740991
@@ -1007,7 +1007,7 @@
                       ]
                     }
                   ],
-                  "NextSince": "2023-11-14T17:45:22.562281433Z",
+                  "NextSince": "2023-11-14T17:58:21.155922179Z",
                   "UnreadCounts": {
                     "someMapKey1": -9007199254740991,
                     "some_map_key_2": -9007199254740991
@@ -1143,7 +1143,7 @@
           "content": {
             "application/json": {
               "example": {
-                "Since": "2023-11-14T17:45:22.562317115Z",
+                "Since": "2023-11-14T17:58:21.155958178Z",
                 "OnlyBy": [
                   -9007199254740991
                 ]
@@ -1186,8 +1186,8 @@
                   "Posts": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-14T17:45:22.562323912Z",
-                      "DtMod": "2023-11-14T17:45:22.562326257Z",
+                      "DtMade": "2023-11-14T17:58:21.155965269Z",
+                      "DtMod": "2023-11-14T17:58:21.155967714Z",
                       "By": 0,
                       "To": [
                         -9007199254740991
@@ -1201,7 +1201,7 @@
                       ]
                     }
                   ],
-                  "NextSince": "2023-11-14T17:45:22.562335721Z",
+                  "NextSince": "2023-11-14T17:58:21.155977101Z",
                   "UnreadCounts": {
                     "someMapKey1": -9007199254740991,
                     "some_map_key_2": -9007199254740991
@@ -1375,9 +1375,9 @@
                   "Buddies": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-14T17:45:22.562372884Z",
-                      "DtMod": "2023-11-14T17:45:22.562375216Z",
-                      "LastSeen": "2023-11-14T17:45:22.562377783Z",
+                      "DtMade": "2023-11-14T17:58:21.156013149Z",
+                      "DtMod": "2023-11-14T17:58:21.156015545Z",
+                      "LastSeen": "2023-11-14T17:58:21.156017959Z",
                       "Auth": 0,
                       "PicFileId": "someStr",
                       "Nick": "someStr",
@@ -1392,9 +1392,9 @@
                   "BuddyRequestsBy": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-14T17:45:22.562390673Z",
-                      "DtMod": "2023-11-14T17:45:22.562393099Z",
-                      "LastSeen": "2023-11-14T17:45:22.562395507Z",
+                      "DtMade": "2023-11-14T17:58:21.156030897Z",
+                      "DtMod": "2023-11-14T17:58:21.156033236Z",
+                      "LastSeen": "2023-11-14T17:58:21.156035655Z",
                       "Auth": 0,
                       "PicFileId": "someStr",
                       "Nick": "someStr",
@@ -1781,9 +1781,9 @@
               "application/json": {
                 "example": {
                   "Id": -9007199254740991,
-                  "DtMade": "2023-11-14T17:45:22.562477334Z",
-                  "DtMod": "2023-11-14T17:45:22.562479878Z",
-                  "LastSeen": "2023-11-14T17:45:22.562482249Z",
+                  "DtMade": "2023-11-14T17:58:21.156120325Z",
+                  "DtMod": "2023-11-14T17:58:21.156122908Z",
+                  "LastSeen": "2023-11-14T17:58:21.156125289Z",
                   "Auth": {},
                   "PicFileId": "someStr",
                   "Nick": "someStr",
@@ -2629,9 +2629,9 @@
                 "Id": -9007199254740991,
                 "Changes": {
                   "Id": -9007199254740991,
-                  "DtMade": "2023-11-14T17:45:22.5627084Z",
-                  "DtMod": "2023-11-14T17:45:22.562711079Z",
-                  "LastSeen": "2023-11-14T17:45:22.562713654Z",
+                  "DtMade": "2023-11-14T17:58:21.156340458Z",
+                  "DtMod": "2023-11-14T17:58:21.156343107Z",
+                  "LastSeen": "2023-11-14T17:58:21.156345569Z",
                   "Auth": {},
                   "PicFileId": "someStr",
                   "Nick": "someStr",
