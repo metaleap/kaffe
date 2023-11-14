@@ -15,9 +15,9 @@
         "operationId": "__postDelete",
         "parameters": [
           {
-            "name": "yoValiOnly",
+            "name": "yoFail",
             "in": "query",
-            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
+            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or handling) with the specified HTTP status code or 500 (eg. for client-side unit-test cases of error-handling)",
             "content": {
               "text/plain": {
                 "example": ""
@@ -25,9 +25,9 @@
             }
           },
           {
-            "name": "yoFail",
+            "name": "yoValiOnly",
             "in": "query",
-            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for client-side unit-test cases of error-handling)",
+            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
             "content": {
               "text/plain": {
                 "example": ""
@@ -212,9 +212,9 @@
         "operationId": "__postEmojiFullList",
         "parameters": [
           {
-            "name": "yoValiOnly",
+            "name": "yoFail",
             "in": "query",
-            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
+            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or handling) with the specified HTTP status code or 500 (eg. for client-side unit-test cases of error-handling)",
             "content": {
               "text/plain": {
                 "example": ""
@@ -222,9 +222,9 @@
             }
           },
           {
-            "name": "yoFail",
+            "name": "yoValiOnly",
             "in": "query",
-            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for client-side unit-test cases of error-handling)",
+            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
             "content": {
               "text/plain": {
                 "example": ""
@@ -352,9 +352,9 @@
         "operationId": "__postMonthsUtc",
         "parameters": [
           {
-            "name": "yoValiOnly",
+            "name": "yoFail",
             "in": "query",
-            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
+            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or handling) with the specified HTTP status code or 500 (eg. for client-side unit-test cases of error-handling)",
             "content": {
               "text/plain": {
                 "example": ""
@@ -362,9 +362,9 @@
             }
           },
           {
-            "name": "yoFail",
+            "name": "yoValiOnly",
             "in": "query",
-            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for client-side unit-test cases of error-handling)",
+            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
             "content": {
               "text/plain": {
                 "example": ""
@@ -528,9 +528,9 @@
         "operationId": "__postNew",
         "parameters": [
           {
-            "name": "yoValiOnly",
+            "name": "yoFail",
             "in": "query",
-            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
+            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or handling) with the specified HTTP status code or 500 (eg. for client-side unit-test cases of error-handling)",
             "content": {
               "text/plain": {
                 "example": ""
@@ -538,9 +538,9 @@
             }
           },
           {
-            "name": "yoFail",
+            "name": "yoValiOnly",
             "in": "query",
-            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for client-side unit-test cases of error-handling)",
+            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
             "content": {
               "text/plain": {
                 "example": ""
@@ -555,8 +555,8 @@
             "application/json": {
               "example": {
                 "Id": -9007199254740991,
-                "DtMade": "2023-11-14T18:47:35.970156602Z",
-                "DtMod": "2023-11-14T18:47:35.970160272Z",
+                "DtMade": "2023-11-14T18:51:00.360965076Z",
+                "DtMod": "2023-11-14T18:51:00.360968369Z",
                 "By": {},
                 "To": [
                   -9007199254740991
@@ -746,9 +746,9 @@
         "operationId": "__postsDeleted",
         "parameters": [
           {
-            "name": "yoValiOnly",
+            "name": "yoFail",
             "in": "query",
-            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
+            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or handling) with the specified HTTP status code or 500 (eg. for client-side unit-test cases of error-handling)",
             "content": {
               "text/plain": {
                 "example": ""
@@ -756,9 +756,9 @@
             }
           },
           {
-            "name": "yoFail",
+            "name": "yoValiOnly",
             "in": "query",
-            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for client-side unit-test cases of error-handling)",
+            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
             "content": {
               "text/plain": {
                 "example": ""
@@ -919,9 +919,9 @@
         "operationId": "__postsForMonthUtc",
         "parameters": [
           {
-            "name": "yoValiOnly",
+            "name": "yoFail",
             "in": "query",
-            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
+            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or handling) with the specified HTTP status code or 500 (eg. for client-side unit-test cases of error-handling)",
             "content": {
               "text/plain": {
                 "example": ""
@@ -929,9 +929,9 @@
             }
           },
           {
-            "name": "yoFail",
+            "name": "yoValiOnly",
             "in": "query",
-            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for client-side unit-test cases of error-handling)",
+            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
             "content": {
               "text/plain": {
                 "example": ""
@@ -991,8 +991,8 @@
                   "Posts": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-14T18:47:35.970250451Z",
-                      "DtMod": "2023-11-14T18:47:35.970253062Z",
+                      "DtMade": "2023-11-14T18:51:00.361061641Z",
+                      "DtMod": "2023-11-14T18:51:00.361064257Z",
                       "By": 0,
                       "To": [
                         -9007199254740991
@@ -1006,7 +1006,7 @@
                       ]
                     }
                   ],
-                  "NextSince": "2023-11-14T18:47:35.970262896Z",
+                  "NextSince": "2023-11-14T18:51:00.36107438Z",
                   "UnreadCounts": {
                     "someMapKey1": -9007199254740991,
                     "some_map_key_2": -9007199254740991
@@ -1116,9 +1116,9 @@
         "operationId": "__postsRecent",
         "parameters": [
           {
-            "name": "yoValiOnly",
+            "name": "yoFail",
             "in": "query",
-            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
+            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or handling) with the specified HTTP status code or 500 (eg. for client-side unit-test cases of error-handling)",
             "content": {
               "text/plain": {
                 "example": ""
@@ -1126,9 +1126,9 @@
             }
           },
           {
-            "name": "yoFail",
+            "name": "yoValiOnly",
             "in": "query",
-            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for client-side unit-test cases of error-handling)",
+            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
             "content": {
               "text/plain": {
                 "example": ""
@@ -1142,7 +1142,7 @@
           "content": {
             "application/json": {
               "example": {
-                "Since": "2023-11-14T18:47:35.970299094Z",
+                "Since": "2023-11-14T18:51:00.361107387Z",
                 "OnlyBy": [
                   -9007199254740991
                 ]
@@ -1185,8 +1185,8 @@
                   "Posts": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-14T18:47:35.970306762Z",
-                      "DtMod": "2023-11-14T18:47:35.970309238Z",
+                      "DtMade": "2023-11-14T18:51:00.361114419Z",
+                      "DtMod": "2023-11-14T18:51:00.361116842Z",
                       "By": 0,
                       "To": [
                         -9007199254740991
@@ -1200,7 +1200,7 @@
                       ]
                     }
                   ],
-                  "NextSince": "2023-11-14T18:47:35.970318826Z",
+                  "NextSince": "2023-11-14T18:51:00.361126505Z",
                   "UnreadCounts": {
                     "someMapKey1": -9007199254740991,
                     "some_map_key_2": -9007199254740991
@@ -1310,9 +1310,9 @@
         "operationId": "__userBuddies",
         "parameters": [
           {
-            "name": "yoValiOnly",
+            "name": "yoFail",
             "in": "query",
-            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
+            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or handling) with the specified HTTP status code or 500 (eg. for client-side unit-test cases of error-handling)",
             "content": {
               "text/plain": {
                 "example": ""
@@ -1320,9 +1320,9 @@
             }
           },
           {
-            "name": "yoFail",
+            "name": "yoValiOnly",
             "in": "query",
-            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for client-side unit-test cases of error-handling)",
+            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
             "content": {
               "text/plain": {
                 "example": ""
@@ -1374,9 +1374,9 @@
                   "Buddies": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-14T18:47:35.970359672Z",
-                      "DtMod": "2023-11-14T18:47:35.970362125Z",
-                      "LastSeen": "2023-11-14T18:47:35.970364501Z",
+                      "DtMade": "2023-11-14T18:51:00.361163962Z",
+                      "DtMod": "2023-11-14T18:51:00.361166422Z",
+                      "LastSeen": "2023-11-14T18:51:00.36116881Z",
                       "Auth": 0,
                       "PicFileId": "someStr",
                       "Nick": "someStr",
@@ -1391,9 +1391,9 @@
                   "BuddyRequestsBy": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-14T18:47:35.970377403Z",
-                      "DtMod": "2023-11-14T18:47:35.970379749Z",
-                      "LastSeen": "2023-11-14T18:47:35.970382143Z",
+                      "DtMade": "2023-11-14T18:51:00.361182953Z",
+                      "DtMod": "2023-11-14T18:51:00.361185291Z",
+                      "LastSeen": "2023-11-14T18:51:00.361187717Z",
                       "Auth": 0,
                       "PicFileId": "someStr",
                       "Nick": "someStr",
@@ -1510,9 +1510,9 @@
         "operationId": "__userBuddiesAdd",
         "parameters": [
           {
-            "name": "yoValiOnly",
+            "name": "yoFail",
             "in": "query",
-            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
+            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or handling) with the specified HTTP status code or 500 (eg. for client-side unit-test cases of error-handling)",
             "content": {
               "text/plain": {
                 "example": ""
@@ -1520,9 +1520,9 @@
             }
           },
           {
-            "name": "yoFail",
+            "name": "yoValiOnly",
             "in": "query",
-            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for client-side unit-test cases of error-handling)",
+            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
             "content": {
               "text/plain": {
                 "example": ""
@@ -1715,9 +1715,9 @@
         "operationId": "__userBy",
         "parameters": [
           {
-            "name": "yoValiOnly",
+            "name": "yoFail",
             "in": "query",
-            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
+            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or handling) with the specified HTTP status code or 500 (eg. for client-side unit-test cases of error-handling)",
             "content": {
               "text/plain": {
                 "example": ""
@@ -1725,9 +1725,9 @@
             }
           },
           {
-            "name": "yoFail",
+            "name": "yoValiOnly",
             "in": "query",
-            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for client-side unit-test cases of error-handling)",
+            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
             "content": {
               "text/plain": {
                 "example": ""
@@ -1780,9 +1780,9 @@
               "application/json": {
                 "example": {
                   "Id": -9007199254740991,
-                  "DtMade": "2023-11-14T18:47:35.970465656Z",
-                  "DtMod": "2023-11-14T18:47:35.970468163Z",
-                  "LastSeen": "2023-11-14T18:47:35.970470531Z",
+                  "DtMade": "2023-11-14T18:51:00.361275254Z",
+                  "DtMod": "2023-11-14T18:51:00.361277769Z",
+                  "LastSeen": "2023-11-14T18:51:00.361280149Z",
                   "Auth": {},
                   "PicFileId": "someStr",
                   "Nick": "someStr",
@@ -1927,9 +1927,9 @@
         "operationId": "__userSignInOrReset",
         "parameters": [
           {
-            "name": "yoValiOnly",
+            "name": "yoFail",
             "in": "query",
-            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
+            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or handling) with the specified HTTP status code or 500 (eg. for client-side unit-test cases of error-handling)",
             "content": {
               "text/plain": {
                 "example": ""
@@ -1937,9 +1937,9 @@
             }
           },
           {
-            "name": "yoFail",
+            "name": "yoValiOnly",
             "in": "query",
-            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for client-side unit-test cases of error-handling)",
+            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
             "content": {
               "text/plain": {
                 "example": ""
@@ -2249,9 +2249,9 @@
         "operationId": "__userSignOut",
         "parameters": [
           {
-            "name": "yoValiOnly",
+            "name": "yoFail",
             "in": "query",
-            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
+            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or handling) with the specified HTTP status code or 500 (eg. for client-side unit-test cases of error-handling)",
             "content": {
               "text/plain": {
                 "example": ""
@@ -2259,9 +2259,9 @@
             }
           },
           {
-            "name": "yoFail",
+            "name": "yoValiOnly",
             "in": "query",
-            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for client-side unit-test cases of error-handling)",
+            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
             "content": {
               "text/plain": {
                 "example": ""
@@ -2384,9 +2384,9 @@
         "operationId": "__userSignUpOrForgotPassword",
         "parameters": [
           {
-            "name": "yoValiOnly",
+            "name": "yoFail",
             "in": "query",
-            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
+            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or handling) with the specified HTTP status code or 500 (eg. for client-side unit-test cases of error-handling)",
             "content": {
               "text/plain": {
                 "example": ""
@@ -2394,9 +2394,9 @@
             }
           },
           {
-            "name": "yoFail",
+            "name": "yoValiOnly",
             "in": "query",
-            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for client-side unit-test cases of error-handling)",
+            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
             "content": {
               "text/plain": {
                 "example": ""
@@ -2599,9 +2599,9 @@
         "operationId": "__userUpdate",
         "parameters": [
           {
-            "name": "yoValiOnly",
+            "name": "yoFail",
             "in": "query",
-            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
+            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or handling) with the specified HTTP status code or 500 (eg. for client-side unit-test cases of error-handling)",
             "content": {
               "text/plain": {
                 "example": ""
@@ -2609,9 +2609,9 @@
             }
           },
           {
-            "name": "yoFail",
+            "name": "yoValiOnly",
             "in": "query",
-            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for client-side unit-test cases of error-handling)",
+            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
             "content": {
               "text/plain": {
                 "example": ""
@@ -2628,9 +2628,9 @@
                 "Id": -9007199254740991,
                 "Changes": {
                   "Id": -9007199254740991,
-                  "DtMade": "2023-11-14T18:47:35.970687504Z",
-                  "DtMod": "2023-11-14T18:47:35.970690297Z",
-                  "LastSeen": "2023-11-14T18:47:35.970692873Z",
+                  "DtMade": "2023-11-14T18:51:00.36148844Z",
+                  "DtMod": "2023-11-14T18:51:00.36149103Z",
+                  "LastSeen": "2023-11-14T18:51:00.361493546Z",
                   "Auth": {},
                   "PicFileId": "someStr",
                   "Nick": "someStr",
