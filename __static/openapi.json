@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "kaffe.chat",
-    "description": "\nThis HTTP API has RPC rather than REST semantics. All operations are `POST`, regardless of what CRUD writes or reads they might or might not effect.\n\n**tl;dr:** mostly **API calls will just-work as expected _without_ knowing all those intro notes** immediately below (which elaborate mostly to-be-expected software-dev-commonplaces),\n- but in any cases of unexpected results or errors, they'll likely help complete the mental picture.\n___\nOur backend stack's convention-over-configuration designs yield a few request/response rules that remain **always in effect across all listed operations**:\n- Whereas request and response bodies are operation-specific, all operations share the exact-same set of request headers, URL query-string parameters and response headers (albeit being elaborated here identically and redundantly for each individual operation).\n- Request bodies **must never** be empty or the JSON `null`: the empty request body is the JSON `{}`.\n- Response bodies will never be empty, but may be the JSON `null`.\n- Request and response bodies are always valid JSON values for _JSON objects_, ie. they're never immediately JSON arrays, `string`s, `number`s, or `boolean`s.\n- All mentioned request-object (and sub-object) fields are **by default optional** and ommittable / `null`able,\n  - **any exceptions** to this are indicated by the operation's listed known-error responses.\n- All mentioned response-object (and sub-object) fields will always be present in the response-body, indicating their default-ness / missing-ness via `null` or `\"\"` or `0` or `false` as per _Golang_ type-system semantics.\n  - Caution for some client languages: this means `null` for many-if-not-most empty JSON arrays (although `[]` is principally always just-as-possible) and empty JSON dictionary/hash-map \"object\"s (with either `null` or `{}` principally equally possible).\n- All JSON object field names begin with an upper-case character,\n  - any example to the contrary indicates a \"free-style\" JSON dictionary/hash-map \"object\".\n- The `Content-Length` request header is **required for all** operations (with a correct value).\n- The `Content-Type` request header is optional, but if present, must be correct with regards to both the operation's specification and the request body.\n- Any `multipart/form-data` operations:\n  - **always require** the following two form-fields: `files` for any binary file uploads, and `_` for the actual JSON request payload;\n  - only the latter is elaborated in this doc, and always in the exact same way as done for all the `application/json` operations, **without** specifically mentioning the `_` form-field containing the `text/plain` of the full `application/json` request payload actually being elaborated here.\n\nHow to read request/response **example JSON values** rendered in this doc:\n  - `true` indicates any `boolean` value, regardless of the actual real value in a call;\n  - `\"someStr\"` indicates any `string` value;\n  - signed-integer `number`s are indicated by a negative-number example indicating the minimum (type-wise, not operation-specific) permissible value, with the maximum being the corresponding positive-number counterpart;\n  - unsigned-integer `number`s are indicated by a positive-number example indicating the maximum (type-wise, not not operation-specific) permissible value, with the minimum being `0`;\n  - floating-point `number`s are indicated by a positive-number example indicating the maximum (type-wise, not not operation-specific) permissible value, with the minimum being the corresponding negative-number counterpart.\n  - date-time values are indicated by RFC3339/ISO8601-formatted `string` examples:\n    - in responses, they're always UTC, whereas in requests, any timezone may be indicated;\n\t- in requests, they may always be `null` (excepting any operation-specific known-errors indicating otherwise) but must never be `\"\"` or otherwise non-RFC3339/ISO8601-parseable.\n\nAbout **error responses**:\n- All are `text/plain`.\n- In addition to those listed in this doc (thrown by the service under the indicated conditions), other error responses are at all times entirely technically-possible and not exhaustively documentable (feasibly), such as eg. DB / file-system / network disruptions. Those caught by the service will be `500`s, others (ie. from load-balancers / gateways / reverse-proxies etc. _in front of_ the service) might have _any_ HTTP status code whatsoever.\n- All the well-known (thrown rather than caught) errors listed here:\n  - have their code-identifier-compatible (spaceless ASCII) enumerant-name as their entire text response, making all error responses inherently `switch/case`able;\n  - have been recursively determined by code-path walking. Among them are some that logically could not possibly ever occur for that operation, yet identifying those (to filter them out of the listing) is (so far) out of scope for our `openapi.json` generation.\n- Any non-known (caught rather than thrown) errors (not listed here) contain their original (usually human-language) error message fully, corresponding to the `default` in an error-handling `switch/case`.\n- \"Not Found\" rules:\n  - `404` **only** for HTTP requests of non-existing API operations or non-existing static-file assets,\n  - `400` for operations where existence was definitely expected (such as some object's update identified by its `Id`),\n  - `200` with response-body of JSON `null` for requests of the \"fetch single/first object found for some specified criteria\" kind (where the definite-existence expectation does not necessarily hold).\n\t\t",
+    "description": "\nThis HTTP API has RPC rather than REST semantics: **all** operations are `POST`, regardless of what CRUD writes or reads they might or might not effect.\n\n**tl;dr:** **usually, API requests will just-work as expected _without_ knowing all those intro notes right below** (which elaborate mostly to-be-expected software-dev-commonplaces) — but in any cases of unexpected results or errors, they'll likely help complete the mental picture.\n___\nOur backend stack's \"opinionated convention-over-configuration\" designs yield a few request/response rules that predictably remain **always in effect across all listed operations**:\n- Whereas request and response bodies are operation-specific, all operations share the exact-same set of request headers, URL query-string parameters and response headers (albeit being elaborated here identically and redundantly for each individual operation).\n- The empty request body is principally the JSON `{}`, but fully-empty or JSON `null` request bodies are interpreted equivalently.\n- Response bodies will never be empty, but may be the JSON `null`.\n- Request and response bodies are always valid JSON values for _JSON objects_, ie. they're never immediately JSON arrays, `string`s, `number`s, or `boolean`s.\n- All mentioned request-object (and sub-object) fields are **by default optional** and ommittable or `null`able (implying for atomic types semantic equivalence to `\"\"` or `0` or `false` as per _Golang_ type-system semantics),\n  - **any exceptions** to this optionality-by-default are indicated by the operation's listed known-error responses.\n- All mentioned response-object (and sub-object) fields will always be present in the response-body, indicating their default-ness / missing-ness via `null` or `\"\"` or `0` or `false` as per _Golang_ type-system semantics.\n  - Caution for some client languages: this means `null` for some-but-not-all empty JSON arrays (with `[]` being principally always just-as-possible) and empty JSON dictionary/hash-map \"object\"s (with either `null` or `{}` being principally equally possible).\n- All JSON (non-dictionary/non-hash-map) object field names begin with an upper-case character,\n  - any operation-specific example rendered to the contrary indicates a \"free-style\" JSON dictionary/hash-map \"object\".\n- The `Content-Length` request header is **required for all** operations (with a correct value).\n- The `Content-Type` request header is optional, but if present, must be correct with regards to both the operation's specification and the request body.\n- Any `multipart/form-data` operations:\n  - **always require** the following two form-fields, ignoring all others: `files` for any binary file uploads, and `_` for the actual JSON request payload;\n  - only the `_` field value is further elaborated for any such operation in this doc, and always in the exact same way as also done in this doc for all the `application/json` operations' request bodies (**without** specifically mentioning the `_` form-field containing the `text/plain` of the full `application/json` request payload actually being elaborated there).\n\nHow to read request/response **example JSON values** rendered in this doc:\n  - `true` indicates _any_ `boolean` value, regardless of the actual real value in a call;\n  - `\"someStr\"` indicates _any_ `string` value;\n  - signed-integer `number`s are indicated by a negative-number example indicating the minimum (type-wise, not operation-specific) permissible value, with the maximum being the corresponding positive-number counterpart;\n  - unsigned-integer `number`s are indicated by a positive-number example indicating the maximum (type-wise, not not operation-specific) permissible value, with the minimum being `0`;\n  - floating-point `number`s are indicated by a positive-number example indicating the maximum (type-wise, not not operation-specific) permissible value, with the minimum being the corresponding negative-number counterpart.\n  - date-time values are indicated by RFC3339/ISO8601-formatted `string` examples:\n    - in responses, they're always UTC, whereas in requests, any timezone may be indicated;\n\t- in requests, they may always be `null` (excepting any operation-specific known-errors indicating otherwise) but must never be `\"\"` or otherwise non-RFC3339/ISO8601-parseable.\n\nAbout **error responses**:\n- All are `text/plain`.\n- In addition to those listed in this doc (thrown by the service under the indicated conditions), other error responses are at all times entirely technically-possible and not exhaustively documentable (feasibly), such as eg. DB / file-system / network disruptions. Those caught by the service will be `500`s, others (ie. from load-balancers / gateways / reverse-proxies etc. _in front of_ the service) might use _any_ HTTP status code whatsoever.\n- All the well-known (thrown rather than caught) errors listed here:\n  - have their code-identifier-compatible (spaceless ASCII) enumerant-name as their entire text response, making all error responses inherently `switch/case`able;\n  - have been recursively determined by code-path walking. Among them are some that logically could not possibly ever occur for that operation, yet identifying those (to filter them out of the listing) is (so far) out of scope for our current `openapi.json` spec generator. (In case of serious need, do let us know!)\n- Any non-known (caught rather than thrown) errors (not listed here) contain their original (usually human-language) error message fully, corresponding to the `default` in an error-handling `switch/case`.\n- **\"Not Found\" rules:**\n  - `406` with approx. `FooDoesNotExist` (see per-operation known-error-responses listings for exact monikers) — for operations where existence was definitely critically expected (such as modifying some object identified by its `Id`),\n  - `200` with response-body of usually JSON `null` (exception: an operation-specific response object with a field name obviously indicating not-found-ness) — for operations where the definite-existence expectation does not hold as crucially (for example those of the \"fetch single/first object found for some specified criteria\" kind),\n  - `404` for HTTP requests with definitely-unroutable URL paths (ie. \"no such API operation or static-file asset or sub-site or etc.\") **only**.\n\t\t",
     "version": "23.318",
     "contact": {
       "name": "Permalink of openapi.json",
@@ -555,8 +555,8 @@
             "application/json": {
               "example": {
                 "Id": -9007199254740991,
-                "DtMade": "2023-11-14T19:24:00.773287956Z",
-                "DtMod": "2023-11-14T19:24:00.773291303Z",
+                "DtMade": "2023-11-14T20:32:46.115771337Z",
+                "DtMod": "2023-11-14T20:32:46.115774784Z",
                 "By": {},
                 "To": [
                   -9007199254740991
@@ -991,8 +991,8 @@
                   "Posts": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-14T19:24:00.773382217Z",
-                      "DtMod": "2023-11-14T19:24:00.773384849Z",
+                      "DtMade": "2023-11-14T20:32:46.115870911Z",
+                      "DtMod": "2023-11-14T20:32:46.115873539Z",
                       "By": 0,
                       "To": [
                         -9007199254740991
@@ -1006,7 +1006,7 @@
                       ]
                     }
                   ],
-                  "NextSince": "2023-11-14T19:24:00.773394775Z",
+                  "NextSince": "2023-11-14T20:32:46.115883513Z",
                   "UnreadCounts": {
                     "someMapKey1": -9007199254740991,
                     "some_map_key_2": -9007199254740991
@@ -1142,7 +1142,7 @@
           "content": {
             "application/json": {
               "example": {
-                "Since": "2023-11-14T19:24:00.773430067Z",
+                "Since": "2023-11-14T20:32:46.115916823Z",
                 "OnlyBy": [
                   -9007199254740991
                 ]
@@ -1185,8 +1185,8 @@
                   "Posts": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-14T19:24:00.773437112Z",
-                      "DtMod": "2023-11-14T19:24:00.773439519Z",
+                      "DtMade": "2023-11-14T20:32:46.115923732Z",
+                      "DtMod": "2023-11-14T20:32:46.115926116Z",
                       "By": 0,
                       "To": [
                         -9007199254740991
@@ -1200,7 +1200,7 @@
                       ]
                     }
                   ],
-                  "NextSince": "2023-11-14T19:24:00.773449098Z",
+                  "NextSince": "2023-11-14T20:32:46.115935462Z",
                   "UnreadCounts": {
                     "someMapKey1": -9007199254740991,
                     "some_map_key_2": -9007199254740991
@@ -1374,9 +1374,9 @@
                   "Buddies": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-14T19:24:00.773484136Z",
-                      "DtMod": "2023-11-14T19:24:00.77348654Z",
-                      "LastSeen": "2023-11-14T19:24:00.773489058Z",
+                      "DtMade": "2023-11-14T20:32:46.115971508Z",
+                      "DtMod": "2023-11-14T20:32:46.115973927Z",
+                      "LastSeen": "2023-11-14T20:32:46.115976433Z",
                       "Auth": 0,
                       "PicFileId": "someStr",
                       "Nick": "someStr",
@@ -1391,9 +1391,9 @@
                   "BuddyRequestsBy": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-14T19:24:00.77350241Z",
-                      "DtMod": "2023-11-14T19:24:00.773504803Z",
-                      "LastSeen": "2023-11-14T19:24:00.773507211Z",
+                      "DtMade": "2023-11-14T20:32:46.115989316Z",
+                      "DtMod": "2023-11-14T20:32:46.115991653Z",
+                      "LastSeen": "2023-11-14T20:32:46.115994036Z",
                       "Auth": 0,
                       "PicFileId": "someStr",
                       "Nick": "someStr",
@@ -1780,9 +1780,9 @@
               "application/json": {
                 "example": {
                   "Id": -9007199254740991,
-                  "DtMade": "2023-11-14T19:24:00.773595128Z",
-                  "DtMod": "2023-11-14T19:24:00.773597629Z",
-                  "LastSeen": "2023-11-14T19:24:00.773600087Z",
+                  "DtMade": "2023-11-14T20:32:46.116075708Z",
+                  "DtMod": "2023-11-14T20:32:46.11607826Z",
+                  "LastSeen": "2023-11-14T20:32:46.116080737Z",
                   "Auth": {},
                   "PicFileId": "someStr",
                   "Nick": "someStr",
@@ -1995,36 +1995,6 @@
               }
             }
           },
-          "400": {
-            "description": "Possible `text/plain` responses:\n- `___yo_authLoginOrFinalizePwdReset_AccountDoesNotExist`",
-            "headers": {
-              "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
-              },
-              "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
-              }
-            },
-            "content": {
-              "text/plain": {
-                "examples": {
-                  "___yo_authLoginOrFinalizePwdReset_AccountDoesNotExist": {
-                    "value": "___yo_authLoginOrFinalizePwdReset_AccountDoesNotExist"
-                  }
-                }
-              }
-            }
-          },
           "401": {
             "description": "Possible `text/plain` responses:\n- `__userSignInOrReset_WrongPassword`\n- `___yo_authLoginOrFinalizePwdReset_WrongPassword`",
             "headers": {
@@ -2089,7 +2059,7 @@
             }
           },
           "406": {
-            "description": "Possible `text/plain` responses:\n- `UnacceptableContentLength`\n- `UnacceptableContentType`",
+            "description": "Possible `text/plain` responses:\n- `___yo_authLoginOrFinalizePwdReset_AccountDoesNotExist`\n- `UnacceptableContentLength`\n- `UnacceptableContentType`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -2116,6 +2086,9 @@
                   },
                   "UnacceptableContentType": {
                     "value": "UnacceptableContentType"
+                  },
+                  "___yo_authLoginOrFinalizePwdReset_AccountDoesNotExist": {
+                    "value": "___yo_authLoginOrFinalizePwdReset_AccountDoesNotExist"
                   }
                 }
               }
@@ -2628,9 +2601,9 @@
                 "Id": -9007199254740991,
                 "Changes": {
                   "Id": -9007199254740991,
-                  "DtMade": "2023-11-14T19:24:00.773822362Z",
-                  "DtMod": "2023-11-14T19:24:00.773824984Z",
-                  "LastSeen": "2023-11-14T19:24:00.773827452Z",
+                  "DtMade": "2023-11-14T20:32:46.116284291Z",
+                  "DtMod": "2023-11-14T20:32:46.116286941Z",
+                  "LastSeen": "2023-11-14T20:32:46.116289314Z",
                   "Auth": {},
                   "PicFileId": "someStr",
                   "Nick": "someStr",
