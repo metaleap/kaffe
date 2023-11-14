@@ -35,7 +35,7 @@
           }
         ],
         "requestBody": {
-          "description": "Type name auto-suggestion: `__postDelete_In`",
+          "description": "Internal type ident: `__postDelete_In`",
           "required": true,
           "content": {
             "application/json": {
@@ -47,7 +47,7 @@
         },
         "responses": {
           "200": {
-            "description": "yo/util.None",
+            "description": "Internal type ident: `yo/util.None`",
             "headers": {
               "X-Yo-User": {
                 "description": "0 if not authenticated, else current user's ID",
@@ -61,6 +61,46 @@
             "content": {
               "application/json": {
                 "example": {}
+              }
+            }
+          },
+          "403": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "Unauthorized": "Unauthorized"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "__postDelete_InvalidPostId": "__postDelete_InvalidPostId"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "MissingOrExcessiveContentLength": "MissingOrExcessiveContentLength"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "TimedOut": "TimedOut"
+                }
               }
             }
           }
@@ -93,7 +133,7 @@
           }
         ],
         "requestBody": {
-          "description": "Type name auto-suggestion: `yo/util.None`",
+          "description": "Internal type ident: `yo/util.None`",
           "required": true,
           "content": {
             "application/json": {
@@ -103,7 +143,7 @@
         },
         "responses": {
           "200": {
-            "description": "yo/util.Return[map[string]string]",
+            "description": "Internal type ident: `yo/util.Return[map[string]string]`",
             "headers": {
               "X-Yo-User": {
                 "description": "0 if not authenticated, else current user's ID",
@@ -120,6 +160,26 @@
                   "Result": {
                     "someKey": "someStr"
                   }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "MissingOrExcessiveContentLength": "MissingOrExcessiveContentLength"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "TimedOut": "TimedOut"
                 }
               }
             }
@@ -153,7 +213,7 @@
           }
         ],
         "requestBody": {
-          "description": "Type name auto-suggestion: `__postMonthsUtc_In`",
+          "description": "Internal type ident: `__postMonthsUtc_In`",
           "required": true,
           "content": {
             "application/json": {
@@ -167,7 +227,7 @@
         },
         "responses": {
           "200": {
-            "description": "__postMonthsUtc_Out",
+            "description": "Internal type ident: `__postMonthsUtc_Out`",
             "headers": {
               "X-Yo-User": {
                 "description": "0 if not authenticated, else current user's ID",
@@ -187,6 +247,36 @@
                       "Month": 255
                     }
                   ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "Unauthorized": "Unauthorized"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "MissingOrExcessiveContentLength": "MissingOrExcessiveContentLength"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "TimedOut": "TimedOut"
                 }
               }
             }
@@ -220,14 +310,14 @@
           }
         ],
         "requestBody": {
-          "description": "Type name auto-suggestion: `kaffe/app.Post`",
+          "description": "Internal type ident: `kaffe/app.Post`",
           "required": true,
           "content": {
             "application/json": {
               "example": {
                 "Id": -9007199254740991,
-                "DtMade": "2023-11-14T14:56:26.850175882Z",
-                "DtMod": "2023-11-14T14:56:26.850178823Z",
+                "DtMade": "2023-11-14T15:10:30.743650686Z",
+                "DtMod": "2023-11-14T15:10:30.743653714Z",
                 "By": {},
                 "To": [
                   -9007199254740991
@@ -245,7 +335,7 @@
         },
         "responses": {
           "200": {
-            "description": "yo/util.Return[yo/db.I64]",
+            "description": "Internal type ident: `yo/util.Return[yo/db.I64]`",
             "headers": {
               "X-Yo-User": {
                 "description": "0 if not authenticated, else current user's ID",
@@ -260,6 +350,48 @@
               "application/json": {
                 "example": {
                   "Result": -9007199254740991
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "Unauthorized": "Unauthorized"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "__postNew_ExpectedEmptyFilesFieldWithUploadedFilesInMultipartForm": "__postNew_ExpectedEmptyFilesFieldWithUploadedFilesInMultipartForm",
+                  "__postNew_ExpectedNonEmptyPost": "__postNew_ExpectedNonEmptyPost",
+                  "__postNew_ExpectedOnlyBuddyRecipients": "__postNew_ExpectedOnlyBuddyRecipients"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "MissingOrExcessiveContentLength": "MissingOrExcessiveContentLength"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "TimedOut": "TimedOut"
                 }
               }
             }
@@ -293,7 +425,7 @@
           }
         ],
         "requestBody": {
-          "description": "Type name auto-suggestion: `__postsDeleted_In`",
+          "description": "Internal type ident: `__postsDeleted_In`",
           "required": true,
           "content": {
             "application/json": {
@@ -307,7 +439,7 @@
         },
         "responses": {
           "200": {
-            "description": "__postsDeleted_Out",
+            "description": "Internal type ident: `__postsDeleted_Out`",
             "headers": {
               "X-Yo-User": {
                 "description": "0 if not authenticated, else current user's ID",
@@ -324,6 +456,36 @@
                   "DeletedPostIds": [
                     -9007199254740991
                   ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "Unauthorized": "Unauthorized"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "MissingOrExcessiveContentLength": "MissingOrExcessiveContentLength"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "TimedOut": "TimedOut"
                 }
               }
             }
@@ -357,7 +519,7 @@
           }
         ],
         "requestBody": {
-          "description": "Type name auto-suggestion: `kaffe/app.ApiArgPeriod`",
+          "description": "Internal type ident: `kaffe/app.ApiArgPeriod`",
           "required": true,
           "content": {
             "application/json": {
@@ -375,7 +537,7 @@
         },
         "responses": {
           "200": {
-            "description": "kaffe/app.PostsListResult",
+            "description": "Internal type ident: `kaffe/app.PostsListResult`",
             "headers": {
               "X-Yo-User": {
                 "description": "0 if not authenticated, else current user's ID",
@@ -392,8 +554,8 @@
                   "Posts": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-14T14:56:26.850216945Z",
-                      "DtMod": "2023-11-14T14:56:26.85021925Z",
+                      "DtMade": "2023-11-14T15:10:30.743725669Z",
+                      "DtMod": "2023-11-14T15:10:30.743727878Z",
                       "By": 0,
                       "To": [
                         -9007199254740991
@@ -407,10 +569,40 @@
                       ]
                     }
                   ],
-                  "NextSince": "2023-11-14T14:56:26.850227273Z",
+                  "NextSince": "2023-11-14T15:10:30.743735908Z",
                   "UnreadCounts": {
                     "someKey": -9007199254740991
                   }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "Unauthorized": "Unauthorized"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "MissingOrExcessiveContentLength": "MissingOrExcessiveContentLength"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "TimedOut": "TimedOut"
                 }
               }
             }
@@ -444,12 +636,12 @@
           }
         ],
         "requestBody": {
-          "description": "Type name auto-suggestion: `__postsRecent_In`",
+          "description": "Internal type ident: `__postsRecent_In`",
           "required": true,
           "content": {
             "application/json": {
               "example": {
-                "Since": "2023-11-14T14:56:26.850239935Z",
+                "Since": "2023-11-14T15:10:30.74376216Z",
                 "OnlyBy": [
                   -9007199254740991
                 ]
@@ -459,7 +651,7 @@
         },
         "responses": {
           "200": {
-            "description": "kaffe/app.PostsListResult",
+            "description": "Internal type ident: `kaffe/app.PostsListResult`",
             "headers": {
               "X-Yo-User": {
                 "description": "0 if not authenticated, else current user's ID",
@@ -476,8 +668,8 @@
                   "Posts": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-14T14:56:26.850245696Z",
-                      "DtMod": "2023-11-14T14:56:26.850247839Z",
+                      "DtMade": "2023-11-14T15:10:30.743767867Z",
+                      "DtMod": "2023-11-14T15:10:30.743769962Z",
                       "By": 0,
                       "To": [
                         -9007199254740991
@@ -491,10 +683,40 @@
                       ]
                     }
                   ],
-                  "NextSince": "2023-11-14T14:56:26.850255585Z",
+                  "NextSince": "2023-11-14T15:10:30.743777865Z",
                   "UnreadCounts": {
                     "someKey": -9007199254740991
                   }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "Unauthorized": "Unauthorized"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "MissingOrExcessiveContentLength": "MissingOrExcessiveContentLength"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "TimedOut": "TimedOut"
                 }
               }
             }
@@ -528,7 +750,7 @@
           }
         ],
         "requestBody": {
-          "description": "Type name auto-suggestion: `yo/util.None`",
+          "description": "Internal type ident: `yo/util.None`",
           "required": true,
           "content": {
             "application/json": {
@@ -538,7 +760,7 @@
         },
         "responses": {
           "200": {
-            "description": "__userBuddies_Out",
+            "description": "Internal type ident: `__userBuddies_Out`",
             "headers": {
               "X-Yo-User": {
                 "description": "0 if not authenticated, else current user's ID",
@@ -555,9 +777,9 @@
                   "Buddies": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-14T14:56:26.850269791Z",
-                      "DtMod": "2023-11-14T14:56:26.850271983Z",
-                      "LastSeen": "2023-11-14T14:56:26.850274098Z",
+                      "DtMade": "2023-11-14T15:10:30.743804758Z",
+                      "DtMod": "2023-11-14T15:10:30.743806859Z",
+                      "LastSeen": "2023-11-14T15:10:30.743809064Z",
                       "Auth": 0,
                       "PicFileId": "someStr",
                       "Nick": "someStr",
@@ -572,9 +794,9 @@
                   "BuddyRequestsBy": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-14T14:56:26.850284232Z",
-                      "DtMod": "2023-11-14T14:56:26.850286313Z",
-                      "LastSeen": "2023-11-14T14:56:26.850288417Z",
+                      "DtMade": "2023-11-14T15:10:30.743818964Z",
+                      "DtMod": "2023-11-14T15:10:30.743821033Z",
+                      "LastSeen": "2023-11-14T15:10:30.743823094Z",
                       "Auth": 0,
                       "PicFileId": "someStr",
                       "Nick": "someStr",
@@ -586,6 +808,36 @@
                       "Offline": true
                     }
                   ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "Unauthorized": "Unauthorized"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "MissingOrExcessiveContentLength": "MissingOrExcessiveContentLength"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "TimedOut": "TimedOut"
                 }
               }
             }
@@ -619,7 +871,7 @@
           }
         ],
         "requestBody": {
-          "description": "Type name auto-suggestion: `__userBuddiesAdd_In`",
+          "description": "Internal type ident: `__userBuddiesAdd_In`",
           "required": true,
           "content": {
             "application/json": {
@@ -631,7 +883,7 @@
         },
         "responses": {
           "200": {
-            "description": "__userBuddiesAdd_Out",
+            "description": "Internal type ident: `__userBuddiesAdd_Out`",
             "headers": {
               "X-Yo-User": {
                 "description": "0 if not authenticated, else current user's ID",
@@ -646,6 +898,48 @@
               "application/json": {
                 "example": {
                   "Done": true
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "Unauthorized": "Unauthorized"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "DbUpdate_ExpectedChangesForUpdate": "DbUpdate_ExpectedChangesForUpdate",
+                  "DbUpdate_ExpectedQueryForUpdate": "DbUpdate_ExpectedQueryForUpdate",
+                  "__userBuddiesAdd_ExpectedEitherNickNameOrEmailAddr": "__userBuddiesAdd_ExpectedEitherNickNameOrEmailAddr"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "MissingOrExcessiveContentLength": "MissingOrExcessiveContentLength"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "TimedOut": "TimedOut"
                 }
               }
             }
@@ -679,7 +973,7 @@
           }
         ],
         "requestBody": {
-          "description": "Type name auto-suggestion: `__userBy_In`",
+          "description": "Internal type ident: `__userBy_In`",
           "required": true,
           "content": {
             "application/json": {
@@ -692,7 +986,7 @@
         },
         "responses": {
           "200": {
-            "description": "kaffe/app.User",
+            "description": "Internal type ident: `kaffe/app.User`",
             "headers": {
               "X-Yo-User": {
                 "description": "0 if not authenticated, else current user's ID",
@@ -707,9 +1001,9 @@
               "application/json": {
                 "example": {
                   "Id": -9007199254740991,
-                  "DtMade": "2023-11-14T14:56:26.850317886Z",
-                  "DtMod": "2023-11-14T14:56:26.850320047Z",
-                  "LastSeen": "2023-11-14T14:56:26.850322091Z",
+                  "DtMade": "2023-11-14T15:10:30.743887178Z",
+                  "DtMod": "2023-11-14T15:10:30.74388938Z",
+                  "LastSeen": "2023-11-14T15:10:30.743891476Z",
                   "Auth": {},
                   "PicFileId": "someStr",
                   "Nick": "someStr",
@@ -719,6 +1013,46 @@
                   ],
                   "BtwEmoji": "someStr",
                   "Offline": true
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "Unauthorized": "Unauthorized"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "__userBy_ExpectedEitherNickNameOrEmailAddr": "__userBy_ExpectedEitherNickNameOrEmailAddr"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "MissingOrExcessiveContentLength": "MissingOrExcessiveContentLength"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "TimedOut": "TimedOut"
                 }
               }
             }
@@ -752,7 +1086,7 @@
           }
         ],
         "requestBody": {
-          "description": "Type name auto-suggestion: `kaffe/app.ApiUserSignInOrReset`",
+          "description": "Internal type ident: `kaffe/app.ApiUserSignInOrReset`",
           "required": true,
           "content": {
             "application/json": {
@@ -766,7 +1100,7 @@
         },
         "responses": {
           "200": {
-            "description": "yo/util.None",
+            "description": "Internal type ident: `yo/util.None`",
             "headers": {
               "X-Yo-User": {
                 "description": "0 if not authenticated, else current user's ID",
@@ -780,6 +1114,78 @@
             "content": {
               "application/json": {
                 "example": {}
+              }
+            }
+          },
+          "400": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "___yo_authLoginOrFinalizePwdReset_AccountDoesNotExist": "___yo_authLoginOrFinalizePwdReset_AccountDoesNotExist"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "___yo_authLoginOrFinalizePwdReset_WrongPassword": "___yo_authLoginOrFinalizePwdReset_WrongPassword",
+                  "__userSignInOrReset_WrongPassword": "__userSignInOrReset_WrongPassword"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "Unauthorized": "Unauthorized"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "DbUpdate_ExpectedChangesForUpdate": "DbUpdate_ExpectedChangesForUpdate",
+                  "DbUpdate_ExpectedQueryForUpdate": "DbUpdate_ExpectedQueryForUpdate",
+                  "___yo_authLoginOrFinalizePwdReset_EmailInvalid": "___yo_authLoginOrFinalizePwdReset_EmailInvalid",
+                  "___yo_authLoginOrFinalizePwdReset_EmailRequiredButMissing": "___yo_authLoginOrFinalizePwdReset_EmailRequiredButMissing",
+                  "___yo_authLoginOrFinalizePwdReset_NewPasswordExpectedToDiffer": "___yo_authLoginOrFinalizePwdReset_NewPasswordExpectedToDiffer",
+                  "___yo_authLoginOrFinalizePwdReset_NewPasswordInvalid": "___yo_authLoginOrFinalizePwdReset_NewPasswordInvalid",
+                  "___yo_authLoginOrFinalizePwdReset_NewPasswordTooLong": "___yo_authLoginOrFinalizePwdReset_NewPasswordTooLong",
+                  "___yo_authLoginOrFinalizePwdReset_NewPasswordTooShort": "___yo_authLoginOrFinalizePwdReset_NewPasswordTooShort",
+                  "___yo_authLoginOrFinalizePwdReset_PwdResetRequired": "___yo_authLoginOrFinalizePwdReset_PwdResetRequired",
+                  "__userSignInOrReset_ExpectedPasswordAndNickOrEmailAddr": "__userSignInOrReset_ExpectedPasswordAndNickOrEmailAddr"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "MissingOrExcessiveContentLength": "MissingOrExcessiveContentLength",
+                  "___yo_authLoginOrFinalizePwdReset_OkButFailedToCreateSignedToken": "___yo_authLoginOrFinalizePwdReset_OkButFailedToCreateSignedToken",
+                  "___yo_authLoginOrFinalizePwdReset_PwdReqExpired": "___yo_authLoginOrFinalizePwdReset_PwdReqExpired"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "TimedOut": "TimedOut"
+                }
               }
             }
           }
@@ -812,7 +1218,7 @@
           }
         ],
         "requestBody": {
-          "description": "Type name auto-suggestion: `yo/util.None`",
+          "description": "Internal type ident: `yo/util.None`",
           "required": true,
           "content": {
             "application/json": {
@@ -822,7 +1228,7 @@
         },
         "responses": {
           "200": {
-            "description": "yo/util.None",
+            "description": "Internal type ident: `yo/util.None`",
             "headers": {
               "X-Yo-User": {
                 "description": "0 if not authenticated, else current user's ID",
@@ -836,6 +1242,26 @@
             "content": {
               "application/json": {
                 "example": {}
+              }
+            }
+          },
+          "500": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "MissingOrExcessiveContentLength": "MissingOrExcessiveContentLength"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "TimedOut": "TimedOut"
+                }
               }
             }
           }
@@ -868,7 +1294,7 @@
           }
         ],
         "requestBody": {
-          "description": "Type name auto-suggestion: `kaffe/app.ApiNickOrEmailAddr`",
+          "description": "Internal type ident: `kaffe/app.ApiNickOrEmailAddr`",
           "required": true,
           "content": {
             "application/json": {
@@ -880,7 +1306,7 @@
         },
         "responses": {
           "200": {
-            "description": "yo/util.None",
+            "description": "Internal type ident: `yo/util.None`",
             "headers": {
               "X-Yo-User": {
                 "description": "0 if not authenticated, else current user's ID",
@@ -894,6 +1320,52 @@
             "content": {
               "application/json": {
                 "example": {}
+              }
+            }
+          },
+          "409": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "___yo_authRegister_EmailAddrAlreadyExists": "___yo_authRegister_EmailAddrAlreadyExists"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "___yo_authRegister_EmailInvalid": "___yo_authRegister_EmailInvalid",
+                  "___yo_authRegister_EmailRequiredButMissing": "___yo_authRegister_EmailRequiredButMissing",
+                  "___yo_authRegister_PasswordInvalid": "___yo_authRegister_PasswordInvalid",
+                  "___yo_authRegister_PasswordTooLong": "___yo_authRegister_PasswordTooLong",
+                  "___yo_authRegister_PasswordTooShort": "___yo_authRegister_PasswordTooShort",
+                  "__userSignUpOrForgotPassword_EmailInvalid": "__userSignUpOrForgotPassword_EmailInvalid",
+                  "__userSignUpOrForgotPassword_EmailRequiredButMissing": "__userSignUpOrForgotPassword_EmailRequiredButMissing"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "MissingOrExcessiveContentLength": "MissingOrExcessiveContentLength"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "TimedOut": "TimedOut"
+                }
               }
             }
           }
@@ -926,7 +1398,7 @@
           }
         ],
         "requestBody": {
-          "description": "Type name auto-suggestion: `yo/db.ApiUpdateArgs[kaffe/app.User,kaffe/app.UserField]`",
+          "description": "Internal type ident: `yo/db.ApiUpdateArgs[kaffe/app.User,kaffe/app.UserField]`",
           "required": true,
           "content": {
             "application/json": {
@@ -934,9 +1406,9 @@
                 "Id": -9007199254740991,
                 "Changes": {
                   "Id": -9007199254740991,
-                  "DtMade": "2023-11-14T14:56:26.850370899Z",
-                  "DtMod": "2023-11-14T14:56:26.850373078Z",
-                  "LastSeen": "2023-11-14T14:56:26.850375163Z",
+                  "DtMade": "2023-11-14T15:10:30.744056681Z",
+                  "DtMod": "2023-11-14T15:10:30.744058974Z",
+                  "LastSeen": "2023-11-14T15:10:30.744061082Z",
                   "Auth": {},
                   "PicFileId": "someStr",
                   "Nick": "someStr",
@@ -956,7 +1428,7 @@
         },
         "responses": {
           "200": {
-            "description": "yo/util.None",
+            "description": "Internal type ident: `yo/util.None`",
             "headers": {
               "X-Yo-User": {
                 "description": "0 if not authenticated, else current user's ID",
@@ -970,6 +1442,59 @@
             "content": {
               "application/json": {
                 "example": {}
+              }
+            }
+          },
+          "403": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "Unauthorized": "Unauthorized"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "__userUpdate_NicknameAlreadyExists": "__userUpdate_NicknameAlreadyExists"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "DbUpdExpectedIdGt0": "DbUpdExpectedIdGt0",
+                  "DbUpdate_ExpectedChangesForUpdate": "DbUpdate_ExpectedChangesForUpdate",
+                  "DbUpdate_ExpectedQueryForUpdate": "DbUpdate_ExpectedQueryForUpdate",
+                  "__userUpdate_ExpectedNonEmptyNickname": "__userUpdate_ExpectedNonEmptyNickname"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "MissingOrExcessiveContentLength": "MissingOrExcessiveContentLength"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "foo",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "TimedOut": "TimedOut"
+                }
               }
             }
           }
