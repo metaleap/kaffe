@@ -158,7 +158,9 @@
           "content": {
             "application/json": {
               "example": {
-                "WithUserIds": []
+                "WithUserIds": [
+                  -9007199254740991
+                ]
               }
             }
           }
@@ -179,7 +181,12 @@
             "content": {
               "application/json": {
                 "example": {
-                  "Periods": []
+                  "Periods": [
+                    {
+                      "Year": 65535,
+                      "Month": 255
+                    }
+                  ]
                 }
               }
             }
@@ -219,13 +226,19 @@
             "application/json": {
               "example": {
                 "Id": -9007199254740991,
-                "DtMade": "2023-11-14T14:50:43.758183447Z",
-                "DtMod": "2023-11-14T14:50:43.758186792Z",
+                "DtMade": "2023-11-14T14:56:26.850175882Z",
+                "DtMod": "2023-11-14T14:56:26.850178823Z",
                 "By": {},
-                "To": [],
+                "To": [
+                  -9007199254740991
+                ],
                 "Htm": "someStr",
-                "Files": [],
-                "FileContentTypes": []
+                "Files": [
+                  "someStr"
+                ],
+                "FileContentTypes": [
+                  "someStr"
+                ]
               }
             }
           }
@@ -285,7 +298,9 @@
           "content": {
             "application/json": {
               "example": {
-                "OutOfPostIds": []
+                "OutOfPostIds": [
+                  -9007199254740991
+                ]
               }
             }
           }
@@ -306,7 +321,9 @@
             "content": {
               "application/json": {
                 "example": {
-                  "DeletedPostIds": []
+                  "DeletedPostIds": [
+                    -9007199254740991
+                  ]
                 }
               }
             }
@@ -349,7 +366,9 @@
                   "Year": 65535,
                   "Month": 255
                 },
-                "OnlyBy": []
+                "OnlyBy": [
+                  -9007199254740991
+                ]
               }
             }
           }
@@ -370,8 +389,25 @@
             "content": {
               "application/json": {
                 "example": {
-                  "Posts": [],
-                  "NextSince": "2023-11-14T14:50:43.758236573Z",
+                  "Posts": [
+                    {
+                      "Id": -9007199254740991,
+                      "DtMade": "2023-11-14T14:56:26.850216945Z",
+                      "DtMod": "2023-11-14T14:56:26.85021925Z",
+                      "By": 0,
+                      "To": [
+                        -9007199254740991
+                      ],
+                      "Htm": "someStr",
+                      "Files": [
+                        "someStr"
+                      ],
+                      "FileContentTypes": [
+                        "someStr"
+                      ]
+                    }
+                  ],
+                  "NextSince": "2023-11-14T14:56:26.850227273Z",
                   "UnreadCounts": {
                     "someKey": -9007199254740991
                   }
@@ -413,8 +449,10 @@
           "content": {
             "application/json": {
               "example": {
-                "Since": "2023-11-14T14:50:43.758250434Z",
-                "OnlyBy": []
+                "Since": "2023-11-14T14:56:26.850239935Z",
+                "OnlyBy": [
+                  -9007199254740991
+                ]
               }
             }
           }
@@ -435,8 +473,25 @@
             "content": {
               "application/json": {
                 "example": {
-                  "Posts": [],
-                  "NextSince": "2023-11-14T14:50:43.75826606Z",
+                  "Posts": [
+                    {
+                      "Id": -9007199254740991,
+                      "DtMade": "2023-11-14T14:56:26.850245696Z",
+                      "DtMod": "2023-11-14T14:56:26.850247839Z",
+                      "By": 0,
+                      "To": [
+                        -9007199254740991
+                      ],
+                      "Htm": "someStr",
+                      "Files": [
+                        "someStr"
+                      ],
+                      "FileContentTypes": [
+                        "someStr"
+                      ]
+                    }
+                  ],
+                  "NextSince": "2023-11-14T14:56:26.850255585Z",
                   "UnreadCounts": {
                     "someKey": -9007199254740991
                   }
@@ -497,8 +552,40 @@
             "content": {
               "application/json": {
                 "example": {
-                  "Buddies": [],
-                  "BuddyRequestsBy": []
+                  "Buddies": [
+                    {
+                      "Id": -9007199254740991,
+                      "DtMade": "2023-11-14T14:56:26.850269791Z",
+                      "DtMod": "2023-11-14T14:56:26.850271983Z",
+                      "LastSeen": "2023-11-14T14:56:26.850274098Z",
+                      "Auth": 0,
+                      "PicFileId": "someStr",
+                      "Nick": "someStr",
+                      "Btw": "someStr",
+                      "Buddies": [
+                        -9007199254740991
+                      ],
+                      "BtwEmoji": "someStr",
+                      "Offline": true
+                    }
+                  ],
+                  "BuddyRequestsBy": [
+                    {
+                      "Id": -9007199254740991,
+                      "DtMade": "2023-11-14T14:56:26.850284232Z",
+                      "DtMod": "2023-11-14T14:56:26.850286313Z",
+                      "LastSeen": "2023-11-14T14:56:26.850288417Z",
+                      "Auth": 0,
+                      "PicFileId": "someStr",
+                      "Nick": "someStr",
+                      "Btw": "someStr",
+                      "Buddies": [
+                        -9007199254740991
+                      ],
+                      "BtwEmoji": "someStr",
+                      "Offline": true
+                    }
+                  ]
                 }
               }
             }
@@ -620,14 +707,16 @@
               "application/json": {
                 "example": {
                   "Id": -9007199254740991,
-                  "DtMade": "2023-11-14T14:50:43.75832824Z",
-                  "DtMod": "2023-11-14T14:50:43.758330371Z",
-                  "LastSeen": "2023-11-14T14:50:43.758332447Z",
+                  "DtMade": "2023-11-14T14:56:26.850317886Z",
+                  "DtMod": "2023-11-14T14:56:26.850320047Z",
+                  "LastSeen": "2023-11-14T14:56:26.850322091Z",
                   "Auth": {},
                   "PicFileId": "someStr",
                   "Nick": "someStr",
                   "Btw": "someStr",
-                  "Buddies": [],
+                  "Buddies": [
+                    -9007199254740991
+                  ],
                   "BtwEmoji": "someStr",
                   "Offline": true
                 }
@@ -845,18 +934,22 @@
                 "Id": -9007199254740991,
                 "Changes": {
                   "Id": -9007199254740991,
-                  "DtMade": "2023-11-14T14:50:43.758381468Z",
-                  "DtMod": "2023-11-14T14:50:43.758383636Z",
-                  "LastSeen": "2023-11-14T14:50:43.758385853Z",
+                  "DtMade": "2023-11-14T14:56:26.850370899Z",
+                  "DtMod": "2023-11-14T14:56:26.850373078Z",
+                  "LastSeen": "2023-11-14T14:56:26.850375163Z",
                   "Auth": {},
                   "PicFileId": "someStr",
                   "Nick": "someStr",
                   "Btw": "someStr",
-                  "Buddies": [],
+                  "Buddies": [
+                    -9007199254740991
+                  ],
                   "BtwEmoji": "someStr",
                   "Offline": true
                 },
-                "ChangedFields": []
+                "ChangedFields": [
+                  "someStr"
+                ]
               }
             }
           }
