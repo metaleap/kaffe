@@ -36,7 +36,7 @@
           }
         ],
         "requestBody": {
-          "description": "Type ident: `__postDelete_In`",
+          "description": "type moniker suggestion: `__postDelete_In`",
           "required": true,
           "content": {
             "application/json": {
@@ -48,7 +48,7 @@
         },
         "responses": {
           "200": {
-            "description": "Type ident: `yo/util.None`",
+            "description": "type moniker suggestion: `yo/util.None`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -233,7 +233,7 @@
           }
         ],
         "requestBody": {
-          "description": "Type ident: `yo/util.None`",
+          "description": "type moniker suggestion: `yo/util.None`",
           "required": true,
           "content": {
             "application/json": {
@@ -243,7 +243,7 @@
         },
         "responses": {
           "200": {
-            "description": "Type ident: `yo/util.Return[map[string]string]`",
+            "description": "type moniker suggestion: `yo/util.Return[map[string]string]`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -373,7 +373,7 @@
           }
         ],
         "requestBody": {
-          "description": "Type ident: `__postMonthsUtc_In`",
+          "description": "type moniker suggestion: `__postMonthsUtc_In`",
           "required": true,
           "content": {
             "application/json": {
@@ -387,7 +387,7 @@
         },
         "responses": {
           "200": {
-            "description": "Type ident: `__postMonthsUtc_Out`",
+            "description": "type moniker suggestion: `__postMonthsUtc_Out`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -549,14 +549,14 @@
           }
         ],
         "requestBody": {
-          "description": "Type ident: `kaffe/app.Post`",
+          "description": "`multipart/form-data` form-fields:\n1. binary file uploads in form field `files`, and\n2. `application/json` request payload as `text/plain` in form field `_`, as elaborated in this example (type moniker suggestion: `kaffe/app.Post`)\n\t\t\t",
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "example": {
                 "Id": -9007199254740991,
-                "DtMade": "2023-11-14T20:32:46.115771337Z",
-                "DtMod": "2023-11-14T20:32:46.115774784Z",
+                "DtMade": "2023-11-14T20:48:05.7020104Z",
+                "DtMod": "2023-11-14T20:48:05.702013935Z",
                 "By": {},
                 "To": [
                   -9007199254740991
@@ -574,7 +574,7 @@
         },
         "responses": {
           "200": {
-            "description": "Type ident: `yo/util.Return[yo/db.I64]`",
+            "description": "type moniker suggestion: `yo/util.Return[yo/db.I64]`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -767,7 +767,7 @@
           }
         ],
         "requestBody": {
-          "description": "Type ident: `__postsDeleted_In`",
+          "description": "type moniker suggestion: `__postsDeleted_In`",
           "required": true,
           "content": {
             "application/json": {
@@ -781,7 +781,7 @@
         },
         "responses": {
           "200": {
-            "description": "Type ident: `__postsDeleted_Out`",
+            "description": "type moniker suggestion: `__postsDeleted_Out`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -940,7 +940,7 @@
           }
         ],
         "requestBody": {
-          "description": "Type ident: `kaffe/app.ApiArgPeriod`",
+          "description": "type moniker suggestion: `kaffe/app.ApiArgPeriod`",
           "required": true,
           "content": {
             "application/json": {
@@ -958,7 +958,7 @@
         },
         "responses": {
           "200": {
-            "description": "Type ident: `kaffe/app.PostsListResult`",
+            "description": "type moniker suggestion: `kaffe/app.PostsListResult`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -991,8 +991,8 @@
                   "Posts": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-14T20:32:46.115870911Z",
-                      "DtMod": "2023-11-14T20:32:46.115873539Z",
+                      "DtMade": "2023-11-14T20:48:05.702116172Z",
+                      "DtMod": "2023-11-14T20:48:05.702118792Z",
                       "By": 0,
                       "To": [
                         -9007199254740991
@@ -1006,7 +1006,7 @@
                       ]
                     }
                   ],
-                  "NextSince": "2023-11-14T20:32:46.115883513Z",
+                  "NextSince": "2023-11-14T20:48:05.702129388Z",
                   "UnreadCounts": {
                     "someMapKey1": -9007199254740991,
                     "some_map_key_2": -9007199254740991
@@ -1137,12 +1137,12 @@
           }
         ],
         "requestBody": {
-          "description": "Type ident: `__postsRecent_In`",
+          "description": "type moniker suggestion: `__postsRecent_In`",
           "required": true,
           "content": {
             "application/json": {
               "example": {
-                "Since": "2023-11-14T20:32:46.115916823Z",
+                "Since": "2023-11-14T20:48:05.70216366Z",
                 "OnlyBy": [
                   -9007199254740991
                 ]
@@ -1152,7 +1152,7 @@
         },
         "responses": {
           "200": {
-            "description": "Type ident: `kaffe/app.PostsListResult`",
+            "description": "type moniker suggestion: `kaffe/app.PostsListResult`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -1185,8 +1185,8 @@
                   "Posts": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-14T20:32:46.115923732Z",
-                      "DtMod": "2023-11-14T20:32:46.115926116Z",
+                      "DtMade": "2023-11-14T20:48:05.70217064Z",
+                      "DtMod": "2023-11-14T20:48:05.702173003Z",
                       "By": 0,
                       "To": [
                         -9007199254740991
@@ -1200,7 +1200,7 @@
                       ]
                     }
                   ],
-                  "NextSince": "2023-11-14T20:32:46.115935462Z",
+                  "NextSince": "2023-11-14T20:48:05.702182459Z",
                   "UnreadCounts": {
                     "someMapKey1": -9007199254740991,
                     "some_map_key_2": -9007199254740991
@@ -1331,7 +1331,7 @@
           }
         ],
         "requestBody": {
-          "description": "Type ident: `yo/util.None`",
+          "description": "type moniker suggestion: `yo/util.None`",
           "required": true,
           "content": {
             "application/json": {
@@ -1341,7 +1341,7 @@
         },
         "responses": {
           "200": {
-            "description": "Type ident: `__userBuddies_Out`",
+            "description": "type moniker suggestion: `__userBuddies_Out`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -1374,9 +1374,9 @@
                   "Buddies": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-14T20:32:46.115971508Z",
-                      "DtMod": "2023-11-14T20:32:46.115973927Z",
-                      "LastSeen": "2023-11-14T20:32:46.115976433Z",
+                      "DtMade": "2023-11-14T20:48:05.702223693Z",
+                      "DtMod": "2023-11-14T20:48:05.70222611Z",
+                      "LastSeen": "2023-11-14T20:48:05.702228667Z",
                       "Auth": 0,
                       "PicFileId": "someStr",
                       "Nick": "someStr",
@@ -1391,9 +1391,9 @@
                   "BuddyRequestsBy": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-14T20:32:46.115989316Z",
-                      "DtMod": "2023-11-14T20:32:46.115991653Z",
-                      "LastSeen": "2023-11-14T20:32:46.115994036Z",
+                      "DtMade": "2023-11-14T20:48:05.702241794Z",
+                      "DtMod": "2023-11-14T20:48:05.702244143Z",
+                      "LastSeen": "2023-11-14T20:48:05.702246547Z",
                       "Auth": 0,
                       "PicFileId": "someStr",
                       "Nick": "someStr",
@@ -1531,7 +1531,7 @@
           }
         ],
         "requestBody": {
-          "description": "Type ident: `__userBuddiesAdd_In`",
+          "description": "type moniker suggestion: `__userBuddiesAdd_In`",
           "required": true,
           "content": {
             "application/json": {
@@ -1543,7 +1543,7 @@
         },
         "responses": {
           "200": {
-            "description": "Type ident: `__userBuddiesAdd_Out`",
+            "description": "type moniker suggestion: `__userBuddiesAdd_Out`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -1736,7 +1736,7 @@
           }
         ],
         "requestBody": {
-          "description": "Type ident: `__userBy_In`",
+          "description": "type moniker suggestion: `__userBy_In`",
           "required": true,
           "content": {
             "application/json": {
@@ -1749,7 +1749,7 @@
         },
         "responses": {
           "200": {
-            "description": "Type ident: `kaffe/app.User`",
+            "description": "type moniker suggestion: `kaffe/app.User`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -1780,9 +1780,9 @@
               "application/json": {
                 "example": {
                   "Id": -9007199254740991,
-                  "DtMade": "2023-11-14T20:32:46.116075708Z",
-                  "DtMod": "2023-11-14T20:32:46.11607826Z",
-                  "LastSeen": "2023-11-14T20:32:46.116080737Z",
+                  "DtMade": "2023-11-14T20:48:05.702327917Z",
+                  "DtMod": "2023-11-14T20:48:05.702330594Z",
+                  "LastSeen": "2023-11-14T20:48:05.702333092Z",
                   "Auth": {},
                   "PicFileId": "someStr",
                   "Nick": "someStr",
@@ -1948,7 +1948,7 @@
           }
         ],
         "requestBody": {
-          "description": "Type ident: `kaffe/app.ApiUserSignInOrReset`",
+          "description": "type moniker suggestion: `kaffe/app.ApiUserSignInOrReset`",
           "required": true,
           "content": {
             "application/json": {
@@ -1962,7 +1962,7 @@
         },
         "responses": {
           "200": {
-            "description": "Type ident: `yo/util.None`",
+            "description": "type moniker suggestion: `yo/util.None`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -2243,7 +2243,7 @@
           }
         ],
         "requestBody": {
-          "description": "Type ident: `yo/util.None`",
+          "description": "type moniker suggestion: `yo/util.None`",
           "required": true,
           "content": {
             "application/json": {
@@ -2253,7 +2253,7 @@
         },
         "responses": {
           "200": {
-            "description": "Type ident: `yo/util.None`",
+            "description": "type moniker suggestion: `yo/util.None`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -2378,7 +2378,7 @@
           }
         ],
         "requestBody": {
-          "description": "Type ident: `kaffe/app.ApiNickOrEmailAddr`",
+          "description": "type moniker suggestion: `kaffe/app.ApiNickOrEmailAddr`",
           "required": true,
           "content": {
             "application/json": {
@@ -2390,7 +2390,7 @@
         },
         "responses": {
           "200": {
-            "description": "Type ident: `yo/util.None`",
+            "description": "type moniker suggestion: `yo/util.None`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -2593,17 +2593,17 @@
           }
         ],
         "requestBody": {
-          "description": "Type ident: `yo/db.ApiUpdateArgs[kaffe/app.User,kaffe/app.UserField]`",
+          "description": "`multipart/form-data` form-fields:\n1. binary file uploads in form field `files`, and\n2. `application/json` request payload as `text/plain` in form field `_`, as elaborated in this example (type moniker suggestion: `yo/db.ApiUpdateArgs[kaffe/app.User,kaffe/app.UserField]`)\n\t\t\t",
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "example": {
                 "Id": -9007199254740991,
                 "Changes": {
                   "Id": -9007199254740991,
-                  "DtMade": "2023-11-14T20:32:46.116284291Z",
-                  "DtMod": "2023-11-14T20:32:46.116286941Z",
-                  "LastSeen": "2023-11-14T20:32:46.116289314Z",
+                  "DtMade": "2023-11-14T20:48:05.702542874Z",
+                  "DtMod": "2023-11-14T20:48:05.702545498Z",
+                  "LastSeen": "2023-11-14T20:48:05.702548037Z",
                   "Auth": {},
                   "PicFileId": "someStr",
                   "Nick": "someStr",
@@ -2623,7 +2623,7 @@
         },
         "responses": {
           "200": {
-            "description": "Type ident: `yo/util.None`",
+            "description": "type moniker suggestion: `yo/util.None`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
