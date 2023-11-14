@@ -2,6 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "kaffe.chat",
+    "summary": "This JSON HTTP API has RPC rather than REST semantics. All operations are ´POST´, regardless of what CRUDs they might run (or not).",
     "description": "\nOur convention-over-configuration designs yield a handful of request/response rules:\n- All request headers, URL query-string parameters and response headers are identical over the whole set of all operations. Only request and response bodies are operation-specific.\n- Request bodies **must never** be empty or the JSON `null`: the empty request body is the JSON `{}`.\n- Response bodies will never be empty, but may be the JSON `null`.\n- All request fields are by default optional and ommittable / `null`able, **any exceptions** to this are indicated by the operation's listed known-error responses.\n- The `Content-Length` request header is **required for all** operations.\n- The `Content-Type` request header is optional, but if present, must be correct with regards to both the operation's specification and the request body.\n- Any `multipart/form-data` operations:\n  - **always require** the following two form-fields: `files` for any binary file uploads, and `_` for the actual JSON request payload\n  - only the latter is elaborated in this doc, and always in the exact same way as done for all the `application/json` operations, **without** specifically mentioning the `_` form-field containing the `text/plain` of the full `application/json` request payload actually being elaborated here\n- All JSON object field names begin with an upper-case character, any example to the contrary indicates a \"free-style\" dictionary/hash-map \"object\".\n\nHow to read request/response example JSON values rendered in this doc:\n  - `true` indicates any `boolean` value, regardless of the actual real value in a call\n  - `\"someStr\"` indicates any `string` value\n  - date-time values are indicated by RFC3339-formatted `string` examples\n  - signed-integer `number`s are indicated by a negative-number example indicating the minimum (type-wise, not operation-specific) permissible value, with the maximum being the corresponding positive-number counterpart\n  - unsigned-integer `number`s are indicated by a positive-number example indicating the maximum (type-wise, not not operation-specific) permissible value, with the minimum being `0`\n  - floating-point `number`s are indicated by a positive-number example indicating the maximum (type-wise, not not operation-specific) permissible value, with the minimum being the corresponding negative-number counterpart\n\nMore about error responses:\n- All are `text/plain`.\n- In addition to those listed in this doc (thrown by the service under the indicated conditions), other error responses are at all times entirely technically-possible and not exhaustively documentable (feasibly), such as eg. DB / file-system / network disruptions. Those caught by the service will be `500`s, others (ie. from load-balancers / gateways / reverse-proxies etc. _in front of_ the service) might have _any_ HTTP status code whatsoever.\n- All the well-known (thrown rather than caught) errors listed here:\n  - have their code-identifier-compatible (spaceless ASCII) enumerant-name as their entire text response. Any others preserve simply their original (usually human-language) error message fully. Hence, error responses are inherently `switch/case`able\n  - have been recursively determined by code-path walking. Among them are some that logically could not possibly ever occur for that operation, yet identifying those (to filter them out of the listing) is (so far) out of scope for our `openapi.json` generation\n\t\t",
     "version": "23.318",
     "contact": {
@@ -17,7 +18,7 @@
           {
             "name": "yoValiOnly",
             "in": "query",
-            "description": "if not empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
+            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
             "content": {
               "text/plain": {
                 "example": ""
@@ -27,7 +28,7 @@
           {
             "name": "yoFail",
             "in": "query",
-            "description": "if not empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for tests of error-handling)",
+            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for client-side unit-test cases of error-handling)",
             "content": {
               "text/plain": {
                 "example": ""
@@ -36,7 +37,7 @@
           }
         ],
         "requestBody": {
-          "description": "Internal type ident: `__postDelete_In`",
+          "description": "Type ident: `__postDelete_In`",
           "required": true,
           "content": {
             "application/json": {
@@ -48,7 +49,7 @@
         },
         "responses": {
           "200": {
-            "description": "Internal type ident: `yo/util.None`",
+            "description": "Type ident: `yo/util.None`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -66,16 +67,8 @@
                   }
                 }
               },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
-                  }
-                }
-              },
               "X-Yo-User": {
-                "description": "0 if not authenticated, else current user's ID",
+                "description": "`0` if not authenticated, else current `User`'s `Id`",
                 "content": {
                   "text/plain": {
                     "example": "123"
@@ -101,18 +94,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -128,7 +113,7 @@
             }
           },
           "406": {
-            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
+            "description": "Possible `text/plain` responses:\n- `UnacceptableContentLength`\n- `UnacceptableContentType`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -139,18 +124,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -158,15 +135,18 @@
             "content": {
               "text/plain": {
                 "examples": {
-                  "MissingOrExcessiveContentLength": {
-                    "value": "MissingOrExcessiveContentLength"
+                  "UnacceptableContentLength": {
+                    "value": "UnacceptableContentLength"
+                  },
+                  "UnacceptableContentType": {
+                    "value": "UnacceptableContentType"
                   }
                 }
               }
             }
           },
           "422": {
-            "description": "Possible `text/plain` responses:\n- `__postDelete_InvalidPostId`\n- `InvalidContentType`",
+            "description": "Possible `text/plain` responses:\n- `__postDelete_InvalidPostId`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -177,18 +157,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -196,9 +168,6 @@
             "content": {
               "text/plain": {
                 "examples": {
-                  "InvalidContentType": {
-                    "value": "InvalidContentType"
-                  },
                   "__postDelete_InvalidPostId": {
                     "value": "__postDelete_InvalidPostId"
                   }
@@ -218,18 +187,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -254,7 +215,7 @@
           {
             "name": "yoValiOnly",
             "in": "query",
-            "description": "if not empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
+            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
             "content": {
               "text/plain": {
                 "example": ""
@@ -264,7 +225,7 @@
           {
             "name": "yoFail",
             "in": "query",
-            "description": "if not empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for tests of error-handling)",
+            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for client-side unit-test cases of error-handling)",
             "content": {
               "text/plain": {
                 "example": ""
@@ -273,7 +234,7 @@
           }
         ],
         "requestBody": {
-          "description": "Internal type ident: `yo/util.None`",
+          "description": "Type ident: `yo/util.None`",
           "required": true,
           "content": {
             "application/json": {
@@ -283,7 +244,7 @@
         },
         "responses": {
           "200": {
-            "description": "Internal type ident: `yo/util.Return[map[string]string]`",
+            "description": "Type ident: `yo/util.Return[map[string]string]`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -301,16 +262,8 @@
                   }
                 }
               },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
-                  }
-                }
-              },
               "X-Yo-User": {
-                "description": "0 if not authenticated, else current user's ID",
+                "description": "`0` if not authenticated, else current `User`'s `Id`",
                 "content": {
                   "text/plain": {
                     "example": "123"
@@ -330,7 +283,7 @@
             }
           },
           "406": {
-            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
+            "description": "Possible `text/plain` responses:\n- `UnacceptableContentLength`\n- `UnacceptableContentType`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -341,18 +294,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -360,46 +305,11 @@
             "content": {
               "text/plain": {
                 "examples": {
-                  "MissingOrExcessiveContentLength": {
-                    "value": "MissingOrExcessiveContentLength"
-                  }
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Possible `text/plain` responses:\n- `InvalidContentType`",
-            "headers": {
-              "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
-              },
-              "Content-Type": {
-                "description": "always `application/json`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
-                  }
-                }
-              }
-            },
-            "content": {
-              "text/plain": {
-                "examples": {
-                  "InvalidContentType": {
-                    "value": "InvalidContentType"
+                  "UnacceptableContentLength": {
+                    "value": "UnacceptableContentLength"
+                  },
+                  "UnacceptableContentType": {
+                    "value": "UnacceptableContentType"
                   }
                 }
               }
@@ -417,18 +327,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -453,7 +355,7 @@
           {
             "name": "yoValiOnly",
             "in": "query",
-            "description": "if not empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
+            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
             "content": {
               "text/plain": {
                 "example": ""
@@ -463,7 +365,7 @@
           {
             "name": "yoFail",
             "in": "query",
-            "description": "if not empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for tests of error-handling)",
+            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for client-side unit-test cases of error-handling)",
             "content": {
               "text/plain": {
                 "example": ""
@@ -472,7 +374,7 @@
           }
         ],
         "requestBody": {
-          "description": "Internal type ident: `__postMonthsUtc_In`",
+          "description": "Type ident: `__postMonthsUtc_In`",
           "required": true,
           "content": {
             "application/json": {
@@ -486,7 +388,7 @@
         },
         "responses": {
           "200": {
-            "description": "Internal type ident: `__postMonthsUtc_Out`",
+            "description": "Type ident: `__postMonthsUtc_Out`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -504,16 +406,8 @@
                   }
                 }
               },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
-                  }
-                }
-              },
               "X-Yo-User": {
-                "description": "0 if not authenticated, else current user's ID",
+                "description": "`0` if not authenticated, else current `User`'s `Id`",
                 "content": {
                   "text/plain": {
                     "example": "123"
@@ -546,18 +440,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -573,7 +459,7 @@
             }
           },
           "406": {
-            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
+            "description": "Possible `text/plain` responses:\n- `UnacceptableContentLength`\n- `UnacceptableContentType`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -584,18 +470,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -603,46 +481,11 @@
             "content": {
               "text/plain": {
                 "examples": {
-                  "MissingOrExcessiveContentLength": {
-                    "value": "MissingOrExcessiveContentLength"
-                  }
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Possible `text/plain` responses:\n- `InvalidContentType`",
-            "headers": {
-              "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
-              },
-              "Content-Type": {
-                "description": "always `application/json`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
-                  }
-                }
-              }
-            },
-            "content": {
-              "text/plain": {
-                "examples": {
-                  "InvalidContentType": {
-                    "value": "InvalidContentType"
+                  "UnacceptableContentLength": {
+                    "value": "UnacceptableContentLength"
+                  },
+                  "UnacceptableContentType": {
+                    "value": "UnacceptableContentType"
                   }
                 }
               }
@@ -660,18 +503,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -696,7 +531,7 @@
           {
             "name": "yoValiOnly",
             "in": "query",
-            "description": "if not empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
+            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
             "content": {
               "text/plain": {
                 "example": ""
@@ -706,7 +541,7 @@
           {
             "name": "yoFail",
             "in": "query",
-            "description": "if not empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for tests of error-handling)",
+            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for client-side unit-test cases of error-handling)",
             "content": {
               "text/plain": {
                 "example": ""
@@ -715,14 +550,14 @@
           }
         ],
         "requestBody": {
-          "description": "Internal type ident: `kaffe/app.Post`",
+          "description": "Type ident: `kaffe/app.Post`",
           "required": true,
           "content": {
             "application/json": {
               "example": {
                 "Id": -9007199254740991,
-                "DtMade": "2023-11-14T17:12:31.630652043Z",
-                "DtMod": "2023-11-14T17:12:31.630655523Z",
+                "DtMade": "2023-11-14T17:45:22.562172103Z",
+                "DtMod": "2023-11-14T17:45:22.562175528Z",
                 "By": {},
                 "To": [
                   -9007199254740991
@@ -740,7 +575,7 @@
         },
         "responses": {
           "200": {
-            "description": "Internal type ident: `yo/util.Return[yo/db.I64]`",
+            "description": "Type ident: `yo/util.Return[yo/db.I64]`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -758,16 +593,8 @@
                   }
                 }
               },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
-                  }
-                }
-              },
               "X-Yo-User": {
-                "description": "0 if not authenticated, else current user's ID",
+                "description": "`0` if not authenticated, else current `User`'s `Id`",
                 "content": {
                   "text/plain": {
                     "example": "123"
@@ -795,18 +622,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -822,7 +641,7 @@
             }
           },
           "406": {
-            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
+            "description": "Possible `text/plain` responses:\n- `UnacceptableContentLength`\n- `UnacceptableContentType`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -833,18 +652,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -852,15 +663,18 @@
             "content": {
               "text/plain": {
                 "examples": {
-                  "MissingOrExcessiveContentLength": {
-                    "value": "MissingOrExcessiveContentLength"
+                  "UnacceptableContentLength": {
+                    "value": "UnacceptableContentLength"
+                  },
+                  "UnacceptableContentType": {
+                    "value": "UnacceptableContentType"
                   }
                 }
               }
             }
           },
           "422": {
-            "description": "Possible `text/plain` responses:\n- `__postNew_ExpectedNonEmptyPost`\n- `__postNew_ExpectedOnlyBuddyRecipients`\n- `__postNew_ExpectedEmptyFilesFieldWithUploadedFilesInMultipartForm`\n- `InvalidContentType`",
+            "description": "Possible `text/plain` responses:\n- `__postNew_ExpectedNonEmptyPost`\n- `__postNew_ExpectedOnlyBuddyRecipients`\n- `__postNew_ExpectedEmptyFilesFieldWithUploadedFilesInMultipartForm`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -871,18 +685,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -890,9 +696,6 @@
             "content": {
               "text/plain": {
                 "examples": {
-                  "InvalidContentType": {
-                    "value": "InvalidContentType"
-                  },
                   "__postNew_ExpectedEmptyFilesFieldWithUploadedFilesInMultipartForm": {
                     "value": "__postNew_ExpectedEmptyFilesFieldWithUploadedFilesInMultipartForm"
                   },
@@ -918,18 +721,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -954,7 +749,7 @@
           {
             "name": "yoValiOnly",
             "in": "query",
-            "description": "if not empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
+            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
             "content": {
               "text/plain": {
                 "example": ""
@@ -964,7 +759,7 @@
           {
             "name": "yoFail",
             "in": "query",
-            "description": "if not empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for tests of error-handling)",
+            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for client-side unit-test cases of error-handling)",
             "content": {
               "text/plain": {
                 "example": ""
@@ -973,7 +768,7 @@
           }
         ],
         "requestBody": {
-          "description": "Internal type ident: `__postsDeleted_In`",
+          "description": "Type ident: `__postsDeleted_In`",
           "required": true,
           "content": {
             "application/json": {
@@ -987,7 +782,7 @@
         },
         "responses": {
           "200": {
-            "description": "Internal type ident: `__postsDeleted_Out`",
+            "description": "Type ident: `__postsDeleted_Out`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -1005,16 +800,8 @@
                   }
                 }
               },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
-                  }
-                }
-              },
               "X-Yo-User": {
-                "description": "0 if not authenticated, else current user's ID",
+                "description": "`0` if not authenticated, else current `User`'s `Id`",
                 "content": {
                   "text/plain": {
                     "example": "123"
@@ -1044,18 +831,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -1071,7 +850,7 @@
             }
           },
           "406": {
-            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
+            "description": "Possible `text/plain` responses:\n- `UnacceptableContentLength`\n- `UnacceptableContentType`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -1082,18 +861,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -1101,46 +872,11 @@
             "content": {
               "text/plain": {
                 "examples": {
-                  "MissingOrExcessiveContentLength": {
-                    "value": "MissingOrExcessiveContentLength"
-                  }
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Possible `text/plain` responses:\n- `InvalidContentType`",
-            "headers": {
-              "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
-              },
-              "Content-Type": {
-                "description": "always `application/json`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
-                  }
-                }
-              }
-            },
-            "content": {
-              "text/plain": {
-                "examples": {
-                  "InvalidContentType": {
-                    "value": "InvalidContentType"
+                  "UnacceptableContentLength": {
+                    "value": "UnacceptableContentLength"
+                  },
+                  "UnacceptableContentType": {
+                    "value": "UnacceptableContentType"
                   }
                 }
               }
@@ -1158,18 +894,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -1194,7 +922,7 @@
           {
             "name": "yoValiOnly",
             "in": "query",
-            "description": "if not empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
+            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
             "content": {
               "text/plain": {
                 "example": ""
@@ -1204,7 +932,7 @@
           {
             "name": "yoFail",
             "in": "query",
-            "description": "if not empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for tests of error-handling)",
+            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for client-side unit-test cases of error-handling)",
             "content": {
               "text/plain": {
                 "example": ""
@@ -1213,7 +941,7 @@
           }
         ],
         "requestBody": {
-          "description": "Internal type ident: `kaffe/app.ApiArgPeriod`",
+          "description": "Type ident: `kaffe/app.ApiArgPeriod`",
           "required": true,
           "content": {
             "application/json": {
@@ -1231,7 +959,7 @@
         },
         "responses": {
           "200": {
-            "description": "Internal type ident: `kaffe/app.PostsListResult`",
+            "description": "Type ident: `kaffe/app.PostsListResult`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -1249,16 +977,8 @@
                   }
                 }
               },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
-                  }
-                }
-              },
               "X-Yo-User": {
-                "description": "0 if not authenticated, else current user's ID",
+                "description": "`0` if not authenticated, else current `User`'s `Id`",
                 "content": {
                   "text/plain": {
                     "example": "123"
@@ -1272,8 +992,8 @@
                   "Posts": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-14T17:12:31.630751203Z",
-                      "DtMod": "2023-11-14T17:12:31.630753706Z",
+                      "DtMade": "2023-11-14T17:45:22.562268946Z",
+                      "DtMod": "2023-11-14T17:45:22.56227149Z",
                       "By": 0,
                       "To": [
                         -9007199254740991
@@ -1287,7 +1007,7 @@
                       ]
                     }
                   ],
-                  "NextSince": "2023-11-14T17:12:31.630763484Z",
+                  "NextSince": "2023-11-14T17:45:22.562281433Z",
                   "UnreadCounts": {
                     "someMapKey1": -9007199254740991,
                     "some_map_key_2": -9007199254740991
@@ -1308,18 +1028,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -1335,7 +1047,7 @@
             }
           },
           "406": {
-            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
+            "description": "Possible `text/plain` responses:\n- `UnacceptableContentLength`\n- `UnacceptableContentType`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -1346,18 +1058,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -1365,46 +1069,11 @@
             "content": {
               "text/plain": {
                 "examples": {
-                  "MissingOrExcessiveContentLength": {
-                    "value": "MissingOrExcessiveContentLength"
-                  }
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Possible `text/plain` responses:\n- `InvalidContentType`",
-            "headers": {
-              "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
-              },
-              "Content-Type": {
-                "description": "always `application/json`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
-                  }
-                }
-              }
-            },
-            "content": {
-              "text/plain": {
-                "examples": {
-                  "InvalidContentType": {
-                    "value": "InvalidContentType"
+                  "UnacceptableContentLength": {
+                    "value": "UnacceptableContentLength"
+                  },
+                  "UnacceptableContentType": {
+                    "value": "UnacceptableContentType"
                   }
                 }
               }
@@ -1422,18 +1091,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -1458,7 +1119,7 @@
           {
             "name": "yoValiOnly",
             "in": "query",
-            "description": "if not empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
+            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
             "content": {
               "text/plain": {
                 "example": ""
@@ -1468,7 +1129,7 @@
           {
             "name": "yoFail",
             "in": "query",
-            "description": "if not empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for tests of error-handling)",
+            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for client-side unit-test cases of error-handling)",
             "content": {
               "text/plain": {
                 "example": ""
@@ -1477,12 +1138,12 @@
           }
         ],
         "requestBody": {
-          "description": "Internal type ident: `__postsRecent_In`",
+          "description": "Type ident: `__postsRecent_In`",
           "required": true,
           "content": {
             "application/json": {
               "example": {
-                "Since": "2023-11-14T17:12:31.630808963Z",
+                "Since": "2023-11-14T17:45:22.562317115Z",
                 "OnlyBy": [
                   -9007199254740991
                 ]
@@ -1492,7 +1153,7 @@
         },
         "responses": {
           "200": {
-            "description": "Internal type ident: `kaffe/app.PostsListResult`",
+            "description": "Type ident: `kaffe/app.PostsListResult`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -1510,16 +1171,8 @@
                   }
                 }
               },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
-                  }
-                }
-              },
               "X-Yo-User": {
-                "description": "0 if not authenticated, else current user's ID",
+                "description": "`0` if not authenticated, else current `User`'s `Id`",
                 "content": {
                   "text/plain": {
                     "example": "123"
@@ -1533,8 +1186,8 @@
                   "Posts": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-14T17:12:31.630816047Z",
-                      "DtMod": "2023-11-14T17:12:31.630818438Z",
+                      "DtMade": "2023-11-14T17:45:22.562323912Z",
+                      "DtMod": "2023-11-14T17:45:22.562326257Z",
                       "By": 0,
                       "To": [
                         -9007199254740991
@@ -1548,7 +1201,7 @@
                       ]
                     }
                   ],
-                  "NextSince": "2023-11-14T17:12:31.630827992Z",
+                  "NextSince": "2023-11-14T17:45:22.562335721Z",
                   "UnreadCounts": {
                     "someMapKey1": -9007199254740991,
                     "some_map_key_2": -9007199254740991
@@ -1569,18 +1222,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -1596,7 +1241,7 @@
             }
           },
           "406": {
-            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
+            "description": "Possible `text/plain` responses:\n- `UnacceptableContentLength`\n- `UnacceptableContentType`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -1607,18 +1252,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -1626,46 +1263,11 @@
             "content": {
               "text/plain": {
                 "examples": {
-                  "MissingOrExcessiveContentLength": {
-                    "value": "MissingOrExcessiveContentLength"
-                  }
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Possible `text/plain` responses:\n- `InvalidContentType`",
-            "headers": {
-              "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
-              },
-              "Content-Type": {
-                "description": "always `application/json`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
-                  }
-                }
-              }
-            },
-            "content": {
-              "text/plain": {
-                "examples": {
-                  "InvalidContentType": {
-                    "value": "InvalidContentType"
+                  "UnacceptableContentLength": {
+                    "value": "UnacceptableContentLength"
+                  },
+                  "UnacceptableContentType": {
+                    "value": "UnacceptableContentType"
                   }
                 }
               }
@@ -1683,18 +1285,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -1719,7 +1313,7 @@
           {
             "name": "yoValiOnly",
             "in": "query",
-            "description": "if not empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
+            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
             "content": {
               "text/plain": {
                 "example": ""
@@ -1729,7 +1323,7 @@
           {
             "name": "yoFail",
             "in": "query",
-            "description": "if not empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for tests of error-handling)",
+            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for client-side unit-test cases of error-handling)",
             "content": {
               "text/plain": {
                 "example": ""
@@ -1738,7 +1332,7 @@
           }
         ],
         "requestBody": {
-          "description": "Internal type ident: `yo/util.None`",
+          "description": "Type ident: `yo/util.None`",
           "required": true,
           "content": {
             "application/json": {
@@ -1748,7 +1342,7 @@
         },
         "responses": {
           "200": {
-            "description": "Internal type ident: `__userBuddies_Out`",
+            "description": "Type ident: `__userBuddies_Out`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -1766,16 +1360,8 @@
                   }
                 }
               },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
-                  }
-                }
-              },
               "X-Yo-User": {
-                "description": "0 if not authenticated, else current user's ID",
+                "description": "`0` if not authenticated, else current `User`'s `Id`",
                 "content": {
                   "text/plain": {
                     "example": "123"
@@ -1789,9 +1375,9 @@
                   "Buddies": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-14T17:12:31.630869257Z",
-                      "DtMod": "2023-11-14T17:12:31.63087173Z",
-                      "LastSeen": "2023-11-14T17:12:31.630874289Z",
+                      "DtMade": "2023-11-14T17:45:22.562372884Z",
+                      "DtMod": "2023-11-14T17:45:22.562375216Z",
+                      "LastSeen": "2023-11-14T17:45:22.562377783Z",
                       "Auth": 0,
                       "PicFileId": "someStr",
                       "Nick": "someStr",
@@ -1806,9 +1392,9 @@
                   "BuddyRequestsBy": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-14T17:12:31.630887141Z",
-                      "DtMod": "2023-11-14T17:12:31.630889465Z",
-                      "LastSeen": "2023-11-14T17:12:31.630891907Z",
+                      "DtMade": "2023-11-14T17:45:22.562390673Z",
+                      "DtMod": "2023-11-14T17:45:22.562393099Z",
+                      "LastSeen": "2023-11-14T17:45:22.562395507Z",
                       "Auth": 0,
                       "PicFileId": "someStr",
                       "Nick": "someStr",
@@ -1836,18 +1422,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -1863,7 +1441,7 @@
             }
           },
           "406": {
-            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
+            "description": "Possible `text/plain` responses:\n- `UnacceptableContentLength`\n- `UnacceptableContentType`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -1874,18 +1452,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -1893,46 +1463,11 @@
             "content": {
               "text/plain": {
                 "examples": {
-                  "MissingOrExcessiveContentLength": {
-                    "value": "MissingOrExcessiveContentLength"
-                  }
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Possible `text/plain` responses:\n- `InvalidContentType`",
-            "headers": {
-              "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
-              },
-              "Content-Type": {
-                "description": "always `application/json`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
-                  }
-                }
-              }
-            },
-            "content": {
-              "text/plain": {
-                "examples": {
-                  "InvalidContentType": {
-                    "value": "InvalidContentType"
+                  "UnacceptableContentLength": {
+                    "value": "UnacceptableContentLength"
+                  },
+                  "UnacceptableContentType": {
+                    "value": "UnacceptableContentType"
                   }
                 }
               }
@@ -1950,18 +1485,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -1986,7 +1513,7 @@
           {
             "name": "yoValiOnly",
             "in": "query",
-            "description": "if not empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
+            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
             "content": {
               "text/plain": {
                 "example": ""
@@ -1996,7 +1523,7 @@
           {
             "name": "yoFail",
             "in": "query",
-            "description": "if not empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for tests of error-handling)",
+            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for client-side unit-test cases of error-handling)",
             "content": {
               "text/plain": {
                 "example": ""
@@ -2005,7 +1532,7 @@
           }
         ],
         "requestBody": {
-          "description": "Internal type ident: `__userBuddiesAdd_In`",
+          "description": "Type ident: `__userBuddiesAdd_In`",
           "required": true,
           "content": {
             "application/json": {
@@ -2017,7 +1544,7 @@
         },
         "responses": {
           "200": {
-            "description": "Internal type ident: `__userBuddiesAdd_Out`",
+            "description": "Type ident: `__userBuddiesAdd_Out`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -2035,16 +1562,8 @@
                   }
                 }
               },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
-                  }
-                }
-              },
               "X-Yo-User": {
-                "description": "0 if not authenticated, else current user's ID",
+                "description": "`0` if not authenticated, else current `User`'s `Id`",
                 "content": {
                   "text/plain": {
                     "example": "123"
@@ -2072,18 +1591,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -2099,7 +1610,7 @@
             }
           },
           "406": {
-            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
+            "description": "Possible `text/plain` responses:\n- `UnacceptableContentLength`\n- `UnacceptableContentType`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -2110,18 +1621,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -2129,15 +1632,18 @@
             "content": {
               "text/plain": {
                 "examples": {
-                  "MissingOrExcessiveContentLength": {
-                    "value": "MissingOrExcessiveContentLength"
+                  "UnacceptableContentLength": {
+                    "value": "UnacceptableContentLength"
+                  },
+                  "UnacceptableContentType": {
+                    "value": "UnacceptableContentType"
                   }
                 }
               }
             }
           },
           "422": {
-            "description": "Possible `text/plain` responses:\n- `__userBuddiesAdd_ExpectedEitherNickNameOrEmailAddr`\n- `InvalidContentType`\n- `DbUpdate_ExpectedChangesForUpdate`\n- `DbUpdate_ExpectedQueryForUpdate`",
+            "description": "Possible `text/plain` responses:\n- `__userBuddiesAdd_ExpectedEitherNickNameOrEmailAddr`\n- `DbUpdate_ExpectedChangesForUpdate`\n- `DbUpdate_ExpectedQueryForUpdate`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -2148,18 +1654,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -2172,9 +1670,6 @@
                   },
                   "DbUpdate_ExpectedQueryForUpdate": {
                     "value": "DbUpdate_ExpectedQueryForUpdate"
-                  },
-                  "InvalidContentType": {
-                    "value": "InvalidContentType"
                   },
                   "__userBuddiesAdd_ExpectedEitherNickNameOrEmailAddr": {
                     "value": "__userBuddiesAdd_ExpectedEitherNickNameOrEmailAddr"
@@ -2195,18 +1690,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -2231,7 +1718,7 @@
           {
             "name": "yoValiOnly",
             "in": "query",
-            "description": "if not empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
+            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
             "content": {
               "text/plain": {
                 "example": ""
@@ -2241,7 +1728,7 @@
           {
             "name": "yoFail",
             "in": "query",
-            "description": "if not empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for tests of error-handling)",
+            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for client-side unit-test cases of error-handling)",
             "content": {
               "text/plain": {
                 "example": ""
@@ -2250,7 +1737,7 @@
           }
         ],
         "requestBody": {
-          "description": "Internal type ident: `__userBy_In`",
+          "description": "Type ident: `__userBy_In`",
           "required": true,
           "content": {
             "application/json": {
@@ -2263,7 +1750,7 @@
         },
         "responses": {
           "200": {
-            "description": "Internal type ident: `kaffe/app.User`",
+            "description": "Type ident: `kaffe/app.User`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -2281,16 +1768,8 @@
                   }
                 }
               },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
-                  }
-                }
-              },
               "X-Yo-User": {
-                "description": "0 if not authenticated, else current user's ID",
+                "description": "`0` if not authenticated, else current `User`'s `Id`",
                 "content": {
                   "text/plain": {
                     "example": "123"
@@ -2302,9 +1781,9 @@
               "application/json": {
                 "example": {
                   "Id": -9007199254740991,
-                  "DtMade": "2023-11-14T17:12:31.630980858Z",
-                  "DtMod": "2023-11-14T17:12:31.630983259Z",
-                  "LastSeen": "2023-11-14T17:12:31.630985647Z",
+                  "DtMade": "2023-11-14T17:45:22.562477334Z",
+                  "DtMod": "2023-11-14T17:45:22.562479878Z",
+                  "LastSeen": "2023-11-14T17:45:22.562482249Z",
                   "Auth": {},
                   "PicFileId": "someStr",
                   "Nick": "someStr",
@@ -2330,18 +1809,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -2357,7 +1828,7 @@
             }
           },
           "406": {
-            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
+            "description": "Possible `text/plain` responses:\n- `UnacceptableContentLength`\n- `UnacceptableContentType`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -2368,18 +1839,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -2387,15 +1850,18 @@
             "content": {
               "text/plain": {
                 "examples": {
-                  "MissingOrExcessiveContentLength": {
-                    "value": "MissingOrExcessiveContentLength"
+                  "UnacceptableContentLength": {
+                    "value": "UnacceptableContentLength"
+                  },
+                  "UnacceptableContentType": {
+                    "value": "UnacceptableContentType"
                   }
                 }
               }
             }
           },
           "422": {
-            "description": "Possible `text/plain` responses:\n- `__userBy_ExpectedEitherNickNameOrEmailAddr`\n- `InvalidContentType`",
+            "description": "Possible `text/plain` responses:\n- `__userBy_ExpectedEitherNickNameOrEmailAddr`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -2406,18 +1872,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -2425,9 +1883,6 @@
             "content": {
               "text/plain": {
                 "examples": {
-                  "InvalidContentType": {
-                    "value": "InvalidContentType"
-                  },
                   "__userBy_ExpectedEitherNickNameOrEmailAddr": {
                     "value": "__userBy_ExpectedEitherNickNameOrEmailAddr"
                   }
@@ -2447,18 +1902,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -2483,7 +1930,7 @@
           {
             "name": "yoValiOnly",
             "in": "query",
-            "description": "if not empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
+            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
             "content": {
               "text/plain": {
                 "example": ""
@@ -2493,7 +1940,7 @@
           {
             "name": "yoFail",
             "in": "query",
-            "description": "if not empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for tests of error-handling)",
+            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for client-side unit-test cases of error-handling)",
             "content": {
               "text/plain": {
                 "example": ""
@@ -2502,7 +1949,7 @@
           }
         ],
         "requestBody": {
-          "description": "Internal type ident: `kaffe/app.ApiUserSignInOrReset`",
+          "description": "Type ident: `kaffe/app.ApiUserSignInOrReset`",
           "required": true,
           "content": {
             "application/json": {
@@ -2516,7 +1963,7 @@
         },
         "responses": {
           "200": {
-            "description": "Internal type ident: `yo/util.None`",
+            "description": "Type ident: `yo/util.None`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -2534,16 +1981,8 @@
                   }
                 }
               },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
-                  }
-                }
-              },
               "X-Yo-User": {
-                "description": "0 if not authenticated, else current user's ID",
+                "description": "`0` if not authenticated, else current `User`'s `Id`",
                 "content": {
                   "text/plain": {
                     "example": "123"
@@ -2569,18 +2008,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -2607,18 +2038,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -2648,18 +2071,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -2675,7 +2090,7 @@
             }
           },
           "406": {
-            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
+            "description": "Possible `text/plain` responses:\n- `UnacceptableContentLength`\n- `UnacceptableContentType`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -2686,18 +2101,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -2705,15 +2112,18 @@
             "content": {
               "text/plain": {
                 "examples": {
-                  "MissingOrExcessiveContentLength": {
-                    "value": "MissingOrExcessiveContentLength"
+                  "UnacceptableContentLength": {
+                    "value": "UnacceptableContentLength"
+                  },
+                  "UnacceptableContentType": {
+                    "value": "UnacceptableContentType"
                   }
                 }
               }
             }
           },
           "422": {
-            "description": "Possible `text/plain` responses:\n- `__userSignInOrReset_ExpectedPasswordAndNickOrEmailAddr`\n- `___yo_authLoginOrFinalizePwdReset_EmailRequiredButMissing`\n- `___yo_authLoginOrFinalizePwdReset_EmailInvalid`\n- `___yo_authLoginOrFinalizePwdReset_NewPasswordTooShort`\n- `___yo_authLoginOrFinalizePwdReset_NewPasswordTooLong`\n- `___yo_authLoginOrFinalizePwdReset_NewPasswordExpectedToDiffer`\n- `___yo_authLoginOrFinalizePwdReset_PwdResetRequired`\n- `___yo_authLoginOrFinalizePwdReset_NewPasswordInvalid`\n- `InvalidContentType`\n- `DbUpdate_ExpectedChangesForUpdate`\n- `DbUpdate_ExpectedQueryForUpdate`",
+            "description": "Possible `text/plain` responses:\n- `__userSignInOrReset_ExpectedPasswordAndNickOrEmailAddr`\n- `___yo_authLoginOrFinalizePwdReset_EmailRequiredButMissing`\n- `___yo_authLoginOrFinalizePwdReset_EmailInvalid`\n- `___yo_authLoginOrFinalizePwdReset_NewPasswordTooShort`\n- `___yo_authLoginOrFinalizePwdReset_NewPasswordTooLong`\n- `___yo_authLoginOrFinalizePwdReset_NewPasswordExpectedToDiffer`\n- `___yo_authLoginOrFinalizePwdReset_PwdResetRequired`\n- `___yo_authLoginOrFinalizePwdReset_NewPasswordInvalid`\n- `DbUpdate_ExpectedChangesForUpdate`\n- `DbUpdate_ExpectedQueryForUpdate`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -2724,18 +2134,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -2748,9 +2150,6 @@
                   },
                   "DbUpdate_ExpectedQueryForUpdate": {
                     "value": "DbUpdate_ExpectedQueryForUpdate"
-                  },
-                  "InvalidContentType": {
-                    "value": "InvalidContentType"
                   },
                   "___yo_authLoginOrFinalizePwdReset_EmailInvalid": {
                     "value": "___yo_authLoginOrFinalizePwdReset_EmailInvalid"
@@ -2792,18 +2191,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -2833,18 +2224,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -2869,7 +2252,7 @@
           {
             "name": "yoValiOnly",
             "in": "query",
-            "description": "if not empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
+            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
             "content": {
               "text/plain": {
                 "example": ""
@@ -2879,7 +2262,7 @@
           {
             "name": "yoFail",
             "in": "query",
-            "description": "if not empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for tests of error-handling)",
+            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for client-side unit-test cases of error-handling)",
             "content": {
               "text/plain": {
                 "example": ""
@@ -2888,7 +2271,7 @@
           }
         ],
         "requestBody": {
-          "description": "Internal type ident: `yo/util.None`",
+          "description": "Type ident: `yo/util.None`",
           "required": true,
           "content": {
             "application/json": {
@@ -2898,7 +2281,7 @@
         },
         "responses": {
           "200": {
-            "description": "Internal type ident: `yo/util.None`",
+            "description": "Type ident: `yo/util.None`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -2916,16 +2299,8 @@
                   }
                 }
               },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
-                  }
-                }
-              },
               "X-Yo-User": {
-                "description": "0 if not authenticated, else current user's ID",
+                "description": "`0` if not authenticated, else current `User`'s `Id`",
                 "content": {
                   "text/plain": {
                     "example": "123"
@@ -2940,7 +2315,7 @@
             }
           },
           "406": {
-            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
+            "description": "Possible `text/plain` responses:\n- `UnacceptableContentLength`\n- `UnacceptableContentType`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -2951,18 +2326,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -2970,46 +2337,11 @@
             "content": {
               "text/plain": {
                 "examples": {
-                  "MissingOrExcessiveContentLength": {
-                    "value": "MissingOrExcessiveContentLength"
-                  }
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Possible `text/plain` responses:\n- `InvalidContentType`",
-            "headers": {
-              "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
-              },
-              "Content-Type": {
-                "description": "always `application/json`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
-                  }
-                }
-              }
-            },
-            "content": {
-              "text/plain": {
-                "examples": {
-                  "InvalidContentType": {
-                    "value": "InvalidContentType"
+                  "UnacceptableContentLength": {
+                    "value": "UnacceptableContentLength"
+                  },
+                  "UnacceptableContentType": {
+                    "value": "UnacceptableContentType"
                   }
                 }
               }
@@ -3027,18 +2359,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -3063,7 +2387,7 @@
           {
             "name": "yoValiOnly",
             "in": "query",
-            "description": "if not empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
+            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
             "content": {
               "text/plain": {
                 "example": ""
@@ -3073,7 +2397,7 @@
           {
             "name": "yoFail",
             "in": "query",
-            "description": "if not empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for tests of error-handling)",
+            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for client-side unit-test cases of error-handling)",
             "content": {
               "text/plain": {
                 "example": ""
@@ -3082,7 +2406,7 @@
           }
         ],
         "requestBody": {
-          "description": "Internal type ident: `kaffe/app.ApiNickOrEmailAddr`",
+          "description": "Type ident: `kaffe/app.ApiNickOrEmailAddr`",
           "required": true,
           "content": {
             "application/json": {
@@ -3094,7 +2418,7 @@
         },
         "responses": {
           "200": {
-            "description": "Internal type ident: `yo/util.None`",
+            "description": "Type ident: `yo/util.None`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -3112,16 +2436,8 @@
                   }
                 }
               },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
-                  }
-                }
-              },
               "X-Yo-User": {
-                "description": "0 if not authenticated, else current user's ID",
+                "description": "`0` if not authenticated, else current `User`'s `Id`",
                 "content": {
                   "text/plain": {
                     "example": "123"
@@ -3136,7 +2452,7 @@
             }
           },
           "406": {
-            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
+            "description": "Possible `text/plain` responses:\n- `UnacceptableContentLength`\n- `UnacceptableContentType`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -3147,18 +2463,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -3166,8 +2474,11 @@
             "content": {
               "text/plain": {
                 "examples": {
-                  "MissingOrExcessiveContentLength": {
-                    "value": "MissingOrExcessiveContentLength"
+                  "UnacceptableContentLength": {
+                    "value": "UnacceptableContentLength"
+                  },
+                  "UnacceptableContentType": {
+                    "value": "UnacceptableContentType"
                   }
                 }
               }
@@ -3185,18 +2496,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -3212,7 +2515,7 @@
             }
           },
           "422": {
-            "description": "Possible `text/plain` responses:\n- `__userSignUpOrForgotPassword_EmailRequiredButMissing`\n- `__userSignUpOrForgotPassword_EmailInvalid`\n- `___yo_authRegister_EmailRequiredButMissing`\n- `___yo_authRegister_EmailInvalid`\n- `___yo_authRegister_PasswordTooShort`\n- `___yo_authRegister_PasswordTooLong`\n- `___yo_authRegister_PasswordInvalid`\n- `InvalidContentType`",
+            "description": "Possible `text/plain` responses:\n- `__userSignUpOrForgotPassword_EmailRequiredButMissing`\n- `__userSignUpOrForgotPassword_EmailInvalid`\n- `___yo_authRegister_EmailRequiredButMissing`\n- `___yo_authRegister_EmailInvalid`\n- `___yo_authRegister_PasswordTooShort`\n- `___yo_authRegister_PasswordTooLong`\n- `___yo_authRegister_PasswordInvalid`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -3223,18 +2526,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -3242,9 +2537,6 @@
             "content": {
               "text/plain": {
                 "examples": {
-                  "InvalidContentType": {
-                    "value": "InvalidContentType"
-                  },
                   "___yo_authRegister_EmailInvalid": {
                     "value": "___yo_authRegister_EmailInvalid"
                   },
@@ -3282,18 +2574,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -3318,7 +2602,7 @@
           {
             "name": "yoValiOnly",
             "in": "query",
-            "description": "if not empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
+            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
             "content": {
               "text/plain": {
                 "example": ""
@@ -3328,7 +2612,7 @@
           {
             "name": "yoFail",
             "in": "query",
-            "description": "if not empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for tests of error-handling)",
+            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or processing) with the specified HTTP status code (eg. for client-side unit-test cases of error-handling)",
             "content": {
               "text/plain": {
                 "example": ""
@@ -3337,7 +2621,7 @@
           }
         ],
         "requestBody": {
-          "description": "Internal type ident: `yo/db.ApiUpdateArgs[kaffe/app.User,kaffe/app.UserField]`",
+          "description": "Type ident: `yo/db.ApiUpdateArgs[kaffe/app.User,kaffe/app.UserField]`",
           "required": true,
           "content": {
             "application/json": {
@@ -3345,9 +2629,9 @@
                 "Id": -9007199254740991,
                 "Changes": {
                   "Id": -9007199254740991,
-                  "DtMade": "2023-11-14T17:12:31.631203542Z",
-                  "DtMod": "2023-11-14T17:12:31.631206137Z",
-                  "LastSeen": "2023-11-14T17:12:31.631208588Z",
+                  "DtMade": "2023-11-14T17:45:22.5627084Z",
+                  "DtMod": "2023-11-14T17:45:22.562711079Z",
+                  "LastSeen": "2023-11-14T17:45:22.562713654Z",
                   "Auth": {},
                   "PicFileId": "someStr",
                   "Nick": "someStr",
@@ -3367,7 +2651,7 @@
         },
         "responses": {
           "200": {
-            "description": "Internal type ident: `yo/util.None`",
+            "description": "Type ident: `yo/util.None`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -3385,16 +2669,8 @@
                   }
                 }
               },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
-                  }
-                }
-              },
               "X-Yo-User": {
-                "description": "0 if not authenticated, else current user's ID",
+                "description": "`0` if not authenticated, else current `User`'s `Id`",
                 "content": {
                   "text/plain": {
                     "example": "123"
@@ -3420,18 +2696,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -3447,7 +2715,7 @@
             }
           },
           "406": {
-            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
+            "description": "Possible `text/plain` responses:\n- `UnacceptableContentLength`\n- `UnacceptableContentType`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -3458,18 +2726,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -3477,8 +2737,11 @@
             "content": {
               "text/plain": {
                 "examples": {
-                  "MissingOrExcessiveContentLength": {
-                    "value": "MissingOrExcessiveContentLength"
+                  "UnacceptableContentLength": {
+                    "value": "UnacceptableContentLength"
+                  },
+                  "UnacceptableContentType": {
+                    "value": "UnacceptableContentType"
                   }
                 }
               }
@@ -3496,18 +2759,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -3523,7 +2778,7 @@
             }
           },
           "422": {
-            "description": "Possible `text/plain` responses:\n- `__userUpdate_ExpectedNonEmptyNickname`\n- `DbUpdExpectedIdGt0`\n- `InvalidContentType`\n- `DbUpdate_ExpectedChangesForUpdate`\n- `DbUpdate_ExpectedQueryForUpdate`",
+            "description": "Possible `text/plain` responses:\n- `__userUpdate_ExpectedNonEmptyNickname`\n- `DbUpdExpectedIdGt0`\n- `DbUpdate_ExpectedChangesForUpdate`\n- `DbUpdate_ExpectedQueryForUpdate`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -3534,18 +2789,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
@@ -3561,9 +2808,6 @@
                   },
                   "DbUpdate_ExpectedQueryForUpdate": {
                     "value": "DbUpdate_ExpectedQueryForUpdate"
-                  },
-                  "InvalidContentType": {
-                    "value": "InvalidContentType"
                   },
                   "__userUpdate_ExpectedNonEmptyNickname": {
                     "value": "__userUpdate_ExpectedNonEmptyNickname"
@@ -3584,18 +2828,10 @@
                 }
               },
               "Content-Type": {
-                "description": "always `application/json`",
+                "description": "always `text/plain`",
                 "content": {
                   "text/plain": {
                     "example": "application/json"
-                  }
-                }
-              },
-              "X-Content-Type-Options": {
-                "description": "always `nosniff`",
-                "content": {
-                  "text/plain": {
-                    "example": "nosniff"
                   }
                 }
               }
