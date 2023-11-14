@@ -2,6 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "kaffe.chat",
+    "description": "\nRequest/response rules and how to read their example renditions:\n- All request headers, URL query-string parameters and response headers are identical over the whole set of all operations. Only request and response bodies are operation-specific.\n- Request bodies must never be empty or the JSON `null`: the empty request body is the JSON `{}`.\n- Response bodies will never be empty, but may be the JSON `null`.\n- All request fields are by default optional and ommittable / `null`able, **any exceptions** to this are indicated by the operation's listed known-error responses.\n- Example values rendered in this doc:\n  - `true` indicates any `boolean` value, regardless of the actual real value in a call\n  - `\"someStr\"` indicates any `string` value\n  - date-time values are indicated by RFC3339-formatted `string` examples\n  - signed-integer `number`s are indicated by a negative-number example indicating the minimum (type-wise, not operation-specific) permissible value, with the maximum being the corresponding positive-number counterpart\n  - unsigned-integer `number`s are indicated by a positive-number example indicating the maximum (type-wise, not not operation-specific) permissible value, with the minimum being `0`\n  - floating-point `number`s are indicated by a positive-number example indicating the maximum (type-wise, not not operation-specific) permissible value, with the minimum being the corresponding negative-number counterpart\n\nMore about error responses:\n- All are `text/plain`.\n- In addition to those listed in this doc (thrown by the service under the indicated conditions), other error responses are always entirely possible and not exhaustively documentable feasibly (such as DB, file-system or network disruptions). Those caught by the service will be `500`s, others (ie. from load-balancers / gateways / reverse-proxies etc. in front of the service) might have any HTTP status code.\n- The well-known error responses listed here have been recursively determined by code-path walking. Among them are some that logically could not possibly ever occur for that operation, yet identifying those (to filter them out of the listing) is (so far) out of scope for our `openapi.json` generation.\n- The well-known (thrown rather than caught) errors have their code-identifier-compatible (spaceless ASCII) enumerant-name as their entire text response, others preserve simply their original (usually human-language) error message fully. Hence, error responses are inherently `switch/case`able.\n\t\t",
     "version": "23.318",
     "contact": {
       "name": "Permalink",
@@ -64,42 +65,50 @@
               }
             }
           },
-          "403": {
-            "description": "foo",
+          "400": {
+            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "Unauthorized": "Unauthorized"
+                  "MissingOrExcessiveContentLength": {
+                    "value": "MissingOrExcessiveContentLength"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Possible `text/plain` responses:\n- `Unauthorized`",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "Unauthorized": {
+                    "value": "Unauthorized"
+                  }
                 }
               }
             }
           },
           "422": {
-            "description": "foo",
+            "description": "Possible `text/plain` responses:\n- `__postDelete_InvalidPostId`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "__postDelete_InvalidPostId": "__postDelete_InvalidPostId"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "foo",
-            "content": {
-              "text/plain": {
-                "examples": {
-                  "MissingOrExcessiveContentLength": "MissingOrExcessiveContentLength"
+                  "__postDelete_InvalidPostId": {
+                    "value": "__postDelete_InvalidPostId"
+                  }
                 }
               }
             }
           },
           "504": {
-            "description": "foo",
+            "description": "Possible `text/plain` responses:\n- `TimedOut`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "TimedOut": "TimedOut"
+                  "TimedOut": {
+                    "value": "TimedOut"
+                  }
                 }
               }
             }
@@ -158,28 +167,33 @@
               "application/json": {
                 "example": {
                   "Result": {
-                    "someKey": "someStr"
+                    "someMapKey1": "someStr",
+                    "some_map_key_2": "someStr"
                   }
                 }
               }
             }
           },
-          "500": {
-            "description": "foo",
+          "400": {
+            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "MissingOrExcessiveContentLength": "MissingOrExcessiveContentLength"
+                  "MissingOrExcessiveContentLength": {
+                    "value": "MissingOrExcessiveContentLength"
+                  }
                 }
               }
             }
           },
           "504": {
-            "description": "foo",
+            "description": "Possible `text/plain` responses:\n- `TimedOut`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "TimedOut": "TimedOut"
+                  "TimedOut": {
+                    "value": "TimedOut"
+                  }
                 }
               }
             }
@@ -251,32 +265,38 @@
               }
             }
           },
-          "403": {
-            "description": "foo",
+          "400": {
+            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "Unauthorized": "Unauthorized"
+                  "MissingOrExcessiveContentLength": {
+                    "value": "MissingOrExcessiveContentLength"
+                  }
                 }
               }
             }
           },
-          "500": {
-            "description": "foo",
+          "403": {
+            "description": "Possible `text/plain` responses:\n- `Unauthorized`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "MissingOrExcessiveContentLength": "MissingOrExcessiveContentLength"
+                  "Unauthorized": {
+                    "value": "Unauthorized"
+                  }
                 }
               }
             }
           },
           "504": {
-            "description": "foo",
+            "description": "Possible `text/plain` responses:\n- `TimedOut`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "TimedOut": "TimedOut"
+                  "TimedOut": {
+                    "value": "TimedOut"
+                  }
                 }
               }
             }
@@ -316,8 +336,8 @@
             "application/json": {
               "example": {
                 "Id": -9007199254740991,
-                "DtMade": "2023-11-14T15:10:30.743650686Z",
-                "DtMod": "2023-11-14T15:10:30.743653714Z",
+                "DtMade": "2023-11-14T16:29:30.417334885Z",
+                "DtMod": "2023-11-14T16:29:30.417338235Z",
                 "By": {},
                 "To": [
                   -9007199254740991
@@ -354,44 +374,56 @@
               }
             }
           },
-          "403": {
-            "description": "foo",
+          "400": {
+            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "Unauthorized": "Unauthorized"
+                  "MissingOrExcessiveContentLength": {
+                    "value": "MissingOrExcessiveContentLength"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Possible `text/plain` responses:\n- `Unauthorized`",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "Unauthorized": {
+                    "value": "Unauthorized"
+                  }
                 }
               }
             }
           },
           "422": {
-            "description": "foo",
+            "description": "Possible `text/plain` responses:\n- `__postNew_ExpectedNonEmptyPost`\n- `__postNew_ExpectedOnlyBuddyRecipients`\n- `__postNew_ExpectedEmptyFilesFieldWithUploadedFilesInMultipartForm`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "__postNew_ExpectedEmptyFilesFieldWithUploadedFilesInMultipartForm": "__postNew_ExpectedEmptyFilesFieldWithUploadedFilesInMultipartForm",
-                  "__postNew_ExpectedNonEmptyPost": "__postNew_ExpectedNonEmptyPost",
-                  "__postNew_ExpectedOnlyBuddyRecipients": "__postNew_ExpectedOnlyBuddyRecipients"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "foo",
-            "content": {
-              "text/plain": {
-                "examples": {
-                  "MissingOrExcessiveContentLength": "MissingOrExcessiveContentLength"
+                  "__postNew_ExpectedEmptyFilesFieldWithUploadedFilesInMultipartForm": {
+                    "value": "__postNew_ExpectedEmptyFilesFieldWithUploadedFilesInMultipartForm"
+                  },
+                  "__postNew_ExpectedNonEmptyPost": {
+                    "value": "__postNew_ExpectedNonEmptyPost"
+                  },
+                  "__postNew_ExpectedOnlyBuddyRecipients": {
+                    "value": "__postNew_ExpectedOnlyBuddyRecipients"
+                  }
                 }
               }
             }
           },
           "504": {
-            "description": "foo",
+            "description": "Possible `text/plain` responses:\n- `TimedOut`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "TimedOut": "TimedOut"
+                  "TimedOut": {
+                    "value": "TimedOut"
+                  }
                 }
               }
             }
@@ -460,32 +492,38 @@
               }
             }
           },
-          "403": {
-            "description": "foo",
+          "400": {
+            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "Unauthorized": "Unauthorized"
+                  "MissingOrExcessiveContentLength": {
+                    "value": "MissingOrExcessiveContentLength"
+                  }
                 }
               }
             }
           },
-          "500": {
-            "description": "foo",
+          "403": {
+            "description": "Possible `text/plain` responses:\n- `Unauthorized`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "MissingOrExcessiveContentLength": "MissingOrExcessiveContentLength"
+                  "Unauthorized": {
+                    "value": "Unauthorized"
+                  }
                 }
               }
             }
           },
           "504": {
-            "description": "foo",
+            "description": "Possible `text/plain` responses:\n- `TimedOut`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "TimedOut": "TimedOut"
+                  "TimedOut": {
+                    "value": "TimedOut"
+                  }
                 }
               }
             }
@@ -554,8 +592,8 @@
                   "Posts": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-14T15:10:30.743725669Z",
-                      "DtMod": "2023-11-14T15:10:30.743727878Z",
+                      "DtMade": "2023-11-14T16:29:30.417413156Z",
+                      "DtMod": "2023-11-14T16:29:30.417415693Z",
                       "By": 0,
                       "To": [
                         -9007199254740991
@@ -569,40 +607,47 @@
                       ]
                     }
                   ],
-                  "NextSince": "2023-11-14T15:10:30.743735908Z",
+                  "NextSince": "2023-11-14T16:29:30.417425691Z",
                   "UnreadCounts": {
-                    "someKey": -9007199254740991
+                    "someMapKey1": -9007199254740991,
+                    "some_map_key_2": -9007199254740991
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "MissingOrExcessiveContentLength": {
+                    "value": "MissingOrExcessiveContentLength"
                   }
                 }
               }
             }
           },
           "403": {
-            "description": "foo",
+            "description": "Possible `text/plain` responses:\n- `Unauthorized`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "Unauthorized": "Unauthorized"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "foo",
-            "content": {
-              "text/plain": {
-                "examples": {
-                  "MissingOrExcessiveContentLength": "MissingOrExcessiveContentLength"
+                  "Unauthorized": {
+                    "value": "Unauthorized"
+                  }
                 }
               }
             }
           },
           "504": {
-            "description": "foo",
+            "description": "Possible `text/plain` responses:\n- `TimedOut`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "TimedOut": "TimedOut"
+                  "TimedOut": {
+                    "value": "TimedOut"
+                  }
                 }
               }
             }
@@ -641,7 +686,7 @@
           "content": {
             "application/json": {
               "example": {
-                "Since": "2023-11-14T15:10:30.74376216Z",
+                "Since": "2023-11-14T16:29:30.417452214Z",
                 "OnlyBy": [
                   -9007199254740991
                 ]
@@ -668,8 +713,8 @@
                   "Posts": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-14T15:10:30.743767867Z",
-                      "DtMod": "2023-11-14T15:10:30.743769962Z",
+                      "DtMade": "2023-11-14T16:29:30.417459313Z",
+                      "DtMod": "2023-11-14T16:29:30.417461722Z",
                       "By": 0,
                       "To": [
                         -9007199254740991
@@ -683,40 +728,47 @@
                       ]
                     }
                   ],
-                  "NextSince": "2023-11-14T15:10:30.743777865Z",
+                  "NextSince": "2023-11-14T16:29:30.417471454Z",
                   "UnreadCounts": {
-                    "someKey": -9007199254740991
+                    "someMapKey1": -9007199254740991,
+                    "some_map_key_2": -9007199254740991
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "MissingOrExcessiveContentLength": {
+                    "value": "MissingOrExcessiveContentLength"
                   }
                 }
               }
             }
           },
           "403": {
-            "description": "foo",
+            "description": "Possible `text/plain` responses:\n- `Unauthorized`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "Unauthorized": "Unauthorized"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "foo",
-            "content": {
-              "text/plain": {
-                "examples": {
-                  "MissingOrExcessiveContentLength": "MissingOrExcessiveContentLength"
+                  "Unauthorized": {
+                    "value": "Unauthorized"
+                  }
                 }
               }
             }
           },
           "504": {
-            "description": "foo",
+            "description": "Possible `text/plain` responses:\n- `TimedOut`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "TimedOut": "TimedOut"
+                  "TimedOut": {
+                    "value": "TimedOut"
+                  }
                 }
               }
             }
@@ -777,9 +829,9 @@
                   "Buddies": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-14T15:10:30.743804758Z",
-                      "DtMod": "2023-11-14T15:10:30.743806859Z",
-                      "LastSeen": "2023-11-14T15:10:30.743809064Z",
+                      "DtMade": "2023-11-14T16:29:30.417502478Z",
+                      "DtMod": "2023-11-14T16:29:30.417504915Z",
+                      "LastSeen": "2023-11-14T16:29:30.417507518Z",
                       "Auth": 0,
                       "PicFileId": "someStr",
                       "Nick": "someStr",
@@ -794,9 +846,9 @@
                   "BuddyRequestsBy": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-14T15:10:30.743818964Z",
-                      "DtMod": "2023-11-14T15:10:30.743821033Z",
-                      "LastSeen": "2023-11-14T15:10:30.743823094Z",
+                      "DtMade": "2023-11-14T16:29:30.417520488Z",
+                      "DtMod": "2023-11-14T16:29:30.417522846Z",
+                      "LastSeen": "2023-11-14T16:29:30.417525242Z",
                       "Auth": 0,
                       "PicFileId": "someStr",
                       "Nick": "someStr",
@@ -812,32 +864,38 @@
               }
             }
           },
-          "403": {
-            "description": "foo",
+          "400": {
+            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "Unauthorized": "Unauthorized"
+                  "MissingOrExcessiveContentLength": {
+                    "value": "MissingOrExcessiveContentLength"
+                  }
                 }
               }
             }
           },
-          "500": {
-            "description": "foo",
+          "403": {
+            "description": "Possible `text/plain` responses:\n- `Unauthorized`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "MissingOrExcessiveContentLength": "MissingOrExcessiveContentLength"
+                  "Unauthorized": {
+                    "value": "Unauthorized"
+                  }
                 }
               }
             }
           },
           "504": {
-            "description": "foo",
+            "description": "Possible `text/plain` responses:\n- `TimedOut`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "TimedOut": "TimedOut"
+                  "TimedOut": {
+                    "value": "TimedOut"
+                  }
                 }
               }
             }
@@ -902,44 +960,56 @@
               }
             }
           },
-          "403": {
-            "description": "foo",
+          "400": {
+            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "Unauthorized": "Unauthorized"
+                  "MissingOrExcessiveContentLength": {
+                    "value": "MissingOrExcessiveContentLength"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Possible `text/plain` responses:\n- `Unauthorized`",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "Unauthorized": {
+                    "value": "Unauthorized"
+                  }
                 }
               }
             }
           },
           "422": {
-            "description": "foo",
+            "description": "Possible `text/plain` responses:\n- `__userBuddiesAdd_ExpectedEitherNickNameOrEmailAddr`\n- `DbUpdate_ExpectedChangesForUpdate`\n- `DbUpdate_ExpectedQueryForUpdate`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "DbUpdate_ExpectedChangesForUpdate": "DbUpdate_ExpectedChangesForUpdate",
-                  "DbUpdate_ExpectedQueryForUpdate": "DbUpdate_ExpectedQueryForUpdate",
-                  "__userBuddiesAdd_ExpectedEitherNickNameOrEmailAddr": "__userBuddiesAdd_ExpectedEitherNickNameOrEmailAddr"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "foo",
-            "content": {
-              "text/plain": {
-                "examples": {
-                  "MissingOrExcessiveContentLength": "MissingOrExcessiveContentLength"
+                  "DbUpdate_ExpectedChangesForUpdate": {
+                    "value": "DbUpdate_ExpectedChangesForUpdate"
+                  },
+                  "DbUpdate_ExpectedQueryForUpdate": {
+                    "value": "DbUpdate_ExpectedQueryForUpdate"
+                  },
+                  "__userBuddiesAdd_ExpectedEitherNickNameOrEmailAddr": {
+                    "value": "__userBuddiesAdd_ExpectedEitherNickNameOrEmailAddr"
+                  }
                 }
               }
             }
           },
           "504": {
-            "description": "foo",
+            "description": "Possible `text/plain` responses:\n- `TimedOut`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "TimedOut": "TimedOut"
+                  "TimedOut": {
+                    "value": "TimedOut"
+                  }
                 }
               }
             }
@@ -1001,9 +1071,9 @@
               "application/json": {
                 "example": {
                   "Id": -9007199254740991,
-                  "DtMade": "2023-11-14T15:10:30.743887178Z",
-                  "DtMod": "2023-11-14T15:10:30.74388938Z",
-                  "LastSeen": "2023-11-14T15:10:30.743891476Z",
+                  "DtMade": "2023-11-14T16:29:30.417592788Z",
+                  "DtMod": "2023-11-14T16:29:30.41759535Z",
+                  "LastSeen": "2023-11-14T16:29:30.417597772Z",
                   "Auth": {},
                   "PicFileId": "someStr",
                   "Nick": "someStr",
@@ -1017,42 +1087,50 @@
               }
             }
           },
-          "403": {
-            "description": "foo",
+          "400": {
+            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "Unauthorized": "Unauthorized"
+                  "MissingOrExcessiveContentLength": {
+                    "value": "MissingOrExcessiveContentLength"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Possible `text/plain` responses:\n- `Unauthorized`",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "Unauthorized": {
+                    "value": "Unauthorized"
+                  }
                 }
               }
             }
           },
           "422": {
-            "description": "foo",
+            "description": "Possible `text/plain` responses:\n- `__userBy_ExpectedEitherNickNameOrEmailAddr`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "__userBy_ExpectedEitherNickNameOrEmailAddr": "__userBy_ExpectedEitherNickNameOrEmailAddr"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "foo",
-            "content": {
-              "text/plain": {
-                "examples": {
-                  "MissingOrExcessiveContentLength": "MissingOrExcessiveContentLength"
+                  "__userBy_ExpectedEitherNickNameOrEmailAddr": {
+                    "value": "__userBy_ExpectedEitherNickNameOrEmailAddr"
+                  }
                 }
               }
             }
           },
           "504": {
-            "description": "foo",
+            "description": "Possible `text/plain` responses:\n- `TimedOut`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "TimedOut": "TimedOut"
+                  "TimedOut": {
+                    "value": "TimedOut"
+                  }
                 }
               }
             }
@@ -1092,8 +1170,8 @@
             "application/json": {
               "example": {
                 "NickOrEmailAddr": "someStr",
-                "PasswordPlain": "someStr",
-                "Password2Plain": "someStr"
+                "PasswordPlain": "lenOfMin6AndMax64",
+                "Password2Plain": "lenOfMin6AndMax64"
               }
             }
           }
@@ -1118,73 +1196,109 @@
             }
           },
           "400": {
-            "description": "foo",
+            "description": "Possible `text/plain` responses:\n- `___yo_authLoginOrFinalizePwdReset_AccountDoesNotExist`\n- `MissingOrExcessiveContentLength`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "___yo_authLoginOrFinalizePwdReset_AccountDoesNotExist": "___yo_authLoginOrFinalizePwdReset_AccountDoesNotExist"
+                  "MissingOrExcessiveContentLength": {
+                    "value": "MissingOrExcessiveContentLength"
+                  },
+                  "___yo_authLoginOrFinalizePwdReset_AccountDoesNotExist": {
+                    "value": "___yo_authLoginOrFinalizePwdReset_AccountDoesNotExist"
+                  }
                 }
               }
             }
           },
           "401": {
-            "description": "foo",
+            "description": "Possible `text/plain` responses:\n- `__userSignInOrReset_WrongPassword`\n- `___yo_authLoginOrFinalizePwdReset_WrongPassword`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "___yo_authLoginOrFinalizePwdReset_WrongPassword": "___yo_authLoginOrFinalizePwdReset_WrongPassword",
-                  "__userSignInOrReset_WrongPassword": "__userSignInOrReset_WrongPassword"
+                  "___yo_authLoginOrFinalizePwdReset_WrongPassword": {
+                    "value": "___yo_authLoginOrFinalizePwdReset_WrongPassword"
+                  },
+                  "__userSignInOrReset_WrongPassword": {
+                    "value": "__userSignInOrReset_WrongPassword"
+                  }
                 }
               }
             }
           },
           "403": {
-            "description": "foo",
+            "description": "Possible `text/plain` responses:\n- `Unauthorized`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "Unauthorized": "Unauthorized"
+                  "Unauthorized": {
+                    "value": "Unauthorized"
+                  }
                 }
               }
             }
           },
           "422": {
-            "description": "foo",
+            "description": "Possible `text/plain` responses:\n- `__userSignInOrReset_ExpectedPasswordAndNickOrEmailAddr`\n- `___yo_authLoginOrFinalizePwdReset_EmailRequiredButMissing`\n- `___yo_authLoginOrFinalizePwdReset_EmailInvalid`\n- `___yo_authLoginOrFinalizePwdReset_NewPasswordTooShort`\n- `___yo_authLoginOrFinalizePwdReset_NewPasswordTooLong`\n- `___yo_authLoginOrFinalizePwdReset_NewPasswordExpectedToDiffer`\n- `___yo_authLoginOrFinalizePwdReset_PwdResetRequired`\n- `___yo_authLoginOrFinalizePwdReset_NewPasswordInvalid`\n- `DbUpdate_ExpectedChangesForUpdate`\n- `DbUpdate_ExpectedQueryForUpdate`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "DbUpdate_ExpectedChangesForUpdate": "DbUpdate_ExpectedChangesForUpdate",
-                  "DbUpdate_ExpectedQueryForUpdate": "DbUpdate_ExpectedQueryForUpdate",
-                  "___yo_authLoginOrFinalizePwdReset_EmailInvalid": "___yo_authLoginOrFinalizePwdReset_EmailInvalid",
-                  "___yo_authLoginOrFinalizePwdReset_EmailRequiredButMissing": "___yo_authLoginOrFinalizePwdReset_EmailRequiredButMissing",
-                  "___yo_authLoginOrFinalizePwdReset_NewPasswordExpectedToDiffer": "___yo_authLoginOrFinalizePwdReset_NewPasswordExpectedToDiffer",
-                  "___yo_authLoginOrFinalizePwdReset_NewPasswordInvalid": "___yo_authLoginOrFinalizePwdReset_NewPasswordInvalid",
-                  "___yo_authLoginOrFinalizePwdReset_NewPasswordTooLong": "___yo_authLoginOrFinalizePwdReset_NewPasswordTooLong",
-                  "___yo_authLoginOrFinalizePwdReset_NewPasswordTooShort": "___yo_authLoginOrFinalizePwdReset_NewPasswordTooShort",
-                  "___yo_authLoginOrFinalizePwdReset_PwdResetRequired": "___yo_authLoginOrFinalizePwdReset_PwdResetRequired",
-                  "__userSignInOrReset_ExpectedPasswordAndNickOrEmailAddr": "__userSignInOrReset_ExpectedPasswordAndNickOrEmailAddr"
+                  "DbUpdate_ExpectedChangesForUpdate": {
+                    "value": "DbUpdate_ExpectedChangesForUpdate"
+                  },
+                  "DbUpdate_ExpectedQueryForUpdate": {
+                    "value": "DbUpdate_ExpectedQueryForUpdate"
+                  },
+                  "___yo_authLoginOrFinalizePwdReset_EmailInvalid": {
+                    "value": "___yo_authLoginOrFinalizePwdReset_EmailInvalid"
+                  },
+                  "___yo_authLoginOrFinalizePwdReset_EmailRequiredButMissing": {
+                    "value": "___yo_authLoginOrFinalizePwdReset_EmailRequiredButMissing"
+                  },
+                  "___yo_authLoginOrFinalizePwdReset_NewPasswordExpectedToDiffer": {
+                    "value": "___yo_authLoginOrFinalizePwdReset_NewPasswordExpectedToDiffer"
+                  },
+                  "___yo_authLoginOrFinalizePwdReset_NewPasswordInvalid": {
+                    "value": "___yo_authLoginOrFinalizePwdReset_NewPasswordInvalid"
+                  },
+                  "___yo_authLoginOrFinalizePwdReset_NewPasswordTooLong": {
+                    "value": "___yo_authLoginOrFinalizePwdReset_NewPasswordTooLong"
+                  },
+                  "___yo_authLoginOrFinalizePwdReset_NewPasswordTooShort": {
+                    "value": "___yo_authLoginOrFinalizePwdReset_NewPasswordTooShort"
+                  },
+                  "___yo_authLoginOrFinalizePwdReset_PwdResetRequired": {
+                    "value": "___yo_authLoginOrFinalizePwdReset_PwdResetRequired"
+                  },
+                  "__userSignInOrReset_ExpectedPasswordAndNickOrEmailAddr": {
+                    "value": "__userSignInOrReset_ExpectedPasswordAndNickOrEmailAddr"
+                  }
                 }
               }
             }
           },
           "500": {
-            "description": "foo",
+            "description": "Possible `text/plain` responses:\n- `___yo_authLoginOrFinalizePwdReset_PwdReqExpired`\n- `___yo_authLoginOrFinalizePwdReset_OkButFailedToCreateSignedToken`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "MissingOrExcessiveContentLength": "MissingOrExcessiveContentLength",
-                  "___yo_authLoginOrFinalizePwdReset_OkButFailedToCreateSignedToken": "___yo_authLoginOrFinalizePwdReset_OkButFailedToCreateSignedToken",
-                  "___yo_authLoginOrFinalizePwdReset_PwdReqExpired": "___yo_authLoginOrFinalizePwdReset_PwdReqExpired"
+                  "___yo_authLoginOrFinalizePwdReset_OkButFailedToCreateSignedToken": {
+                    "value": "___yo_authLoginOrFinalizePwdReset_OkButFailedToCreateSignedToken"
+                  },
+                  "___yo_authLoginOrFinalizePwdReset_PwdReqExpired": {
+                    "value": "___yo_authLoginOrFinalizePwdReset_PwdReqExpired"
+                  }
                 }
               }
             }
           },
           "504": {
-            "description": "foo",
+            "description": "Possible `text/plain` responses:\n- `TimedOut`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "TimedOut": "TimedOut"
+                  "TimedOut": {
+                    "value": "TimedOut"
+                  }
                 }
               }
             }
@@ -1245,22 +1359,26 @@
               }
             }
           },
-          "500": {
-            "description": "foo",
+          "400": {
+            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "MissingOrExcessiveContentLength": "MissingOrExcessiveContentLength"
+                  "MissingOrExcessiveContentLength": {
+                    "value": "MissingOrExcessiveContentLength"
+                  }
                 }
               }
             }
           },
           "504": {
-            "description": "foo",
+            "description": "Possible `text/plain` responses:\n- `TimedOut`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "TimedOut": "TimedOut"
+                  "TimedOut": {
+                    "value": "TimedOut"
+                  }
                 }
               }
             }
@@ -1323,48 +1441,68 @@
               }
             }
           },
-          "409": {
-            "description": "foo",
+          "400": {
+            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "___yo_authRegister_EmailAddrAlreadyExists": "___yo_authRegister_EmailAddrAlreadyExists"
+                  "MissingOrExcessiveContentLength": {
+                    "value": "MissingOrExcessiveContentLength"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Possible `text/plain` responses:\n- `___yo_authRegister_EmailAddrAlreadyExists`",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "___yo_authRegister_EmailAddrAlreadyExists": {
+                    "value": "___yo_authRegister_EmailAddrAlreadyExists"
+                  }
                 }
               }
             }
           },
           "422": {
-            "description": "foo",
+            "description": "Possible `text/plain` responses:\n- `__userSignUpOrForgotPassword_EmailRequiredButMissing`\n- `__userSignUpOrForgotPassword_EmailInvalid`\n- `___yo_authRegister_EmailRequiredButMissing`\n- `___yo_authRegister_EmailInvalid`\n- `___yo_authRegister_PasswordTooShort`\n- `___yo_authRegister_PasswordTooLong`\n- `___yo_authRegister_PasswordInvalid`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "___yo_authRegister_EmailInvalid": "___yo_authRegister_EmailInvalid",
-                  "___yo_authRegister_EmailRequiredButMissing": "___yo_authRegister_EmailRequiredButMissing",
-                  "___yo_authRegister_PasswordInvalid": "___yo_authRegister_PasswordInvalid",
-                  "___yo_authRegister_PasswordTooLong": "___yo_authRegister_PasswordTooLong",
-                  "___yo_authRegister_PasswordTooShort": "___yo_authRegister_PasswordTooShort",
-                  "__userSignUpOrForgotPassword_EmailInvalid": "__userSignUpOrForgotPassword_EmailInvalid",
-                  "__userSignUpOrForgotPassword_EmailRequiredButMissing": "__userSignUpOrForgotPassword_EmailRequiredButMissing"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "foo",
-            "content": {
-              "text/plain": {
-                "examples": {
-                  "MissingOrExcessiveContentLength": "MissingOrExcessiveContentLength"
+                  "___yo_authRegister_EmailInvalid": {
+                    "value": "___yo_authRegister_EmailInvalid"
+                  },
+                  "___yo_authRegister_EmailRequiredButMissing": {
+                    "value": "___yo_authRegister_EmailRequiredButMissing"
+                  },
+                  "___yo_authRegister_PasswordInvalid": {
+                    "value": "___yo_authRegister_PasswordInvalid"
+                  },
+                  "___yo_authRegister_PasswordTooLong": {
+                    "value": "___yo_authRegister_PasswordTooLong"
+                  },
+                  "___yo_authRegister_PasswordTooShort": {
+                    "value": "___yo_authRegister_PasswordTooShort"
+                  },
+                  "__userSignUpOrForgotPassword_EmailInvalid": {
+                    "value": "__userSignUpOrForgotPassword_EmailInvalid"
+                  },
+                  "__userSignUpOrForgotPassword_EmailRequiredButMissing": {
+                    "value": "__userSignUpOrForgotPassword_EmailRequiredButMissing"
+                  }
                 }
               }
             }
           },
           "504": {
-            "description": "foo",
+            "description": "Possible `text/plain` responses:\n- `TimedOut`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "TimedOut": "TimedOut"
+                  "TimedOut": {
+                    "value": "TimedOut"
+                  }
                 }
               }
             }
@@ -1406,9 +1544,9 @@
                 "Id": -9007199254740991,
                 "Changes": {
                   "Id": -9007199254740991,
-                  "DtMade": "2023-11-14T15:10:30.744056681Z",
-                  "DtMod": "2023-11-14T15:10:30.744058974Z",
-                  "LastSeen": "2023-11-14T15:10:30.744061082Z",
+                  "DtMade": "2023-11-14T16:29:30.417782734Z",
+                  "DtMod": "2023-11-14T16:29:30.417785437Z",
+                  "LastSeen": "2023-11-14T16:29:30.417787912Z",
                   "Auth": {},
                   "PicFileId": "someStr",
                   "Nick": "someStr",
@@ -1445,55 +1583,71 @@
               }
             }
           },
-          "403": {
-            "description": "foo",
+          "400": {
+            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "Unauthorized": "Unauthorized"
+                  "MissingOrExcessiveContentLength": {
+                    "value": "MissingOrExcessiveContentLength"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Possible `text/plain` responses:\n- `Unauthorized`",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "Unauthorized": {
+                    "value": "Unauthorized"
+                  }
                 }
               }
             }
           },
           "409": {
-            "description": "foo",
+            "description": "Possible `text/plain` responses:\n- `__userUpdate_NicknameAlreadyExists`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "__userUpdate_NicknameAlreadyExists": "__userUpdate_NicknameAlreadyExists"
+                  "__userUpdate_NicknameAlreadyExists": {
+                    "value": "__userUpdate_NicknameAlreadyExists"
+                  }
                 }
               }
             }
           },
           "422": {
-            "description": "foo",
+            "description": "Possible `text/plain` responses:\n- `__userUpdate_ExpectedNonEmptyNickname`\n- `DbUpdExpectedIdGt0`\n- `DbUpdate_ExpectedChangesForUpdate`\n- `DbUpdate_ExpectedQueryForUpdate`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "DbUpdExpectedIdGt0": "DbUpdExpectedIdGt0",
-                  "DbUpdate_ExpectedChangesForUpdate": "DbUpdate_ExpectedChangesForUpdate",
-                  "DbUpdate_ExpectedQueryForUpdate": "DbUpdate_ExpectedQueryForUpdate",
-                  "__userUpdate_ExpectedNonEmptyNickname": "__userUpdate_ExpectedNonEmptyNickname"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "foo",
-            "content": {
-              "text/plain": {
-                "examples": {
-                  "MissingOrExcessiveContentLength": "MissingOrExcessiveContentLength"
+                  "DbUpdExpectedIdGt0": {
+                    "value": "DbUpdExpectedIdGt0"
+                  },
+                  "DbUpdate_ExpectedChangesForUpdate": {
+                    "value": "DbUpdate_ExpectedChangesForUpdate"
+                  },
+                  "DbUpdate_ExpectedQueryForUpdate": {
+                    "value": "DbUpdate_ExpectedQueryForUpdate"
+                  },
+                  "__userUpdate_ExpectedNonEmptyNickname": {
+                    "value": "__userUpdate_ExpectedNonEmptyNickname"
+                  }
                 }
               }
             }
           },
           "504": {
-            "description": "foo",
+            "description": "Possible `text/plain` responses:\n- `TimedOut`",
             "content": {
               "text/plain": {
                 "examples": {
-                  "TimedOut": "TimedOut"
+                  "TimedOut": {
+                    "value": "TimedOut"
+                  }
                 }
               }
             }
