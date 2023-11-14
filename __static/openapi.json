@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "kaffe.chat",
-    "description": "\nRequest/response rules and how to read their example renditions:\n- All request headers, URL query-string parameters and response headers are identical over the whole set of all operations. Only request and response bodies are operation-specific.\n- Request bodies must never be empty or the JSON `null`: the empty request body is the JSON `{}`.\n- Response bodies will never be empty, but may be the JSON `null`.\n- All request fields are by default optional and ommittable / `null`able, **any exceptions** to this are indicated by the operation's listed known-error responses.\n- Example values rendered in this doc:\n  - `true` indicates any `boolean` value, regardless of the actual real value in a call\n  - `\"someStr\"` indicates any `string` value\n  - date-time values are indicated by RFC3339-formatted `string` examples\n  - signed-integer `number`s are indicated by a negative-number example indicating the minimum (type-wise, not operation-specific) permissible value, with the maximum being the corresponding positive-number counterpart\n  - unsigned-integer `number`s are indicated by a positive-number example indicating the maximum (type-wise, not not operation-specific) permissible value, with the minimum being `0`\n  - floating-point `number`s are indicated by a positive-number example indicating the maximum (type-wise, not not operation-specific) permissible value, with the minimum being the corresponding negative-number counterpart\n\nMore about error responses:\n- All are `text/plain`.\n- In addition to those listed in this doc (thrown by the service under the indicated conditions), other error responses are always entirely possible and not exhaustively documentable feasibly (such as DB, file-system or network disruptions). Those caught by the service will be `500`s, others (ie. from load-balancers / gateways / reverse-proxies etc. in front of the service) might have any HTTP status code.\n- The well-known error responses listed here have been recursively determined by code-path walking. Among them are some that logically could not possibly ever occur for that operation, yet identifying those (to filter them out of the listing) is (so far) out of scope for our `openapi.json` generation.\n- The well-known (thrown rather than caught) errors have their code-identifier-compatible (spaceless ASCII) enumerant-name as their entire text response, others preserve simply their original (usually human-language) error message fully. Hence, error responses are inherently `switch/case`able.\n\t\t",
+    "description": "\nOur convention-over-configuration designs yield a handful of request/response rules:\n- All request headers, URL query-string parameters and response headers are identical over the whole set of all operations. Only request and response bodies are operation-specific.\n- Request bodies **must never** be empty or the JSON `null`: the empty request body is the JSON `{}`.\n- Response bodies will never be empty, but may be the JSON `null`.\n- All request fields are by default optional and ommittable / `null`able, **any exceptions** to this are indicated by the operation's listed known-error responses.\n- The `Content-Length` request header is **required for all** operations.\n- The `Content-Type` request header is optional, but if present, must be correct with regards to both the operation's specification and the request body.\n- Any `multipart/form-data` operations:\n  - **always require** the following two form-fields: `files` for any binary file uploads, and `_` for the actual JSON request payload\n  - only the latter is elaborated in this doc, and always in the exact same way as done for all the `application/json` operations, **without** specifically mentioning the `_` form-field containing the `text/plain` of the full `application/json` request payload actually being elaborated here\n- All JSON object field names begin with an upper-case character, any example to the contrary indicates a \"free-style\" dictionary/hash-map \"object\".\n\nHow to read request/response example JSON values rendered in this doc:\n  - `true` indicates any `boolean` value, regardless of the actual real value in a call\n  - `\"someStr\"` indicates any `string` value\n  - date-time values are indicated by RFC3339-formatted `string` examples\n  - signed-integer `number`s are indicated by a negative-number example indicating the minimum (type-wise, not operation-specific) permissible value, with the maximum being the corresponding positive-number counterpart\n  - unsigned-integer `number`s are indicated by a positive-number example indicating the maximum (type-wise, not not operation-specific) permissible value, with the minimum being `0`\n  - floating-point `number`s are indicated by a positive-number example indicating the maximum (type-wise, not not operation-specific) permissible value, with the minimum being the corresponding negative-number counterpart\n\nMore about error responses:\n- All are `text/plain`.\n- In addition to those listed in this doc (thrown by the service under the indicated conditions), other error responses are at all times entirely technically-possible and not exhaustively documentable (feasibly), such as eg. DB / file-system / network disruptions. Those caught by the service will be `500`s, others (ie. from load-balancers / gateways / reverse-proxies etc. _in front of_ the service) might have _any_ HTTP status code whatsoever.\n- All the well-known (thrown rather than caught) errors listed here:\n  - have their code-identifier-compatible (spaceless ASCII) enumerant-name as their entire text response. Any others preserve simply their original (usually human-language) error message fully. Hence, error responses are inherently `switch/case`able\n  - have been recursively determined by code-path walking. Among them are some that logically could not possibly ever occur for that operation, yet identifying those (to filter them out of the listing) is (so far) out of scope for our `openapi.json` generation\n\t\t",
     "version": "23.318",
     "contact": {
       "name": "Permalink",
@@ -50,6 +50,30 @@
           "200": {
             "description": "Internal type ident: `yo/util.None`",
             "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              },
               "X-Yo-User": {
                 "description": "0 if not authenticated, else current user's ID",
                 "content": {
@@ -65,20 +89,34 @@
               }
             }
           },
-          "400": {
-            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
-            "content": {
-              "text/plain": {
-                "examples": {
-                  "MissingOrExcessiveContentLength": {
-                    "value": "MissingOrExcessiveContentLength"
+          "403": {
+            "description": "Possible `text/plain` responses:\n- `Unauthorized`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
                   }
                 }
               }
-            }
-          },
-          "403": {
-            "description": "Possible `text/plain` responses:\n- `Unauthorized`",
+            },
             "content": {
               "text/plain": {
                 "examples": {
@@ -89,11 +127,78 @@
               }
             }
           },
-          "422": {
-            "description": "Possible `text/plain` responses:\n- `__postDelete_InvalidPostId`",
+          "406": {
+            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
             "content": {
               "text/plain": {
                 "examples": {
+                  "MissingOrExcessiveContentLength": {
+                    "value": "MissingOrExcessiveContentLength"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Possible `text/plain` responses:\n- `__postDelete_InvalidPostId`\n- `InvalidContentType`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "InvalidContentType": {
+                    "value": "InvalidContentType"
+                  },
                   "__postDelete_InvalidPostId": {
                     "value": "__postDelete_InvalidPostId"
                   }
@@ -103,6 +208,32 @@
           },
           "504": {
             "description": "Possible `text/plain` responses:\n- `TimedOut`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
             "content": {
               "text/plain": {
                 "examples": {
@@ -154,6 +285,30 @@
           "200": {
             "description": "Internal type ident: `yo/util.Return[map[string]string]`",
             "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              },
               "X-Yo-User": {
                 "description": "0 if not authenticated, else current user's ID",
                 "content": {
@@ -174,8 +329,34 @@
               }
             }
           },
-          "400": {
+          "406": {
             "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
             "content": {
               "text/plain": {
                 "examples": {
@@ -186,8 +367,72 @@
               }
             }
           },
+          "422": {
+            "description": "Possible `text/plain` responses:\n- `InvalidContentType`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "InvalidContentType": {
+                    "value": "InvalidContentType"
+                  }
+                }
+              }
+            }
+          },
           "504": {
             "description": "Possible `text/plain` responses:\n- `TimedOut`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
             "content": {
               "text/plain": {
                 "examples": {
@@ -243,6 +488,30 @@
           "200": {
             "description": "Internal type ident: `__postMonthsUtc_Out`",
             "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              },
               "X-Yo-User": {
                 "description": "0 if not authenticated, else current user's ID",
                 "content": {
@@ -265,20 +534,34 @@
               }
             }
           },
-          "400": {
-            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
-            "content": {
-              "text/plain": {
-                "examples": {
-                  "MissingOrExcessiveContentLength": {
-                    "value": "MissingOrExcessiveContentLength"
+          "403": {
+            "description": "Possible `text/plain` responses:\n- `Unauthorized`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
                   }
                 }
               }
-            }
-          },
-          "403": {
-            "description": "Possible `text/plain` responses:\n- `Unauthorized`",
+            },
             "content": {
               "text/plain": {
                 "examples": {
@@ -289,8 +572,110 @@
               }
             }
           },
+          "406": {
+            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "MissingOrExcessiveContentLength": {
+                    "value": "MissingOrExcessiveContentLength"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Possible `text/plain` responses:\n- `InvalidContentType`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "InvalidContentType": {
+                    "value": "InvalidContentType"
+                  }
+                }
+              }
+            }
+          },
           "504": {
             "description": "Possible `text/plain` responses:\n- `TimedOut`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
             "content": {
               "text/plain": {
                 "examples": {
@@ -336,8 +721,8 @@
             "application/json": {
               "example": {
                 "Id": -9007199254740991,
-                "DtMade": "2023-11-14T16:29:30.417334885Z",
-                "DtMod": "2023-11-14T16:29:30.417338235Z",
+                "DtMade": "2023-11-14T17:12:31.630652043Z",
+                "DtMod": "2023-11-14T17:12:31.630655523Z",
                 "By": {},
                 "To": [
                   -9007199254740991
@@ -357,6 +742,30 @@
           "200": {
             "description": "Internal type ident: `yo/util.Return[yo/db.I64]`",
             "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              },
               "X-Yo-User": {
                 "description": "0 if not authenticated, else current user's ID",
                 "content": {
@@ -374,20 +783,34 @@
               }
             }
           },
-          "400": {
-            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
-            "content": {
-              "text/plain": {
-                "examples": {
-                  "MissingOrExcessiveContentLength": {
-                    "value": "MissingOrExcessiveContentLength"
+          "403": {
+            "description": "Possible `text/plain` responses:\n- `Unauthorized`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
                   }
                 }
               }
-            }
-          },
-          "403": {
-            "description": "Possible `text/plain` responses:\n- `Unauthorized`",
+            },
             "content": {
               "text/plain": {
                 "examples": {
@@ -398,11 +821,78 @@
               }
             }
           },
-          "422": {
-            "description": "Possible `text/plain` responses:\n- `__postNew_ExpectedNonEmptyPost`\n- `__postNew_ExpectedOnlyBuddyRecipients`\n- `__postNew_ExpectedEmptyFilesFieldWithUploadedFilesInMultipartForm`",
+          "406": {
+            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
             "content": {
               "text/plain": {
                 "examples": {
+                  "MissingOrExcessiveContentLength": {
+                    "value": "MissingOrExcessiveContentLength"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Possible `text/plain` responses:\n- `__postNew_ExpectedNonEmptyPost`\n- `__postNew_ExpectedOnlyBuddyRecipients`\n- `__postNew_ExpectedEmptyFilesFieldWithUploadedFilesInMultipartForm`\n- `InvalidContentType`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "InvalidContentType": {
+                    "value": "InvalidContentType"
+                  },
                   "__postNew_ExpectedEmptyFilesFieldWithUploadedFilesInMultipartForm": {
                     "value": "__postNew_ExpectedEmptyFilesFieldWithUploadedFilesInMultipartForm"
                   },
@@ -418,6 +908,32 @@
           },
           "504": {
             "description": "Possible `text/plain` responses:\n- `TimedOut`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
             "content": {
               "text/plain": {
                 "examples": {
@@ -473,6 +989,30 @@
           "200": {
             "description": "Internal type ident: `__postsDeleted_Out`",
             "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              },
               "X-Yo-User": {
                 "description": "0 if not authenticated, else current user's ID",
                 "content": {
@@ -492,20 +1032,34 @@
               }
             }
           },
-          "400": {
-            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
-            "content": {
-              "text/plain": {
-                "examples": {
-                  "MissingOrExcessiveContentLength": {
-                    "value": "MissingOrExcessiveContentLength"
+          "403": {
+            "description": "Possible `text/plain` responses:\n- `Unauthorized`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
                   }
                 }
               }
-            }
-          },
-          "403": {
-            "description": "Possible `text/plain` responses:\n- `Unauthorized`",
+            },
             "content": {
               "text/plain": {
                 "examples": {
@@ -516,8 +1070,110 @@
               }
             }
           },
+          "406": {
+            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "MissingOrExcessiveContentLength": {
+                    "value": "MissingOrExcessiveContentLength"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Possible `text/plain` responses:\n- `InvalidContentType`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "InvalidContentType": {
+                    "value": "InvalidContentType"
+                  }
+                }
+              }
+            }
+          },
           "504": {
             "description": "Possible `text/plain` responses:\n- `TimedOut`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
             "content": {
               "text/plain": {
                 "examples": {
@@ -577,6 +1233,30 @@
           "200": {
             "description": "Internal type ident: `kaffe/app.PostsListResult`",
             "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              },
               "X-Yo-User": {
                 "description": "0 if not authenticated, else current user's ID",
                 "content": {
@@ -592,8 +1272,8 @@
                   "Posts": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-14T16:29:30.417413156Z",
-                      "DtMod": "2023-11-14T16:29:30.417415693Z",
+                      "DtMade": "2023-11-14T17:12:31.630751203Z",
+                      "DtMod": "2023-11-14T17:12:31.630753706Z",
                       "By": 0,
                       "To": [
                         -9007199254740991
@@ -607,7 +1287,7 @@
                       ]
                     }
                   ],
-                  "NextSince": "2023-11-14T16:29:30.417425691Z",
+                  "NextSince": "2023-11-14T17:12:31.630763484Z",
                   "UnreadCounts": {
                     "someMapKey1": -9007199254740991,
                     "some_map_key_2": -9007199254740991
@@ -616,20 +1296,34 @@
               }
             }
           },
-          "400": {
-            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
-            "content": {
-              "text/plain": {
-                "examples": {
-                  "MissingOrExcessiveContentLength": {
-                    "value": "MissingOrExcessiveContentLength"
+          "403": {
+            "description": "Possible `text/plain` responses:\n- `Unauthorized`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
                   }
                 }
               }
-            }
-          },
-          "403": {
-            "description": "Possible `text/plain` responses:\n- `Unauthorized`",
+            },
             "content": {
               "text/plain": {
                 "examples": {
@@ -640,8 +1334,110 @@
               }
             }
           },
+          "406": {
+            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "MissingOrExcessiveContentLength": {
+                    "value": "MissingOrExcessiveContentLength"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Possible `text/plain` responses:\n- `InvalidContentType`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "InvalidContentType": {
+                    "value": "InvalidContentType"
+                  }
+                }
+              }
+            }
+          },
           "504": {
             "description": "Possible `text/plain` responses:\n- `TimedOut`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
             "content": {
               "text/plain": {
                 "examples": {
@@ -686,7 +1482,7 @@
           "content": {
             "application/json": {
               "example": {
-                "Since": "2023-11-14T16:29:30.417452214Z",
+                "Since": "2023-11-14T17:12:31.630808963Z",
                 "OnlyBy": [
                   -9007199254740991
                 ]
@@ -698,6 +1494,30 @@
           "200": {
             "description": "Internal type ident: `kaffe/app.PostsListResult`",
             "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              },
               "X-Yo-User": {
                 "description": "0 if not authenticated, else current user's ID",
                 "content": {
@@ -713,8 +1533,8 @@
                   "Posts": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-14T16:29:30.417459313Z",
-                      "DtMod": "2023-11-14T16:29:30.417461722Z",
+                      "DtMade": "2023-11-14T17:12:31.630816047Z",
+                      "DtMod": "2023-11-14T17:12:31.630818438Z",
                       "By": 0,
                       "To": [
                         -9007199254740991
@@ -728,7 +1548,7 @@
                       ]
                     }
                   ],
-                  "NextSince": "2023-11-14T16:29:30.417471454Z",
+                  "NextSince": "2023-11-14T17:12:31.630827992Z",
                   "UnreadCounts": {
                     "someMapKey1": -9007199254740991,
                     "some_map_key_2": -9007199254740991
@@ -737,20 +1557,34 @@
               }
             }
           },
-          "400": {
-            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
-            "content": {
-              "text/plain": {
-                "examples": {
-                  "MissingOrExcessiveContentLength": {
-                    "value": "MissingOrExcessiveContentLength"
+          "403": {
+            "description": "Possible `text/plain` responses:\n- `Unauthorized`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
                   }
                 }
               }
-            }
-          },
-          "403": {
-            "description": "Possible `text/plain` responses:\n- `Unauthorized`",
+            },
             "content": {
               "text/plain": {
                 "examples": {
@@ -761,8 +1595,110 @@
               }
             }
           },
+          "406": {
+            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "MissingOrExcessiveContentLength": {
+                    "value": "MissingOrExcessiveContentLength"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Possible `text/plain` responses:\n- `InvalidContentType`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "InvalidContentType": {
+                    "value": "InvalidContentType"
+                  }
+                }
+              }
+            }
+          },
           "504": {
             "description": "Possible `text/plain` responses:\n- `TimedOut`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
             "content": {
               "text/plain": {
                 "examples": {
@@ -814,6 +1750,30 @@
           "200": {
             "description": "Internal type ident: `__userBuddies_Out`",
             "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              },
               "X-Yo-User": {
                 "description": "0 if not authenticated, else current user's ID",
                 "content": {
@@ -829,9 +1789,9 @@
                   "Buddies": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-14T16:29:30.417502478Z",
-                      "DtMod": "2023-11-14T16:29:30.417504915Z",
-                      "LastSeen": "2023-11-14T16:29:30.417507518Z",
+                      "DtMade": "2023-11-14T17:12:31.630869257Z",
+                      "DtMod": "2023-11-14T17:12:31.63087173Z",
+                      "LastSeen": "2023-11-14T17:12:31.630874289Z",
                       "Auth": 0,
                       "PicFileId": "someStr",
                       "Nick": "someStr",
@@ -846,9 +1806,9 @@
                   "BuddyRequestsBy": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-14T16:29:30.417520488Z",
-                      "DtMod": "2023-11-14T16:29:30.417522846Z",
-                      "LastSeen": "2023-11-14T16:29:30.417525242Z",
+                      "DtMade": "2023-11-14T17:12:31.630887141Z",
+                      "DtMod": "2023-11-14T17:12:31.630889465Z",
+                      "LastSeen": "2023-11-14T17:12:31.630891907Z",
                       "Auth": 0,
                       "PicFileId": "someStr",
                       "Nick": "someStr",
@@ -864,20 +1824,34 @@
               }
             }
           },
-          "400": {
-            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
-            "content": {
-              "text/plain": {
-                "examples": {
-                  "MissingOrExcessiveContentLength": {
-                    "value": "MissingOrExcessiveContentLength"
+          "403": {
+            "description": "Possible `text/plain` responses:\n- `Unauthorized`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
                   }
                 }
               }
-            }
-          },
-          "403": {
-            "description": "Possible `text/plain` responses:\n- `Unauthorized`",
+            },
             "content": {
               "text/plain": {
                 "examples": {
@@ -888,8 +1862,110 @@
               }
             }
           },
+          "406": {
+            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "MissingOrExcessiveContentLength": {
+                    "value": "MissingOrExcessiveContentLength"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Possible `text/plain` responses:\n- `InvalidContentType`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "InvalidContentType": {
+                    "value": "InvalidContentType"
+                  }
+                }
+              }
+            }
+          },
           "504": {
             "description": "Possible `text/plain` responses:\n- `TimedOut`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
             "content": {
               "text/plain": {
                 "examples": {
@@ -943,6 +2019,30 @@
           "200": {
             "description": "Internal type ident: `__userBuddiesAdd_Out`",
             "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              },
               "X-Yo-User": {
                 "description": "0 if not authenticated, else current user's ID",
                 "content": {
@@ -960,20 +2060,34 @@
               }
             }
           },
-          "400": {
-            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
-            "content": {
-              "text/plain": {
-                "examples": {
-                  "MissingOrExcessiveContentLength": {
-                    "value": "MissingOrExcessiveContentLength"
+          "403": {
+            "description": "Possible `text/plain` responses:\n- `Unauthorized`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
                   }
                 }
               }
-            }
-          },
-          "403": {
-            "description": "Possible `text/plain` responses:\n- `Unauthorized`",
+            },
             "content": {
               "text/plain": {
                 "examples": {
@@ -984,8 +2098,72 @@
               }
             }
           },
+          "406": {
+            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "MissingOrExcessiveContentLength": {
+                    "value": "MissingOrExcessiveContentLength"
+                  }
+                }
+              }
+            }
+          },
           "422": {
-            "description": "Possible `text/plain` responses:\n- `__userBuddiesAdd_ExpectedEitherNickNameOrEmailAddr`\n- `DbUpdate_ExpectedChangesForUpdate`\n- `DbUpdate_ExpectedQueryForUpdate`",
+            "description": "Possible `text/plain` responses:\n- `__userBuddiesAdd_ExpectedEitherNickNameOrEmailAddr`\n- `InvalidContentType`\n- `DbUpdate_ExpectedChangesForUpdate`\n- `DbUpdate_ExpectedQueryForUpdate`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
             "content": {
               "text/plain": {
                 "examples": {
@@ -994,6 +2172,9 @@
                   },
                   "DbUpdate_ExpectedQueryForUpdate": {
                     "value": "DbUpdate_ExpectedQueryForUpdate"
+                  },
+                  "InvalidContentType": {
+                    "value": "InvalidContentType"
                   },
                   "__userBuddiesAdd_ExpectedEitherNickNameOrEmailAddr": {
                     "value": "__userBuddiesAdd_ExpectedEitherNickNameOrEmailAddr"
@@ -1004,6 +2185,32 @@
           },
           "504": {
             "description": "Possible `text/plain` responses:\n- `TimedOut`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
             "content": {
               "text/plain": {
                 "examples": {
@@ -1058,6 +2265,30 @@
           "200": {
             "description": "Internal type ident: `kaffe/app.User`",
             "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              },
               "X-Yo-User": {
                 "description": "0 if not authenticated, else current user's ID",
                 "content": {
@@ -1071,9 +2302,9 @@
               "application/json": {
                 "example": {
                   "Id": -9007199254740991,
-                  "DtMade": "2023-11-14T16:29:30.417592788Z",
-                  "DtMod": "2023-11-14T16:29:30.41759535Z",
-                  "LastSeen": "2023-11-14T16:29:30.417597772Z",
+                  "DtMade": "2023-11-14T17:12:31.630980858Z",
+                  "DtMod": "2023-11-14T17:12:31.630983259Z",
+                  "LastSeen": "2023-11-14T17:12:31.630985647Z",
                   "Auth": {},
                   "PicFileId": "someStr",
                   "Nick": "someStr",
@@ -1087,20 +2318,34 @@
               }
             }
           },
-          "400": {
-            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
-            "content": {
-              "text/plain": {
-                "examples": {
-                  "MissingOrExcessiveContentLength": {
-                    "value": "MissingOrExcessiveContentLength"
+          "403": {
+            "description": "Possible `text/plain` responses:\n- `Unauthorized`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
                   }
                 }
               }
-            }
-          },
-          "403": {
-            "description": "Possible `text/plain` responses:\n- `Unauthorized`",
+            },
             "content": {
               "text/plain": {
                 "examples": {
@@ -1111,11 +2356,78 @@
               }
             }
           },
-          "422": {
-            "description": "Possible `text/plain` responses:\n- `__userBy_ExpectedEitherNickNameOrEmailAddr`",
+          "406": {
+            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
             "content": {
               "text/plain": {
                 "examples": {
+                  "MissingOrExcessiveContentLength": {
+                    "value": "MissingOrExcessiveContentLength"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Possible `text/plain` responses:\n- `__userBy_ExpectedEitherNickNameOrEmailAddr`\n- `InvalidContentType`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "InvalidContentType": {
+                    "value": "InvalidContentType"
+                  },
                   "__userBy_ExpectedEitherNickNameOrEmailAddr": {
                     "value": "__userBy_ExpectedEitherNickNameOrEmailAddr"
                   }
@@ -1125,6 +2437,32 @@
           },
           "504": {
             "description": "Possible `text/plain` responses:\n- `TimedOut`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
             "content": {
               "text/plain": {
                 "examples": {
@@ -1180,6 +2518,30 @@
           "200": {
             "description": "Internal type ident: `yo/util.None`",
             "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              },
               "X-Yo-User": {
                 "description": "0 if not authenticated, else current user's ID",
                 "content": {
@@ -1196,13 +2558,36 @@
             }
           },
           "400": {
-            "description": "Possible `text/plain` responses:\n- `___yo_authLoginOrFinalizePwdReset_AccountDoesNotExist`\n- `MissingOrExcessiveContentLength`",
+            "description": "Possible `text/plain` responses:\n- `___yo_authLoginOrFinalizePwdReset_AccountDoesNotExist`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
             "content": {
               "text/plain": {
                 "examples": {
-                  "MissingOrExcessiveContentLength": {
-                    "value": "MissingOrExcessiveContentLength"
-                  },
                   "___yo_authLoginOrFinalizePwdReset_AccountDoesNotExist": {
                     "value": "___yo_authLoginOrFinalizePwdReset_AccountDoesNotExist"
                   }
@@ -1212,6 +2597,32 @@
           },
           "401": {
             "description": "Possible `text/plain` responses:\n- `__userSignInOrReset_WrongPassword`\n- `___yo_authLoginOrFinalizePwdReset_WrongPassword`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
             "content": {
               "text/plain": {
                 "examples": {
@@ -1227,6 +2638,32 @@
           },
           "403": {
             "description": "Possible `text/plain` responses:\n- `Unauthorized`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
             "content": {
               "text/plain": {
                 "examples": {
@@ -1237,8 +2674,72 @@
               }
             }
           },
+          "406": {
+            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "MissingOrExcessiveContentLength": {
+                    "value": "MissingOrExcessiveContentLength"
+                  }
+                }
+              }
+            }
+          },
           "422": {
-            "description": "Possible `text/plain` responses:\n- `__userSignInOrReset_ExpectedPasswordAndNickOrEmailAddr`\n- `___yo_authLoginOrFinalizePwdReset_EmailRequiredButMissing`\n- `___yo_authLoginOrFinalizePwdReset_EmailInvalid`\n- `___yo_authLoginOrFinalizePwdReset_NewPasswordTooShort`\n- `___yo_authLoginOrFinalizePwdReset_NewPasswordTooLong`\n- `___yo_authLoginOrFinalizePwdReset_NewPasswordExpectedToDiffer`\n- `___yo_authLoginOrFinalizePwdReset_PwdResetRequired`\n- `___yo_authLoginOrFinalizePwdReset_NewPasswordInvalid`\n- `DbUpdate_ExpectedChangesForUpdate`\n- `DbUpdate_ExpectedQueryForUpdate`",
+            "description": "Possible `text/plain` responses:\n- `__userSignInOrReset_ExpectedPasswordAndNickOrEmailAddr`\n- `___yo_authLoginOrFinalizePwdReset_EmailRequiredButMissing`\n- `___yo_authLoginOrFinalizePwdReset_EmailInvalid`\n- `___yo_authLoginOrFinalizePwdReset_NewPasswordTooShort`\n- `___yo_authLoginOrFinalizePwdReset_NewPasswordTooLong`\n- `___yo_authLoginOrFinalizePwdReset_NewPasswordExpectedToDiffer`\n- `___yo_authLoginOrFinalizePwdReset_PwdResetRequired`\n- `___yo_authLoginOrFinalizePwdReset_NewPasswordInvalid`\n- `InvalidContentType`\n- `DbUpdate_ExpectedChangesForUpdate`\n- `DbUpdate_ExpectedQueryForUpdate`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
             "content": {
               "text/plain": {
                 "examples": {
@@ -1247,6 +2748,9 @@
                   },
                   "DbUpdate_ExpectedQueryForUpdate": {
                     "value": "DbUpdate_ExpectedQueryForUpdate"
+                  },
+                  "InvalidContentType": {
+                    "value": "InvalidContentType"
                   },
                   "___yo_authLoginOrFinalizePwdReset_EmailInvalid": {
                     "value": "___yo_authLoginOrFinalizePwdReset_EmailInvalid"
@@ -1278,6 +2782,32 @@
           },
           "500": {
             "description": "Possible `text/plain` responses:\n- `___yo_authLoginOrFinalizePwdReset_PwdReqExpired`\n- `___yo_authLoginOrFinalizePwdReset_OkButFailedToCreateSignedToken`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
             "content": {
               "text/plain": {
                 "examples": {
@@ -1293,6 +2823,32 @@
           },
           "504": {
             "description": "Possible `text/plain` responses:\n- `TimedOut`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
             "content": {
               "text/plain": {
                 "examples": {
@@ -1344,6 +2900,30 @@
           "200": {
             "description": "Internal type ident: `yo/util.None`",
             "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              },
               "X-Yo-User": {
                 "description": "0 if not authenticated, else current user's ID",
                 "content": {
@@ -1359,8 +2939,34 @@
               }
             }
           },
-          "400": {
+          "406": {
             "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
             "content": {
               "text/plain": {
                 "examples": {
@@ -1371,8 +2977,72 @@
               }
             }
           },
+          "422": {
+            "description": "Possible `text/plain` responses:\n- `InvalidContentType`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "InvalidContentType": {
+                    "value": "InvalidContentType"
+                  }
+                }
+              }
+            }
+          },
           "504": {
             "description": "Possible `text/plain` responses:\n- `TimedOut`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
             "content": {
               "text/plain": {
                 "examples": {
@@ -1426,6 +3096,30 @@
           "200": {
             "description": "Internal type ident: `yo/util.None`",
             "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              },
               "X-Yo-User": {
                 "description": "0 if not authenticated, else current user's ID",
                 "content": {
@@ -1441,8 +3135,34 @@
               }
             }
           },
-          "400": {
+          "406": {
             "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
             "content": {
               "text/plain": {
                 "examples": {
@@ -1455,6 +3175,32 @@
           },
           "409": {
             "description": "Possible `text/plain` responses:\n- `___yo_authRegister_EmailAddrAlreadyExists`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
             "content": {
               "text/plain": {
                 "examples": {
@@ -1466,10 +3212,39 @@
             }
           },
           "422": {
-            "description": "Possible `text/plain` responses:\n- `__userSignUpOrForgotPassword_EmailRequiredButMissing`\n- `__userSignUpOrForgotPassword_EmailInvalid`\n- `___yo_authRegister_EmailRequiredButMissing`\n- `___yo_authRegister_EmailInvalid`\n- `___yo_authRegister_PasswordTooShort`\n- `___yo_authRegister_PasswordTooLong`\n- `___yo_authRegister_PasswordInvalid`",
+            "description": "Possible `text/plain` responses:\n- `__userSignUpOrForgotPassword_EmailRequiredButMissing`\n- `__userSignUpOrForgotPassword_EmailInvalid`\n- `___yo_authRegister_EmailRequiredButMissing`\n- `___yo_authRegister_EmailInvalid`\n- `___yo_authRegister_PasswordTooShort`\n- `___yo_authRegister_PasswordTooLong`\n- `___yo_authRegister_PasswordInvalid`\n- `InvalidContentType`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
             "content": {
               "text/plain": {
                 "examples": {
+                  "InvalidContentType": {
+                    "value": "InvalidContentType"
+                  },
                   "___yo_authRegister_EmailInvalid": {
                     "value": "___yo_authRegister_EmailInvalid"
                   },
@@ -1497,6 +3272,32 @@
           },
           "504": {
             "description": "Possible `text/plain` responses:\n- `TimedOut`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
             "content": {
               "text/plain": {
                 "examples": {
@@ -1544,9 +3345,9 @@
                 "Id": -9007199254740991,
                 "Changes": {
                   "Id": -9007199254740991,
-                  "DtMade": "2023-11-14T16:29:30.417782734Z",
-                  "DtMod": "2023-11-14T16:29:30.417785437Z",
-                  "LastSeen": "2023-11-14T16:29:30.417787912Z",
+                  "DtMade": "2023-11-14T17:12:31.631203542Z",
+                  "DtMod": "2023-11-14T17:12:31.631206137Z",
+                  "LastSeen": "2023-11-14T17:12:31.631208588Z",
                   "Auth": {},
                   "PicFileId": "someStr",
                   "Nick": "someStr",
@@ -1568,6 +3369,30 @@
           "200": {
             "description": "Internal type ident: `yo/util.None`",
             "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              },
               "X-Yo-User": {
                 "description": "0 if not authenticated, else current user's ID",
                 "content": {
@@ -1583,20 +3408,34 @@
               }
             }
           },
-          "400": {
-            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
-            "content": {
-              "text/plain": {
-                "examples": {
-                  "MissingOrExcessiveContentLength": {
-                    "value": "MissingOrExcessiveContentLength"
+          "403": {
+            "description": "Possible `text/plain` responses:\n- `Unauthorized`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
                   }
                 }
               }
-            }
-          },
-          "403": {
-            "description": "Possible `text/plain` responses:\n- `Unauthorized`",
+            },
             "content": {
               "text/plain": {
                 "examples": {
@@ -1607,8 +3446,72 @@
               }
             }
           },
+          "406": {
+            "description": "Possible `text/plain` responses:\n- `MissingOrExcessiveContentLength`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "MissingOrExcessiveContentLength": {
+                    "value": "MissingOrExcessiveContentLength"
+                  }
+                }
+              }
+            }
+          },
           "409": {
             "description": "Possible `text/plain` responses:\n- `__userUpdate_NicknameAlreadyExists`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
             "content": {
               "text/plain": {
                 "examples": {
@@ -1620,7 +3523,33 @@
             }
           },
           "422": {
-            "description": "Possible `text/plain` responses:\n- `__userUpdate_ExpectedNonEmptyNickname`\n- `DbUpdExpectedIdGt0`\n- `DbUpdate_ExpectedChangesForUpdate`\n- `DbUpdate_ExpectedQueryForUpdate`",
+            "description": "Possible `text/plain` responses:\n- `__userUpdate_ExpectedNonEmptyNickname`\n- `DbUpdExpectedIdGt0`\n- `InvalidContentType`\n- `DbUpdate_ExpectedChangesForUpdate`\n- `DbUpdate_ExpectedQueryForUpdate`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
             "content": {
               "text/plain": {
                 "examples": {
@@ -1633,6 +3562,9 @@
                   "DbUpdate_ExpectedQueryForUpdate": {
                     "value": "DbUpdate_ExpectedQueryForUpdate"
                   },
+                  "InvalidContentType": {
+                    "value": "InvalidContentType"
+                  },
                   "__userUpdate_ExpectedNonEmptyNickname": {
                     "value": "__userUpdate_ExpectedNonEmptyNickname"
                   }
@@ -1642,6 +3574,32 @@
           },
           "504": {
             "description": "Possible `text/plain` responses:\n- `TimedOut`",
+            "headers": {
+              "Cache-Control": {
+                "description": "always `no-store`",
+                "content": {
+                  "text/plain": {
+                    "example": "no-store"
+                  }
+                }
+              },
+              "Content-Type": {
+                "description": "always `application/json`",
+                "content": {
+                  "text/plain": {
+                    "example": "application/json"
+                  }
+                }
+              },
+              "X-Content-Type-Options": {
+                "description": "always `nosniff`",
+                "content": {
+                  "text/plain": {
+                    "example": "nosniff"
+                  }
+                }
+              }
+            },
             "content": {
               "text/plain": {
                 "examples": {
