@@ -35,12 +35,12 @@
           }
         ],
         "requestBody": {
-          "description": "__postDelete_In",
+          "description": "Type name auto-suggestion: `__postDelete_In`",
           "required": true,
           "content": {
             "application/json": {
               "example": {
-                "Id": 0
+                "Id": -9007199254740990
               }
             }
           }
@@ -93,7 +93,7 @@
           }
         ],
         "requestBody": {
-          "description": "yo/util.None",
+          "description": "Type name auto-suggestion: `yo/util.None`",
           "required": true,
           "content": {
             "application/json": {
@@ -151,7 +151,7 @@
           }
         ],
         "requestBody": {
-          "description": "__postMonthsUtc_In",
+          "description": "Type name auto-suggestion: `__postMonthsUtc_In`",
           "required": true,
           "content": {
             "application/json": {
@@ -211,17 +211,17 @@
           }
         ],
         "requestBody": {
-          "description": "kaffe/app.Post",
+          "description": "Type name auto-suggestion: `kaffe/app.Post`",
           "required": true,
           "content": {
             "application/json": {
               "example": {
-                "Id": 0,
-                "DtMade": null,
-                "DtMod": null,
+                "Id": -9007199254740990,
+                "DtMade": "2023-11-14T14:38:57.406914275Z",
+                "DtMod": "2023-11-14T14:38:57.406917209Z",
                 "By": {},
                 "To": null,
-                "Htm": "",
+                "Htm": "someStr",
                 "Files": null,
                 "FileContentTypes": null
               }
@@ -244,7 +244,7 @@
             "content": {
               "application/json": {
                 "example": {
-                  "Result": 0
+                  "Result": -9007199254740990
                 }
               }
             }
@@ -278,7 +278,7 @@
           }
         ],
         "requestBody": {
-          "description": "__postsDeleted_In",
+          "description": "Type name auto-suggestion: `__postsDeleted_In`",
           "required": true,
           "content": {
             "application/json": {
@@ -338,14 +338,14 @@
           }
         ],
         "requestBody": {
-          "description": "kaffe/app.ApiArgPeriod",
+          "description": "Type name auto-suggestion: `kaffe/app.ApiArgPeriod`",
           "required": true,
           "content": {
             "application/json": {
               "example": {
                 "Period": {
-                  "Year": 0,
-                  "Month": 0
+                  "Year": 65535,
+                  "Month": 255
                 },
                 "OnlyBy": null
               }
@@ -369,7 +369,7 @@
               "application/json": {
                 "example": {
                   "Posts": null,
-                  "NextSince": null,
+                  "NextSince": "2023-11-14T14:38:57.406948706Z",
                   "UnreadCounts": null
                 }
               }
@@ -404,12 +404,12 @@
           }
         ],
         "requestBody": {
-          "description": "__postsRecent_In",
+          "description": "Type name auto-suggestion: `__postsRecent_In`",
           "required": true,
           "content": {
             "application/json": {
               "example": {
-                "Since": null,
+                "Since": "2023-11-14T14:38:57.406961399Z",
                 "OnlyBy": null
               }
             }
@@ -432,7 +432,7 @@
               "application/json": {
                 "example": {
                   "Posts": null,
-                  "NextSince": null,
+                  "NextSince": "2023-11-14T14:38:57.406965405Z",
                   "UnreadCounts": null
                 }
               }
@@ -467,7 +467,7 @@
           }
         ],
         "requestBody": {
-          "description": "yo/util.None",
+          "description": "Type name auto-suggestion: `yo/util.None`",
           "required": true,
           "content": {
             "application/json": {
@@ -526,12 +526,12 @@
           }
         ],
         "requestBody": {
-          "description": "__userBuddiesAdd_In",
+          "description": "Type name auto-suggestion: `__userBuddiesAdd_In`",
           "required": true,
           "content": {
             "application/json": {
               "example": {
-                "NickOrEmailAddr": ""
+                "NickOrEmailAddr": "someStr"
               }
             }
           }
@@ -552,7 +552,7 @@
             "content": {
               "application/json": {
                 "example": {
-                  "Done": false
+                  "Done": true
                 }
               }
             }
@@ -586,13 +586,13 @@
           }
         ],
         "requestBody": {
-          "description": "__userBy_In",
+          "description": "Type name auto-suggestion: `__userBy_In`",
           "required": true,
           "content": {
             "application/json": {
               "example": {
-                "EmailAddr": "",
-                "NickName": ""
+                "EmailAddr": "someStr",
+                "NickName": "someStr"
               }
             }
           }
@@ -613,17 +613,17 @@
             "content": {
               "application/json": {
                 "example": {
-                  "Id": 0,
-                  "DtMade": null,
-                  "DtMod": null,
-                  "LastSeen": null,
+                  "Id": -9007199254740990,
+                  "DtMade": "2023-11-14T14:38:57.407001518Z",
+                  "DtMod": "2023-11-14T14:38:57.407003699Z",
+                  "LastSeen": "2023-11-14T14:38:57.407005727Z",
                   "Auth": {},
-                  "PicFileId": "",
-                  "Nick": "",
-                  "Btw": "",
+                  "PicFileId": "someStr",
+                  "Nick": "someStr",
+                  "Btw": "someStr",
                   "Buddies": null,
-                  "BtwEmoji": "",
-                  "Offline": false
+                  "BtwEmoji": "someStr",
+                  "Offline": true
                 }
               }
             }
@@ -657,14 +657,14 @@
           }
         ],
         "requestBody": {
-          "description": "kaffe/app.ApiUserSignInOrReset",
+          "description": "Type name auto-suggestion: `kaffe/app.ApiUserSignInOrReset`",
           "required": true,
           "content": {
             "application/json": {
               "example": {
-                "NickOrEmailAddr": "",
-                "PasswordPlain": "",
-                "Password2Plain": ""
+                "NickOrEmailAddr": "someStr",
+                "PasswordPlain": "someStr",
+                "Password2Plain": "someStr"
               }
             }
           }
@@ -717,7 +717,7 @@
           }
         ],
         "requestBody": {
-          "description": "yo/util.None",
+          "description": "Type name auto-suggestion: `yo/util.None`",
           "required": true,
           "content": {
             "application/json": {
@@ -773,12 +773,12 @@
           }
         ],
         "requestBody": {
-          "description": "kaffe/app.ApiNickOrEmailAddr",
+          "description": "Type name auto-suggestion: `kaffe/app.ApiNickOrEmailAddr`",
           "required": true,
           "content": {
             "application/json": {
               "example": {
-                "NickOrEmailAddr": ""
+                "NickOrEmailAddr": "someStr"
               }
             }
           }
@@ -831,24 +831,24 @@
           }
         ],
         "requestBody": {
-          "description": "yo/db.ApiUpdateArgs[kaffe/app.User,kaffe/app.UserField]",
+          "description": "Type name auto-suggestion: `yo/db.ApiUpdateArgs[kaffe/app.User,kaffe/app.UserField]`",
           "required": true,
           "content": {
             "application/json": {
               "example": {
-                "Id": 0,
+                "Id": -9007199254740990,
                 "Changes": {
-                  "Id": 0,
-                  "DtMade": null,
-                  "DtMod": null,
-                  "LastSeen": null,
+                  "Id": -9007199254740990,
+                  "DtMade": "2023-11-14T14:38:57.407053612Z",
+                  "DtMod": "2023-11-14T14:38:57.407055783Z",
+                  "LastSeen": "2023-11-14T14:38:57.40705787Z",
                   "Auth": {},
-                  "PicFileId": "",
-                  "Nick": "",
-                  "Btw": "",
+                  "PicFileId": "someStr",
+                  "Nick": "someStr",
+                  "Btw": "someStr",
                   "Buddies": null,
-                  "BtwEmoji": "",
-                  "Offline": false
+                  "BtwEmoji": "someStr",
+                  "Offline": true
                 },
                 "ChangedFields": null
               }
