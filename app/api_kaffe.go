@@ -131,11 +131,11 @@ var apiUserSignUpOrForgotPassword = api(func(this *ApiCtx[ApiNickOrEmailAddr, No
 var apiUserBy = api(func(this *ApiCtx[struct {
 	EmailAddr string
 	NickName  string
-}, User]) {
+}, Return[*User]]) {
 	if this.Args.NickName != "" {
-		this.Ret = userByNickName(this.Ctx, this.Args.NickName)
+		this.Ret.Result = userByNickName(this.Ctx, this.Args.NickName)
 	} else if this.Args.EmailAddr != "" {
-		this.Ret = userByEmailAddr(this.Ctx, this.Args.EmailAddr)
+		this.Ret.Result = userByEmailAddr(this.Ctx, this.Args.EmailAddr)
 	} else {
 		panic(Err__userBy_ExpectedEitherNickNameOrEmailAddr)
 	}

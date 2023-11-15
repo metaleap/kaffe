@@ -66,7 +66,7 @@ export function main() {
 export async function reloadUserSelf() {
     if (yo.userEmailAddr) {
         userSelf.val = undefined // in case of failure, a later buddy-fetch will re-attempt a fresh reload — but only with this assignment in place
-        const user_self = await yo.api__userBy({ EmailAddr: yo.userEmailAddr })
+        const user_self = (await yo.api__userBy({ EmailAddr: yo.userEmailAddr })).Result
         isSeeminglyOffline.val = false
         userSelf.val = user_self
         buddyBadgesAlt[0].val = user_self.BtwEmoji ?? ""

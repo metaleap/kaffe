@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "kaffe.chat",
-    "description": "This HTTP API has RPC rather than REST semantics: **all** operations are `POST`, regardless of what CRUD writes or reads they might or might not effect.\n\n**tl;dr:** **usually, API requests will just-work as expected _without_ knowing all those intro notes right below** (which elaborate mostly to-be-expected software-dev-commonplaces) — but in any cases of unexpected results or errors, they'll likely help complete the mental picture.\n___\nOur backend stack's \"opinionated convention-over-configuration\" designs yield a few request/response rules that predictably remain **always in effect across all listed operations**:\n- Whereas request and response bodies are operation-specific, all operations share the exact-same set of request headers, URL query-string parameters and response headers (albeit being elaborated here identically and redundantly for each individual operation).\n- The empty request body is principally the JSON `{}`, but fully-empty or JSON `null` request bodies are interpreted equivalently.\n- Response bodies will never be empty, but may be the JSON `null`.\n- Request and response bodies are always valid JSON values for _JSON objects_, ie. they're never immediately JSON arrays, `string`s, `number`s, or `boolean`s.\n- All mentioned request-object (and sub-object) fields are **by default optional** and ommittable or `null`able (implying for atomic types semantic equivalence to `\"\"` or `0` or `false` as per _Golang_ type-system semantics),\n  - **any exceptions** to this optionality-by-default are indicated by the operation's listed known-error responses.\n- All mentioned response-object (and sub-object) fields will always be present in the response-body, indicating their default-ness / missing-ness via `null` or `\"\"` or `0` or `false` as per _Golang_ type-system semantics.\n  - Caution for some client languages: this means `null` for some-but-not-all empty JSON arrays (with `[]` being principally always just-as-possible) and empty JSON dictionary/hash-map \"object\"s (with either `null` or `{}` being principally equally possible).\n- All JSON (non-dictionary/non-hash-map) object field names begin with an upper-case character,\n  - any operation-specific example rendered to the contrary indicates a \"free-style\" JSON dictionary/hash-map \"object\".\n- The `Content-Length` request header is **required for all** operations (with a correct value).\n- The `Content-Type` request header is optional, but if present, must be correct with regards to both the operation's specification and the request body.\n- Any `multipart/form-data` operations:\n  - **always require** the following two form-fields, ignoring all others: `files` for any binary file uploads, and `_` for the actual JSON request payload;\n  - only the `_` field value is further elaborated for any such operation in this doc, and always in the exact same way as also done in this doc for all the `application/json` operations' request bodies (**without** specifically mentioning the `_` form-field containing the `text/plain` of the full `application/json` request payload actually being elaborated there).\n\nHow to read request/response **example JSON values** rendered in this doc:\n  - `true` indicates _any_ `boolean` value, regardless of the actual real value in a call;\n  - `\"someStr\"` indicates _any_ `string` value;\n  - signed-integer `number`s are indicated by a negative-number example indicating the minimum (type-wise, not operation-specific) permissible value, with the maximum being the corresponding positive-number counterpart;\n  - unsigned-integer `number`s are indicated by a positive-number example indicating the maximum (type-wise, not not operation-specific) permissible value, with the minimum being `0`;\n  - floating-point `number`s are indicated by a positive-number example indicating the maximum (type-wise, not not operation-specific) permissible value, with the minimum being the corresponding negative-number counterpart.\n  - date-time values are indicated by RFC3339/ISO8601-formatted `string` examples:\n    - in responses, they're always UTC, whereas in requests, any timezone may be indicated;\n\t- in requests, they may always be `null` (excepting any operation-specific known-errors indicating otherwise) but must never be `\"\"` or otherwise non-RFC3339/ISO8601-parseable.\n\nAbout **error responses**:\n- All are `text/plain`.\n- In addition to those listed in this doc (thrown by the service under the indicated conditions), other error responses are at all times entirely technically-possible and not exhaustively documentable (feasibly), such as eg. DB / file-system / network disruptions. Those caught by the service will be `500`s, others (ie. from load-balancers / gateways / reverse-proxies etc. _in front of_ the service) might use _any_ HTTP status code whatsoever.\n- All the well-known (thrown rather than caught) errors listed here:\n  - have their code-identifier-compatible (spaceless ASCII) enumerant-name as their entire text response, making all error responses inherently `switch/case`able;\n  - have been recursively determined by code-path walking. Among them are some that logically could not possibly ever occur for that operation, yet identifying those (to filter them out of the listing) is (so far) out of scope for our current `openapi.json` spec generator. (In case of serious need, do let us know!)\n- Any non-known (caught rather than thrown) errors (not listed here) contain their original (usually human-language) error message fully, corresponding to the `default` in an error-handling `switch/case`.\n- **\"Not Found\" rules:**\n  - `404` **only** for HTTP requests with definitely-unroutable URL paths (ie. \"no such API operation or static-file asset or sub-site or etc.\"),\n  - `406` with approx. `FooDoesNotExist` (see per-operation known-error-responses listings for exact monikers) — for operations where existence was definitely critically expected (such as modifying some object identified by its `Id`),\n  - `200` with response-body of usually JSON `null` (exception: an operation-specific response object with a field name obviously indicating not-found-ness) — for operations where the definite-existence expectation does not hold as crucially (for example those of the \"fetch single/first object found for some specified criteria\" kind).",
+    "description": "This HTTP API has RPC rather than REST semantics: **all** operations are `POST`, regardless of what CRUD writes or reads they might or might not effect.\n\n**tl;dr:** **usually, API requests will just-work as expected _without_ knowing all those intro notes right below** (which elaborate mostly to-be-expected software-dev-commonplaces) — but in any cases of unexpected results or errors, they'll likely help complete the mental picture.\n___\nOur backend stack's \"opinionated convention-over-configuration\" designs yield a few request/response rules that predictably remain **always in effect across all listed operations**:\n- Whereas request and response bodies are operation-specific, all operations share the exact-same set of request headers, URL query-string parameters and response headers (albeit being elaborated here identically and redundantly for each individual operation).\n- The empty request body is principally the JSON `{}`, but fully-empty or JSON `null` request bodies are interpreted equivalently.\n- Response bodies will always be neither empty nor the JSON `null`.\n- Request and response bodies are always valid JSON values for _JSON objects_, ie. they're never immediately JSON arrays, `string`s, `number`s, or `boolean`s.\n  - They're also never immediately \"domain objects\" (ie. a `GetFoo` op would yield not a `Foo` but a `Result` (or similar) field with the found `Foo`; or a `CreateFoo` would expect not a `Foo` payload but a `NewFoo` (or similar) field with the new `Foo`).\n- All mentioned request-object (and sub-object) fields are **by default optional** and ommittable or `null`able (implying for atomic types semantic equivalence to `\"\"` or `0` or `false` as per _Golang_ type-system semantics),\n  - **any exceptions** to this optionality-by-default are indicated by the operation's listed known-error responses.\n- All mentioned response-object (and sub-object) fields will always be present in the response-body, indicating their default-ness / missing-ness via `null` or `\"\"` or `0` or `false` as per _Golang_ type-system semantics.\n  - Caution for some client languages: this means `null` for some-but-not-all empty JSON arrays (with `[]` being principally always just-as-possible) and empty JSON dictionary/hash-map \"object\"s (with either `null` or `{}` being principally equally possible).\n- All JSON (non-dictionary/non-hash-map) object field names begin with an upper-case character,\n  - any operation-specific example rendered to the contrary indicates a \"free-style\" JSON dictionary/hash-map \"object\".\n- The `Content-Length` request header is **required for all** operations (with a correct value).\n- The `Content-Type` request header is optional, but if present, must be correct with regards to both the operation's specification and the request body.\n- Any `multipart/form-data` operations:\n  - **always require** the following two form-fields, ignoring all others: `files` for any binary file uploads, and `_` for the actual JSON request payload;\n  - only the `_` field value is further elaborated for any such operation in this doc, and always in the exact same way as also done in this doc for all the `application/json` operations' request bodies (**without** specifically mentioning the `_` form-field containing the `text/plain` of the full `application/json` request payload actually being elaborated there).\n\nHow to read request/response **example JSON values** rendered in this doc:\n  - `true` indicates _any_ `boolean` value, regardless of the actual real value in a call;\n  - `\"someStr\"` indicates _any_ `string` value;\n  - signed-integer `number`s are indicated by a negative-number example indicating the minimum (type-wise, not operation-specific) permissible value, with the maximum being the corresponding positive-number counterpart;\n  - unsigned-integer `number`s are indicated by a positive-number example indicating the maximum (type-wise, not not operation-specific) permissible value, with the minimum being `0`;\n  - floating-point `number`s are indicated by a positive-number example indicating the maximum (type-wise, not not operation-specific) permissible value, with the minimum being the corresponding negative-number counterpart.\n  - date-time values are indicated by RFC3339/ISO8601-formatted `string` examples:\n    - in responses, they're always UTC, whereas in requests, any timezone may be indicated;\n\t- in requests, they may always be `null` (excepting any operation-specific known-errors indicating otherwise) but must never be `\"\"` or otherwise non-RFC3339/ISO8601-parseable.\n\nAbout **error responses**:\n- All are `text/plain`.\n- In addition to those listed in this doc (thrown by the service under the indicated conditions), other error responses are at all times entirely technically-possible and not exhaustively documentable (feasibly), such as eg. DB / file-system / network disruptions. Those caught by the service will be `500`s, others (ie. from load-balancers / gateways / reverse-proxies etc. _in front of_ the service) might use _any_ HTTP status code whatsoever.\n- All the well-known (thrown rather than caught) errors listed here:\n  - have their code-identifier-compatible (spaceless ASCII) enumerant-name as their entire text response, making all error responses inherently `switch/case`able;\n  - have been recursively determined by code-path walking. Among them are some that logically could not possibly ever occur for that operation, yet identifying those (to filter them out of the listing) is (so far) out of scope for our current `openapi.json` spec generator. (In case of serious need, do let us know!)\n- Any non-known (caught rather than thrown) errors (not listed here) contain their original (usually human-language) error message fully, corresponding to the `default` in an error-handling `switch/case`.\n- **\"Not Found\" rules:**\n  - `404` **only** for HTTP requests with definitely-unroutable URL paths (ie. \"no such API operation or static-file asset or sub-site or etc.\"),\n  - `406` with approx. `FooDoesNotExist` (see per-operation known-error-responses listings for exact monikers) — for operations where existence was definitely critically expected (such as modifying some object identified by its `Id`),\n  - `200` with some operation-specific response-body field (like `Result` or similar) being `null` — for operations where the definite-existence expectation does not hold as crucially (for example those of the \"fetch single/first object found for some specified criteria\" kind).",
     "version": "23.319",
     "contact": {
       "name": "Permalink of openapi.json",
@@ -67,7 +67,7 @@
                 }
               },
               "X-YoUserEmailAddr": {
-                "description": "empty if not authenticated, else current `User`'s `EmailAddr`",
+                "description": "empty if not authenticated, else current `User`'s `Account`-identifying `EmailAddr`",
                 "content": {
                   "text/plain": {
                     "example": "user123@foo.bar"
@@ -262,7 +262,7 @@
                 }
               },
               "X-YoUserEmailAddr": {
-                "description": "empty if not authenticated, else current `User`'s `EmailAddr`",
+                "description": "empty if not authenticated, else current `User`'s `Account`-identifying `EmailAddr`",
                 "content": {
                   "text/plain": {
                     "example": "user123@foo.bar"
@@ -406,7 +406,7 @@
                 }
               },
               "X-YoUserEmailAddr": {
-                "description": "empty if not authenticated, else current `User`'s `EmailAddr`",
+                "description": "empty if not authenticated, else current `User`'s `Account`-identifying `EmailAddr`",
                 "content": {
                   "text/plain": {
                     "example": "user123@foo.bar"
@@ -555,8 +555,8 @@
             "multipart/form-data": {
               "example": {
                 "Id": -9007199254740991,
-                "DtMade": "2023-11-15T11:58:12.720520959Z",
-                "DtMod": "2023-11-15T11:58:12.720524315Z",
+                "DtMade": "2023-11-15T12:17:40.333397777Z",
+                "DtMod": "2023-11-15T12:17:40.333401211Z",
                 "By": {},
                 "To": [
                   -9007199254740991
@@ -593,7 +593,7 @@
                 }
               },
               "X-YoUserEmailAddr": {
-                "description": "empty if not authenticated, else current `User`'s `EmailAddr`",
+                "description": "empty if not authenticated, else current `User`'s `Account`-identifying `EmailAddr`",
                 "content": {
                   "text/plain": {
                     "example": "user123@foo.bar"
@@ -800,7 +800,7 @@
                 }
               },
               "X-YoUserEmailAddr": {
-                "description": "empty if not authenticated, else current `User`'s `EmailAddr`",
+                "description": "empty if not authenticated, else current `User`'s `Account`-identifying `EmailAddr`",
                 "content": {
                   "text/plain": {
                     "example": "user123@foo.bar"
@@ -977,7 +977,7 @@
                 }
               },
               "X-YoUserEmailAddr": {
-                "description": "empty if not authenticated, else current `User`'s `EmailAddr`",
+                "description": "empty if not authenticated, else current `User`'s `Account`-identifying `EmailAddr`",
                 "content": {
                   "text/plain": {
                     "example": "user123@foo.bar"
@@ -991,8 +991,8 @@
                   "Posts": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-15T11:58:12.720622686Z",
-                      "DtMod": "2023-11-15T11:58:12.720625302Z",
+                      "DtMade": "2023-11-15T12:17:40.333497389Z",
+                      "DtMod": "2023-11-15T12:17:40.333500026Z",
                       "By": 0,
                       "To": [
                         -9007199254740991
@@ -1006,7 +1006,7 @@
                       ]
                     }
                   ],
-                  "NextSince": "2023-11-15T11:58:12.720635492Z",
+                  "NextSince": "2023-11-15T12:17:40.333510678Z",
                   "UnreadCounts": {
                     "someMapKey1": -9007199254740991,
                     "some_map_key_2": -9007199254740991
@@ -1142,7 +1142,7 @@
           "content": {
             "application/json": {
               "example": {
-                "Since": "2023-11-15T11:58:12.720672262Z",
+                "Since": "2023-11-15T12:17:40.333545528Z",
                 "OnlyBy": [
                   -9007199254740991
                 ]
@@ -1171,7 +1171,7 @@
                 }
               },
               "X-YoUserEmailAddr": {
-                "description": "empty if not authenticated, else current `User`'s `EmailAddr`",
+                "description": "empty if not authenticated, else current `User`'s `Account`-identifying `EmailAddr`",
                 "content": {
                   "text/plain": {
                     "example": "user123@foo.bar"
@@ -1185,8 +1185,8 @@
                   "Posts": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-15T11:58:12.720680359Z",
-                      "DtMod": "2023-11-15T11:58:12.720682763Z",
+                      "DtMade": "2023-11-15T12:17:40.333552846Z",
+                      "DtMod": "2023-11-15T12:17:40.333555252Z",
                       "By": 0,
                       "To": [
                         -9007199254740991
@@ -1200,7 +1200,7 @@
                       ]
                     }
                   ],
-                  "NextSince": "2023-11-15T11:58:12.720692287Z",
+                  "NextSince": "2023-11-15T12:17:40.333564681Z",
                   "UnreadCounts": {
                     "someMapKey1": -9007199254740991,
                     "some_map_key_2": -9007199254740991
@@ -1360,7 +1360,7 @@
                 }
               },
               "X-YoUserEmailAddr": {
-                "description": "empty if not authenticated, else current `User`'s `EmailAddr`",
+                "description": "empty if not authenticated, else current `User`'s `Account`-identifying `EmailAddr`",
                 "content": {
                   "text/plain": {
                     "example": "user123@foo.bar"
@@ -1374,9 +1374,9 @@
                   "Buddies": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-15T11:58:12.720729104Z",
-                      "DtMod": "2023-11-15T11:58:12.720731508Z",
-                      "LastSeen": "2023-11-15T11:58:12.720734079Z",
+                      "DtMade": "2023-11-15T12:17:40.333601175Z",
+                      "DtMod": "2023-11-15T12:17:40.333603638Z",
+                      "LastSeen": "2023-11-15T12:17:40.33360619Z",
                       "Auth": 0,
                       "PicFileId": "someStr",
                       "Nick": "someStr",
@@ -1391,9 +1391,9 @@
                   "BuddyRequestsBy": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-15T11:58:12.720746834Z",
-                      "DtMod": "2023-11-15T11:58:12.720749215Z",
-                      "LastSeen": "2023-11-15T11:58:12.72075165Z",
+                      "DtMade": "2023-11-15T12:17:40.333619378Z",
+                      "DtMod": "2023-11-15T12:17:40.333621829Z",
+                      "LastSeen": "2023-11-15T12:17:40.333624219Z",
                       "Auth": 0,
                       "PicFileId": "someStr",
                       "Nick": "someStr",
@@ -1562,7 +1562,7 @@
                 }
               },
               "X-YoUserEmailAddr": {
-                "description": "empty if not authenticated, else current `User`'s `EmailAddr`",
+                "description": "empty if not authenticated, else current `User`'s `Account`-identifying `EmailAddr`",
                 "content": {
                   "text/plain": {
                     "example": "user123@foo.bar"
@@ -1749,7 +1749,7 @@
         },
         "responses": {
           "200": {
-            "description": "type moniker suggestion: `kaffe/app.User`",
+            "description": "type moniker suggestion: `yo/util.Return[*kaffe/app.User]`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -1768,7 +1768,7 @@
                 }
               },
               "X-YoUserEmailAddr": {
-                "description": "empty if not authenticated, else current `User`'s `EmailAddr`",
+                "description": "empty if not authenticated, else current `User`'s `Account`-identifying `EmailAddr`",
                 "content": {
                   "text/plain": {
                     "example": "user123@foo.bar"
@@ -1779,19 +1779,21 @@
             "content": {
               "application/json": {
                 "example": {
-                  "Id": -9007199254740991,
-                  "DtMade": "2023-11-15T11:58:12.72083454Z",
-                  "DtMod": "2023-11-15T11:58:12.720837073Z",
-                  "LastSeen": "2023-11-15T11:58:12.720839528Z",
-                  "Auth": {},
-                  "PicFileId": "someStr",
-                  "Nick": "someStr",
-                  "Btw": "someStr",
-                  "Buddies": [
-                    -9007199254740991
-                  ],
-                  "BtwEmoji": "someStr",
-                  "Offline": true
+                  "Result": {
+                    "Id": -9007199254740991,
+                    "DtMade": "2023-11-15T12:17:40.333718724Z",
+                    "DtMod": "2023-11-15T12:17:40.333721296Z",
+                    "LastSeen": "2023-11-15T12:17:40.333723686Z",
+                    "Auth": 0,
+                    "PicFileId": "someStr",
+                    "Nick": "someStr",
+                    "Btw": "someStr",
+                    "Buddies": [
+                      -9007199254740991
+                    ],
+                    "BtwEmoji": "someStr",
+                    "Offline": true
+                  }
                 }
               }
             }
@@ -1981,7 +1983,7 @@
                 }
               },
               "X-YoUserEmailAddr": {
-                "description": "empty if not authenticated, else current `User`'s `EmailAddr`",
+                "description": "empty if not authenticated, else current `User`'s `Account`-identifying `EmailAddr`",
                 "content": {
                   "text/plain": {
                     "example": "user123@foo.bar"
@@ -2272,7 +2274,7 @@
                 }
               },
               "X-YoUserEmailAddr": {
-                "description": "empty if not authenticated, else current `User`'s `EmailAddr`",
+                "description": "empty if not authenticated, else current `User`'s `Account`-identifying `EmailAddr`",
                 "content": {
                   "text/plain": {
                     "example": "user123@foo.bar"
@@ -2409,7 +2411,7 @@
                 }
               },
               "X-YoUserEmailAddr": {
-                "description": "empty if not authenticated, else current `User`'s `EmailAddr`",
+                "description": "empty if not authenticated, else current `User`'s `Account`-identifying `EmailAddr`",
                 "content": {
                   "text/plain": {
                     "example": "user123@foo.bar"
@@ -2601,9 +2603,9 @@
                 "Id": -9007199254740991,
                 "Changes": {
                   "Id": -9007199254740991,
-                  "DtMade": "2023-11-15T11:58:12.721051379Z",
-                  "DtMod": "2023-11-15T11:58:12.721054071Z",
-                  "LastSeen": "2023-11-15T11:58:12.721056546Z",
+                  "DtMade": "2023-11-15T12:17:40.333940679Z",
+                  "DtMod": "2023-11-15T12:17:40.333943399Z",
+                  "LastSeen": "2023-11-15T12:17:40.333945955Z",
                   "Auth": {},
                   "PicFileId": "someStr",
                   "Nick": "someStr",
@@ -2642,7 +2644,7 @@
                 }
               },
               "X-YoUserEmailAddr": {
-                "description": "empty if not authenticated, else current `User`'s `EmailAddr`",
+                "description": "empty if not authenticated, else current `User`'s `Account`-identifying `EmailAddr`",
                 "content": {
                   "text/plain": {
                     "example": "user123@foo.bar"

@@ -276,9 +276,9 @@ export async function api__userBuddiesAdd(payload?: __userBuddiesAdd_In, formDat
 export type __userBuddiesAddErr = typeof errs__userBuddiesAdd[number]
 
 const errs__userBy = ['TimedOut', 'UnacceptableContentLength', 'UnacceptableContentType', 'Unauthorized', '__userBy_ExpectedEitherNickNameOrEmailAddr'] as const
-export async function api__userBy(payload?: __userBy_In, formData?: FormData, query?: {[_:string]:string}): Promise<User> {
+export async function api__userBy(payload?: __userBy_In, formData?: FormData, query?: {[_:string]:string}): Promise<Return__kaffe_app_User_> {
 	try {
-		return await req<__userBy_In, User, __userByErr>('_/userBy', payload, formData, query)
+		return await req<__userBy_In, Return__kaffe_app_User_, __userByErr>('_/userBy', payload, formData, query)
 	} catch(err: any) {
 		if (err && err['body_text'] && (errs__userBy.indexOf(err.body_text) >= 0))
 			throw(new Err<__userByErr>(err.body_text as __userByErr))
@@ -457,6 +457,10 @@ export type ApiUpdateArgs_kaffe_app_User_kaffe_app_UserField_ = {
 
 export type DateTime = string
 export type None = {
+}
+
+export type Return__kaffe_app_User_ = {
+	Result: User
 }
 
 export type Return_map_string_string_ = {
