@@ -36,10 +36,14 @@
           }
         ],
         "requestBody": {
-          "description": "type moniker suggestion: `__postDelete_In`",
+          "description": "backend type ref: `__postDelete_In`",
           "required": true,
           "content": {
             "application/json": {
+              "schema": {
+                "type": "object",
+                "$ref": "#/components/schemas/struct___Id_yodb_I64__"
+              },
               "example": {
                 "Id": -9007199254740991
               }
@@ -48,7 +52,7 @@
         },
         "responses": {
           "200": {
-            "description": "type moniker suggestion: `yo/util.None`",
+            "description": "backend type ref: `yo/util.None`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -77,6 +81,10 @@
             },
             "content": {
               "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/util_None"
+                },
                 "example": {}
               }
             }
@@ -233,17 +241,21 @@
           }
         ],
         "requestBody": {
-          "description": "type moniker suggestion: `yo/util.None`",
+          "description": "backend type ref: `yo/util.None`",
           "required": true,
           "content": {
             "application/json": {
+              "schema": {
+                "type": "object",
+                "$ref": "#/components/schemas/util_None"
+              },
               "example": {}
             }
           }
         },
         "responses": {
           "200": {
-            "description": "type moniker suggestion: `yo/util.Return[map[string]string]`",
+            "description": "backend type ref: `yo/util.Return[map[string]string]`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -272,6 +284,10 @@
             },
             "content": {
               "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/util_Return_map_string_string_"
+                },
                 "example": {
                   "Result": {
                     "someMapKey1": "someStr",
@@ -373,10 +389,14 @@
           }
         ],
         "requestBody": {
-          "description": "type moniker suggestion: `__postMonthsUtc_In`",
+          "description": "backend type ref: `__postMonthsUtc_In`",
           "required": true,
           "content": {
             "application/json": {
+              "schema": {
+                "type": "object",
+                "$ref": "#/components/schemas/struct___WithUserIds___yodb_I64__"
+              },
               "example": {
                 "WithUserIds": [
                   -9007199254740991
@@ -387,7 +407,7 @@
         },
         "responses": {
           "200": {
-            "description": "type moniker suggestion: `__postMonthsUtc_Out`",
+            "description": "backend type ref: `__postMonthsUtc_Out`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -416,6 +436,10 @@
             },
             "content": {
               "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/struct___Periods___kaffe_YearAndMonth__"
+                },
                 "example": {
                   "Periods": [
                     {
@@ -549,14 +573,18 @@
           }
         ],
         "requestBody": {
-          "description": "`multipart/form-data` form-fields:\n1. binary file uploads in form field `files`, and\n2. `application/json` request payload as `text/plain` in form field `_`, as elaborated in this example (type moniker suggestion: `kaffe/app.Post`)",
+          "description": "`multipart/form-data` form-fields:\n1. binary file uploads in form field `files`, and\n2. `application/json` request payload as `text/plain` in form field `_`, as elaborated in this example (backend type ref: `kaffe/app.Post`)",
           "required": true,
           "content": {
             "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "$ref": "#/components/schemas/kaffe_Post"
+              },
               "example": {
                 "Id": -9007199254740991,
-                "DtMade": "2023-11-15T17:21:28.802329936Z",
-                "DtMod": "2023-11-15T17:21:28.802337646Z",
+                "DtMade": "2023-11-15T18:52:47.098722706Z",
+                "DtMod": "2023-11-15T18:52:47.098726407Z",
                 "By": {},
                 "To": [
                   -9007199254740991
@@ -574,7 +602,7 @@
         },
         "responses": {
           "200": {
-            "description": "type moniker suggestion: `yo/util.Return[yo/db.I64]`",
+            "description": "backend type ref: `yo/util.Return[yo/db.I64]`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -603,6 +631,10 @@
             },
             "content": {
               "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/util_Return_yo_db_I64_"
+                },
                 "example": {
                   "Result": -9007199254740991
                 }
@@ -767,10 +799,14 @@
           }
         ],
         "requestBody": {
-          "description": "type moniker suggestion: `__postsDeleted_In`",
+          "description": "backend type ref: `__postsDeleted_In`",
           "required": true,
           "content": {
             "application/json": {
+              "schema": {
+                "type": "object",
+                "$ref": "#/components/schemas/struct___OutOfPostIds___yodb_I64__"
+              },
               "example": {
                 "OutOfPostIds": [
                   -9007199254740991
@@ -781,7 +817,7 @@
         },
         "responses": {
           "200": {
-            "description": "type moniker suggestion: `__postsDeleted_Out`",
+            "description": "backend type ref: `__postsDeleted_Out`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -810,6 +846,10 @@
             },
             "content": {
               "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/struct___DeletedPostIds___yodb_I64__"
+                },
                 "example": {
                   "DeletedPostIds": [
                     -9007199254740991
@@ -940,10 +980,14 @@
           }
         ],
         "requestBody": {
-          "description": "type moniker suggestion: `kaffe/app.ApiArgPeriod`",
+          "description": "backend type ref: `kaffe/app.ApiArgPeriod`",
           "required": true,
           "content": {
             "application/json": {
+              "schema": {
+                "type": "object",
+                "$ref": "#/components/schemas/kaffe_ApiArgPeriod"
+              },
               "example": {
                 "Period": {
                   "Year": 65535,
@@ -958,7 +1002,7 @@
         },
         "responses": {
           "200": {
-            "description": "type moniker suggestion: `kaffe/app.PostsListResult`",
+            "description": "backend type ref: `kaffe/app.PostsListResult`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -987,12 +1031,16 @@
             },
             "content": {
               "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/kaffe_PostsListResult"
+                },
                 "example": {
                   "Posts": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-15T17:21:28.802433447Z",
-                      "DtMod": "2023-11-15T17:21:28.802436054Z",
+                      "DtMade": "2023-11-15T18:52:47.098855276Z",
+                      "DtMod": "2023-11-15T18:52:47.098857857Z",
                       "By": 0,
                       "To": [
                         -9007199254740991
@@ -1006,7 +1054,7 @@
                       ]
                     }
                   ],
-                  "NextSince": "2023-11-15T17:21:28.802445961Z",
+                  "NextSince": "2023-11-15T18:52:47.098867781Z",
                   "UnreadCounts": {
                     "someMapKey1": -9007199254740991,
                     "some_map_key_2": -9007199254740991
@@ -1137,12 +1185,16 @@
           }
         ],
         "requestBody": {
-          "description": "type moniker suggestion: `__postsRecent_In`",
+          "description": "backend type ref: `__postsRecent_In`",
           "required": true,
           "content": {
             "application/json": {
+              "schema": {
+                "type": "object",
+                "$ref": "#/components/schemas/struct___Since__yodb_DateTime__OnlyBy___yodb_I64__"
+              },
               "example": {
-                "Since": "2023-11-15T17:21:28.802483677Z",
+                "Since": "2023-11-15T18:52:47.098917451Z",
                 "OnlyBy": [
                   -9007199254740991
                 ]
@@ -1152,7 +1204,7 @@
         },
         "responses": {
           "200": {
-            "description": "type moniker suggestion: `kaffe/app.PostsListResult`",
+            "description": "backend type ref: `kaffe/app.PostsListResult`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -1181,12 +1233,16 @@
             },
             "content": {
               "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/kaffe_PostsListResult"
+                },
                 "example": {
                   "Posts": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-15T17:21:28.802490746Z",
-                      "DtMod": "2023-11-15T17:21:28.802493129Z",
+                      "DtMade": "2023-11-15T18:52:47.098855276Z",
+                      "DtMod": "2023-11-15T18:52:47.098857857Z",
                       "By": 0,
                       "To": [
                         -9007199254740991
@@ -1200,7 +1256,7 @@
                       ]
                     }
                   ],
-                  "NextSince": "2023-11-15T17:21:28.802502786Z",
+                  "NextSince": "2023-11-15T18:52:47.098867781Z",
                   "UnreadCounts": {
                     "someMapKey1": -9007199254740991,
                     "some_map_key_2": -9007199254740991
@@ -1331,17 +1387,21 @@
           }
         ],
         "requestBody": {
-          "description": "type moniker suggestion: `yo/util.None`",
+          "description": "backend type ref: `yo/util.None`",
           "required": true,
           "content": {
             "application/json": {
+              "schema": {
+                "type": "object",
+                "$ref": "#/components/schemas/util_None"
+              },
               "example": {}
             }
           }
         },
         "responses": {
           "200": {
-            "description": "type moniker suggestion: `__userBuddies_Out`",
+            "description": "backend type ref: `__userBuddies_Out`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -1370,13 +1430,17 @@
             },
             "content": {
               "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/struct___Buddies____kaffe_User__BuddyRequestsBy____kaffe_User__"
+                },
                 "example": {
                   "Buddies": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-15T17:21:28.802542501Z",
-                      "DtMod": "2023-11-15T17:21:28.802544968Z",
-                      "LastSeen": "2023-11-15T17:21:28.802547342Z",
+                      "DtMade": "2023-11-15T18:52:47.098961061Z",
+                      "DtMod": "2023-11-15T18:52:47.098963486Z",
+                      "LastSeen": "2023-11-15T18:52:47.098965982Z",
                       "Auth": 0,
                       "PicFileId": "someStr",
                       "Nick": "someStr",
@@ -1391,9 +1455,9 @@
                   "BuddyRequestsBy": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-15T17:21:28.802560194Z",
-                      "DtMod": "2023-11-15T17:21:28.8025626Z",
-                      "LastSeen": "2023-11-15T17:21:28.802565046Z",
+                      "DtMade": "2023-11-15T18:52:47.098979143Z",
+                      "DtMod": "2023-11-15T18:52:47.098981507Z",
+                      "LastSeen": "2023-11-15T18:52:47.098983939Z",
                       "Auth": 0,
                       "PicFileId": "someStr",
                       "Nick": "someStr",
@@ -1531,10 +1595,14 @@
           }
         ],
         "requestBody": {
-          "description": "type moniker suggestion: `__userBuddiesAdd_In`",
+          "description": "backend type ref: `__userBuddiesAdd_In`",
           "required": true,
           "content": {
             "application/json": {
+              "schema": {
+                "type": "object",
+                "$ref": "#/components/schemas/struct___NickOrEmailAddr_string__"
+              },
               "example": {
                 "NickOrEmailAddr": "someStr"
               }
@@ -1543,7 +1611,7 @@
         },
         "responses": {
           "200": {
-            "description": "type moniker suggestion: `__userBuddiesAdd_Out`",
+            "description": "backend type ref: `__userBuddiesAdd_Out`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -1572,6 +1640,10 @@
             },
             "content": {
               "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/struct___Done_bool__"
+                },
                 "example": {
                   "Done": true
                 }
@@ -1736,10 +1808,14 @@
           }
         ],
         "requestBody": {
-          "description": "type moniker suggestion: `__userBy_In`",
+          "description": "backend type ref: `__userBy_In`",
           "required": true,
           "content": {
             "application/json": {
+              "schema": {
+                "type": "object",
+                "$ref": "#/components/schemas/struct___EmailAddr_string__NickName_string__"
+              },
               "example": {
                 "EmailAddr": "someStr",
                 "NickName": "someStr"
@@ -1749,7 +1825,7 @@
         },
         "responses": {
           "200": {
-            "description": "type moniker suggestion: `yo/util.Return[*kaffe/app.User]`",
+            "description": "backend type ref: `yo/util.Return[*kaffe/app.User]`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -1778,12 +1854,16 @@
             },
             "content": {
               "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/util_Return__kaffe_app_User_"
+                },
                 "example": {
                   "Result": {
                     "Id": -9007199254740991,
-                    "DtMade": "2023-11-15T17:21:28.802648852Z",
-                    "DtMod": "2023-11-15T17:21:28.802651352Z",
-                    "LastSeen": "2023-11-15T17:21:28.802653733Z",
+                    "DtMade": "2023-11-15T18:52:47.099105642Z",
+                    "DtMod": "2023-11-15T18:52:47.099108194Z",
+                    "LastSeen": "2023-11-15T18:52:47.099110546Z",
                     "Auth": 0,
                     "PicFileId": "someStr",
                     "Nick": "someStr",
@@ -1950,10 +2030,14 @@
           }
         ],
         "requestBody": {
-          "description": "type moniker suggestion: `kaffe/app.ApiUserSignInOrReset`",
+          "description": "backend type ref: `kaffe/app.ApiUserSignInOrReset`",
           "required": true,
           "content": {
             "application/json": {
+              "schema": {
+                "type": "object",
+                "$ref": "#/components/schemas/kaffe_ApiUserSignInOrReset"
+              },
               "example": {
                 "NickOrEmailAddr": "someStr",
                 "PasswordPlain": "lenOfMin6AndMax64",
@@ -1964,7 +2048,7 @@
         },
         "responses": {
           "200": {
-            "description": "type moniker suggestion: `yo/util.None`",
+            "description": "backend type ref: `yo/util.None`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -1993,6 +2077,10 @@
             },
             "content": {
               "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/util_None"
+                },
                 "example": {}
               }
             }
@@ -2245,17 +2333,21 @@
           }
         ],
         "requestBody": {
-          "description": "type moniker suggestion: `yo/util.None`",
+          "description": "backend type ref: `yo/util.None`",
           "required": true,
           "content": {
             "application/json": {
+              "schema": {
+                "type": "object",
+                "$ref": "#/components/schemas/util_None"
+              },
               "example": {}
             }
           }
         },
         "responses": {
           "200": {
-            "description": "type moniker suggestion: `yo/util.None`",
+            "description": "backend type ref: `yo/util.None`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -2284,6 +2376,10 @@
             },
             "content": {
               "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/util_None"
+                },
                 "example": {}
               }
             }
@@ -2380,10 +2476,14 @@
           }
         ],
         "requestBody": {
-          "description": "type moniker suggestion: `kaffe/app.ApiNickOrEmailAddr`",
+          "description": "backend type ref: `kaffe/app.ApiNickOrEmailAddr`",
           "required": true,
           "content": {
             "application/json": {
+              "schema": {
+                "type": "object",
+                "$ref": "#/components/schemas/kaffe_ApiNickOrEmailAddr"
+              },
               "example": {
                 "NickOrEmailAddr": "someStr"
               }
@@ -2392,7 +2492,7 @@
         },
         "responses": {
           "200": {
-            "description": "type moniker suggestion: `yo/util.None`",
+            "description": "backend type ref: `yo/util.None`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -2421,6 +2521,10 @@
             },
             "content": {
               "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/util_None"
+                },
                 "example": {}
               }
             }
@@ -2595,17 +2699,21 @@
           }
         ],
         "requestBody": {
-          "description": "`multipart/form-data` form-fields:\n1. binary file uploads in form field `files`, and\n2. `application/json` request payload as `text/plain` in form field `_`, as elaborated in this example (type moniker suggestion: `yo/db.ApiUpdateArgs[kaffe/app.User,kaffe/app.UserField]`)",
+          "description": "`multipart/form-data` form-fields:\n1. binary file uploads in form field `files`, and\n2. `application/json` request payload as `text/plain` in form field `_`, as elaborated in this example (backend type ref: `yo/db.ApiUpdateArgs[kaffe/app.User,kaffe/app.UserField]`)",
           "required": true,
           "content": {
             "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "$ref": "#/components/schemas/yodb_ApiUpdateArgs_kaffe_app_User_kaffe_app_UserField_"
+              },
               "example": {
                 "Id": -9007199254740991,
                 "Changes": {
                   "Id": -9007199254740991,
-                  "DtMade": "2023-11-15T17:21:28.802860636Z",
-                  "DtMod": "2023-11-15T17:21:28.802863325Z",
-                  "LastSeen": "2023-11-15T17:21:28.802865824Z",
+                  "DtMade": "2023-11-15T18:52:47.099346942Z",
+                  "DtMod": "2023-11-15T18:52:47.099349531Z",
+                  "LastSeen": "2023-11-15T18:52:47.099351964Z",
                   "Auth": {},
                   "PicFileId": "someStr",
                   "Nick": "someStr",
@@ -2625,7 +2733,7 @@
         },
         "responses": {
           "200": {
-            "description": "type moniker suggestion: `yo/util.None`",
+            "description": "backend type ref: `yo/util.None`",
             "headers": {
               "Cache-Control": {
                 "description": "always `no-store`",
@@ -2654,6 +2762,10 @@
             },
             "content": {
               "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/util_None"
+                },
                 "example": {}
               }
             }
@@ -2826,3638 +2938,857 @@
   },
   "components": {
     "schemas": {
-      "___yo_authRegister_Out": {
-        "description": "___yo_authRegister_Out",
-        "type": "object",
-        "properties": {
-          "Id": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "___yo_db_ErrEntry_createMany_In": {
-        "description": "___yo_db_ErrEntry_createMany_In",
-        "type": "object",
-        "properties": {
-          "Items": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "___yo_db_ErrEntry_updateMany_In": {
-        "description": "___yo_db_ErrEntry_updateMany_In",
-        "type": "object",
-        "properties": {
-          "Changes": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "IncludingEmptyOrMissingFields": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Max": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "OrderBy": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Query": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "QueryFrom": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "___yo_db_JobDef_createMany_In": {
-        "description": "___yo_db_JobDef_createMany_In",
-        "type": "object",
-        "properties": {
-          "Items": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "___yo_db_JobDef_updateMany_In": {
-        "description": "___yo_db_JobDef_updateMany_In",
-        "type": "object",
-        "properties": {
-          "Changes": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "IncludingEmptyOrMissingFields": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Max": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "OrderBy": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Query": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "QueryFrom": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "___yo_db_JobRun_createMany_In": {
-        "description": "___yo_db_JobRun_createMany_In",
-        "type": "object",
-        "properties": {
-          "Items": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "___yo_db_JobRun_updateMany_In": {
-        "description": "___yo_db_JobRun_updateMany_In",
-        "type": "object",
-        "properties": {
-          "Changes": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "IncludingEmptyOrMissingFields": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Max": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "OrderBy": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Query": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "QueryFrom": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "___yo_db_JobTask_createMany_In": {
-        "description": "___yo_db_JobTask_createMany_In",
-        "type": "object",
-        "properties": {
-          "Items": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "___yo_db_JobTask_updateMany_In": {
-        "description": "___yo_db_JobTask_updateMany_In",
-        "type": "object",
-        "properties": {
-          "Changes": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "IncludingEmptyOrMissingFields": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Max": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "OrderBy": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Query": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "QueryFrom": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "___yo_db_MailReq_createMany_In": {
-        "description": "___yo_db_MailReq_createMany_In",
-        "type": "object",
-        "properties": {
-          "Items": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "___yo_db_MailReq_updateMany_In": {
-        "description": "___yo_db_MailReq_updateMany_In",
-        "type": "object",
-        "properties": {
-          "Changes": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "IncludingEmptyOrMissingFields": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Max": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "OrderBy": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Query": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "QueryFrom": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "___yo_db_Post_createMany_In": {
-        "description": "___yo_db_Post_createMany_In",
-        "type": "object",
-        "properties": {
-          "Items": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "___yo_db_Post_updateMany_In": {
-        "description": "___yo_db_Post_updateMany_In",
-        "type": "object",
-        "properties": {
-          "Changes": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "IncludingEmptyOrMissingFields": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Max": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "OrderBy": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Query": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "QueryFrom": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "___yo_db_UserAuth_createMany_In": {
-        "description": "___yo_db_UserAuth_createMany_In",
-        "type": "object",
-        "properties": {
-          "Items": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "___yo_db_UserAuth_updateMany_In": {
-        "description": "___yo_db_UserAuth_updateMany_In",
-        "type": "object",
-        "properties": {
-          "Changes": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "IncludingEmptyOrMissingFields": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Max": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "OrderBy": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Query": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "QueryFrom": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "___yo_db_UserPwdReq_createMany_In": {
-        "description": "___yo_db_UserPwdReq_createMany_In",
-        "type": "object",
-        "properties": {
-          "Items": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "___yo_db_UserPwdReq_updateMany_In": {
-        "description": "___yo_db_UserPwdReq_updateMany_In",
-        "type": "object",
-        "properties": {
-          "Changes": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "IncludingEmptyOrMissingFields": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Max": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "OrderBy": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Query": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "QueryFrom": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "___yo_db_User_createMany_In": {
-        "description": "___yo_db_User_createMany_In",
-        "type": "object",
-        "properties": {
-          "Items": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "___yo_db_User_updateMany_In": {
-        "description": "___yo_db_User_updateMany_In",
-        "type": "object",
-        "properties": {
-          "Changes": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "IncludingEmptyOrMissingFields": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Max": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "OrderBy": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Query": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "QueryFrom": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "___yo_db_fileDelReq_createMany_In": {
-        "description": "___yo_db_fileDelReq_createMany_In",
-        "type": "object",
-        "properties": {
-          "Items": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "___yo_db_fileDelReq_updateMany_In": {
-        "description": "___yo_db_fileDelReq_updateMany_In",
-        "type": "object",
-        "properties": {
-          "Changes": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "IncludingEmptyOrMissingFields": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Max": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "OrderBy": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Query": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "QueryFrom": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "___yo_db_getTable_In": {
-        "description": "___yo_db_getTable_In",
-        "type": "object",
-        "properties": {
-          "Name": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "__postDelete_In": {
-        "description": "__postDelete_In",
-        "type": "object",
-        "properties": {
-          "Id": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "__postMonthsUtc_In": {
-        "description": "__postMonthsUtc_In",
-        "type": "object",
-        "properties": {
-          "WithUserIds": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "__postMonthsUtc_Out": {
-        "description": "__postMonthsUtc_Out",
-        "type": "object",
-        "properties": {
-          "Periods": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "__postsDeleted_In": {
-        "description": "__postsDeleted_In",
-        "type": "object",
-        "properties": {
-          "OutOfPostIds": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "__postsDeleted_Out": {
-        "description": "__postsDeleted_Out",
-        "type": "object",
-        "properties": {
-          "DeletedPostIds": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "__postsRecent_In": {
-        "description": "__postsRecent_In",
+      "kaffe_ApiArgPeriod": {
+        "description": "kaffe.ApiArgPeriod",
         "type": "object",
         "properties": {
           "OnlyBy": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Since": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "__userBuddiesAdd_In": {
-        "description": "__userBuddiesAdd_In",
-        "type": "object",
-        "properties": {
-          "NickOrEmailAddr": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "__userBuddiesAdd_Out": {
-        "description": "__userBuddiesAdd_Out",
-        "type": "object",
-        "properties": {
-          "Done": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "__userBuddies_Out": {
-        "description": "__userBuddies_Out",
-        "type": "object",
-        "properties": {
-          "Buddies": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "BuddyRequestsBy": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "__userBy_In": {
-        "description": "__userBy_In",
-        "type": "object",
-        "properties": {
-          "EmailAddr": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "NickName": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "kaffe_app_ApiArgPeriod": {
-        "description": "kaffe/app.ApiArgPeriod",
-        "type": "object",
-        "properties": {
-          "OnlyBy": {
-            "type": [
-              "object",
-              "null"
-            ]
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            }
           },
           "Period": {
-            "type": [
-              "object",
-              "null"
+            "type": "object",
+            "$ref": "#/components/schemas/kaffe_YearAndMonth"
+          }
+        },
+        "examples": [
+          {
+            "Period": {
+              "Year": 65535,
+              "Month": 255
+            },
+            "OnlyBy": [
+              -9007199254740991
             ]
           }
-        }
+        ]
       },
-      "kaffe_app_ApiNickOrEmailAddr": {
-        "description": "kaffe/app.ApiNickOrEmailAddr",
+      "kaffe_ApiNickOrEmailAddr": {
+        "description": "kaffe.ApiNickOrEmailAddr",
         "type": "object",
         "properties": {
           "NickOrEmailAddr": {
-            "type": [
-              "object",
-              "null"
-            ]
+            "type": "string"
           }
-        }
+        },
+        "examples": [
+          {
+            "NickOrEmailAddr": "someStr"
+          }
+        ]
       },
-      "kaffe_app_ApiUserSignInOrReset": {
-        "description": "kaffe/app.ApiUserSignInOrReset",
+      "kaffe_ApiUserSignInOrReset": {
+        "description": "kaffe.ApiUserSignInOrReset",
         "type": "object",
         "properties": {
-          "NickOrEmailAddr": {
-            "type": [
-              "object",
-              "null"
-            ]
+          "ApiNickOrEmailAddr": {
+            "type": "object",
+            "$ref": "#/components/schemas/kaffe_ApiNickOrEmailAddr"
           },
           "Password2Plain": {
-            "type": [
-              "object",
-              "null"
-            ]
+            "type": "string",
+            "format": "password",
+            "minLength": 6,
+            "maxLength": 64
           },
           "PasswordPlain": {
-            "type": [
-              "object",
-              "null"
-            ]
+            "type": "string",
+            "format": "password",
+            "minLength": 6,
+            "maxLength": 64
           }
-        }
+        },
+        "examples": [
+          {
+            "NickOrEmailAddr": "someStr",
+            "PasswordPlain": "lenOfMin6AndMax64",
+            "Password2Plain": "lenOfMin6AndMax64"
+          }
+        ]
       },
-      "kaffe_app_Post": {
-        "description": "kaffe/app.Post",
+      "kaffe_Post": {
+        "description": "kaffe.Post",
         "type": "object",
         "properties": {
           "By": {
-            "type": [
-              "object",
-              "null"
-            ]
+            "type": "integer",
+            "format": "int64",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
           },
           "DtMade": {
-            "type": [
-              "object",
-              "null"
-            ]
+            "type": "string",
+            "format": "date-time"
           },
           "DtMod": {
-            "type": [
-              "object",
-              "null"
-            ]
+            "type": "string",
+            "format": "date-time"
           },
           "FileContentTypes": {
-            "type": [
-              "object",
-              "null"
-            ]
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "Files": {
-            "type": [
-              "object",
-              "null"
-            ]
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "Htm": {
-            "type": [
-              "object",
-              "null"
-            ]
+            "type": "string"
           },
           "Id": {
-            "type": [
-              "object",
-              "null"
-            ]
+            "type": "integer",
+            "format": "int64",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
           },
           "To": {
-            "type": [
-              "object",
-              "null"
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            }
+          }
+        },
+        "examples": [
+          {
+            "Id": -9007199254740991,
+            "DtMade": "2023-11-15T18:52:47.098722706Z",
+            "DtMod": "2023-11-15T18:52:47.098726407Z",
+            "By": {},
+            "To": [
+              -9007199254740991
+            ],
+            "Htm": "someStr",
+            "Files": [
+              "someStr"
+            ],
+            "FileContentTypes": [
+              "someStr"
             ]
           }
-        }
+        ]
       },
-      "kaffe_app_PostsListResult": {
-        "description": "kaffe/app.PostsListResult",
+      "kaffe_PostsListResult": {
+        "description": "kaffe.PostsListResult",
         "type": "object",
         "properties": {
           "NextSince": {
-            "type": [
-              "object",
-              "null"
-            ]
+            "type": "string",
+            "format": "date-time"
           },
           "Posts": {
-            "type": [
-              "object",
-              "null"
-            ]
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "By": {
+                  "type": "integer",
+                  "format": "int64",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "DtMade": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "DtMod": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "FileContentTypes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "Files": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "Htm": {
+                  "type": "string"
+                },
+                "Id": {
+                  "type": "integer",
+                  "format": "int64",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "To": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "format": "int64",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  }
+                }
+              }
+            }
           },
           "UnreadCounts": {
-            "type": [
-              "object",
-              "null"
-            ]
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            }
           }
-        }
+        },
+        "examples": [
+          {
+            "Posts": [
+              {
+                "Id": -9007199254740991,
+                "DtMade": "2023-11-15T18:52:47.098855276Z",
+                "DtMod": "2023-11-15T18:52:47.098857857Z",
+                "By": 0,
+                "To": [
+                  -9007199254740991
+                ],
+                "Htm": "someStr",
+                "Files": [
+                  "someStr"
+                ],
+                "FileContentTypes": [
+                  "someStr"
+                ]
+              }
+            ],
+            "NextSince": "2023-11-15T18:52:47.098867781Z",
+            "UnreadCounts": {
+              "someMapKey1": -9007199254740991,
+              "some_map_key_2": -9007199254740991
+            }
+          }
+        ]
       },
-      "kaffe_app_User": {
-        "description": "kaffe/app.User",
+      "kaffe_User": {
+        "description": "kaffe.User",
         "type": "object",
         "properties": {
           "Auth": {
-            "type": [
-              "object",
-              "null"
-            ]
+            "type": "integer",
+            "format": "int64",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
           },
           "Btw": {
-            "type": [
-              "object",
-              "null"
-            ]
+            "type": "string"
           },
           "BtwEmoji": {
-            "type": [
-              "object",
-              "null"
-            ]
+            "type": "string"
           },
           "Buddies": {
-            "type": [
-              "object",
-              "null"
-            ]
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            }
           },
           "DtMade": {
-            "type": [
-              "object",
-              "null"
-            ]
+            "type": "string",
+            "format": "date-time"
           },
           "DtMod": {
-            "type": [
-              "object",
-              "null"
-            ]
+            "type": "string",
+            "format": "date-time"
           },
           "Id": {
-            "type": [
-              "object",
-              "null"
-            ]
+            "type": "integer",
+            "format": "int64",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
           },
           "LastSeen": {
-            "type": [
-              "object",
-              "null"
-            ]
+            "type": "string",
+            "format": "date-time"
           },
           "Nick": {
-            "type": [
-              "object",
-              "null"
-            ]
+            "type": "string"
           },
           "Offline": {
-            "type": [
-              "object",
-              "null"
-            ]
+            "type": "boolean"
           },
           "PicFileId": {
-            "type": [
-              "object",
-              "null"
-            ]
+            "type": "string"
           }
-        }
+        },
+        "examples": [
+          {
+            "Id": -9007199254740991,
+            "DtMade": "2023-11-15T18:52:47.099369681Z",
+            "DtMod": "2023-11-15T18:52:47.099372114Z",
+            "LastSeen": "2023-11-15T18:52:47.099374572Z",
+            "Auth": {},
+            "PicFileId": "someStr",
+            "Nick": "someStr",
+            "Btw": "someStr",
+            "Buddies": [
+              -9007199254740991
+            ],
+            "BtwEmoji": "someStr",
+            "Offline": true
+          }
+        ]
       },
-      "kaffe_app_YearAndMonth": {
-        "description": "kaffe/app.YearAndMonth",
+      "kaffe_YearAndMonth": {
+        "description": "kaffe.YearAndMonth",
         "type": "object",
         "properties": {
           "Month": {
-            "type": [
-              "object",
-              "null"
-            ]
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0,
+            "maximum": 255
           },
           "Year": {
-            "type": [
-              "object",
-              "null"
-            ]
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0,
+            "maximum": 65535
           }
-        }
+        },
+        "examples": [
+          {
+            "Year": 65535,
+            "Month": 255
+          }
+        ]
       },
-      "kaffe_app_fileDelReq": {
-        "description": "kaffe/app.fileDelReq",
+      "struct___Buddies____kaffe_User__BuddyRequestsBy____kaffe_User__": {
+        "description": "struct { Buddies []*kaffe.User; BuddyRequestsBy []*kaffe.User }",
         "type": "object",
         "properties": {
-          "DtMade": {
-            "type": [
-              "object",
-              "null"
-            ]
+          "Buddies": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "Auth": {
+                  "type": "integer",
+                  "format": "int64",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "Btw": {
+                  "type": "string"
+                },
+                "BtwEmoji": {
+                  "type": "string"
+                },
+                "Buddies": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "format": "int64",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "DtMade": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "DtMod": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "Id": {
+                  "type": "integer",
+                  "format": "int64",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "LastSeen": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "Nick": {
+                  "type": "string"
+                },
+                "Offline": {
+                  "type": "boolean"
+                },
+                "PicFileId": {
+                  "type": "string"
+                }
+              }
+            }
           },
-          "DtMod": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "FileNames": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Id": {
-            "type": [
-              "object",
-              "null"
+          "BuddyRequestsBy": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "Auth": {
+                  "type": "integer",
+                  "format": "int64",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "Btw": {
+                  "type": "string"
+                },
+                "BtwEmoji": {
+                  "type": "string"
+                },
+                "Buddies": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "format": "int64",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "DtMade": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "DtMod": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "Id": {
+                  "type": "integer",
+                  "format": "int64",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "LastSeen": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "Nick": {
+                  "type": "string"
+                },
+                "Offline": {
+                  "type": "boolean"
+                },
+                "PicFileId": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "examples": [
+          {
+            "Buddies": [
+              {
+                "Id": -9007199254740991,
+                "DtMade": "2023-11-15T18:52:47.098961061Z",
+                "DtMod": "2023-11-15T18:52:47.098963486Z",
+                "LastSeen": "2023-11-15T18:52:47.098965982Z",
+                "Auth": 0,
+                "PicFileId": "someStr",
+                "Nick": "someStr",
+                "Btw": "someStr",
+                "Buddies": [
+                  -9007199254740991
+                ],
+                "BtwEmoji": "someStr",
+                "Offline": true
+              }
+            ],
+            "BuddyRequestsBy": [
+              {
+                "Id": -9007199254740991,
+                "DtMade": "2023-11-15T18:52:47.098979143Z",
+                "DtMod": "2023-11-15T18:52:47.098981507Z",
+                "LastSeen": "2023-11-15T18:52:47.098983939Z",
+                "Auth": 0,
+                "PicFileId": "someStr",
+                "Nick": "someStr",
+                "Btw": "someStr",
+                "Buddies": [
+                  -9007199254740991
+                ],
+                "BtwEmoji": "someStr",
+                "Offline": true
+              }
             ]
           }
-        }
+        ]
       },
-      "yo_ErrEntry": {
-        "description": "yo.ErrEntry",
+      "struct___DeletedPostIds___yodb_I64__": {
+        "description": "struct { DeletedPostIds []yodb.I64 }",
         "type": "object",
         "properties": {
-          "CtxVals": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "DbTx": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "DtMade": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "DtMod": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Err": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "HttpFullUri": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "HttpUrlPath": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Id": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "JobRunId": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "JobTaskId": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "NumCaught": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "StackTrace": {
-            "type": [
-              "object",
-              "null"
+          "DeletedPostIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            }
+          }
+        },
+        "examples": [
+          {
+            "DeletedPostIds": [
+              -9007199254740991
             ]
           }
-        }
+        ]
       },
-      "yo_auth_ApiAccountPayload": {
-        "description": "yo/auth.ApiAccountPayload",
+      "struct___Done_bool__": {
+        "description": "struct { Done bool }",
+        "type": "object",
+        "properties": {
+          "Done": {
+            "type": "boolean"
+          }
+        },
+        "examples": [
+          {
+            "Done": true
+          }
+        ]
+      },
+      "struct___EmailAddr_string__NickName_string__": {
+        "description": "struct { EmailAddr string; NickName string }",
         "type": "object",
         "properties": {
           "EmailAddr": {
-            "type": [
-              "object",
-              "null"
-            ]
+            "type": "string",
+            "format": "email",
+            "minLength": 5,
+            "maxLength": 255
           },
-          "Password2Plain": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "PasswordPlain": {
-            "type": [
-              "object",
-              "null"
-            ]
+          "NickName": {
+            "type": "string"
           }
-        }
+        },
+        "examples": [
+          {
+            "EmailAddr": "someStr",
+            "NickName": "someStr"
+          }
+        ]
       },
-      "yo_auth_UserAuth": {
-        "description": "yo/auth.UserAuth",
+      "struct___Id_yodb_I64__": {
+        "description": "struct { Id yodb.I64 }",
         "type": "object",
         "properties": {
-          "DtMade": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "DtMod": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "EmailAddr": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "FailedLoginAttempts": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
           "Id": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Lockout": {
-            "type": [
-              "object",
-              "null"
-            ]
+            "type": "integer",
+            "format": "int64",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
           }
-        }
+        },
+        "examples": [
+          {
+            "Id": -9007199254740991
+          }
+        ]
       },
-      "yo_auth_UserPwdReq": {
-        "description": "yo/auth.UserPwdReq",
+      "struct___NickOrEmailAddr_string__": {
+        "description": "struct { NickOrEmailAddr string }",
         "type": "object",
         "properties": {
-          "DoneMailReqId": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "DtMade": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "DtMod": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "EmailAddr": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Id": {
-            "type": [
-              "object",
-              "null"
-            ]
+          "NickOrEmailAddr": {
+            "type": "string"
           }
-        }
+        },
+        "examples": [
+          {
+            "NickOrEmailAddr": "someStr"
+          }
+        ]
       },
-      "yo_db_ApiOrderBy_kaffe_app_Post_kaffe_app_PostField_": {
-        "description": "yo/db.ApiOrderBy[kaffe/app.Post,kaffe/app.PostField]",
+      "struct___OutOfPostIds___yodb_I64__": {
+        "description": "struct { OutOfPostIds []yodb.I64 }",
         "type": "object",
         "properties": {
-          "Desc": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Fld": {
-            "type": [
-              "object",
-              "null"
+          "OutOfPostIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            }
+          }
+        },
+        "examples": [
+          {
+            "OutOfPostIds": [
+              -9007199254740991
             ]
           }
-        }
+        ]
       },
-      "yo_db_ApiOrderBy_kaffe_app_User_kaffe_app_UserField_": {
-        "description": "yo/db.ApiOrderBy[kaffe/app.User,kaffe/app.UserField]",
+      "struct___Periods___kaffe_YearAndMonth__": {
+        "description": "struct { Periods []kaffe.YearAndMonth }",
         "type": "object",
         "properties": {
-          "Desc": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Fld": {
-            "type": [
-              "object",
-              "null"
+          "Periods": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "Month": {
+                  "type": "integer",
+                  "format": "int32",
+                  "minimum": 0,
+                  "maximum": 255
+                },
+                "Year": {
+                  "type": "integer",
+                  "format": "int32",
+                  "minimum": 0,
+                  "maximum": 65535
+                }
+              }
+            }
+          }
+        },
+        "examples": [
+          {
+            "Periods": [
+              {
+                "Year": 65535,
+                "Month": 255
+              }
             ]
           }
-        }
+        ]
       },
-      "yo_db_ApiOrderBy_kaffe_app_fileDelReq_kaffe_app_fileDelReqField_": {
-        "description": "yo/db.ApiOrderBy[kaffe/app.fileDelReq,kaffe/app.fileDelReqField]",
+      "struct___Since__yodb_DateTime__OnlyBy___yodb_I64__": {
+        "description": "struct { Since *yodb.DateTime; OnlyBy []yodb.I64 }",
         "type": "object",
         "properties": {
-          "Desc": {
-            "type": [
-              "object",
-              "null"
-            ]
+          "OnlyBy": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            }
           },
-          "Fld": {
-            "type": [
-              "object",
-              "null"
+          "Since": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "examples": [
+          {
+            "Since": "2023-11-15T18:52:47.098917451Z",
+            "OnlyBy": [
+              -9007199254740991
             ]
           }
-        }
+        ]
       },
-      "yo_db_ApiOrderBy_yo_ErrEntry_yo_ErrEntryField_": {
-        "description": "yo/db.ApiOrderBy[yo.ErrEntry,yo.ErrEntryField]",
+      "struct___WithUserIds___yodb_I64__": {
+        "description": "struct { WithUserIds []yodb.I64 }",
         "type": "object",
         "properties": {
-          "Desc": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Fld": {
-            "type": [
-              "object",
-              "null"
+          "WithUserIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            }
+          }
+        },
+        "examples": [
+          {
+            "WithUserIds": [
+              -9007199254740991
             ]
           }
-        }
+        ]
       },
-      "yo_db_ApiOrderBy_yo_auth_UserAuth_yo_auth_UserAuthField_": {
-        "description": "yo/db.ApiOrderBy[yo/auth.UserAuth,yo/auth.UserAuthField]",
+      "util_None": {
+        "description": "util.None",
+        "type": "object",
+        "examples": [
+          {}
+        ]
+      },
+      "util_Return__kaffe_app_User_": {
+        "description": "util.Return[*kaffe/app.User]",
         "type": "object",
         "properties": {
-          "Desc": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Fld": {
-            "type": [
-              "object",
-              "null"
-            ]
+          "Result": {
+            "type": "object",
+            "properties": {
+              "Auth": {
+                "type": "integer",
+                "format": "int64",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "Btw": {
+                "type": "string"
+              },
+              "BtwEmoji": {
+                "type": "string"
+              },
+              "Buddies": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "format": "int64",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                }
+              },
+              "DtMade": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "DtMod": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "Id": {
+                "type": "integer",
+                "format": "int64",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "LastSeen": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "Nick": {
+                "type": "string"
+              },
+              "Offline": {
+                "type": "boolean"
+              },
+              "PicFileId": {
+                "type": "string"
+              }
+            }
           }
-        }
+        },
+        "examples": [
+          {
+            "Result": {
+              "Id": -9007199254740991,
+              "DtMade": "2023-11-15T18:52:47.099105642Z",
+              "DtMod": "2023-11-15T18:52:47.099108194Z",
+              "LastSeen": "2023-11-15T18:52:47.099110546Z",
+              "Auth": 0,
+              "PicFileId": "someStr",
+              "Nick": "someStr",
+              "Btw": "someStr",
+              "Buddies": [
+                -9007199254740991
+              ],
+              "BtwEmoji": "someStr",
+              "Offline": true
+            }
+          }
+        ]
       },
-      "yo_db_ApiOrderBy_yo_auth_UserPwdReq_yo_auth_UserPwdReqField_": {
-        "description": "yo/db.ApiOrderBy[yo/auth.UserPwdReq,yo/auth.UserPwdReqField]",
+      "util_Return_map_string_string_": {
+        "description": "util.Return[map[string]string]",
         "type": "object",
         "properties": {
-          "Desc": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Fld": {
-            "type": [
-              "object",
-              "null"
-            ]
+          "Result": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
           }
-        }
+        },
+        "examples": [
+          {
+            "Result": {
+              "someMapKey1": "someStr",
+              "some_map_key_2": "someStr"
+            }
+          }
+        ]
       },
-      "yo_db_ApiOrderBy_yo_jobs_JobDef_yo_jobs_JobDefField_": {
-        "description": "yo/db.ApiOrderBy[yo/jobs.JobDef,yo/jobs.JobDefField]",
+      "util_Return_yo_db_I64_": {
+        "description": "util.Return[yo/db.I64]",
         "type": "object",
         "properties": {
-          "Desc": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Fld": {
-            "type": [
-              "object",
-              "null"
-            ]
+          "Result": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
           }
-        }
-      },
-      "yo_db_ApiOrderBy_yo_jobs_JobRun_yo_jobs_JobRunField_": {
-        "description": "yo/db.ApiOrderBy[yo/jobs.JobRun,yo/jobs.JobRunField]",
-        "type": "object",
-        "properties": {
-          "Desc": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Fld": {
-            "type": [
-              "object",
-              "null"
-            ]
+        },
+        "examples": [
+          {
+            "Result": -9007199254740991
           }
-        }
+        ]
       },
-      "yo_db_ApiOrderBy_yo_jobs_JobTask_yo_jobs_JobTaskField_": {
-        "description": "yo/db.ApiOrderBy[yo/jobs.JobTask,yo/jobs.JobTaskField]",
-        "type": "object",
-        "properties": {
-          "Desc": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Fld": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ApiOrderBy_yo_mail_MailReq_yo_mail_MailReqField_": {
-        "description": "yo/db.ApiOrderBy[yo/mail.MailReq,yo/mail.MailReqField]",
-        "type": "object",
-        "properties": {
-          "Desc": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Fld": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ApiQueryExpr_kaffe_app_Post_kaffe_app_PostField_": {
-        "description": "yo/db.ApiQueryExpr[kaffe/app.Post,kaffe/app.PostField]",
-        "type": "object",
-        "properties": {
-          "AND": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "EQ": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "GE": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "GT": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "IN": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "LE": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "LT": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "NE": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "NOT": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "OR": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ApiQueryExpr_kaffe_app_User_kaffe_app_UserField_": {
-        "description": "yo/db.ApiQueryExpr[kaffe/app.User,kaffe/app.UserField]",
-        "type": "object",
-        "properties": {
-          "AND": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "EQ": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "GE": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "GT": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "IN": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "LE": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "LT": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "NE": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "NOT": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "OR": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ApiQueryExpr_kaffe_app_fileDelReq_kaffe_app_fileDelReqField_": {
-        "description": "yo/db.ApiQueryExpr[kaffe/app.fileDelReq,kaffe/app.fileDelReqField]",
-        "type": "object",
-        "properties": {
-          "AND": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "EQ": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "GE": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "GT": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "IN": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "LE": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "LT": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "NE": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "NOT": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "OR": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ApiQueryExpr_yo_ErrEntry_yo_ErrEntryField_": {
-        "description": "yo/db.ApiQueryExpr[yo.ErrEntry,yo.ErrEntryField]",
-        "type": "object",
-        "properties": {
-          "AND": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "EQ": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "GE": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "GT": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "IN": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "LE": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "LT": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "NE": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "NOT": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "OR": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ApiQueryExpr_yo_auth_UserAuth_yo_auth_UserAuthField_": {
-        "description": "yo/db.ApiQueryExpr[yo/auth.UserAuth,yo/auth.UserAuthField]",
-        "type": "object",
-        "properties": {
-          "AND": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "EQ": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "GE": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "GT": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "IN": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "LE": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "LT": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "NE": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "NOT": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "OR": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ApiQueryExpr_yo_auth_UserPwdReq_yo_auth_UserPwdReqField_": {
-        "description": "yo/db.ApiQueryExpr[yo/auth.UserPwdReq,yo/auth.UserPwdReqField]",
-        "type": "object",
-        "properties": {
-          "AND": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "EQ": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "GE": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "GT": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "IN": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "LE": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "LT": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "NE": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "NOT": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "OR": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ApiQueryExpr_yo_jobs_JobDef_yo_jobs_JobDefField_": {
-        "description": "yo/db.ApiQueryExpr[yo/jobs.JobDef,yo/jobs.JobDefField]",
-        "type": "object",
-        "properties": {
-          "AND": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "EQ": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "GE": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "GT": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "IN": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "LE": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "LT": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "NE": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "NOT": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "OR": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ApiQueryExpr_yo_jobs_JobRun_yo_jobs_JobRunField_": {
-        "description": "yo/db.ApiQueryExpr[yo/jobs.JobRun,yo/jobs.JobRunField]",
-        "type": "object",
-        "properties": {
-          "AND": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "EQ": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "GE": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "GT": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "IN": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "LE": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "LT": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "NE": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "NOT": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "OR": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ApiQueryExpr_yo_jobs_JobTask_yo_jobs_JobTaskField_": {
-        "description": "yo/db.ApiQueryExpr[yo/jobs.JobTask,yo/jobs.JobTaskField]",
-        "type": "object",
-        "properties": {
-          "AND": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "EQ": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "GE": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "GT": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "IN": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "LE": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "LT": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "NE": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "NOT": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "OR": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ApiQueryExpr_yo_mail_MailReq_yo_mail_MailReqField_": {
-        "description": "yo/db.ApiQueryExpr[yo/mail.MailReq,yo/mail.MailReqField]",
-        "type": "object",
-        "properties": {
-          "AND": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "EQ": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "GE": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "GT": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "IN": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "LE": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "LT": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "NE": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "NOT": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "OR": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ApiQueryVal_kaffe_app_Post_kaffe_app_PostField_": {
-        "description": "yo/db.ApiQueryVal[kaffe/app.Post,kaffe/app.PostField]",
-        "type": "object",
-        "properties": {
-          "Bool": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Fld": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Int": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Str": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ApiQueryVal_kaffe_app_User_kaffe_app_UserField_": {
-        "description": "yo/db.ApiQueryVal[kaffe/app.User,kaffe/app.UserField]",
-        "type": "object",
-        "properties": {
-          "Bool": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Fld": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Int": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Str": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ApiQueryVal_kaffe_app_fileDelReq_kaffe_app_fileDelReqField_": {
-        "description": "yo/db.ApiQueryVal[kaffe/app.fileDelReq,kaffe/app.fileDelReqField]",
-        "type": "object",
-        "properties": {
-          "Bool": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Fld": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Int": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Str": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ApiQueryVal_yo_ErrEntry_yo_ErrEntryField_": {
-        "description": "yo/db.ApiQueryVal[yo.ErrEntry,yo.ErrEntryField]",
-        "type": "object",
-        "properties": {
-          "Bool": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Fld": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Int": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Str": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ApiQueryVal_yo_auth_UserAuth_yo_auth_UserAuthField_": {
-        "description": "yo/db.ApiQueryVal[yo/auth.UserAuth,yo/auth.UserAuthField]",
-        "type": "object",
-        "properties": {
-          "Bool": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Fld": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Int": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Str": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ApiQueryVal_yo_auth_UserPwdReq_yo_auth_UserPwdReqField_": {
-        "description": "yo/db.ApiQueryVal[yo/auth.UserPwdReq,yo/auth.UserPwdReqField]",
-        "type": "object",
-        "properties": {
-          "Bool": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Fld": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Int": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Str": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ApiQueryVal_yo_jobs_JobDef_yo_jobs_JobDefField_": {
-        "description": "yo/db.ApiQueryVal[yo/jobs.JobDef,yo/jobs.JobDefField]",
-        "type": "object",
-        "properties": {
-          "Bool": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Fld": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Int": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Str": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ApiQueryVal_yo_jobs_JobRun_yo_jobs_JobRunField_": {
-        "description": "yo/db.ApiQueryVal[yo/jobs.JobRun,yo/jobs.JobRunField]",
-        "type": "object",
-        "properties": {
-          "Bool": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Fld": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Int": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Str": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ApiQueryVal_yo_jobs_JobTask_yo_jobs_JobTaskField_": {
-        "description": "yo/db.ApiQueryVal[yo/jobs.JobTask,yo/jobs.JobTaskField]",
-        "type": "object",
-        "properties": {
-          "Bool": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Fld": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Int": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Str": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ApiQueryVal_yo_mail_MailReq_yo_mail_MailReqField_": {
-        "description": "yo/db.ApiQueryVal[yo/mail.MailReq,yo/mail.MailReqField]",
-        "type": "object",
-        "properties": {
-          "Bool": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Fld": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Int": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Str": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ApiUpdateArgs_kaffe_app_Post_kaffe_app_PostField_": {
-        "description": "yo/db.ApiUpdateArgs[kaffe/app.Post,kaffe/app.PostField]",
+      "yodb_ApiUpdateArgs_kaffe_app_User_kaffe_app_UserField_": {
+        "description": "yodb.ApiUpdateArgs[kaffe/app.User,kaffe/app.UserField]",
         "type": "object",
         "properties": {
           "ChangedFields": {
-            "type": [
-              "object",
-              "null"
-            ]
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "Changes": {
-            "type": [
-              "object",
-              "null"
-            ]
+            "type": "object",
+            "$ref": "#/components/schemas/kaffe_User"
           },
           "Id": {
-            "type": [
-              "object",
-              "null"
+            "type": "integer",
+            "format": "int64",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          }
+        },
+        "examples": [
+          {
+            "Id": -9007199254740991,
+            "Changes": {
+              "Id": -9007199254740991,
+              "DtMade": "2023-11-15T18:52:47.099346942Z",
+              "DtMod": "2023-11-15T18:52:47.099349531Z",
+              "LastSeen": "2023-11-15T18:52:47.099351964Z",
+              "Auth": {},
+              "PicFileId": "someStr",
+              "Nick": "someStr",
+              "Btw": "someStr",
+              "Buddies": [
+                -9007199254740991
+              ],
+              "BtwEmoji": "someStr",
+              "Offline": true
+            },
+            "ChangedFields": [
+              "someStr"
             ]
           }
-        }
-      },
-      "yo_db_ApiUpdateArgs_kaffe_app_User_kaffe_app_UserField_": {
-        "description": "yo/db.ApiUpdateArgs[kaffe/app.User,kaffe/app.UserField]",
-        "type": "object",
-        "properties": {
-          "ChangedFields": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Changes": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Id": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ApiUpdateArgs_kaffe_app_fileDelReq_kaffe_app_fileDelReqField_": {
-        "description": "yo/db.ApiUpdateArgs[kaffe/app.fileDelReq,kaffe/app.fileDelReqField]",
-        "type": "object",
-        "properties": {
-          "ChangedFields": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Changes": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Id": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ApiUpdateArgs_yo_ErrEntry_yo_ErrEntryField_": {
-        "description": "yo/db.ApiUpdateArgs[yo.ErrEntry,yo.ErrEntryField]",
-        "type": "object",
-        "properties": {
-          "ChangedFields": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Changes": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Id": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ApiUpdateArgs_yo_auth_UserAuth_yo_auth_UserAuthField_": {
-        "description": "yo/db.ApiUpdateArgs[yo/auth.UserAuth,yo/auth.UserAuthField]",
-        "type": "object",
-        "properties": {
-          "ChangedFields": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Changes": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Id": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ApiUpdateArgs_yo_auth_UserPwdReq_yo_auth_UserPwdReqField_": {
-        "description": "yo/db.ApiUpdateArgs[yo/auth.UserPwdReq,yo/auth.UserPwdReqField]",
-        "type": "object",
-        "properties": {
-          "ChangedFields": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Changes": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Id": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ApiUpdateArgs_yo_jobs_JobDef_yo_jobs_JobDefField_": {
-        "description": "yo/db.ApiUpdateArgs[yo/jobs.JobDef,yo/jobs.JobDefField]",
-        "type": "object",
-        "properties": {
-          "ChangedFields": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Changes": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Id": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ApiUpdateArgs_yo_jobs_JobRun_yo_jobs_JobRunField_": {
-        "description": "yo/db.ApiUpdateArgs[yo/jobs.JobRun,yo/jobs.JobRunField]",
-        "type": "object",
-        "properties": {
-          "ChangedFields": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Changes": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Id": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ApiUpdateArgs_yo_jobs_JobTask_yo_jobs_JobTaskField_": {
-        "description": "yo/db.ApiUpdateArgs[yo/jobs.JobTask,yo/jobs.JobTaskField]",
-        "type": "object",
-        "properties": {
-          "ChangedFields": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Changes": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Id": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ApiUpdateArgs_yo_mail_MailReq_yo_mail_MailReqField_": {
-        "description": "yo/db.ApiUpdateArgs[yo/mail.MailReq,yo/mail.MailReqField]",
-        "type": "object",
-        "properties": {
-          "ChangedFields": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Changes": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Id": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_DateTime": {
-        "description": "yo/db.DateTime",
-        "type": "object",
-        "properties": {}
-      },
-      "yo_db_ObjRef_kaffe_app_Post_": {
-        "description": "yo/db.ObjRef[kaffe/app.Post]",
-        "type": "object",
-        "properties": {
-          "Id": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ObjRef_kaffe_app_User_": {
-        "description": "yo/db.ObjRef[kaffe/app.User]",
-        "type": "object",
-        "properties": {
-          "Id": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ObjRef_kaffe_app_fileDelReq_": {
-        "description": "yo/db.ObjRef[kaffe/app.fileDelReq]",
-        "type": "object",
-        "properties": {
-          "Id": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ObjRef_yo_ErrEntry_": {
-        "description": "yo/db.ObjRef[yo.ErrEntry]",
-        "type": "object",
-        "properties": {
-          "Id": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ObjRef_yo_auth_UserAuth_": {
-        "description": "yo/db.ObjRef[yo/auth.UserAuth]",
-        "type": "object",
-        "properties": {
-          "Id": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ObjRef_yo_auth_UserPwdReq_": {
-        "description": "yo/db.ObjRef[yo/auth.UserPwdReq]",
-        "type": "object",
-        "properties": {
-          "Id": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ObjRef_yo_jobs_JobDef_": {
-        "description": "yo/db.ObjRef[yo/jobs.JobDef]",
-        "type": "object",
-        "properties": {
-          "Id": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ObjRef_yo_jobs_JobRun_": {
-        "description": "yo/db.ObjRef[yo/jobs.JobRun]",
-        "type": "object",
-        "properties": {
-          "Id": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ObjRef_yo_jobs_JobTask_": {
-        "description": "yo/db.ObjRef[yo/jobs.JobTask]",
-        "type": "object",
-        "properties": {
-          "Id": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_ObjRef_yo_mail_MailReq_": {
-        "description": "yo/db.ObjRef[yo/mail.MailReq]",
-        "type": "object",
-        "properties": {
-          "Id": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_TableColumn": {
-        "description": "yo/db.TableColumn",
-        "type": "object",
-        "properties": {
-          "ColumnDefault": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "ColumnName": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "DataType": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "IsNullable": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "OrdinalPosition": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_argQuery_kaffe_app_Post_kaffe_app_PostField_": {
-        "description": "yo/db.argQuery[kaffe/app.Post,kaffe/app.PostField]",
-        "type": "object",
-        "properties": {
-          "Max": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "OrderBy": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Query": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "QueryFrom": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_argQuery_kaffe_app_User_kaffe_app_UserField_": {
-        "description": "yo/db.argQuery[kaffe/app.User,kaffe/app.UserField]",
-        "type": "object",
-        "properties": {
-          "Max": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "OrderBy": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Query": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "QueryFrom": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_argQuery_kaffe_app_fileDelReq_kaffe_app_fileDelReqField_": {
-        "description": "yo/db.argQuery[kaffe/app.fileDelReq,kaffe/app.fileDelReqField]",
-        "type": "object",
-        "properties": {
-          "Max": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "OrderBy": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Query": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "QueryFrom": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_argQuery_yo_ErrEntry_yo_ErrEntryField_": {
-        "description": "yo/db.argQuery[yo.ErrEntry,yo.ErrEntryField]",
-        "type": "object",
-        "properties": {
-          "Max": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "OrderBy": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Query": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "QueryFrom": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_argQuery_yo_auth_UserAuth_yo_auth_UserAuthField_": {
-        "description": "yo/db.argQuery[yo/auth.UserAuth,yo/auth.UserAuthField]",
-        "type": "object",
-        "properties": {
-          "Max": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "OrderBy": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Query": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "QueryFrom": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_argQuery_yo_auth_UserPwdReq_yo_auth_UserPwdReqField_": {
-        "description": "yo/db.argQuery[yo/auth.UserPwdReq,yo/auth.UserPwdReqField]",
-        "type": "object",
-        "properties": {
-          "Max": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "OrderBy": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Query": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "QueryFrom": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_argQuery_yo_jobs_JobDef_yo_jobs_JobDefField_": {
-        "description": "yo/db.argQuery[yo/jobs.JobDef,yo/jobs.JobDefField]",
-        "type": "object",
-        "properties": {
-          "Max": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "OrderBy": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Query": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "QueryFrom": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_argQuery_yo_jobs_JobRun_yo_jobs_JobRunField_": {
-        "description": "yo/db.argQuery[yo/jobs.JobRun,yo/jobs.JobRunField]",
-        "type": "object",
-        "properties": {
-          "Max": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "OrderBy": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Query": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "QueryFrom": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_argQuery_yo_jobs_JobTask_yo_jobs_JobTaskField_": {
-        "description": "yo/db.argQuery[yo/jobs.JobTask,yo/jobs.JobTaskField]",
-        "type": "object",
-        "properties": {
-          "Max": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "OrderBy": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Query": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "QueryFrom": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_argQuery_yo_mail_MailReq_yo_mail_MailReqField_": {
-        "description": "yo/db.argQuery[yo/mail.MailReq,yo/mail.MailReqField]",
-        "type": "object",
-        "properties": {
-          "Max": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "OrderBy": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Query": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "QueryFrom": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_db_retCount": {
-        "description": "yo/db.retCount",
-        "type": "object",
-        "properties": {
-          "Count": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_jobs_JobDef": {
-        "description": "yo/jobs.JobDef",
-        "type": "object",
-        "properties": {
-          "AllowManualJobRuns": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "DeleteAfterDays": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Disabled": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "DtMade": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "DtMod": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Id": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "JobTypeId": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "MaxTaskRetries": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Name": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "RunTasklessJobs": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Schedules": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "TimeoutSecsJobRunPrepAndFinalize": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "TimeoutSecsTaskRun": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_jobs_JobRun": {
-        "description": "yo/jobs.JobRun",
-        "type": "object",
-        "properties": {
-          "AutoScheduled": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "CancelReason": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Details": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "DtMade": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "DtMod": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "DueTime": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "DurationFinalizeSecs": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "DurationPrepSecs": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "FinishTime": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Id": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "JobDef": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "JobTypeId": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Results": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "ScheduledNextAfter": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "StartTime": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Version": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_jobs_JobTask": {
-        "description": "yo/jobs.JobTask",
-        "type": "object",
-        "properties": {
-          "Attempts": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Details": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "DtMade": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "DtMod": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "FinishTime": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Id": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "JobRun": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "JobTypeId": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Results": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "StartTime": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Version": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_jobs_TaskAttempt": {
-        "description": "yo/jobs.TaskAttempt",
-        "type": "object",
-        "properties": {}
-      },
-      "yo_mail_MailReq": {
-        "description": "yo/mail.MailReq",
-        "type": "object",
-        "properties": {
-          "DtMade": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "DtMod": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Id": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "MailTo": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "TmplArgs": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "TmplId": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_srv_apiReflMethod": {
-        "description": "yo/srv.apiReflMethod",
-        "type": "object",
-        "properties": {
-          "In": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Out": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Path": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_srv_apiReflect": {
-        "description": "yo/srv.apiReflect",
-        "type": "object",
-        "properties": {
-          "DbStructs": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Enums": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "KnownErrs": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Methods": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "Types": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_util_None": {
-        "description": "yo/util.None",
-        "type": "object",
-        "properties": {}
-      },
-      "yo_util_Return____kaffe_app_Post_": {
-        "description": "yo/util.Return[[]*kaffe/app.Post]",
-        "type": "object",
-        "properties": {
-          "Result": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_util_Return____kaffe_app_User_": {
-        "description": "yo/util.Return[[]*kaffe/app.User]",
-        "type": "object",
-        "properties": {
-          "Result": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_util_Return____kaffe_app_fileDelReq_": {
-        "description": "yo/util.Return[[]*kaffe/app.fileDelReq]",
-        "type": "object",
-        "properties": {
-          "Result": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_util_Return____yo_ErrEntry_": {
-        "description": "yo/util.Return[[]*yo.ErrEntry]",
-        "type": "object",
-        "properties": {
-          "Result": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_util_Return____yo_auth_UserAuth_": {
-        "description": "yo/util.Return[[]*yo/auth.UserAuth]",
-        "type": "object",
-        "properties": {
-          "Result": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_util_Return____yo_auth_UserPwdReq_": {
-        "description": "yo/util.Return[[]*yo/auth.UserPwdReq]",
-        "type": "object",
-        "properties": {
-          "Result": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_util_Return____yo_db_TableColumn_": {
-        "description": "yo/util.Return[[]*yo/db.TableColumn]",
-        "type": "object",
-        "properties": {
-          "Result": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_util_Return____yo_jobs_JobDef_": {
-        "description": "yo/util.Return[[]*yo/jobs.JobDef]",
-        "type": "object",
-        "properties": {
-          "Result": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_util_Return____yo_jobs_JobRun_": {
-        "description": "yo/util.Return[[]*yo/jobs.JobRun]",
-        "type": "object",
-        "properties": {
-          "Result": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_util_Return____yo_jobs_JobTask_": {
-        "description": "yo/util.Return[[]*yo/jobs.JobTask]",
-        "type": "object",
-        "properties": {
-          "Result": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_util_Return____yo_mail_MailReq_": {
-        "description": "yo/util.Return[[]*yo/mail.MailReq]",
-        "type": "object",
-        "properties": {
-          "Result": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_util_Return__kaffe_app_Post_": {
-        "description": "yo/util.Return[*kaffe/app.Post]",
-        "type": "object",
-        "properties": {
-          "Result": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_util_Return__kaffe_app_User_": {
-        "description": "yo/util.Return[*kaffe/app.User]",
-        "type": "object",
-        "properties": {
-          "Result": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_util_Return__kaffe_app_fileDelReq_": {
-        "description": "yo/util.Return[*kaffe/app.fileDelReq]",
-        "type": "object",
-        "properties": {
-          "Result": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_util_Return__yo_ErrEntry_": {
-        "description": "yo/util.Return[*yo.ErrEntry]",
-        "type": "object",
-        "properties": {
-          "Result": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_util_Return__yo_auth_UserAuth_": {
-        "description": "yo/util.Return[*yo/auth.UserAuth]",
-        "type": "object",
-        "properties": {
-          "Result": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_util_Return__yo_auth_UserPwdReq_": {
-        "description": "yo/util.Return[*yo/auth.UserPwdReq]",
-        "type": "object",
-        "properties": {
-          "Result": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_util_Return__yo_jobs_JobDef_": {
-        "description": "yo/util.Return[*yo/jobs.JobDef]",
-        "type": "object",
-        "properties": {
-          "Result": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_util_Return__yo_jobs_JobRun_": {
-        "description": "yo/util.Return[*yo/jobs.JobRun]",
-        "type": "object",
-        "properties": {
-          "Result": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_util_Return__yo_jobs_JobTask_": {
-        "description": "yo/util.Return[*yo/jobs.JobTask]",
-        "type": "object",
-        "properties": {
-          "Result": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_util_Return__yo_mail_MailReq_": {
-        "description": "yo/util.Return[*yo/mail.MailReq]",
-        "type": "object",
-        "properties": {
-          "Result": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_util_Return_map_string_string_": {
-        "description": "yo/util.Return[map[string]string]",
-        "type": "object",
-        "properties": {
-          "Result": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
-      },
-      "yo_util_Return_yo_db_I64_": {
-        "description": "yo/util.Return[yo/db.I64]",
-        "type": "object",
-        "properties": {
-          "Result": {
-            "type": [
-              "object",
-              "null"
-            ]
-          }
-        }
+        ]
       }
     }
   }
