@@ -15,24 +15,10 @@
         "operationId": "__postDelete",
         "parameters": [
           {
-            "name": "yoFail",
-            "in": "query",
-            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or handling) with the specified HTTP status code or 500 (eg. for client-side unit-test cases of error-handling)",
-            "content": {
-              "text/plain": {
-                "example": ""
-              }
-            }
+            "$ref": "#/components/parameters/yoFail"
           },
           {
-            "name": "yoValiOnly",
-            "in": "query",
-            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
-            "content": {
-              "text/plain": {
-                "example": ""
-              }
-            }
+            "$ref": "#/components/parameters/yoValiOnly"
           }
         ],
         "requestBody": {
@@ -41,8 +27,8 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "$ref": "#/components/schemas/struct___Id_yodb_I64__"
+                "$ref": "#/components/schemas/struct___Id_yodb_I64__",
+                "type": "object"
               },
               "example": {
                 "Id": -9007199254740991
@@ -55,35 +41,20 @@
             "description": "backend type ref: `yo/util.None`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `application/json`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               },
               "X-YoUserEmailAddr": {
-                "description": "empty if not authenticated, else current `User`'s `Account`-identifying `EmailAddr`",
-                "content": {
-                  "text/plain": {
-                    "example": "user123@foo.bar"
-                  }
-                }
+                "$ref": "#/components/headers/X-YoUserEmailAddr"
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "$ref": "#/components/schemas/util_None"
+                  "$ref": "#/components/schemas/util_None",
+                  "type": "object"
                 },
                 "example": {}
               }
@@ -93,20 +64,10 @@
             "description": "Possible `text/plain` responses:\n- `Unauthorized`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -123,20 +84,10 @@
             "description": "Possible `text/plain` responses:\n- `UnacceptableContentLength`\n- `UnacceptableContentType`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -156,20 +107,10 @@
             "description": "Possible `text/plain` responses:\n- `__postDelete_InvalidPostId`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -186,20 +127,10 @@
             "description": "Possible `text/plain` responses:\n- `TimedOut`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -220,24 +151,10 @@
         "operationId": "__postEmojiFullList",
         "parameters": [
           {
-            "name": "yoFail",
-            "in": "query",
-            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or handling) with the specified HTTP status code or 500 (eg. for client-side unit-test cases of error-handling)",
-            "content": {
-              "text/plain": {
-                "example": ""
-              }
-            }
+            "$ref": "#/components/parameters/yoFail"
           },
           {
-            "name": "yoValiOnly",
-            "in": "query",
-            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
-            "content": {
-              "text/plain": {
-                "example": ""
-              }
-            }
+            "$ref": "#/components/parameters/yoValiOnly"
           }
         ],
         "requestBody": {
@@ -246,8 +163,8 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "$ref": "#/components/schemas/util_None"
+                "$ref": "#/components/schemas/util_None",
+                "type": "object"
               },
               "example": {}
             }
@@ -258,35 +175,20 @@
             "description": "backend type ref: `yo/util.Return[map[string]string]`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `application/json`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               },
               "X-YoUserEmailAddr": {
-                "description": "empty if not authenticated, else current `User`'s `Account`-identifying `EmailAddr`",
-                "content": {
-                  "text/plain": {
-                    "example": "user123@foo.bar"
-                  }
-                }
+                "$ref": "#/components/headers/X-YoUserEmailAddr"
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "$ref": "#/components/schemas/util_Return_map_string_string_"
+                  "$ref": "#/components/schemas/util_Return_map_string_string_",
+                  "type": "object"
                 },
                 "example": {
                   "Result": {
@@ -301,20 +203,10 @@
             "description": "Possible `text/plain` responses:\n- `UnacceptableContentLength`\n- `UnacceptableContentType`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -334,20 +226,10 @@
             "description": "Possible `text/plain` responses:\n- `TimedOut`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -368,24 +250,10 @@
         "operationId": "__postMonthsUtc",
         "parameters": [
           {
-            "name": "yoFail",
-            "in": "query",
-            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or handling) with the specified HTTP status code or 500 (eg. for client-side unit-test cases of error-handling)",
-            "content": {
-              "text/plain": {
-                "example": ""
-              }
-            }
+            "$ref": "#/components/parameters/yoFail"
           },
           {
-            "name": "yoValiOnly",
-            "in": "query",
-            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
-            "content": {
-              "text/plain": {
-                "example": ""
-              }
-            }
+            "$ref": "#/components/parameters/yoValiOnly"
           }
         ],
         "requestBody": {
@@ -394,8 +262,8 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "$ref": "#/components/schemas/struct___WithUserIds___yodb_I64__"
+                "$ref": "#/components/schemas/struct___WithUserIds___yodb_I64__",
+                "type": "object"
               },
               "example": {
                 "WithUserIds": [
@@ -410,35 +278,20 @@
             "description": "backend type ref: `__postMonthsUtc_Out`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `application/json`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               },
               "X-YoUserEmailAddr": {
-                "description": "empty if not authenticated, else current `User`'s `Account`-identifying `EmailAddr`",
-                "content": {
-                  "text/plain": {
-                    "example": "user123@foo.bar"
-                  }
-                }
+                "$ref": "#/components/headers/X-YoUserEmailAddr"
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "$ref": "#/components/schemas/struct___Periods___kaffe_YearAndMonth__"
+                  "$ref": "#/components/schemas/struct___Periods___kaffe_YearAndMonth__",
+                  "type": "object"
                 },
                 "example": {
                   "Periods": [
@@ -455,20 +308,10 @@
             "description": "Possible `text/plain` responses:\n- `Unauthorized`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -485,20 +328,10 @@
             "description": "Possible `text/plain` responses:\n- `UnacceptableContentLength`\n- `UnacceptableContentType`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -518,20 +351,10 @@
             "description": "Possible `text/plain` responses:\n- `TimedOut`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -552,24 +375,10 @@
         "operationId": "__postNew",
         "parameters": [
           {
-            "name": "yoFail",
-            "in": "query",
-            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or handling) with the specified HTTP status code or 500 (eg. for client-side unit-test cases of error-handling)",
-            "content": {
-              "text/plain": {
-                "example": ""
-              }
-            }
+            "$ref": "#/components/parameters/yoFail"
           },
           {
-            "name": "yoValiOnly",
-            "in": "query",
-            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
-            "content": {
-              "text/plain": {
-                "example": ""
-              }
-            }
+            "$ref": "#/components/parameters/yoValiOnly"
           }
         ],
         "requestBody": {
@@ -578,13 +387,13 @@
           "content": {
             "multipart/form-data": {
               "schema": {
-                "type": "object",
-                "$ref": "#/components/schemas/kaffe_Post"
+                "$ref": "#/components/schemas/kaffe_Post",
+                "type": "object"
               },
               "example": {
                 "Id": -9007199254740991,
-                "DtMade": "2023-11-15T18:52:47.098722706Z",
-                "DtMod": "2023-11-15T18:52:47.098726407Z",
+                "DtMade": "2023-11-15T19:27:11.350451121Z",
+                "DtMod": "2023-11-15T19:27:11.35045471Z",
                 "By": {},
                 "To": [
                   -9007199254740991
@@ -605,35 +414,20 @@
             "description": "backend type ref: `yo/util.Return[yo/db.I64]`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `application/json`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               },
               "X-YoUserEmailAddr": {
-                "description": "empty if not authenticated, else current `User`'s `Account`-identifying `EmailAddr`",
-                "content": {
-                  "text/plain": {
-                    "example": "user123@foo.bar"
-                  }
-                }
+                "$ref": "#/components/headers/X-YoUserEmailAddr"
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "$ref": "#/components/schemas/util_Return_yo_db_I64_"
+                  "$ref": "#/components/schemas/util_Return_yo_db_I64_",
+                  "type": "object"
                 },
                 "example": {
                   "Result": -9007199254740991
@@ -645,20 +439,10 @@
             "description": "Possible `text/plain` responses:\n- `Unauthorized`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -675,20 +459,10 @@
             "description": "Possible `text/plain` responses:\n- `UnacceptableContentLength`\n- `UnacceptableContentType`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -708,20 +482,10 @@
             "description": "Possible `text/plain` responses:\n- `__postNew_ExpectedNonEmptyPost`\n- `__postNew_ExpectedOnlyBuddyRecipients`\n- `__postNew_ExpectedEmptyFilesFieldWithUploadedFilesInMultipartForm`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -744,20 +508,10 @@
             "description": "Possible `text/plain` responses:\n- `TimedOut`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -778,24 +532,10 @@
         "operationId": "__postsDeleted",
         "parameters": [
           {
-            "name": "yoFail",
-            "in": "query",
-            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or handling) with the specified HTTP status code or 500 (eg. for client-side unit-test cases of error-handling)",
-            "content": {
-              "text/plain": {
-                "example": ""
-              }
-            }
+            "$ref": "#/components/parameters/yoFail"
           },
           {
-            "name": "yoValiOnly",
-            "in": "query",
-            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
-            "content": {
-              "text/plain": {
-                "example": ""
-              }
-            }
+            "$ref": "#/components/parameters/yoValiOnly"
           }
         ],
         "requestBody": {
@@ -804,8 +544,8 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "$ref": "#/components/schemas/struct___OutOfPostIds___yodb_I64__"
+                "$ref": "#/components/schemas/struct___OutOfPostIds___yodb_I64__",
+                "type": "object"
               },
               "example": {
                 "OutOfPostIds": [
@@ -820,35 +560,20 @@
             "description": "backend type ref: `__postsDeleted_Out`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `application/json`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               },
               "X-YoUserEmailAddr": {
-                "description": "empty if not authenticated, else current `User`'s `Account`-identifying `EmailAddr`",
-                "content": {
-                  "text/plain": {
-                    "example": "user123@foo.bar"
-                  }
-                }
+                "$ref": "#/components/headers/X-YoUserEmailAddr"
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "$ref": "#/components/schemas/struct___DeletedPostIds___yodb_I64__"
+                  "$ref": "#/components/schemas/struct___DeletedPostIds___yodb_I64__",
+                  "type": "object"
                 },
                 "example": {
                   "DeletedPostIds": [
@@ -862,20 +587,10 @@
             "description": "Possible `text/plain` responses:\n- `Unauthorized`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -892,20 +607,10 @@
             "description": "Possible `text/plain` responses:\n- `UnacceptableContentLength`\n- `UnacceptableContentType`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -925,20 +630,10 @@
             "description": "Possible `text/plain` responses:\n- `TimedOut`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -959,24 +654,10 @@
         "operationId": "__postsForMonthUtc",
         "parameters": [
           {
-            "name": "yoFail",
-            "in": "query",
-            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or handling) with the specified HTTP status code or 500 (eg. for client-side unit-test cases of error-handling)",
-            "content": {
-              "text/plain": {
-                "example": ""
-              }
-            }
+            "$ref": "#/components/parameters/yoFail"
           },
           {
-            "name": "yoValiOnly",
-            "in": "query",
-            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
-            "content": {
-              "text/plain": {
-                "example": ""
-              }
-            }
+            "$ref": "#/components/parameters/yoValiOnly"
           }
         ],
         "requestBody": {
@@ -985,8 +666,8 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "$ref": "#/components/schemas/kaffe_ApiArgPeriod"
+                "$ref": "#/components/schemas/kaffe_ApiArgPeriod",
+                "type": "object"
               },
               "example": {
                 "Period": {
@@ -1005,42 +686,27 @@
             "description": "backend type ref: `kaffe/app.PostsListResult`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `application/json`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               },
               "X-YoUserEmailAddr": {
-                "description": "empty if not authenticated, else current `User`'s `Account`-identifying `EmailAddr`",
-                "content": {
-                  "text/plain": {
-                    "example": "user123@foo.bar"
-                  }
-                }
+                "$ref": "#/components/headers/X-YoUserEmailAddr"
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "$ref": "#/components/schemas/kaffe_PostsListResult"
+                  "$ref": "#/components/schemas/kaffe_PostsListResult",
+                  "type": "object"
                 },
                 "example": {
                   "Posts": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-15T18:52:47.098855276Z",
-                      "DtMod": "2023-11-15T18:52:47.098857857Z",
+                      "DtMade": "2023-11-15T19:27:11.350570546Z",
+                      "DtMod": "2023-11-15T19:27:11.350573099Z",
                       "By": 0,
                       "To": [
                         -9007199254740991
@@ -1054,7 +720,7 @@
                       ]
                     }
                   ],
-                  "NextSince": "2023-11-15T18:52:47.098867781Z",
+                  "NextSince": "2023-11-15T19:27:11.350582734Z",
                   "UnreadCounts": {
                     "someMapKey1": -9007199254740991,
                     "some_map_key_2": -9007199254740991
@@ -1067,20 +733,10 @@
             "description": "Possible `text/plain` responses:\n- `Unauthorized`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -1097,20 +753,10 @@
             "description": "Possible `text/plain` responses:\n- `UnacceptableContentLength`\n- `UnacceptableContentType`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -1130,20 +776,10 @@
             "description": "Possible `text/plain` responses:\n- `TimedOut`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -1164,24 +800,10 @@
         "operationId": "__postsRecent",
         "parameters": [
           {
-            "name": "yoFail",
-            "in": "query",
-            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or handling) with the specified HTTP status code or 500 (eg. for client-side unit-test cases of error-handling)",
-            "content": {
-              "text/plain": {
-                "example": ""
-              }
-            }
+            "$ref": "#/components/parameters/yoFail"
           },
           {
-            "name": "yoValiOnly",
-            "in": "query",
-            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
-            "content": {
-              "text/plain": {
-                "example": ""
-              }
-            }
+            "$ref": "#/components/parameters/yoValiOnly"
           }
         ],
         "requestBody": {
@@ -1190,11 +812,11 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "$ref": "#/components/schemas/struct___Since__yodb_DateTime__OnlyBy___yodb_I64__"
+                "$ref": "#/components/schemas/struct___Since__yodb_DateTime__OnlyBy___yodb_I64__",
+                "type": "object"
               },
               "example": {
-                "Since": "2023-11-15T18:52:47.098917451Z",
+                "Since": "2023-11-15T19:27:11.350626362Z",
                 "OnlyBy": [
                   -9007199254740991
                 ]
@@ -1207,42 +829,27 @@
             "description": "backend type ref: `kaffe/app.PostsListResult`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `application/json`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               },
               "X-YoUserEmailAddr": {
-                "description": "empty if not authenticated, else current `User`'s `Account`-identifying `EmailAddr`",
-                "content": {
-                  "text/plain": {
-                    "example": "user123@foo.bar"
-                  }
-                }
+                "$ref": "#/components/headers/X-YoUserEmailAddr"
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "$ref": "#/components/schemas/kaffe_PostsListResult"
+                  "$ref": "#/components/schemas/kaffe_PostsListResult",
+                  "type": "object"
                 },
                 "example": {
                   "Posts": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-15T18:52:47.098855276Z",
-                      "DtMod": "2023-11-15T18:52:47.098857857Z",
+                      "DtMade": "2023-11-15T19:27:11.350570546Z",
+                      "DtMod": "2023-11-15T19:27:11.350573099Z",
                       "By": 0,
                       "To": [
                         -9007199254740991
@@ -1256,7 +863,7 @@
                       ]
                     }
                   ],
-                  "NextSince": "2023-11-15T18:52:47.098867781Z",
+                  "NextSince": "2023-11-15T19:27:11.350582734Z",
                   "UnreadCounts": {
                     "someMapKey1": -9007199254740991,
                     "some_map_key_2": -9007199254740991
@@ -1269,20 +876,10 @@
             "description": "Possible `text/plain` responses:\n- `Unauthorized`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -1299,20 +896,10 @@
             "description": "Possible `text/plain` responses:\n- `UnacceptableContentLength`\n- `UnacceptableContentType`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -1332,20 +919,10 @@
             "description": "Possible `text/plain` responses:\n- `TimedOut`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -1366,24 +943,10 @@
         "operationId": "__userBuddies",
         "parameters": [
           {
-            "name": "yoFail",
-            "in": "query",
-            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or handling) with the specified HTTP status code or 500 (eg. for client-side unit-test cases of error-handling)",
-            "content": {
-              "text/plain": {
-                "example": ""
-              }
-            }
+            "$ref": "#/components/parameters/yoFail"
           },
           {
-            "name": "yoValiOnly",
-            "in": "query",
-            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
-            "content": {
-              "text/plain": {
-                "example": ""
-              }
-            }
+            "$ref": "#/components/parameters/yoValiOnly"
           }
         ],
         "requestBody": {
@@ -1392,8 +955,8 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "$ref": "#/components/schemas/util_None"
+                "$ref": "#/components/schemas/util_None",
+                "type": "object"
               },
               "example": {}
             }
@@ -1404,43 +967,28 @@
             "description": "backend type ref: `__userBuddies_Out`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `application/json`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               },
               "X-YoUserEmailAddr": {
-                "description": "empty if not authenticated, else current `User`'s `Account`-identifying `EmailAddr`",
-                "content": {
-                  "text/plain": {
-                    "example": "user123@foo.bar"
-                  }
-                }
+                "$ref": "#/components/headers/X-YoUserEmailAddr"
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "$ref": "#/components/schemas/struct___Buddies____kaffe_User__BuddyRequestsBy____kaffe_User__"
+                  "$ref": "#/components/schemas/struct___Buddies____kaffe_User__BuddyRequestsBy____kaffe_User__",
+                  "type": "object"
                 },
                 "example": {
                   "Buddies": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-15T18:52:47.098961061Z",
-                      "DtMod": "2023-11-15T18:52:47.098963486Z",
-                      "LastSeen": "2023-11-15T18:52:47.098965982Z",
+                      "DtMade": "2023-11-15T19:27:11.350667006Z",
+                      "DtMod": "2023-11-15T19:27:11.350669441Z",
+                      "LastSeen": "2023-11-15T19:27:11.350671915Z",
                       "Auth": 0,
                       "PicFileId": "someStr",
                       "Nick": "someStr",
@@ -1455,9 +1003,9 @@
                   "BuddyRequestsBy": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-15T18:52:47.098979143Z",
-                      "DtMod": "2023-11-15T18:52:47.098981507Z",
-                      "LastSeen": "2023-11-15T18:52:47.098983939Z",
+                      "DtMade": "2023-11-15T19:27:11.350684853Z",
+                      "DtMod": "2023-11-15T19:27:11.350687159Z",
+                      "LastSeen": "2023-11-15T19:27:11.350689535Z",
                       "Auth": 0,
                       "PicFileId": "someStr",
                       "Nick": "someStr",
@@ -1477,20 +1025,10 @@
             "description": "Possible `text/plain` responses:\n- `Unauthorized`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -1507,20 +1045,10 @@
             "description": "Possible `text/plain` responses:\n- `UnacceptableContentLength`\n- `UnacceptableContentType`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -1540,20 +1068,10 @@
             "description": "Possible `text/plain` responses:\n- `TimedOut`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -1574,24 +1092,10 @@
         "operationId": "__userBuddiesAdd",
         "parameters": [
           {
-            "name": "yoFail",
-            "in": "query",
-            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or handling) with the specified HTTP status code or 500 (eg. for client-side unit-test cases of error-handling)",
-            "content": {
-              "text/plain": {
-                "example": ""
-              }
-            }
+            "$ref": "#/components/parameters/yoFail"
           },
           {
-            "name": "yoValiOnly",
-            "in": "query",
-            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
-            "content": {
-              "text/plain": {
-                "example": ""
-              }
-            }
+            "$ref": "#/components/parameters/yoValiOnly"
           }
         ],
         "requestBody": {
@@ -1600,8 +1104,8 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "$ref": "#/components/schemas/struct___NickOrEmailAddr_string__"
+                "$ref": "#/components/schemas/struct___NickOrEmailAddr_string__",
+                "type": "object"
               },
               "example": {
                 "NickOrEmailAddr": "someStr"
@@ -1614,35 +1118,20 @@
             "description": "backend type ref: `__userBuddiesAdd_Out`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `application/json`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               },
               "X-YoUserEmailAddr": {
-                "description": "empty if not authenticated, else current `User`'s `Account`-identifying `EmailAddr`",
-                "content": {
-                  "text/plain": {
-                    "example": "user123@foo.bar"
-                  }
-                }
+                "$ref": "#/components/headers/X-YoUserEmailAddr"
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "$ref": "#/components/schemas/struct___Done_bool__"
+                  "$ref": "#/components/schemas/struct___Done_bool__",
+                  "type": "object"
                 },
                 "example": {
                   "Done": true
@@ -1654,20 +1143,10 @@
             "description": "Possible `text/plain` responses:\n- `Unauthorized`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -1684,20 +1163,10 @@
             "description": "Possible `text/plain` responses:\n- `UnacceptableContentLength`\n- `UnacceptableContentType`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -1717,20 +1186,10 @@
             "description": "Possible `text/plain` responses:\n- `__userBuddiesAdd_ExpectedEitherNickNameOrEmailAddr`\n- `DbUpdate_ExpectedChangesForUpdate`\n- `DbUpdate_ExpectedQueryForUpdate`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -1753,20 +1212,10 @@
             "description": "Possible `text/plain` responses:\n- `TimedOut`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -1787,24 +1236,10 @@
         "operationId": "__userBy",
         "parameters": [
           {
-            "name": "yoFail",
-            "in": "query",
-            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or handling) with the specified HTTP status code or 500 (eg. for client-side unit-test cases of error-handling)",
-            "content": {
-              "text/plain": {
-                "example": ""
-              }
-            }
+            "$ref": "#/components/parameters/yoFail"
           },
           {
-            "name": "yoValiOnly",
-            "in": "query",
-            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
-            "content": {
-              "text/plain": {
-                "example": ""
-              }
-            }
+            "$ref": "#/components/parameters/yoValiOnly"
           }
         ],
         "requestBody": {
@@ -1813,8 +1248,8 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "$ref": "#/components/schemas/struct___EmailAddr_string__NickName_string__"
+                "$ref": "#/components/schemas/struct___EmailAddr_string__NickName_string__",
+                "type": "object"
               },
               "example": {
                 "EmailAddr": "someStr",
@@ -1828,42 +1263,27 @@
             "description": "backend type ref: `yo/util.Return[*kaffe/app.User]`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `application/json`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               },
               "X-YoUserEmailAddr": {
-                "description": "empty if not authenticated, else current `User`'s `Account`-identifying `EmailAddr`",
-                "content": {
-                  "text/plain": {
-                    "example": "user123@foo.bar"
-                  }
-                }
+                "$ref": "#/components/headers/X-YoUserEmailAddr"
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "$ref": "#/components/schemas/util_Return__kaffe_app_User_"
+                  "$ref": "#/components/schemas/util_Return__kaffe_app_User_",
+                  "type": "object"
                 },
                 "example": {
                   "Result": {
                     "Id": -9007199254740991,
-                    "DtMade": "2023-11-15T18:52:47.099105642Z",
-                    "DtMod": "2023-11-15T18:52:47.099108194Z",
-                    "LastSeen": "2023-11-15T18:52:47.099110546Z",
+                    "DtMade": "2023-11-15T19:27:11.350798847Z",
+                    "DtMod": "2023-11-15T19:27:11.350801244Z",
+                    "LastSeen": "2023-11-15T19:27:11.350803563Z",
                     "Auth": 0,
                     "PicFileId": "someStr",
                     "Nick": "someStr",
@@ -1882,20 +1302,10 @@
             "description": "Possible `text/plain` responses:\n- `Unauthorized`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -1912,20 +1322,10 @@
             "description": "Possible `text/plain` responses:\n- `UnacceptableContentLength`\n- `UnacceptableContentType`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -1945,20 +1345,10 @@
             "description": "Possible `text/plain` responses:\n- `__userBy_ExpectedEitherNickNameOrEmailAddr`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -1975,20 +1365,10 @@
             "description": "Possible `text/plain` responses:\n- `TimedOut`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -2009,24 +1389,10 @@
         "operationId": "__userSignInOrReset",
         "parameters": [
           {
-            "name": "yoFail",
-            "in": "query",
-            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or handling) with the specified HTTP status code or 500 (eg. for client-side unit-test cases of error-handling)",
-            "content": {
-              "text/plain": {
-                "example": ""
-              }
-            }
+            "$ref": "#/components/parameters/yoFail"
           },
           {
-            "name": "yoValiOnly",
-            "in": "query",
-            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
-            "content": {
-              "text/plain": {
-                "example": ""
-              }
-            }
+            "$ref": "#/components/parameters/yoValiOnly"
           }
         ],
         "requestBody": {
@@ -2035,8 +1401,8 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "$ref": "#/components/schemas/kaffe_ApiUserSignInOrReset"
+                "$ref": "#/components/schemas/kaffe_ApiUserSignInOrReset",
+                "type": "object"
               },
               "example": {
                 "NickOrEmailAddr": "someStr",
@@ -2051,35 +1417,20 @@
             "description": "backend type ref: `yo/util.None`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `application/json`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               },
               "X-YoUserEmailAddr": {
-                "description": "empty if not authenticated, else current `User`'s `Account`-identifying `EmailAddr`",
-                "content": {
-                  "text/plain": {
-                    "example": "user123@foo.bar"
-                  }
-                }
+                "$ref": "#/components/headers/X-YoUserEmailAddr"
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "$ref": "#/components/schemas/util_None"
+                  "$ref": "#/components/schemas/util_None",
+                  "type": "object"
                 },
                 "example": {}
               }
@@ -2089,20 +1440,10 @@
             "description": "Possible `text/plain` responses:\n- `__userSignInOrReset_WrongPassword`\n- `___yo_authLoginOrFinalizePwdReset_WrongPassword`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -2122,20 +1463,10 @@
             "description": "Possible `text/plain` responses:\n- `Unauthorized`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -2152,20 +1483,10 @@
             "description": "Possible `text/plain` responses:\n- `___yo_authLoginOrFinalizePwdReset_AccountDoesNotExist`\n- `UnacceptableContentLength`\n- `UnacceptableContentType`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -2188,20 +1509,10 @@
             "description": "Possible `text/plain` responses:\n- `__userSignInOrReset_ExpectedPasswordAndNickOrEmailAddr`\n- `___yo_authLoginOrFinalizePwdReset_EmailRequiredButMissing`\n- `___yo_authLoginOrFinalizePwdReset_EmailInvalid`\n- `___yo_authLoginOrFinalizePwdReset_NewPasswordTooShort`\n- `___yo_authLoginOrFinalizePwdReset_NewPasswordTooLong`\n- `___yo_authLoginOrFinalizePwdReset_NewPasswordExpectedToDiffer`\n- `___yo_authLoginOrFinalizePwdReset_PwdResetRequired`\n- `___yo_authLoginOrFinalizePwdReset_NewPasswordInvalid`\n- `DbUpdate_ExpectedChangesForUpdate`\n- `DbUpdate_ExpectedQueryForUpdate`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -2245,20 +1556,10 @@
             "description": "Possible `text/plain` responses:\n- `___yo_authLoginOrFinalizePwdReset_PwdReqExpired`\n- `___yo_authLoginOrFinalizePwdReset_OkButFailedToCreateSignedToken`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -2278,20 +1579,10 @@
             "description": "Possible `text/plain` responses:\n- `TimedOut`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -2312,24 +1603,10 @@
         "operationId": "__userSignOut",
         "parameters": [
           {
-            "name": "yoFail",
-            "in": "query",
-            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or handling) with the specified HTTP status code or 500 (eg. for client-side unit-test cases of error-handling)",
-            "content": {
-              "text/plain": {
-                "example": ""
-              }
-            }
+            "$ref": "#/components/parameters/yoFail"
           },
           {
-            "name": "yoValiOnly",
-            "in": "query",
-            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
-            "content": {
-              "text/plain": {
-                "example": ""
-              }
-            }
+            "$ref": "#/components/parameters/yoValiOnly"
           }
         ],
         "requestBody": {
@@ -2338,8 +1615,8 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "$ref": "#/components/schemas/util_None"
+                "$ref": "#/components/schemas/util_None",
+                "type": "object"
               },
               "example": {}
             }
@@ -2350,35 +1627,20 @@
             "description": "backend type ref: `yo/util.None`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `application/json`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               },
               "X-YoUserEmailAddr": {
-                "description": "empty if not authenticated, else current `User`'s `Account`-identifying `EmailAddr`",
-                "content": {
-                  "text/plain": {
-                    "example": "user123@foo.bar"
-                  }
-                }
+                "$ref": "#/components/headers/X-YoUserEmailAddr"
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "$ref": "#/components/schemas/util_None"
+                  "$ref": "#/components/schemas/util_None",
+                  "type": "object"
                 },
                 "example": {}
               }
@@ -2388,20 +1650,10 @@
             "description": "Possible `text/plain` responses:\n- `UnacceptableContentLength`\n- `UnacceptableContentType`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -2421,20 +1673,10 @@
             "description": "Possible `text/plain` responses:\n- `TimedOut`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -2455,24 +1697,10 @@
         "operationId": "__userSignUpOrForgotPassword",
         "parameters": [
           {
-            "name": "yoFail",
-            "in": "query",
-            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or handling) with the specified HTTP status code or 500 (eg. for client-side unit-test cases of error-handling)",
-            "content": {
-              "text/plain": {
-                "example": ""
-              }
-            }
+            "$ref": "#/components/parameters/yoFail"
           },
           {
-            "name": "yoValiOnly",
-            "in": "query",
-            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
-            "content": {
-              "text/plain": {
-                "example": ""
-              }
-            }
+            "$ref": "#/components/parameters/yoValiOnly"
           }
         ],
         "requestBody": {
@@ -2481,8 +1709,8 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "$ref": "#/components/schemas/kaffe_ApiNickOrEmailAddr"
+                "$ref": "#/components/schemas/kaffe_ApiNickOrEmailAddr",
+                "type": "object"
               },
               "example": {
                 "NickOrEmailAddr": "someStr"
@@ -2495,35 +1723,20 @@
             "description": "backend type ref: `yo/util.None`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `application/json`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               },
               "X-YoUserEmailAddr": {
-                "description": "empty if not authenticated, else current `User`'s `Account`-identifying `EmailAddr`",
-                "content": {
-                  "text/plain": {
-                    "example": "user123@foo.bar"
-                  }
-                }
+                "$ref": "#/components/headers/X-YoUserEmailAddr"
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "$ref": "#/components/schemas/util_None"
+                  "$ref": "#/components/schemas/util_None",
+                  "type": "object"
                 },
                 "example": {}
               }
@@ -2533,20 +1746,10 @@
             "description": "Possible `text/plain` responses:\n- `UnacceptableContentLength`\n- `UnacceptableContentType`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -2566,20 +1769,10 @@
             "description": "Possible `text/plain` responses:\n- `___yo_authRegister_EmailAddrAlreadyExists`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -2596,20 +1789,10 @@
             "description": "Possible `text/plain` responses:\n- `__userSignUpOrForgotPassword_EmailRequiredButMissing`\n- `__userSignUpOrForgotPassword_EmailInvalid`\n- `___yo_authRegister_EmailRequiredButMissing`\n- `___yo_authRegister_EmailInvalid`\n- `___yo_authRegister_PasswordTooShort`\n- `___yo_authRegister_PasswordTooLong`\n- `___yo_authRegister_PasswordInvalid`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -2644,20 +1827,10 @@
             "description": "Possible `text/plain` responses:\n- `TimedOut`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -2678,24 +1851,10 @@
         "operationId": "__userUpdate",
         "parameters": [
           {
-            "name": "yoFail",
-            "in": "query",
-            "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or handling) with the specified HTTP status code or 500 (eg. for client-side unit-test cases of error-handling)",
-            "content": {
-              "text/plain": {
-                "example": ""
-              }
-            }
+            "$ref": "#/components/parameters/yoFail"
           },
           {
-            "name": "yoValiOnly",
-            "in": "query",
-            "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
-            "content": {
-              "text/plain": {
-                "example": ""
-              }
-            }
+            "$ref": "#/components/parameters/yoValiOnly"
           }
         ],
         "requestBody": {
@@ -2704,16 +1863,16 @@
           "content": {
             "multipart/form-data": {
               "schema": {
-                "type": "object",
-                "$ref": "#/components/schemas/yodb_ApiUpdateArgs_kaffe_app_User_kaffe_app_UserField_"
+                "$ref": "#/components/schemas/yodb_ApiUpdateArgs_kaffe_app_User_kaffe_app_UserField_",
+                "type": "object"
               },
               "example": {
                 "Id": -9007199254740991,
                 "Changes": {
                   "Id": -9007199254740991,
-                  "DtMade": "2023-11-15T18:52:47.099346942Z",
-                  "DtMod": "2023-11-15T18:52:47.099349531Z",
-                  "LastSeen": "2023-11-15T18:52:47.099351964Z",
+                  "DtMade": "2023-11-15T19:27:11.351017973Z",
+                  "DtMod": "2023-11-15T19:27:11.351020616Z",
+                  "LastSeen": "2023-11-15T19:27:11.351023122Z",
                   "Auth": {},
                   "PicFileId": "someStr",
                   "Nick": "someStr",
@@ -2736,35 +1895,20 @@
             "description": "backend type ref: `yo/util.None`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `application/json`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               },
               "X-YoUserEmailAddr": {
-                "description": "empty if not authenticated, else current `User`'s `Account`-identifying `EmailAddr`",
-                "content": {
-                  "text/plain": {
-                    "example": "user123@foo.bar"
-                  }
-                }
+                "$ref": "#/components/headers/X-YoUserEmailAddr"
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "$ref": "#/components/schemas/util_None"
+                  "$ref": "#/components/schemas/util_None",
+                  "type": "object"
                 },
                 "example": {}
               }
@@ -2774,20 +1918,10 @@
             "description": "Possible `text/plain` responses:\n- `Unauthorized`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -2804,20 +1938,10 @@
             "description": "Possible `text/plain` responses:\n- `UnacceptableContentLength`\n- `UnacceptableContentType`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -2837,20 +1961,10 @@
             "description": "Possible `text/plain` responses:\n- `__userUpdate_NicknameAlreadyExists`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -2867,20 +1981,10 @@
             "description": "Possible `text/plain` responses:\n- `__userUpdate_ExpectedNonEmptyNickname`\n- `DbUpdExpectedIdGt0`\n- `DbUpdate_ExpectedChangesForUpdate`\n- `DbUpdate_ExpectedQueryForUpdate`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -2906,20 +2010,10 @@
             "description": "Possible `text/plain` responses:\n- `TimedOut`",
             "headers": {
               "Cache-Control": {
-                "description": "always `no-store`",
-                "content": {
-                  "text/plain": {
-                    "example": "no-store"
-                  }
-                }
+                "$ref": "#/components/headers/Cache-Control"
               },
               "Content-Type": {
-                "description": "always `text/plain`",
-                "content": {
-                  "text/plain": {
-                    "example": "application/json"
-                  }
-                }
+                "$ref": "#/components/headers/Content-Type"
               }
             },
             "content": {
@@ -2952,8 +2046,8 @@
             }
           },
           "Period": {
-            "type": "object",
-            "$ref": "#/components/schemas/kaffe_YearAndMonth"
+            "$ref": "#/components/schemas/kaffe_YearAndMonth",
+            "type": "object"
           }
         },
         "examples": [
@@ -2987,8 +2081,8 @@
         "type": "object",
         "properties": {
           "ApiNickOrEmailAddr": {
-            "type": "object",
-            "$ref": "#/components/schemas/kaffe_ApiNickOrEmailAddr"
+            "$ref": "#/components/schemas/kaffe_ApiNickOrEmailAddr",
+            "type": "object"
           },
           "Password2Plain": {
             "type": "string",
@@ -3063,8 +2157,8 @@
         "examples": [
           {
             "Id": -9007199254740991,
-            "DtMade": "2023-11-15T18:52:47.098722706Z",
-            "DtMod": "2023-11-15T18:52:47.098726407Z",
+            "DtMade": "2023-11-15T19:27:11.350451121Z",
+            "DtMod": "2023-11-15T19:27:11.35045471Z",
             "By": {},
             "To": [
               -9007199254740991
@@ -3154,8 +2248,8 @@
             "Posts": [
               {
                 "Id": -9007199254740991,
-                "DtMade": "2023-11-15T18:52:47.098855276Z",
-                "DtMod": "2023-11-15T18:52:47.098857857Z",
+                "DtMade": "2023-11-15T19:27:11.350570546Z",
+                "DtMod": "2023-11-15T19:27:11.350573099Z",
                 "By": 0,
                 "To": [
                   -9007199254740991
@@ -3169,7 +2263,7 @@
                 ]
               }
             ],
-            "NextSince": "2023-11-15T18:52:47.098867781Z",
+            "NextSince": "2023-11-15T19:27:11.350582734Z",
             "UnreadCounts": {
               "someMapKey1": -9007199254740991,
               "some_map_key_2": -9007199254740991
@@ -3233,9 +2327,9 @@
         "examples": [
           {
             "Id": -9007199254740991,
-            "DtMade": "2023-11-15T18:52:47.099369681Z",
-            "DtMod": "2023-11-15T18:52:47.099372114Z",
-            "LastSeen": "2023-11-15T18:52:47.099374572Z",
+            "DtMade": "2023-11-15T19:27:11.351039233Z",
+            "DtMod": "2023-11-15T19:27:11.35104162Z",
+            "LastSeen": "2023-11-15T19:27:11.351043972Z",
             "Auth": {},
             "PicFileId": "someStr",
             "Nick": "someStr",
@@ -3394,9 +2488,9 @@
             "Buddies": [
               {
                 "Id": -9007199254740991,
-                "DtMade": "2023-11-15T18:52:47.098961061Z",
-                "DtMod": "2023-11-15T18:52:47.098963486Z",
-                "LastSeen": "2023-11-15T18:52:47.098965982Z",
+                "DtMade": "2023-11-15T19:27:11.350667006Z",
+                "DtMod": "2023-11-15T19:27:11.350669441Z",
+                "LastSeen": "2023-11-15T19:27:11.350671915Z",
                 "Auth": 0,
                 "PicFileId": "someStr",
                 "Nick": "someStr",
@@ -3411,9 +2505,9 @@
             "BuddyRequestsBy": [
               {
                 "Id": -9007199254740991,
-                "DtMade": "2023-11-15T18:52:47.098979143Z",
-                "DtMod": "2023-11-15T18:52:47.098981507Z",
-                "LastSeen": "2023-11-15T18:52:47.098983939Z",
+                "DtMade": "2023-11-15T19:27:11.350684853Z",
+                "DtMod": "2023-11-15T19:27:11.350687159Z",
+                "LastSeen": "2023-11-15T19:27:11.350689535Z",
                 "Auth": 0,
                 "PicFileId": "someStr",
                 "Nick": "someStr",
@@ -3594,7 +2688,7 @@
         },
         "examples": [
           {
-            "Since": "2023-11-15T18:52:47.098917451Z",
+            "Since": "2023-11-15T19:27:11.350626362Z",
             "OnlyBy": [
               -9007199254740991
             ]
@@ -3692,9 +2786,9 @@
           {
             "Result": {
               "Id": -9007199254740991,
-              "DtMade": "2023-11-15T18:52:47.099105642Z",
-              "DtMod": "2023-11-15T18:52:47.099108194Z",
-              "LastSeen": "2023-11-15T18:52:47.099110546Z",
+              "DtMade": "2023-11-15T19:27:11.350798847Z",
+              "DtMod": "2023-11-15T19:27:11.350801244Z",
+              "LastSeen": "2023-11-15T19:27:11.350803563Z",
               "Auth": 0,
               "PicFileId": "someStr",
               "Nick": "someStr",
@@ -3756,8 +2850,8 @@
             }
           },
           "Changes": {
-            "type": "object",
-            "$ref": "#/components/schemas/kaffe_User"
+            "$ref": "#/components/schemas/kaffe_User",
+            "type": "object"
           },
           "Id": {
             "type": "integer",
@@ -3771,9 +2865,9 @@
             "Id": -9007199254740991,
             "Changes": {
               "Id": -9007199254740991,
-              "DtMade": "2023-11-15T18:52:47.099346942Z",
-              "DtMod": "2023-11-15T18:52:47.099349531Z",
-              "LastSeen": "2023-11-15T18:52:47.099351964Z",
+              "DtMade": "2023-11-15T19:27:11.351017973Z",
+              "DtMod": "2023-11-15T19:27:11.351020616Z",
+              "LastSeen": "2023-11-15T19:27:11.351023122Z",
               "Auth": {},
               "PicFileId": "someStr",
               "Nick": "someStr",
@@ -3789,6 +2883,61 @@
             ]
           }
         ]
+      }
+    },
+    "parameters": {
+      "yoFail": {
+        "name": "yoFail",
+        "in": "query",
+        "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or handling) with the specified HTTP status code or 500 (eg. for client-side unit-test cases of error-handling)",
+        "content": {
+          "text/plain": {
+            "example": ""
+          }
+        }
+      },
+      "yoValiOnly": {
+        "name": "yoValiOnly",
+        "in": "query",
+        "description": "optional: if not missing or empty, enforces request-validation-only, with no further actual work performed to produce results and/or effects",
+        "content": {
+          "text/plain": {
+            "example": ""
+          }
+        }
+      }
+    },
+    "headers": {
+      "Cache-Control": {
+        "description": "always `no-store`",
+        "content": {
+          "text/plain": {
+            "example": "no-store"
+          }
+        }
+      },
+      "Content-Type": {
+        "description": "always `application/json` if `200` OK response, else always `text/plain`",
+        "content": {
+          "text/plain": {
+            "examples": {
+              "application/json": {
+                "value": "application/json"
+              },
+              "text/plain": {
+                "value": "text/plain"
+              }
+            }
+          }
+        }
+      },
+      "X-YoUserEmailAddr": {
+        "description": "empty if not authenticated, else current `User`'s `Account`-identifying `EmailAddr`",
+        "content": {
+          "text/plain": {
+            "example": "user123@foo.bar"
+          }
+        }
       }
     }
   }
