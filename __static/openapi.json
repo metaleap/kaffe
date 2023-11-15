@@ -22,7 +22,7 @@
           }
         ],
         "requestBody": {
-          "description": "backend type ref: `__postDelete_In`",
+          "description": "`__postDelete_In`",
           "required": true,
           "content": {
             "application/json": {
@@ -38,7 +38,7 @@
         },
         "responses": {
           "200": {
-            "description": "backend type ref: `yo/util.None`",
+            "description": "`yo/util.None`",
             "headers": {
               "Cache-Control": {
                 "$ref": "#/components/headers/Cache-Control"
@@ -158,7 +158,7 @@
           }
         ],
         "requestBody": {
-          "description": "backend type ref: `yo/util.None`",
+          "description": "`yo/util.None`",
           "required": true,
           "content": {
             "application/json": {
@@ -172,7 +172,7 @@
         },
         "responses": {
           "200": {
-            "description": "backend type ref: `yo/util.Return[map[string]string]`",
+            "description": "`yo/util.Return[map[string]string]`",
             "headers": {
               "Cache-Control": {
                 "$ref": "#/components/headers/Cache-Control"
@@ -257,7 +257,7 @@
           }
         ],
         "requestBody": {
-          "description": "backend type ref: `__postMonthsUtc_In`",
+          "description": "`__postMonthsUtc_In`",
           "required": true,
           "content": {
             "application/json": {
@@ -275,7 +275,7 @@
         },
         "responses": {
           "200": {
-            "description": "backend type ref: `__postMonthsUtc_Out`",
+            "description": "`__postMonthsUtc_Out`",
             "headers": {
               "Cache-Control": {
                 "$ref": "#/components/headers/Cache-Control"
@@ -382,18 +382,14 @@
           }
         ],
         "requestBody": {
-          "description": "`multipart/form-data` form-fields:\n1. binary file uploads in form field `files`, and\n2. `application/json` request payload as `text/plain` in form field `_`, as elaborated in this example (backend type ref: `kaffe/app.Post`)",
+          "description": "`multipart/form-data` form-fields:\n1. `files` for any binary file uploads, and\n2. `_` for the actual `application/json` request payload, as elaborated in this example (`kaffe/app.Post`)",
           "required": true,
           "content": {
             "multipart/form-data": {
-              "schema": {
-                "$ref": "#/components/schemas/kaffe_Post",
-                "type": "object"
-              },
               "example": {
                 "Id": -9007199254740991,
-                "DtMade": "2023-11-15T19:27:11.350451121Z",
-                "DtMod": "2023-11-15T19:27:11.35045471Z",
+                "DtMade": "2023-11-15T19:41:23.196853115Z",
+                "DtMod": "2023-11-15T19:41:23.196856324Z",
                 "By": {},
                 "To": [
                   -9007199254740991
@@ -411,7 +407,7 @@
         },
         "responses": {
           "200": {
-            "description": "backend type ref: `yo/util.Return[yo/db.I64]`",
+            "description": "`yo/util.Return[yo/db.I64]`",
             "headers": {
               "Cache-Control": {
                 "$ref": "#/components/headers/Cache-Control"
@@ -539,7 +535,7 @@
           }
         ],
         "requestBody": {
-          "description": "backend type ref: `__postsDeleted_In`",
+          "description": "`__postsDeleted_In`",
           "required": true,
           "content": {
             "application/json": {
@@ -557,7 +553,7 @@
         },
         "responses": {
           "200": {
-            "description": "backend type ref: `__postsDeleted_Out`",
+            "description": "`__postsDeleted_Out`",
             "headers": {
               "Cache-Control": {
                 "$ref": "#/components/headers/Cache-Control"
@@ -661,7 +657,7 @@
           }
         ],
         "requestBody": {
-          "description": "backend type ref: `kaffe/app.ApiArgPeriod`",
+          "description": "`kaffe/app.ApiArgPeriod`",
           "required": true,
           "content": {
             "application/json": {
@@ -683,7 +679,7 @@
         },
         "responses": {
           "200": {
-            "description": "backend type ref: `kaffe/app.PostsListResult`",
+            "description": "`kaffe/app.PostsListResult`",
             "headers": {
               "Cache-Control": {
                 "$ref": "#/components/headers/Cache-Control"
@@ -705,8 +701,8 @@
                   "Posts": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-15T19:27:11.350570546Z",
-                      "DtMod": "2023-11-15T19:27:11.350573099Z",
+                      "DtMade": "2023-11-15T19:41:23.196977009Z",
+                      "DtMod": "2023-11-15T19:41:23.196979719Z",
                       "By": 0,
                       "To": [
                         -9007199254740991
@@ -720,7 +716,7 @@
                       ]
                     }
                   ],
-                  "NextSince": "2023-11-15T19:27:11.350582734Z",
+                  "NextSince": "2023-11-15T19:41:23.196989636Z",
                   "UnreadCounts": {
                     "someMapKey1": -9007199254740991,
                     "some_map_key_2": -9007199254740991
@@ -807,7 +803,7 @@
           }
         ],
         "requestBody": {
-          "description": "backend type ref: `__postsRecent_In`",
+          "description": "`__postsRecent_In`",
           "required": true,
           "content": {
             "application/json": {
@@ -816,7 +812,7 @@
                 "type": "object"
               },
               "example": {
-                "Since": "2023-11-15T19:27:11.350626362Z",
+                "Since": "2023-11-15T19:41:23.19703405Z",
                 "OnlyBy": [
                   -9007199254740991
                 ]
@@ -826,7 +822,7 @@
         },
         "responses": {
           "200": {
-            "description": "backend type ref: `kaffe/app.PostsListResult`",
+            "description": "`kaffe/app.PostsListResult`",
             "headers": {
               "Cache-Control": {
                 "$ref": "#/components/headers/Cache-Control"
@@ -848,8 +844,8 @@
                   "Posts": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-15T19:27:11.350570546Z",
-                      "DtMod": "2023-11-15T19:27:11.350573099Z",
+                      "DtMade": "2023-11-15T19:41:23.196977009Z",
+                      "DtMod": "2023-11-15T19:41:23.196979719Z",
                       "By": 0,
                       "To": [
                         -9007199254740991
@@ -863,7 +859,7 @@
                       ]
                     }
                   ],
-                  "NextSince": "2023-11-15T19:27:11.350582734Z",
+                  "NextSince": "2023-11-15T19:41:23.196989636Z",
                   "UnreadCounts": {
                     "someMapKey1": -9007199254740991,
                     "some_map_key_2": -9007199254740991
@@ -950,7 +946,7 @@
           }
         ],
         "requestBody": {
-          "description": "backend type ref: `yo/util.None`",
+          "description": "`yo/util.None`",
           "required": true,
           "content": {
             "application/json": {
@@ -964,7 +960,7 @@
         },
         "responses": {
           "200": {
-            "description": "backend type ref: `__userBuddies_Out`",
+            "description": "`__userBuddies_Out`",
             "headers": {
               "Cache-Control": {
                 "$ref": "#/components/headers/Cache-Control"
@@ -986,9 +982,9 @@
                   "Buddies": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-15T19:27:11.350667006Z",
-                      "DtMod": "2023-11-15T19:27:11.350669441Z",
-                      "LastSeen": "2023-11-15T19:27:11.350671915Z",
+                      "DtMade": "2023-11-15T19:41:23.197076667Z",
+                      "DtMod": "2023-11-15T19:41:23.197079175Z",
+                      "LastSeen": "2023-11-15T19:41:23.197081677Z",
                       "Auth": 0,
                       "PicFileId": "someStr",
                       "Nick": "someStr",
@@ -1003,9 +999,9 @@
                   "BuddyRequestsBy": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-15T19:27:11.350684853Z",
-                      "DtMod": "2023-11-15T19:27:11.350687159Z",
-                      "LastSeen": "2023-11-15T19:27:11.350689535Z",
+                      "DtMade": "2023-11-15T19:41:23.197095263Z",
+                      "DtMod": "2023-11-15T19:41:23.19709765Z",
+                      "LastSeen": "2023-11-15T19:41:23.197100089Z",
                       "Auth": 0,
                       "PicFileId": "someStr",
                       "Nick": "someStr",
@@ -1099,7 +1095,7 @@
           }
         ],
         "requestBody": {
-          "description": "backend type ref: `__userBuddiesAdd_In`",
+          "description": "`__userBuddiesAdd_In`",
           "required": true,
           "content": {
             "application/json": {
@@ -1115,7 +1111,7 @@
         },
         "responses": {
           "200": {
-            "description": "backend type ref: `__userBuddiesAdd_Out`",
+            "description": "`__userBuddiesAdd_Out`",
             "headers": {
               "Cache-Control": {
                 "$ref": "#/components/headers/Cache-Control"
@@ -1243,7 +1239,7 @@
           }
         ],
         "requestBody": {
-          "description": "backend type ref: `__userBy_In`",
+          "description": "`__userBy_In`",
           "required": true,
           "content": {
             "application/json": {
@@ -1260,7 +1256,7 @@
         },
         "responses": {
           "200": {
-            "description": "backend type ref: `yo/util.Return[*kaffe/app.User]`",
+            "description": "`yo/util.Return[*kaffe/app.User]`",
             "headers": {
               "Cache-Control": {
                 "$ref": "#/components/headers/Cache-Control"
@@ -1281,9 +1277,9 @@
                 "example": {
                   "Result": {
                     "Id": -9007199254740991,
-                    "DtMade": "2023-11-15T19:27:11.350798847Z",
-                    "DtMod": "2023-11-15T19:27:11.350801244Z",
-                    "LastSeen": "2023-11-15T19:27:11.350803563Z",
+                    "DtMade": "2023-11-15T19:41:23.197214324Z",
+                    "DtMod": "2023-11-15T19:41:23.197216798Z",
+                    "LastSeen": "2023-11-15T19:41:23.197219238Z",
                     "Auth": 0,
                     "PicFileId": "someStr",
                     "Nick": "someStr",
@@ -1396,7 +1392,7 @@
           }
         ],
         "requestBody": {
-          "description": "backend type ref: `kaffe/app.ApiUserSignInOrReset`",
+          "description": "`kaffe/app.ApiUserSignInOrReset`",
           "required": true,
           "content": {
             "application/json": {
@@ -1414,7 +1410,7 @@
         },
         "responses": {
           "200": {
-            "description": "backend type ref: `yo/util.None`",
+            "description": "`yo/util.None`",
             "headers": {
               "Cache-Control": {
                 "$ref": "#/components/headers/Cache-Control"
@@ -1610,7 +1606,7 @@
           }
         ],
         "requestBody": {
-          "description": "backend type ref: `yo/util.None`",
+          "description": "`yo/util.None`",
           "required": true,
           "content": {
             "application/json": {
@@ -1624,7 +1620,7 @@
         },
         "responses": {
           "200": {
-            "description": "backend type ref: `yo/util.None`",
+            "description": "`yo/util.None`",
             "headers": {
               "Cache-Control": {
                 "$ref": "#/components/headers/Cache-Control"
@@ -1704,7 +1700,7 @@
           }
         ],
         "requestBody": {
-          "description": "backend type ref: `kaffe/app.ApiNickOrEmailAddr`",
+          "description": "`kaffe/app.ApiNickOrEmailAddr`",
           "required": true,
           "content": {
             "application/json": {
@@ -1720,7 +1716,7 @@
         },
         "responses": {
           "200": {
-            "description": "backend type ref: `yo/util.None`",
+            "description": "`yo/util.None`",
             "headers": {
               "Cache-Control": {
                 "$ref": "#/components/headers/Cache-Control"
@@ -1858,21 +1854,17 @@
           }
         ],
         "requestBody": {
-          "description": "`multipart/form-data` form-fields:\n1. binary file uploads in form field `files`, and\n2. `application/json` request payload as `text/plain` in form field `_`, as elaborated in this example (backend type ref: `yo/db.ApiUpdateArgs[kaffe/app.User,kaffe/app.UserField]`)",
+          "description": "`multipart/form-data` form-fields:\n1. `files` for any binary file uploads, and\n2. `_` for the actual `application/json` request payload, as elaborated in this example (`yo/db.ApiUpdateArgs[kaffe/app.User,kaffe/app.UserField]`)",
           "required": true,
           "content": {
             "multipart/form-data": {
-              "schema": {
-                "$ref": "#/components/schemas/yodb_ApiUpdateArgs_kaffe_app_User_kaffe_app_UserField_",
-                "type": "object"
-              },
               "example": {
                 "Id": -9007199254740991,
                 "Changes": {
                   "Id": -9007199254740991,
-                  "DtMade": "2023-11-15T19:27:11.351017973Z",
-                  "DtMod": "2023-11-15T19:27:11.351020616Z",
-                  "LastSeen": "2023-11-15T19:27:11.351023122Z",
+                  "DtMade": "2023-11-15T19:41:23.197442058Z",
+                  "DtMod": "2023-11-15T19:41:23.19744476Z",
+                  "LastSeen": "2023-11-15T19:41:23.19744718Z",
                   "Auth": {},
                   "PicFileId": "someStr",
                   "Nick": "someStr",
@@ -1892,7 +1884,7 @@
         },
         "responses": {
           "200": {
-            "description": "backend type ref: `yo/util.None`",
+            "description": "`yo/util.None`",
             "headers": {
               "Cache-Control": {
                 "$ref": "#/components/headers/Cache-Control"
@@ -2157,8 +2149,8 @@
         "examples": [
           {
             "Id": -9007199254740991,
-            "DtMade": "2023-11-15T19:27:11.350451121Z",
-            "DtMod": "2023-11-15T19:27:11.35045471Z",
+            "DtMade": "2023-11-15T19:41:23.196853115Z",
+            "DtMod": "2023-11-15T19:41:23.196856324Z",
             "By": {},
             "To": [
               -9007199254740991
@@ -2248,8 +2240,8 @@
             "Posts": [
               {
                 "Id": -9007199254740991,
-                "DtMade": "2023-11-15T19:27:11.350570546Z",
-                "DtMod": "2023-11-15T19:27:11.350573099Z",
+                "DtMade": "2023-11-15T19:41:23.196977009Z",
+                "DtMod": "2023-11-15T19:41:23.196979719Z",
                 "By": 0,
                 "To": [
                   -9007199254740991
@@ -2263,7 +2255,7 @@
                 ]
               }
             ],
-            "NextSince": "2023-11-15T19:27:11.350582734Z",
+            "NextSince": "2023-11-15T19:41:23.196989636Z",
             "UnreadCounts": {
               "someMapKey1": -9007199254740991,
               "some_map_key_2": -9007199254740991
@@ -2327,9 +2319,9 @@
         "examples": [
           {
             "Id": -9007199254740991,
-            "DtMade": "2023-11-15T19:27:11.351039233Z",
-            "DtMod": "2023-11-15T19:27:11.35104162Z",
-            "LastSeen": "2023-11-15T19:27:11.351043972Z",
+            "DtMade": "2023-11-15T19:41:23.197463747Z",
+            "DtMod": "2023-11-15T19:41:23.197466105Z",
+            "LastSeen": "2023-11-15T19:41:23.197468487Z",
             "Auth": {},
             "PicFileId": "someStr",
             "Nick": "someStr",
@@ -2488,9 +2480,9 @@
             "Buddies": [
               {
                 "Id": -9007199254740991,
-                "DtMade": "2023-11-15T19:27:11.350667006Z",
-                "DtMod": "2023-11-15T19:27:11.350669441Z",
-                "LastSeen": "2023-11-15T19:27:11.350671915Z",
+                "DtMade": "2023-11-15T19:41:23.197076667Z",
+                "DtMod": "2023-11-15T19:41:23.197079175Z",
+                "LastSeen": "2023-11-15T19:41:23.197081677Z",
                 "Auth": 0,
                 "PicFileId": "someStr",
                 "Nick": "someStr",
@@ -2505,9 +2497,9 @@
             "BuddyRequestsBy": [
               {
                 "Id": -9007199254740991,
-                "DtMade": "2023-11-15T19:27:11.350684853Z",
-                "DtMod": "2023-11-15T19:27:11.350687159Z",
-                "LastSeen": "2023-11-15T19:27:11.350689535Z",
+                "DtMade": "2023-11-15T19:41:23.197095263Z",
+                "DtMod": "2023-11-15T19:41:23.19709765Z",
+                "LastSeen": "2023-11-15T19:41:23.197100089Z",
                 "Auth": 0,
                 "PicFileId": "someStr",
                 "Nick": "someStr",
@@ -2688,7 +2680,7 @@
         },
         "examples": [
           {
-            "Since": "2023-11-15T19:27:11.350626362Z",
+            "Since": "2023-11-15T19:41:23.19703405Z",
             "OnlyBy": [
               -9007199254740991
             ]
@@ -2786,9 +2778,9 @@
           {
             "Result": {
               "Id": -9007199254740991,
-              "DtMade": "2023-11-15T19:27:11.350798847Z",
-              "DtMod": "2023-11-15T19:27:11.350801244Z",
-              "LastSeen": "2023-11-15T19:27:11.350803563Z",
+              "DtMade": "2023-11-15T19:41:23.197214324Z",
+              "DtMod": "2023-11-15T19:41:23.197216798Z",
+              "LastSeen": "2023-11-15T19:41:23.197219238Z",
               "Auth": 0,
               "PicFileId": "someStr",
               "Nick": "someStr",
@@ -2865,9 +2857,9 @@
             "Id": -9007199254740991,
             "Changes": {
               "Id": -9007199254740991,
-              "DtMade": "2023-11-15T19:27:11.351017973Z",
-              "DtMod": "2023-11-15T19:27:11.351020616Z",
-              "LastSeen": "2023-11-15T19:27:11.351023122Z",
+              "DtMade": "2023-11-15T19:41:23.197442058Z",
+              "DtMod": "2023-11-15T19:41:23.19744476Z",
+              "LastSeen": "2023-11-15T19:41:23.19744718Z",
               "Auth": {},
               "PicFileId": "someStr",
               "Nick": "someStr",
@@ -2917,7 +2909,7 @@
         }
       },
       "Content-Type": {
-        "description": "always `application/json` if `200` OK response, else always `text/plain`",
+        "description": "always `application/json` if Code `200` response, else always `text/plain`",
         "content": {
           "text/plain": {
             "examples": {
