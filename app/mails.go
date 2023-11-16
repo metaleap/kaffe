@@ -42,10 +42,10 @@ func init() {
 		Body:    str.Repl(mailTmpl, str.Dict{"action": "reset your password"}),
 	}
 
-	yoauth.AppSideTmplPopulate = func(ctx *Ctx, reqTime *yodb.DateTime, emailAddr yodb.Text, existingMaybe *yoauth.UserAuth, tmplArgsToPopulate yodb.JsonMap[string]) {
+	yoauth.AppSideTmplPopulate = func(ctx *Ctx, reqTime *yodb.DateTime, emailAddr yodb.Text, existingMaybe *yoauth.UserAccount, tmplArgsToPopulate yodb.JsonMap[string]) {
 		var user *User
 		if existingMaybe != nil {
-			user = yodb.FindOne[User](ctx, UserAuth.Equal(existingMaybe.Id))
+			user = yodb.FindOne[User](ctx, UserAccount.Equal(existingMaybe.Id))
 		}
 		if user != nil {
 			tmplArgsToPopulate[yoauth.MailTmplVarName] = string(user.Nick)

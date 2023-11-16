@@ -114,7 +114,7 @@ func mockSomeActivity() {
 
 	do_update := func(curUser *User, upd *User, changedFields ...UserField) {
 		upd.Id = curUser.Id
-		upd.Auth.SetId(curUser.Auth.Id())
+		upd.Account.SetId(curUser.Account.Id())
 		ViaHttp[yodb.ApiUpdateArgs[User, UserField], None](apiUserUpdate, ctx, &yodb.ApiUpdateArgs[User, UserField]{
 			Changes:       *upd,
 			Id:            curUser.Id,
@@ -204,7 +204,7 @@ func mockEnsureUser(i int) yodb.I64 {
 	if user == nil { // not yet exists: create
 		ctx.TimingsNoPrintInDevMode = false
 		ctx.Timings.Step("register new auth")
-		auth_id := yoauth.UserRegister(ctx, user_email_addr, "foobar")
+		account_id := yoauth.UserRegister(ctx, user_email_addr, "foobar")
 		user = &User{Nick: yodb.Text(user_email_addr[:str.Idx(string(user_email_addr), '@')]), byBuddyDtLastMsgCheck: yodb.JsonMap[*yodb.DateTime]{}}
 		switch i {
 		case 123:
@@ -214,7 +214,7 @@ func mockEnsureUser(i int) yodb.I64 {
 		case 321:
 			user.Buddies = yodb.Arr[yodb.I64]{123, 234}
 		}
-		user.Auth.SetId(auth_id)
+		user.Account.SetId(account_id)
 		user.LastSeen = yodb.DtNow()
 
 		ctx.Timings.Step("insert new user")

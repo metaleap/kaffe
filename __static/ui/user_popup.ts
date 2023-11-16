@@ -102,7 +102,7 @@ export function create(user: yo.User): UiCtlUserPopup {
                 is_self ? [htm_input_btw,
                     htm.div({ 'style': 'text-align:center;font-size:0.88em;padding-top:0.44em' },
                         htm.a({ 'target': '_blank', 'href': '/_/postEmojiFullList' }, "(full list of emoji codes for posts & hover-statements...)"))
-                ] : htm.div({ 'class': 'btw' }, user.Auth ? user.Btw : "(Buddy request still pending.)"),
+                ] : htm.div({ 'class': 'btw' }, user.Account ? user.Btw : "(Buddy request still pending.)"),
             ),
             (!is_self) ? undefined : htm.div({ 'style': 'margin-top: 2.34em' }, htm.span({},
                 htm.label({ 'for': 'darklite' }, "UI Dark/Light:"),

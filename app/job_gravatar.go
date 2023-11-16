@@ -59,9 +59,9 @@ func (me gravatarJob) TaskResults(ctx *Ctx, taskDetails yojobs.TaskDetails) yojo
 	task_details := taskDetails.(*gravatarTaskDetails)
 	user := yodb.ById[User](ctx, task_details.UserId)
 	if (user != nil) && (!user.gravatarChecked) && (user.PicFileId == "") {
-		user_auth := user.Auth.Get(ctx)
+		user_account := user.Account.Get(ctx)
 		sha256 := sha256.New()
-		_, _ = sha256.Write([]byte(str.Lo(user_auth.EmailAddr.String())))
+		_, _ = sha256.Write([]byte(str.Lo(user_account.EmailAddr.String())))
 		hash_of_email_addr := str.Fmt("%x", sha256.Sum(nil))
 		if http_req, _ := http.NewRequestWithContext(ctx, "GET", "https://gravatar.com/avatar/"+hash_of_email_addr+"?d=404", nil); http_req != nil {
 			if resp, _ := http.DefaultClient.Do(http_req); (resp != nil) && (resp.Body != nil) {

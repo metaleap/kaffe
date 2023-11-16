@@ -336,13 +336,13 @@ export async function api__userUpdate(payload?: ApiUpdateArgs_kaffe_app_User_kaf
 
 export type PostField = 'Id' | 'DtMade' | 'DtMod' | 'By' | 'To' | 'Htm' | 'Files'
 
-export type UserField = 'Id' | 'DtMade' | 'DtMod' | 'LastSeen' | 'Auth' | 'PicFileId' | 'Nick' | 'Btw' | 'Buddies'
+export type UserField = 'Id' | 'DtMade' | 'DtMod' | 'LastSeen' | 'Account' | 'PicFileId' | 'Nick' | 'Btw' | 'Buddies'
 
 export type fileDelReqField = 'Id' | 'DtMade' | 'DtMod' | 'FileNames'
 
 export type ErrEntryField = 'Id' | 'DtMade' | 'DtMod' | 'Err' | 'StackTrace' | 'CtxVals' | 'HttpUrlPath' | 'HttpFullUri' | 'NumCaught' | 'JobRunId' | 'JobTaskId' | 'DbTx'
 
-export type UserAuthField = 'Id' | 'DtMade' | 'DtMod' | 'EmailAddr' | 'FailedLoginAttempts' | 'Lockout'
+export type UserAccountField = 'Id' | 'DtMade' | 'DtMod' | 'EmailAddr' | 'FailedLoginAttempts' | 'Lockout'
 
 export type UserPwdReqField = 'Id' | 'DtMade' | 'DtMod' | 'EmailAddr' | 'DoneMailReqId'
 
@@ -423,7 +423,7 @@ export type PostsListResult = {
 }
 
 export type User = {
-	Auth?: I64
+	Account?: I64
 	Btw?: string
 	BtwEmoji?: string
 	Buddies?: I64[]

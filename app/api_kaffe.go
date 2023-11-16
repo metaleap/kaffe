@@ -121,16 +121,16 @@ var apiUserSignOut = api(func(this *ApiCtx[None, None]) {
 var apiUserSignInOrReset = api(func(this *ApiCtx[ApiUserSignInOrReset, None]) {
 	this.Ctx.DbTx(true)
 	this.Args.ensureEmailAddr(this.Ctx, Err___yo_authLoginOrFinalizePwdReset_AccountDoesNotExist, Err___yo_authLoginOrFinalizePwdReset_EmailInvalid)
-	user_auth := Do(yoauth.ApiUserLoginOrFinalizePwdReset, this.Ctx, &yoauth.ApiAccountPayload{EmailAddr: this.Args.NickOrEmailAddr, PasswordPlain: this.Args.PasswordPlain, Password2Plain: this.Args.Password2Plain})
+	user_account := Do(yoauth.ApiUserLoginOrFinalizePwdReset, this.Ctx, &yoauth.ApiAccountPayload{EmailAddr: this.Args.NickOrEmailAddr, PasswordPlain: this.Args.PasswordPlain, Password2Plain: this.Args.Password2Plain})
 	user := userCur(this.Ctx)
 	if user == nil { // this was a new-user-sign-up rather than an existing-user-pwd-reset
-		user_nick := user_auth.EmailAddr[:str.Idx(user_auth.EmailAddr.String(), '@')]
+		user_nick := user_account.EmailAddr[:str.Idx(user_account.EmailAddr.String(), '@')]
 		user = &User{LastSeen: yodb.DtNow(), Nick: user_nick}
 		for n := 1; yodb.Exists[User](this.Ctx, UserNick.Equal(user.Nick)); n++ {
 			user.Nick = user_nick + yodb.Text(str.FromInt(n))
 		}
 		user.Nick = user_nick
-		user.Auth.SetId(user_auth.Id)
+		user.Account.SetId(user_account.Id)
 		user.LastSeen = yodb.DtNow()
 		_ = yodb.CreateOne[User](this.Ctx, user)
 	}
@@ -161,7 +161,7 @@ var apiUserUpdate = api(func(this *ApiCtx[yodb.ApiUpdateArgs[User, UserField], N
 		panic(ErrUnauthorized)
 	}
 	this.Args.Changes.Id = user_cur.Id
-	this.Args.Changes.Auth.SetId(user_cur.Auth.Id())
+	this.Args.Changes.Account.SetId(user_cur.Account.Id())
 
 	uploaded_file_names, _ := apiHandleUploadedFiles(this.Ctx, "picfile", 1, imageSquared, nil)
 	for _, file_name := range uploaded_file_names {
@@ -364,6 +364,6 @@ func (me *ApiNickOrEmailAddr) ensureEmailAddr(ctx *Ctx, errNoSuchAccount Err, er
 		if existing_user == nil {
 			panic(errNoSuchAccount)
 		}
-		me.NickOrEmailAddr = string(yoauth.ById(ctx, existing_user.Auth.Id()).EmailAddr)
+		me.NickOrEmailAddr = string(yoauth.ById(ctx, existing_user.Account.Id()).EmailAddr)
 	}
 }

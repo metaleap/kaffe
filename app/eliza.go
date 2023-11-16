@@ -66,11 +66,11 @@ func elizaEnsureUser() {
 
 	ctx := NewCtxNonHttp(yojobs.Timeout1Min, false, "")
 	defer ctx.OnDone(nil)
-	if user_auth := yoauth.ByEmailAddr(ctx, elizaUser.emailAddr); user_auth != nil {
-		elizaUser.id = yodb.FindOne[User](ctx, UserAuth.Equal(user_auth.Id)).Id
+	if user_account := yoauth.ByEmailAddr(ctx, elizaUser.emailAddr); user_account != nil {
+		elizaUser.id = yodb.FindOne[User](ctx, UserAccount.Equal(user_account.Id)).Id
 	} else {
 		ctx.DbTx(true)
-		auth_id := yodb.CreateOne[yoauth.UserAuth](ctx, &yoauth.UserAuth{
+		account_id := yodb.CreateOne[yoauth.UserAccount](ctx, &yoauth.UserAccount{
 			EmailAddr: yodb.Text(elizaUser.emailAddr),
 		})
 		user := &User{
@@ -79,7 +79,7 @@ func elizaEnsureUser() {
 			Nick:      yodb.Text(elizaUser.nick),
 			Btw:       yodb.Text(elizaUser.btw),
 		}
-		user.Auth.SetId(auth_id)
+		user.Account.SetId(account_id)
 		elizaUser.id = yodb.CreateOne[User](ctx, user)
 	}
 

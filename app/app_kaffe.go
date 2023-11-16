@@ -41,9 +41,9 @@ func init() {
 
 func Init() {
 	yodb.Ensure[User, UserField]("", nil, false,
-		yodb.ReadOnly[UserField]{UserAuth},
+		yodb.ReadOnly[UserField]{UserAccount},
 		yodb.Index[UserField]{UserLastSeen},
-		yodb.Unique[UserField]{UserAuth, UserNick},
+		yodb.Unique[UserField]{UserAccount, UserNick},
 		yodb.NoUpdTrigger[UserField]{UserLastSeen, userByBuddyDtLastMsgCheck},
 	)
 	yodb.Ensure[Post, PostField]("", nil, false,

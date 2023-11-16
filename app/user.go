@@ -19,9 +19,9 @@ func init() {
 		if (ctx.Http.UrlPath == apiMethodPathUserUpdate) || (ctx.Http.UrlPath == apiMethodPathUserBuddiesAdd) {
 			return // dont set last-seen for calls that already just did it
 		}
-		if _, user_auth_id := yoauth.CurrentlyLoggedInUser(ctx); user_auth_id > 0 {
+		if _, account_id := yoauth.CurrentlyLoggedInUser(ctx); account_id > 0 {
 			by_buddy_last_msg_check, _ := ctx.Get(ctxKeyByBuddyLastMsgCheck, nil).(yodb.JsonMap[*yodb.DateTime])
-			go userSetLastSeen(user_auth_id, by_buddy_last_msg_check)
+			go userSetLastSeen(account_id, by_buddy_last_msg_check)
 		}
 	}})
 }
@@ -32,7 +32,7 @@ type User struct {
 	DtMod  *yodb.DateTime
 
 	LastSeen              *yodb.DateTime
-	Auth                  yodb.Ref[yoauth.UserAuth, yodb.RefOnDelCascade]
+	Account               yodb.Ref[yoauth.UserAccount, yodb.RefOnDelCascade]
 	PicFileId             yodb.Text
 	Nick                  yodb.Text
 	Btw                   yodb.Text
@@ -65,7 +65,7 @@ func userUpdate(ctx *Ctx, upd *User, inclEmptyOrMissingFields bool, onlyFields .
 }
 
 func userByEmailAddr(ctx *Ctx, emailAddr string) *User {
-	return yodb.FindOne[User](ctx, UserAuth_EmailAddr.Equal(emailAddr)).augmentAfterLoaded()
+	return yodb.FindOne[User](ctx, UserAccount_EmailAddr.Equal(emailAddr)).augmentAfterLoaded()
 }
 
 func userByNickName(ctx *Ctx, nickName string) *User {
@@ -82,9 +82,9 @@ func userById(ctx *Ctx, id yodb.I64) *User {
 
 func userCur(ctx *Ctx) (ret *User) {
 	if ret, _ = ctx.Get(ctxKeyCurUser, nil).(*User); ret == nil {
-		_, user_auth_id := yoauth.CurrentlyLoggedInUser(ctx)
-		if user_auth_id > 0 {
-			ret = yodb.FindOne[User](ctx, UserAuth.Equal(user_auth_id)).augmentAfterLoaded()
+		_, account_id := yoauth.CurrentlyLoggedInUser(ctx)
+		if account_id > 0 {
+			ret = yodb.FindOne[User](ctx, UserAccount.Equal(account_id)).augmentAfterLoaded()
 			ctx.Set(ctxKeyCurUser, ret)
 		}
 	}
@@ -101,14 +101,14 @@ func (me *User) augmentAfterLoaded() *User {
 	return me
 }
 
-func userSetLastSeen(auth_id yodb.I64, byBuddyDtLastMsgCheck yodb.JsonMap[*yodb.DateTime]) {
+func userSetLastSeen(accountId yodb.I64, byBuddyDtLastMsgCheck yodb.JsonMap[*yodb.DateTime]) {
 	ctx := NewCtxNonHttp(time.Second, false, "userSetLastSeen")
 	defer func() { _ = recover(); ctx.OnDone(nil) }() // for total silence of this operation on errs even in dev-mode outputs (rare tho it is)
 	ctx.DbNoLoggingInDevMode()
 	ctx.TimingsNoPrintInDevMode = true
 	ctx.ErrNoNotifyOf = []Err{ErrTimedOut}
 	upd := &User{byBuddyDtLastMsgCheck: byBuddyDtLastMsgCheck}
-	upd.Auth.SetId(auth_id)
+	upd.Account.SetId(accountId)
 	// upd.LastSeen = yodb.DtNow() // userUpdate call does it anyway
 	only_fields := []UserField{UserLastSeen}
 	if byBuddyDtLastMsgCheck != nil {

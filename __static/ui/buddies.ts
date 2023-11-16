@@ -58,7 +58,7 @@ export function create(): UiCtlBuddies {
 
 
 export function userPicFileUrl(user?: yo.User, fallBackToEmoji = "🦜", toRoundedSvgFavIcon = false) {
-    if (user && !user.Auth)
+    if (user && !user.Account)
         fallBackToEmoji = "👤"
     if (!(user && user.PicFileId))
         return util.svgTextIconDataHref(fallBackToEmoji)
@@ -72,7 +72,7 @@ export function userDomAttrsBuddy(user?: yo.User, userIdHint?: number) {
             'title': `(ex-buddy #${userIdHint ?? -1} — or bug)`,
             'style': `background-image: url('${userPicFileUrl()}')`,
         }
-    if (!user.Auth) //
+    if (!user.Account) //
         return {
             'class': 'buddy-pic offline',
             'title': `${user.Nick} — (buddy request still pending)`,
