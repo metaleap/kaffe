@@ -203,7 +203,7 @@ export async function api__postMonthsUtc(payload?: __postMonthsUtc_In, formData?
 }
 export type __postMonthsUtcErr = typeof errs__postMonthsUtc[number]
 
-const errs__postNew = ['TimedOut', 'UnacceptableContentLength', 'UnacceptableContentType', 'Unauthorized', '__postNew_ExpectedEmptyFilesFieldWithUploadedFilesInMultipartForm', '__postNew_ExpectedNonEmptyPost', '__postNew_ExpectedOnlyBuddyRecipients'] as const
+const errs__postNew = ['TimedOut', 'UnacceptableContentLength', 'UnacceptableContentType', 'Unauthorized', '__postNew_ExpectedEmptyFilesField', '__postNew_ExpectedNonEmptyPost', '__postNew_ExpectedOnlyBuddyRecipients'] as const
 export async function api__postNew(payload?: PostNew, formData?: FormData, query?: {[_:string]:string}): Promise<Return_yo_db_I64_> {
 	try {
 		return await req<PostNew, Return_yo_db_I64_, __postNewErr>('_/postNew', payload, formData, query)

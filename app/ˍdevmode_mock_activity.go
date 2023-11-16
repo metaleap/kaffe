@@ -187,7 +187,7 @@ func mockSomeActivityPostSomething(ctx *Ctx, user *User, client *http.Client) {
 
 func mockUpdEnsureChange[T comparable](at *T, getAnother func() T, ok func(T) bool) {
 	orig := *at
-	for (*at) == orig || ((ok != nil) && !ok(*at)) {
+	for ((*at) == orig) || ((ok != nil) && !ok(*at)) {
 		*at = getAnother()
 	}
 }

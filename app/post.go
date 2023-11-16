@@ -191,6 +191,9 @@ func postNew(ctx *Ctx, post *Post, userById yodb.I64) yodb.I64 {
 		post.To = sl.Sorted(sl.With(post.To, user_by.Id))
 	}
 
+	if (post.Htm == "") && (len(post.Files) == 0) {
+		panic(Err__postNew_ExpectedNonEmptyPost)
+	}
 	post_id := yodb.CreateOne(ctx, post)
 	if (post.By.Id() != elizaUser.id) && sl.Has(post.To, elizaUser.id) {
 		elizaReplyShortlyTo(post_id)

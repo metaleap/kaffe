@@ -208,9 +208,11 @@ export async function sendNewPost(html: string, files?: File[]) {
             for (const file of files)
                 form_data.append('files', file)
         const resp = await yo.api__postNew({
-            By: user_self.Id,
-            To: (!selectedBuddy.val) ? [] : [selectedBuddy.val],
-            Htm: html,
+            NewPost: {
+                By: user_self.Id,
+                To: (!selectedBuddy.val) ? [] : [selectedBuddy.val],
+                Htm: html,
+            }
         }, form_data)
         isSeeminglyOffline.val = false
         ok = (resp.Result > 0)

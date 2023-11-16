@@ -87,7 +87,7 @@ func init() {
 			Checks(
 				Fails{Err: "ExpectedNonEmptyPost", If: __postNewNewPost.Equal(nil)},
 				Fails{Err: "ExpectedOnlyBuddyRecipients", If: q.Dot(__postNewNewPost, q.ArrAreAny(PostTo, q.OpLeq, 0))},
-				Fails{Err: "ExpectedEmptyFilesFieldWithUploadedFilesInMultipartForm", If: q.Dot(__postNewNewPost, PostFiles.ArrLen().NotEqual(0))},
+				Fails{Err: "ExpectedEmptyFilesField", If: q.Dot(__postNewNewPost, PostFiles.ArrLen().NotEqual(0))},
 			).
 			FailIf(yoauth.IsNotCurrentlyLoggedIn, ErrUnauthorized),
 
