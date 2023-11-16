@@ -84,10 +84,10 @@ func init() {
 			FailIf(yoauth.IsNotCurrentlyLoggedIn, ErrUnauthorized),
 
 		"_/postNew": apiPostNew.IsMultipartForm().
-			CouldFailWith("ExpectedNonEmptyPost").
 			Checks(
-				Fails{Err: "ExpectedOnlyBuddyRecipients", If: q.ArrAreAny(PostTo, q.OpLeq, 0)},
-				Fails{Err: "ExpectedEmptyFilesFieldWithUploadedFilesInMultipartForm", If: PostFiles.ArrLen().NotEqual(0)},
+				Fails{Err: "ExpectedNonEmptyPost", If: __postNewNewPost.Equal(nil)},
+				Fails{Err: "ExpectedOnlyBuddyRecipients", If: q.Dot(__postNewNewPost, q.ArrAreAny(PostTo, q.OpLeq, 0))},
+				Fails{Err: "ExpectedEmptyFilesFieldWithUploadedFilesInMultipartForm", If: q.Dot(__postNewNewPost, PostFiles.ArrLen().NotEqual(0))},
 			).
 			FailIf(yoauth.IsNotCurrentlyLoggedIn, ErrUnauthorized),
 
@@ -98,6 +98,20 @@ func init() {
 
 		"_/postEmojiFullList": apiPostEmojiFullList,
 	})
+}
+
+type ApiUserSignInOrReset struct {
+	ApiNickOrEmailAddr
+	PasswordPlain  string
+	Password2Plain string
+}
+
+type ApiNickOrEmailAddr struct {
+	NickOrEmailAddr string
+}
+
+type PostNew struct {
+	NewPost *Post
 }
 
 var apiUserSignOut = api(func(this *ApiCtx[None, None]) {
@@ -219,16 +233,16 @@ var apiPostsDeleted = api(func(this *ApiCtx[struct {
 	this.Ret.DeletedPostIds = postsDeleted(this.Ctx, this.Args.OutOfPostIds)
 })
 
-var apiPostNew = api(func(this *ApiCtx[Post, Return[yodb.I64]]) {
+var apiPostNew = api(func(this *ApiCtx[PostNew, Return[yodb.I64]]) {
 	data_files := map[string][]byte{}
 	{ // html processing
-		uris, toks := str.Dict{}, str.Split(string(this.Args.Htm), " ")
+		uris, toks := str.Dict{}, str.Split(string(this.Args.NewPost.Htm), " ")
 		for _, tok := range toks {
 			const needle = "data:"
 			for _, quot := range []string{"\"", "'"} {
 				if idx1 := str.IdxSub(tok, quot+needle); idx1 >= 0 {
 					if idx2 := str.IdxSub(tok[idx1+1:], quot) + idx1 + 1; idx2 > idx1 {
-						/*<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABR8AAAX4CAYAAAA3gL7m*/
+						/*<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABR8AAAX4CAYAAAA3gL7m...*/
 						proto_and_data := tok[idx1+len(quot)+len(needle) : idx2]
 						if idx3 := str.IdxSub(proto_and_data, ";"); idx3 < 0 {
 							uris[tok] = tok[:idx1+len(quot)] + "data:nope" + tok[idx2:]
@@ -253,16 +267,16 @@ var apiPostNew = api(func(this *ApiCtx[Post, Return[yodb.I64]]) {
 				uris[" "+uri_str+" "] = " <a target='_blank' href='" + uri_str + "'>" + uri_str + "</a> "
 			}
 		}
-		this.Args.Htm = yodb.Text(str.Trim(str.Replace(string(" "+this.Args.Htm+" "), uris)))
-		if idx1 := str.Idx(string(this.Args.Htm), ':'); idx1 >= 0 {
-			if idx2 := str.IdxLast(string(this.Args.Htm), ':'); idx2 > idx1 {
-				this.Args.Htm = yodb.Text(str.Replace(string(this.Args.Htm), emojiKnown))
+		this.Args.NewPost.Htm = yodb.Text(str.Trim(str.Replace(string(" "+this.Args.NewPost.Htm+" "), uris)))
+		if idx1 := str.Idx(string(this.Args.NewPost.Htm), ':'); idx1 >= 0 {
+			if idx2 := str.IdxLast(string(this.Args.NewPost.Htm), ':'); idx2 > idx1 {
+				this.Args.NewPost.Htm = yodb.Text(str.Replace(string(this.Args.NewPost.Htm), emojiKnown))
 			}
 		}
 	}
 
-	this.Args.Files, _ = apiHandleUploadedFiles(this.Ctx, "files", 0, nil, data_files)
-	this.Ret.Result = postNew(this.Ctx, this.Args, 0)
+	this.Args.NewPost.Files, _ = apiHandleUploadedFiles(this.Ctx, "files", 0, nil, data_files)
+	this.Ret.Result = postNew(this.Ctx, this.Args.NewPost, 0)
 })
 
 var apiPostDelete = api(func(this *ApiCtx[struct {
@@ -338,16 +352,6 @@ func apiHandleUploadedFiles(ctx *Ctx, fieldName string, maxNumFiles int, transfo
 		handle_file(file_name, file_bytes)
 	}
 	return
-}
-
-type ApiUserSignInOrReset struct {
-	ApiNickOrEmailAddr
-	PasswordPlain  string
-	Password2Plain string
-}
-
-type ApiNickOrEmailAddr struct {
-	NickOrEmailAddr string
 }
 
 func (me *ApiNickOrEmailAddr) ensureEmailAddr(ctx *Ctx, errNoSuchAccount Err, errBadEmail Err) {

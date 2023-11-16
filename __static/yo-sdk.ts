@@ -204,9 +204,9 @@ export async function api__postMonthsUtc(payload?: __postMonthsUtc_In, formData?
 export type __postMonthsUtcErr = typeof errs__postMonthsUtc[number]
 
 const errs__postNew = ['TimedOut', 'UnacceptableContentLength', 'UnacceptableContentType', 'Unauthorized', '__postNew_ExpectedEmptyFilesFieldWithUploadedFilesInMultipartForm', '__postNew_ExpectedNonEmptyPost', '__postNew_ExpectedOnlyBuddyRecipients'] as const
-export async function api__postNew(payload?: Post, formData?: FormData, query?: {[_:string]:string}): Promise<Return_yo_db_I64_> {
+export async function api__postNew(payload?: PostNew, formData?: FormData, query?: {[_:string]:string}): Promise<Return_yo_db_I64_> {
 	try {
-		return await req<Post, Return_yo_db_I64_, __postNewErr>('_/postNew', payload, formData, query)
+		return await req<PostNew, Return_yo_db_I64_, __postNewErr>('_/postNew', payload, formData, query)
 	} catch(err: any) {
 		if (err && err['body_text'] && (errs__postNew.indexOf(err.body_text) >= 0))
 			throw(new Err<__postNewErr>(err.body_text as __postNewErr))
@@ -413,15 +413,8 @@ export type ApiUserSignInOrReset = {
 	PasswordPlain?: string
 }
 
-export type Post = {
-	By?: I64
-	DtMade?: DateTime
-	DtMod?: DateTime
-	FileContentTypes?: string[]
-	Files?: string[]
-	Htm?: string
-	Id?: I64
-	To?: I64[]
+export type PostNew = {
+	NewPost?: Post
 }
 
 export type PostsListResult = {
@@ -469,4 +462,15 @@ export type Return_map_string_string_ = {
 
 export type Return_yo_db_I64_ = {
 	Result: I64
+}
+
+export type Post = {
+	By?: I64
+	DtMade?: DateTime
+	DtMod?: DateTime
+	FileContentTypes?: string[]
+	Files?: string[]
+	Htm?: string
+	Id?: I64
+	To?: I64[]
 }
