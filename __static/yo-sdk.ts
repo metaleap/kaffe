@@ -180,9 +180,9 @@ export async function api__postDelete(payload?: __postDelete_In, formData?: Form
 
 export const errs__postEmojiFullList = ['TimedOut', 'UnacceptableContentLength', 'UnacceptableContentType'] as const
 export type __postEmojiFullListErr = typeof errs__postEmojiFullList[number]
-export async function api__postEmojiFullList(payload?: None, formData?: FormData, query?: {[_:string]:string}): Promise<__postEmojiFullList_Out> {
+export async function api__postEmojiFullList(payload?: None, formData?: FormData, query?: {[_:string]:string}): Promise<Return_map_string_string_> {
 	try {
-		return await req<None, __postEmojiFullList_Out, __postEmojiFullListErr>('_/postEmojiFullList', payload, formData, query)
+		return await req<None, Return_map_string_string_, __postEmojiFullListErr>('_/postEmojiFullList', payload, formData, query)
 	} catch(err: any) {
 		if (err && err['body_text'] && (errs__postEmojiFullList.indexOf(err.body_text) >= 0))
 			throw(new Err<__postEmojiFullListErr>(err.body_text as __postEmojiFullListErr))
@@ -358,11 +358,6 @@ export type __postDelete_In = {
 	Id?: I64
 }
 
-export type __postEmojiFullList_Out = {
-	Result: { [_:string]: string }
-	Slice: boolean[]
-}
-
 export type __postMonthsUtc_In = {
 	WithUserIds?: I64[]
 }
@@ -458,6 +453,10 @@ export type None = {
 
 export type Return__kaffe_app_User_ = {
 	Result: User
+}
+
+export type Return_map_string_string_ = {
+	Result: { [_:string]: string }
 }
 
 export type Return_yo_db_I64_ = {

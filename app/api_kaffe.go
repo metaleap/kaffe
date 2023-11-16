@@ -293,15 +293,10 @@ var apiPostDelete = api(func(this *ApiCtx[struct {
 	_ = postDelete(this.Ctx, post)
 })
 
-var apiPostEmojiFullList = api(func(this *ApiCtx[None, struct {
-	Result map[string]string
-	Slice  []bool
-}]) {
+var apiPostEmojiFullList = api(func(this *ApiCtx[None, Return[map[string]string]]) {
 	this.Ret.Result = make(map[string]string, len(emojiKnown))
-	if false {
-		for emoji_code := range emojiKnown {
-			this.Ret.Result[emoji_code] = emojiUnescaped(emoji_code)
-		}
+	for emoji_code := range emojiKnown {
+		this.Ret.Result[emoji_code] = emojiUnescaped(emoji_code)
 	}
 })
 
