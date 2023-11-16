@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "kaffe.chat",
-    "description": "This HTTP API has RPC-ish rather than REST semantics: **all** operations are `POST`, regardless of what CRUD writes or reads they might or might not effect.\n\n\u003csmall\u003e(For JS/TS clients, there's a better-than-generated-from-_openapi.json_ clienting package (fully deps-free) at `/__yostatic/yo-sdk.js` and `/__yostatic/yo-sdk.ts`. They're always in sync with this _openapi.json_.)\u003c/small\u003e\n\n**tl;dr:** **usually, API requests will just-work as expected _without_ knowing all those intro notes right below** (which elaborate mostly to-be-expected software-dev-commonplaces) — but in any cases of unexpected results or errors, they'll likely help complete the mental picture.\n___\nOur backend stack's \"opinionated convention-over-configuration\" designs yield a few request/response rules that predictably remain **always in effect across all listed operations**:\n- Whereas request and response bodies are operation-specific, all operations share the exact-same set of request headers, URL query-string parameters and response headers.\n- The empty request body is principally the JSON `{}`, but fully-empty or JSON `null` request bodies are permissible and interpreted as `{}`.\n  - Response bodies are never empty and are never the JSON `null`.\n- Request and response bodies are always valid JSON values for _JSON objects_, ie. they're never immediately JSON arrays, `string`s, `number`s, or `boolean`s.\n  - They're also never immediately \"domain objects\" (ie. a `GetFoo` op would yield not a `Foo` but a `Result` (or similar) field with the found `Foo`; or a `CreateFoo` would expect not a `Foo` payload but a `NewFoo` (or similar) field with the new `Foo`).\n- All mentioned request-object (and sub-object) fields are **by default optional** and omittable or `null`able (implying for atomic types semantic equivalence to `\"\"` or `0` or `false` as per _Golang_ type-system semantics),\n  - **any exceptions** to this optionality-by-default are indicated by the operation's listed known-error responses.\n- All mentioned response-object (and sub-object) fields will always be present in the response-body, indicating their default-ness / missing-ness / empty-ness via `null` or `\"\"` or `0` or `false` as per _Golang_ type-system semantics;\n  - empty/unset JSON arrays are never `null` but `[]`; empty JSON dictionary/hash-map objects are `null` always.\n- All (non-dictionary/non-hash-map) JSON object field names known to the backend begin with an upper-case character,\n  - any operation-specific examples of JSON objects with lower-case-beginning keys/fields indicate a JSON dictionary/hash-map object.\n- The `Content-Length` request header is **required for all** operations (with a correct value).\n- The `Content-Type` request header is optional, but if present, must be correct with regards to both the operation's specification and the request body.\n- Any `multipart/form-data` operations:\n  - **always require** the following two form-fields, ignoring all others: `files` for any binary file uploads, and `_` for the actual JSON request payload;\n  - only the `_` field value is further elaborated for any such operation in this doc, and always in the exact same way as also done in this doc for all the `application/json` operations' request bodies (**without** specifically mentioning the `_` form-field containing the `text/plain` of the full `application/json` request payload actually being elaborated there).\n- Create operations of DB-stored objects (those with `Id` and `DtMade` and `DtMod` fields) ignore those very fields, they best be omitted in the client-side call site for clarity;\n  - Update operations of such objects likewise ignore those very fields, usually offering a separate field to clearly identify the object(s) requested to be modified.\n\nHow to read request/response **example JSON values** rendered in this doc:\n  - `true` indicates _any_ `boolean` value, regardless of the actual real value in a call;\n  - `\"someStr\"` indicates _any_ `string` value;\n  - **signed-integer** `number`s are indicated by a negative-number example indicating the minimum (type-wise, not operation-specific) permissible value, with the maximum being the corresponding positive-number counterpart;\n  - **unsigned-integer** `number`s are indicated by a positive-number example indicating the maximum (type-wise, not operation-specific) permissible value, with the minimum being `0`;\n  - **floating-point** `number`s are indicated by a positive-number example indicating the maximum (type-wise, not operation-specific) permissible value, with the minimum being the corresponding negative-number counterpart.\n  - **date-time values** are indicated by RFC3339/ISO8601-formatted `string` examples:\n    - in responses, they're always in **UTC**, whereas in requests, any timezone may be indicated;\n\t- in requests, they may always be `null` (excepting any operation-specific known-errors indicating otherwise) but must never be `\"\"` or otherwise non-RFC3339/ISO8601-parseable.\n\nAbout **error responses**:\n- All are `text/plain`.\n- In addition to those listed in this doc (thrown by the service under the indicated conditions), other error responses are at all times entirely technically-possible and not exhaustively documentable (feasibly), such as eg. DB / file-system / network disruptions. Those caught by the service will be `500`s, others (ie. from load-balancers / gateways / reverse-proxies etc. _in front of_ the service) might use _any_ HTTP status code whatsoever.\n- All the well-known (thrown rather than caught) errors listed here:\n  - have their code-identifier-compatible (spaceless ASCII) enumerant-name as their entire text response, making all error responses inherently `switch/case`able;\n  - have been recursively determined by code-path walking. Among them are some that logically could not possibly ever occur for that operation, yet identifying those (to filter them out of the listing) is (so far) out of scope for our current `openapi.json` spec generator. (In case of serious need, do let us know!)\n- Any non-known (caught rather than thrown) errors (not listed here) contain their original (usually human-language) error message fully, corresponding to the `default` in an error-handling `switch/case`.\n- **\"Not Found\" rules:**\n  - `404` **only** for HTTP requests with definitely-unroutable URL paths (ie. \"no such API operation or static-file asset or sub-site or etc.\"),\n  - `406` with approx. `FooDoesNotExist` (see per-operation known-error-responses listings for exact monikers) — for operations where existence was definitely critically expected (such as modifying some object identified by its `Id`),\n  - `200` with some operation-specific response-body field (like `Result` or similar) being `null` — for operations where the definite-existence expectation does not hold as crucially (for example those of the \"fetch single/first object found for some specified criteria\" kind).",
+    "description": "This HTTP API has RPC-ish rather than REST semantics: **all** operations are `POST`, regardless of what CRUD writes or reads they might or might not effect.\n\n\u003csmall\u003e(For JS/TS clients, there's a better-than-generated-from-_openapi.json_ clienting package (fully deps-free) at `/__yostatic/yo-sdk.js` and `/__yostatic/yo-sdk.ts`. They're always in sync with this _openapi.json_.)\u003c/small\u003e\n\n**tl;dr:** **usually, API requests will just-work as expected _without_ knowing all those intro notes right below** (which elaborate mostly to-be-expected software-dev-commonplaces) — but in any cases of unexpected results or errors, they'll likely help complete the mental picture.\n___\nOur backend stack's (named \"yo\") \"opinionated convention-over-configuration\" designs yield a few request/response rules that predictably remain **always in effect across all listed operations**:\n- Whereas request and response bodies are operation-specific, all operations share the exact-same set of request headers, URL query-string parameters and response headers.\n- The empty request body is principally the JSON `{}`, but fully-empty or JSON `null` request bodies are permissible and interpreted as `{}`.\n  - Response bodies are never empty and are never the JSON `null`.\n- Request and response bodies are always valid JSON values for _JSON objects_, ie. they're never immediately JSON arrays, `string`s, `number`s, or `boolean`s.\n  - They're also never immediately \"domain objects\" (ie. a `GetFoo` op would yield not a `Foo` but a `Result` (or similar) field with the found `Foo`; or a `CreateFoo` would expect not a `Foo` payload but a `NewFoo` (or similar) field with the new `Foo`).\n- All mentioned request-object (and sub-object) fields are **by default optional** and omittable or `null`able (implying for atomic types semantic equivalence to `\"\"` or `0` or `false` as per _Golang_ type-system semantics),\n  - **any exceptions** to this optionality-by-default are indicated by the operation's listed known-error responses.\n- All mentioned response-object (and sub-object) fields will always be present in the response-body, indicating their default-ness / missing-ness / empty-ness via `null` or `\"\"` or `0` or `false` as per _Golang_ type-system semantics;\n  - empty/unset JSON arrays are never `null` but `[]`; empty JSON dictionary/hash-map objects are `null` always.\n- All (non-dictionary/non-hash-map) JSON object field names known to the backend begin with an upper-case character,\n  - any operation-specific examples of JSON objects with lower-case-beginning keys/fields indicate a JSON dictionary/hash-map object.\n- The `Content-Length` request header is **required for all** operations (with a correct value).\n- The `Content-Type` request header is optional, but if present, must be correct with regards to both the operation's specification and the request body.\n- Any `multipart/form-data` operations:\n  - **always require** the following two form-fields, ignoring all others: `files` for any binary file uploads, and `_` for the actual JSON request payload;\n  - only the `_` field value is further elaborated for any such operation in this doc, and always in the exact same way as also done in this doc for all the `application/json` operations' request bodies (**without** specifically mentioning the `_` form-field containing the `text/plain` of the full `application/json` request payload actually being elaborated there).\n- Create operations of DB-stored objects (those with `Id` and `DtMade` and `DtMod` fields) ignore those very fields, they best be omitted in the client-side call site for clarity;\n  - Update operations of such objects likewise ignore those very fields, usually offering a separate field to clearly identify the object(s) requested to be modified.\n\nHow to read request/response **example JSON values** rendered in this doc:\n  - `true` indicates _any_ `boolean` value, regardless of the actual real value in a call;\n  - `\"someStr\"` indicates _any_ `string` value;\n  - **signed-integer** `number`s are indicated by a negative-number example indicating the minimum (type-wise, not operation-specific) permissible value, with the maximum being the corresponding positive-number counterpart;\n  - **unsigned-integer** `number`s are indicated by a positive-number example indicating the maximum (type-wise, not operation-specific) permissible value, with the minimum being `0`;\n  - **floating-point** `number`s are indicated by a positive-number example indicating the maximum (type-wise, not operation-specific) permissible value, with the minimum being the corresponding negative-number counterpart.\n  - **date-time values** are indicated by RFC3339/ISO8601-formatted `string` examples:\n    - in responses, they're always in **UTC**, whereas in requests, any timezone may be indicated;\n\t- in requests, they may always be `null` (excepting any operation-specific known-errors indicating otherwise) but must never be `\"\"` or otherwise non-RFC3339/ISO8601-parseable.\n\nAbout **error responses**:\n- All are `text/plain`.\n- In addition to those listed in this doc (thrown by the service under the indicated conditions), other error responses are at all times entirely technically-possible and not exhaustively documentable (feasibly), such as eg. DB / file-system / network disruptions. Those caught by the service will be `500`s, others (ie. from load-balancers / gateways / reverse-proxies etc. _in front of_ the service) might use _any_ HTTP status code whatsoever.\n- All the well-known (thrown rather than caught) errors listed here:\n  - have their code-identifier-compatible (spaceless ASCII) enumerant-name as their entire text response, making all error responses inherently `switch/case`able;\n  - have been recursively determined by code-path walking. Among them are some that logically could not possibly ever occur for that operation, yet identifying those (to filter them out of the listing) is (so far) out of scope for our current `openapi.json` spec generator. (In case of serious need, do let us know!)\n- Any non-known (caught rather than thrown) errors (not listed here) contain their original (usually human-language) error message fully, corresponding to the `default` in an error-handling `switch/case`.\n- **\"Not Found\" rules:**\n  - `404` **only** for HTTP requests with definitely-unroutable URL paths (ie. \"no such API operation or static-file asset or sub-site or etc.\"),\n  - `406` with approx. `FooDoesNotExist` (see per-operation known-error-responses listings for exact monikers) — for operations where existence was definitely critically expected (such as modifying some object identified by its `Id`),\n  - `200` with some operation-specific response-body field (like `Result` or similar) being `null` — for operations where the definite-existence expectation does not hold as crucially (for example those of the \"fetch single/first object found for some specified criteria\" kind).",
     "version": "23.320",
     "contact": {
       "name": "Permalink of openapi.json",
@@ -172,7 +172,7 @@
         },
         "responses": {
           "200": {
-            "description": "`yo/util.Return[map[string]string]`",
+            "description": "`__postEmojiFullList_Out`",
             "headers": {
               "Cache-Control": {
                 "$ref": "#/components/headers/Cache-Control"
@@ -187,14 +187,17 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/util_Return_map_string_string_",
+                  "$ref": "#/components/schemas/struct___Result_map_string_string__Slice___bool__",
                   "type": "object"
                 },
                 "example": {
                   "Result": {
                     "someMapKey1": "someStr",
                     "some_map_key_2": "someStr"
-                  }
+                  },
+                  "Slice": [
+                    true
+                  ]
                 }
               }
             }
@@ -389,8 +392,8 @@
               "example": {
                 "NewPost": {
                   "Id": -9007199254740991,
-                  "DtMade": "2023-11-16T13:56:45.496314141Z",
-                  "DtMod": "2023-11-16T13:56:45.496314141Z",
+                  "DtMade": "2023-11-16T15:35:17.208358634Z",
+                  "DtMod": "2023-11-16T15:35:17.208358634Z",
                   "By": 0,
                   "To": [
                     -9007199254740991
@@ -703,8 +706,8 @@
                   "Posts": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-16T13:56:45.496391032Z",
-                      "DtMod": "2023-11-16T13:56:45.496391032Z",
+                      "DtMade": "2023-11-16T15:35:17.208525027Z",
+                      "DtMod": "2023-11-16T15:35:17.208525027Z",
                       "By": 0,
                       "To": [
                         -9007199254740991
@@ -718,7 +721,7 @@
                       ]
                     }
                   ],
-                  "NextSince": "2023-11-16T13:56:45.496391032Z",
+                  "NextSince": "2023-11-16T15:35:17.208525027Z",
                   "UnreadCounts": {
                     "someMapKey1": -9007199254740991,
                     "some_map_key_2": -9007199254740991
@@ -814,7 +817,7 @@
                 "type": "object"
               },
               "example": {
-                "Since": "2023-11-16T13:56:45.496433653Z",
+                "Since": "2023-11-16T15:35:17.208594608Z",
                 "OnlyBy": [
                   -9007199254740991
                 ]
@@ -846,8 +849,8 @@
                   "Posts": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-16T13:56:45.496391032Z",
-                      "DtMod": "2023-11-16T13:56:45.496391032Z",
+                      "DtMade": "2023-11-16T15:35:17.208525027Z",
+                      "DtMod": "2023-11-16T15:35:17.208525027Z",
                       "By": 0,
                       "To": [
                         -9007199254740991
@@ -861,7 +864,7 @@
                       ]
                     }
                   ],
-                  "NextSince": "2023-11-16T13:56:45.496391032Z",
+                  "NextSince": "2023-11-16T15:35:17.208525027Z",
                   "UnreadCounts": {
                     "someMapKey1": -9007199254740991,
                     "some_map_key_2": -9007199254740991
@@ -984,9 +987,9 @@
                   "Buddies": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-16T13:56:45.496463476Z",
-                      "DtMod": "2023-11-16T13:56:45.496463476Z",
-                      "LastSeen": "2023-11-16T13:56:45.496463476Z",
+                      "DtMade": "2023-11-16T15:35:17.208639692Z",
+                      "DtMod": "2023-11-16T15:35:17.208639692Z",
+                      "LastSeen": "2023-11-16T15:35:17.208639692Z",
                       "Auth": 0,
                       "PicFileId": "someStr",
                       "Nick": "someStr",
@@ -1001,9 +1004,9 @@
                   "BuddyRequestsBy": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-16T13:56:45.496463476Z",
-                      "DtMod": "2023-11-16T13:56:45.496463476Z",
-                      "LastSeen": "2023-11-16T13:56:45.496463476Z",
+                      "DtMade": "2023-11-16T15:35:17.208639692Z",
+                      "DtMod": "2023-11-16T15:35:17.208639692Z",
+                      "LastSeen": "2023-11-16T15:35:17.208639692Z",
                       "Auth": 0,
                       "PicFileId": "someStr",
                       "Nick": "someStr",
@@ -1279,9 +1282,9 @@
                 "example": {
                   "Result": {
                     "Id": -9007199254740991,
-                    "DtMade": "2023-11-16T13:56:45.496536197Z",
-                    "DtMod": "2023-11-16T13:56:45.496536197Z",
-                    "LastSeen": "2023-11-16T13:56:45.496536197Z",
+                    "DtMade": "2023-11-16T15:35:17.208785903Z",
+                    "DtMod": "2023-11-16T15:35:17.208785903Z",
+                    "LastSeen": "2023-11-16T15:35:17.208785903Z",
                     "Auth": 0,
                     "PicFileId": "someStr",
                     "Nick": "someStr",
@@ -1864,9 +1867,9 @@
                 "Id": -9007199254740991,
                 "Changes": {
                   "Id": -9007199254740991,
-                  "DtMade": "2023-11-16T13:56:45.496678402Z",
-                  "DtMod": "2023-11-16T13:56:45.496678402Z",
-                  "LastSeen": "2023-11-16T13:56:45.496678402Z",
+                  "DtMade": "2023-11-16T15:35:17.209017249Z",
+                  "DtMod": "2023-11-16T15:35:17.209017249Z",
+                  "LastSeen": "2023-11-16T15:35:17.209017249Z",
                   "Auth": {},
                   "PicFileId": "someStr",
                   "Nick": "someStr",
@@ -2157,8 +2160,8 @@
           {
             "NewPost": {
               "Id": -9007199254740991,
-              "DtMade": "2023-11-16T13:56:45.496314141Z",
-              "DtMod": "2023-11-16T13:56:45.496314141Z",
+              "DtMade": "2023-11-16T15:35:17.208358634Z",
+              "DtMod": "2023-11-16T15:35:17.208358634Z",
               "By": 0,
               "To": [
                 -9007199254740991
@@ -2249,8 +2252,8 @@
             "Posts": [
               {
                 "Id": -9007199254740991,
-                "DtMade": "2023-11-16T13:56:45.496391032Z",
-                "DtMod": "2023-11-16T13:56:45.496391032Z",
+                "DtMade": "2023-11-16T15:35:17.208525027Z",
+                "DtMod": "2023-11-16T15:35:17.208525027Z",
                 "By": 0,
                 "To": [
                   -9007199254740991
@@ -2264,7 +2267,7 @@
                 ]
               }
             ],
-            "NextSince": "2023-11-16T13:56:45.496391032Z",
+            "NextSince": "2023-11-16T15:35:17.208525027Z",
             "UnreadCounts": {
               "someMapKey1": -9007199254740991,
               "some_map_key_2": -9007199254740991
@@ -2328,9 +2331,9 @@
         "examples": [
           {
             "Id": -9007199254740991,
-            "DtMade": "2023-11-16T13:56:45.496691806Z",
-            "DtMod": "2023-11-16T13:56:45.496691806Z",
-            "LastSeen": "2023-11-16T13:56:45.496691806Z",
+            "DtMade": "2023-11-16T15:35:17.209042363Z",
+            "DtMod": "2023-11-16T15:35:17.209042363Z",
+            "LastSeen": "2023-11-16T15:35:17.209042363Z",
             "Auth": {},
             "PicFileId": "someStr",
             "Nick": "someStr",
@@ -2489,9 +2492,9 @@
             "Buddies": [
               {
                 "Id": -9007199254740991,
-                "DtMade": "2023-11-16T13:56:45.496463476Z",
-                "DtMod": "2023-11-16T13:56:45.496463476Z",
-                "LastSeen": "2023-11-16T13:56:45.496463476Z",
+                "DtMade": "2023-11-16T15:35:17.208639692Z",
+                "DtMod": "2023-11-16T15:35:17.208639692Z",
+                "LastSeen": "2023-11-16T15:35:17.208639692Z",
                 "Auth": 0,
                 "PicFileId": "someStr",
                 "Nick": "someStr",
@@ -2506,9 +2509,9 @@
             "BuddyRequestsBy": [
               {
                 "Id": -9007199254740991,
-                "DtMade": "2023-11-16T13:56:45.496463476Z",
-                "DtMod": "2023-11-16T13:56:45.496463476Z",
-                "LastSeen": "2023-11-16T13:56:45.496463476Z",
+                "DtMade": "2023-11-16T15:35:17.208639692Z",
+                "DtMod": "2023-11-16T15:35:17.208639692Z",
+                "LastSeen": "2023-11-16T15:35:17.208639692Z",
                 "Auth": 0,
                 "PicFileId": "someStr",
                 "Nick": "someStr",
@@ -2669,6 +2672,35 @@
           }
         ]
       },
+      "struct___Result_map_string_string__Slice___bool__": {
+        "description": "struct { Result map[string]string; Slice []bool }",
+        "type": "object",
+        "properties": {
+          "Result": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "Slice": {
+            "type": "array",
+            "items": {
+              "type": "boolean"
+            }
+          }
+        },
+        "examples": [
+          {
+            "Result": {
+              "someMapKey1": "someStr",
+              "some_map_key_2": "someStr"
+            },
+            "Slice": [
+              true
+            ]
+          }
+        ]
+      },
       "struct___Since__yodb_DateTime__OnlyBy___yodb_I64__": {
         "description": "struct { Since *yodb.DateTime; OnlyBy []yodb.I64 }",
         "type": "object",
@@ -2689,7 +2721,7 @@
         },
         "examples": [
           {
-            "Since": "2023-11-16T13:56:45.496433653Z",
+            "Since": "2023-11-16T15:35:17.208594608Z",
             "OnlyBy": [
               -9007199254740991
             ]
@@ -2787,9 +2819,9 @@
           {
             "Result": {
               "Id": -9007199254740991,
-              "DtMade": "2023-11-16T13:56:45.496536197Z",
-              "DtMod": "2023-11-16T13:56:45.496536197Z",
-              "LastSeen": "2023-11-16T13:56:45.496536197Z",
+              "DtMade": "2023-11-16T15:35:17.208785903Z",
+              "DtMod": "2023-11-16T15:35:17.208785903Z",
+              "LastSeen": "2023-11-16T15:35:17.208785903Z",
               "Auth": 0,
               "PicFileId": "someStr",
               "Nick": "someStr",
@@ -2799,26 +2831,6 @@
               ],
               "BtwEmoji": "someStr",
               "Offline": true
-            }
-          }
-        ]
-      },
-      "util_Return_map_string_string_": {
-        "description": "util.Return[map[string]string]",
-        "type": "object",
-        "properties": {
-          "Result": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "string"
-            }
-          }
-        },
-        "examples": [
-          {
-            "Result": {
-              "someMapKey1": "someStr",
-              "some_map_key_2": "someStr"
             }
           }
         ]
@@ -2866,9 +2878,9 @@
             "Id": -9007199254740991,
             "Changes": {
               "Id": -9007199254740991,
-              "DtMade": "2023-11-16T13:56:45.496678402Z",
-              "DtMod": "2023-11-16T13:56:45.496678402Z",
-              "LastSeen": "2023-11-16T13:56:45.496678402Z",
+              "DtMade": "2023-11-16T15:35:17.209017249Z",
+              "DtMod": "2023-11-16T15:35:17.209017249Z",
+              "LastSeen": "2023-11-16T15:35:17.209017249Z",
               "Auth": {},
               "PicFileId": "someStr",
               "Nick": "someStr",

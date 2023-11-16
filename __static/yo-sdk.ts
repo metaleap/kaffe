@@ -166,7 +166,8 @@ reqMaxReqPayloadSizeMb = 1
 
 reqMaxReqMultipartSizeMb = 22
 
-const errs__postDelete = ['TimedOut', 'UnacceptableContentLength', 'UnacceptableContentType', 'Unauthorized', '__postDelete_InvalidPostId'] as const
+export const errs__postDelete = ['TimedOut', 'UnacceptableContentLength', 'UnacceptableContentType', 'Unauthorized', '__postDelete_InvalidPostId'] as const
+export type __postDeleteErr = typeof errs__postDelete[number]
 export async function api__postDelete(payload?: __postDelete_In, formData?: FormData, query?: {[_:string]:string}): Promise<None> {
 	try {
 		return await req<__postDelete_In, None, __postDeleteErr>('_/postDelete', payload, formData, query)
@@ -176,21 +177,21 @@ export async function api__postDelete(payload?: __postDelete_In, formData?: Form
 		throw(err)
 	}
 }
-export type __postDeleteErr = typeof errs__postDelete[number]
 
-const errs__postEmojiFullList = ['TimedOut', 'UnacceptableContentLength', 'UnacceptableContentType'] as const
-export async function api__postEmojiFullList(payload?: None, formData?: FormData, query?: {[_:string]:string}): Promise<Return_map_string_string_> {
+export const errs__postEmojiFullList = ['TimedOut', 'UnacceptableContentLength', 'UnacceptableContentType'] as const
+export type __postEmojiFullListErr = typeof errs__postEmojiFullList[number]
+export async function api__postEmojiFullList(payload?: None, formData?: FormData, query?: {[_:string]:string}): Promise<__postEmojiFullList_Out> {
 	try {
-		return await req<None, Return_map_string_string_, __postEmojiFullListErr>('_/postEmojiFullList', payload, formData, query)
+		return await req<None, __postEmojiFullList_Out, __postEmojiFullListErr>('_/postEmojiFullList', payload, formData, query)
 	} catch(err: any) {
 		if (err && err['body_text'] && (errs__postEmojiFullList.indexOf(err.body_text) >= 0))
 			throw(new Err<__postEmojiFullListErr>(err.body_text as __postEmojiFullListErr))
 		throw(err)
 	}
 }
-export type __postEmojiFullListErr = typeof errs__postEmojiFullList[number]
 
-const errs__postMonthsUtc = ['TimedOut', 'UnacceptableContentLength', 'UnacceptableContentType', 'Unauthorized'] as const
+export const errs__postMonthsUtc = ['TimedOut', 'UnacceptableContentLength', 'UnacceptableContentType', 'Unauthorized'] as const
+export type __postMonthsUtcErr = typeof errs__postMonthsUtc[number]
 export async function api__postMonthsUtc(payload?: __postMonthsUtc_In, formData?: FormData, query?: {[_:string]:string}): Promise<__postMonthsUtc_Out> {
 	try {
 		return await req<__postMonthsUtc_In, __postMonthsUtc_Out, __postMonthsUtcErr>('_/postMonthsUtc', payload, formData, query)
@@ -200,9 +201,9 @@ export async function api__postMonthsUtc(payload?: __postMonthsUtc_In, formData?
 		throw(err)
 	}
 }
-export type __postMonthsUtcErr = typeof errs__postMonthsUtc[number]
 
-const errs__postNew = ['TimedOut', 'UnacceptableContentLength', 'UnacceptableContentType', 'Unauthorized', '__postNew_ExpectedEmptyFilesField', '__postNew_ExpectedNonEmptyPost', '__postNew_ExpectedOnlyBuddyRecipients'] as const
+export const errs__postNew = ['TimedOut', 'UnacceptableContentLength', 'UnacceptableContentType', 'Unauthorized', '__postNew_ExpectedEmptyFilesField', '__postNew_ExpectedNonEmptyPost', '__postNew_ExpectedOnlyBuddyRecipients'] as const
+export type __postNewErr = typeof errs__postNew[number]
 export async function api__postNew(payload?: PostNew, formData?: FormData, query?: {[_:string]:string}): Promise<Return_yo_db_I64_> {
 	try {
 		return await req<PostNew, Return_yo_db_I64_, __postNewErr>('_/postNew', payload, formData, query)
@@ -212,9 +213,9 @@ export async function api__postNew(payload?: PostNew, formData?: FormData, query
 		throw(err)
 	}
 }
-export type __postNewErr = typeof errs__postNew[number]
 
-const errs__postsDeleted = ['TimedOut', 'UnacceptableContentLength', 'UnacceptableContentType', 'Unauthorized'] as const
+export const errs__postsDeleted = ['TimedOut', 'UnacceptableContentLength', 'UnacceptableContentType', 'Unauthorized'] as const
+export type __postsDeletedErr = typeof errs__postsDeleted[number]
 export async function api__postsDeleted(payload?: __postsDeleted_In, formData?: FormData, query?: {[_:string]:string}): Promise<__postsDeleted_Out> {
 	try {
 		return await req<__postsDeleted_In, __postsDeleted_Out, __postsDeletedErr>('_/postsDeleted', payload, formData, query)
@@ -224,9 +225,9 @@ export async function api__postsDeleted(payload?: __postsDeleted_In, formData?: 
 		throw(err)
 	}
 }
-export type __postsDeletedErr = typeof errs__postsDeleted[number]
 
-const errs__postsForMonthUtc = ['TimedOut', 'UnacceptableContentLength', 'UnacceptableContentType', 'Unauthorized'] as const
+export const errs__postsForMonthUtc = ['TimedOut', 'UnacceptableContentLength', 'UnacceptableContentType', 'Unauthorized'] as const
+export type __postsForMonthUtcErr = typeof errs__postsForMonthUtc[number]
 export async function api__postsForMonthUtc(payload?: ApiArgPeriod, formData?: FormData, query?: {[_:string]:string}): Promise<PostsListResult> {
 	try {
 		return await req<ApiArgPeriod, PostsListResult, __postsForMonthUtcErr>('_/postsForMonthUtc', payload, formData, query)
@@ -236,9 +237,9 @@ export async function api__postsForMonthUtc(payload?: ApiArgPeriod, formData?: F
 		throw(err)
 	}
 }
-export type __postsForMonthUtcErr = typeof errs__postsForMonthUtc[number]
 
-const errs__postsRecent = ['TimedOut', 'UnacceptableContentLength', 'UnacceptableContentType', 'Unauthorized'] as const
+export const errs__postsRecent = ['TimedOut', 'UnacceptableContentLength', 'UnacceptableContentType', 'Unauthorized'] as const
+export type __postsRecentErr = typeof errs__postsRecent[number]
 export async function api__postsRecent(payload?: __postsRecent_In, formData?: FormData, query?: {[_:string]:string}): Promise<PostsListResult> {
 	try {
 		return await req<__postsRecent_In, PostsListResult, __postsRecentErr>('_/postsRecent', payload, formData, query)
@@ -248,9 +249,9 @@ export async function api__postsRecent(payload?: __postsRecent_In, formData?: Fo
 		throw(err)
 	}
 }
-export type __postsRecentErr = typeof errs__postsRecent[number]
 
-const errs__userBuddies = ['TimedOut', 'UnacceptableContentLength', 'UnacceptableContentType', 'Unauthorized'] as const
+export const errs__userBuddies = ['TimedOut', 'UnacceptableContentLength', 'UnacceptableContentType', 'Unauthorized'] as const
+export type __userBuddiesErr = typeof errs__userBuddies[number]
 export async function api__userBuddies(payload?: None, formData?: FormData, query?: {[_:string]:string}): Promise<__userBuddies_Out> {
 	try {
 		return await req<None, __userBuddies_Out, __userBuddiesErr>('_/userBuddies', payload, formData, query)
@@ -260,9 +261,9 @@ export async function api__userBuddies(payload?: None, formData?: FormData, quer
 		throw(err)
 	}
 }
-export type __userBuddiesErr = typeof errs__userBuddies[number]
 
-const errs__userBuddiesAdd = ['DbUpdate_ExpectedChangesForUpdate', 'DbUpdate_ExpectedQueryForUpdate', 'TimedOut', 'UnacceptableContentLength', 'UnacceptableContentType', 'Unauthorized', '__userBuddiesAdd_ExpectedEitherNickNameOrEmailAddr'] as const
+export const errs__userBuddiesAdd = ['DbUpdate_ExpectedChangesForUpdate', 'DbUpdate_ExpectedQueryForUpdate', 'TimedOut', 'UnacceptableContentLength', 'UnacceptableContentType', 'Unauthorized', '__userBuddiesAdd_ExpectedEitherNickNameOrEmailAddr'] as const
+export type __userBuddiesAddErr = typeof errs__userBuddiesAdd[number]
 export async function api__userBuddiesAdd(payload?: __userBuddiesAdd_In, formData?: FormData, query?: {[_:string]:string}): Promise<__userBuddiesAdd_Out> {
 	try {
 		return await req<__userBuddiesAdd_In, __userBuddiesAdd_Out, __userBuddiesAddErr>('_/userBuddiesAdd', payload, formData, query)
@@ -272,9 +273,9 @@ export async function api__userBuddiesAdd(payload?: __userBuddiesAdd_In, formDat
 		throw(err)
 	}
 }
-export type __userBuddiesAddErr = typeof errs__userBuddiesAdd[number]
 
-const errs__userBy = ['TimedOut', 'UnacceptableContentLength', 'UnacceptableContentType', 'Unauthorized', '__userBy_ExpectedEitherNickNameOrEmailAddr'] as const
+export const errs__userBy = ['TimedOut', 'UnacceptableContentLength', 'UnacceptableContentType', 'Unauthorized', '__userBy_ExpectedEitherNickNameOrEmailAddr'] as const
+export type __userByErr = typeof errs__userBy[number]
 export async function api__userBy(payload?: __userBy_In, formData?: FormData, query?: {[_:string]:string}): Promise<Return__kaffe_app_User_> {
 	try {
 		return await req<__userBy_In, Return__kaffe_app_User_, __userByErr>('_/userBy', payload, formData, query)
@@ -284,9 +285,9 @@ export async function api__userBy(payload?: __userBy_In, formData?: FormData, qu
 		throw(err)
 	}
 }
-export type __userByErr = typeof errs__userBy[number]
 
-const errs__userSignInOrReset = ['DbUpdate_ExpectedChangesForUpdate', 'DbUpdate_ExpectedQueryForUpdate', 'TimedOut', 'UnacceptableContentLength', 'UnacceptableContentType', 'Unauthorized', '___yo_authLoginOrFinalizePwdReset_AccountDoesNotExist', '___yo_authLoginOrFinalizePwdReset_EmailInvalid', '___yo_authLoginOrFinalizePwdReset_EmailRequiredButMissing', '___yo_authLoginOrFinalizePwdReset_NewPasswordExpectedToDiffer', '___yo_authLoginOrFinalizePwdReset_NewPasswordInvalid', '___yo_authLoginOrFinalizePwdReset_NewPasswordTooLong', '___yo_authLoginOrFinalizePwdReset_NewPasswordTooShort', '___yo_authLoginOrFinalizePwdReset_OkButFailedToCreateSignedToken', '___yo_authLoginOrFinalizePwdReset_PwdReqExpired', '___yo_authLoginOrFinalizePwdReset_PwdResetRequired', '___yo_authLoginOrFinalizePwdReset_WrongPassword', '__userSignInOrReset_ExpectedPasswordAndNickOrEmailAddr', '__userSignInOrReset_WrongPassword'] as const
+export const errs__userSignInOrReset = ['DbUpdate_ExpectedChangesForUpdate', 'DbUpdate_ExpectedQueryForUpdate', 'TimedOut', 'UnacceptableContentLength', 'UnacceptableContentType', 'Unauthorized', '___yo_authLoginOrFinalizePwdReset_AccountDoesNotExist', '___yo_authLoginOrFinalizePwdReset_EmailInvalid', '___yo_authLoginOrFinalizePwdReset_EmailRequiredButMissing', '___yo_authLoginOrFinalizePwdReset_NewPasswordExpectedToDiffer', '___yo_authLoginOrFinalizePwdReset_NewPasswordInvalid', '___yo_authLoginOrFinalizePwdReset_NewPasswordTooLong', '___yo_authLoginOrFinalizePwdReset_NewPasswordTooShort', '___yo_authLoginOrFinalizePwdReset_OkButFailedToCreateSignedToken', '___yo_authLoginOrFinalizePwdReset_PwdReqExpired', '___yo_authLoginOrFinalizePwdReset_PwdResetRequired', '___yo_authLoginOrFinalizePwdReset_WrongPassword', '__userSignInOrReset_ExpectedPasswordAndNickOrEmailAddr', '__userSignInOrReset_WrongPassword'] as const
+export type __userSignInOrResetErr = typeof errs__userSignInOrReset[number]
 export async function api__userSignInOrReset(payload?: ApiUserSignInOrReset, formData?: FormData, query?: {[_:string]:string}): Promise<None> {
 	try {
 		return await req<ApiUserSignInOrReset, None, __userSignInOrResetErr>('_/userSignInOrReset', payload, formData, query)
@@ -296,9 +297,9 @@ export async function api__userSignInOrReset(payload?: ApiUserSignInOrReset, for
 		throw(err)
 	}
 }
-export type __userSignInOrResetErr = typeof errs__userSignInOrReset[number]
 
-const errs__userSignOut = ['TimedOut', 'UnacceptableContentLength', 'UnacceptableContentType'] as const
+export const errs__userSignOut = ['TimedOut', 'UnacceptableContentLength', 'UnacceptableContentType'] as const
+export type __userSignOutErr = typeof errs__userSignOut[number]
 export async function api__userSignOut(payload?: None, formData?: FormData, query?: {[_:string]:string}): Promise<None> {
 	try {
 		return await req<None, None, __userSignOutErr>('_/userSignOut', payload, formData, query)
@@ -308,9 +309,9 @@ export async function api__userSignOut(payload?: None, formData?: FormData, quer
 		throw(err)
 	}
 }
-export type __userSignOutErr = typeof errs__userSignOut[number]
 
-const errs__userSignUpOrForgotPassword = ['TimedOut', 'UnacceptableContentLength', 'UnacceptableContentType', '___yo_authRegister_EmailAddrAlreadyExists', '___yo_authRegister_EmailInvalid', '___yo_authRegister_EmailRequiredButMissing', '___yo_authRegister_PasswordInvalid', '___yo_authRegister_PasswordTooLong', '___yo_authRegister_PasswordTooShort', '__userSignUpOrForgotPassword_EmailInvalid', '__userSignUpOrForgotPassword_EmailRequiredButMissing'] as const
+export const errs__userSignUpOrForgotPassword = ['TimedOut', 'UnacceptableContentLength', 'UnacceptableContentType', '___yo_authRegister_EmailAddrAlreadyExists', '___yo_authRegister_EmailInvalid', '___yo_authRegister_EmailRequiredButMissing', '___yo_authRegister_PasswordInvalid', '___yo_authRegister_PasswordTooLong', '___yo_authRegister_PasswordTooShort', '__userSignUpOrForgotPassword_EmailInvalid', '__userSignUpOrForgotPassword_EmailRequiredButMissing'] as const
+export type __userSignUpOrForgotPasswordErr = typeof errs__userSignUpOrForgotPassword[number]
 export async function api__userSignUpOrForgotPassword(payload?: ApiNickOrEmailAddr, formData?: FormData, query?: {[_:string]:string}): Promise<None> {
 	try {
 		return await req<ApiNickOrEmailAddr, None, __userSignUpOrForgotPasswordErr>('_/userSignUpOrForgotPassword', payload, formData, query)
@@ -320,9 +321,9 @@ export async function api__userSignUpOrForgotPassword(payload?: ApiNickOrEmailAd
 		throw(err)
 	}
 }
-export type __userSignUpOrForgotPasswordErr = typeof errs__userSignUpOrForgotPassword[number]
 
-const errs__userUpdate = ['DbUpdExpectedIdGt0', 'DbUpdate_ExpectedChangesForUpdate', 'DbUpdate_ExpectedQueryForUpdate', 'TimedOut', 'UnacceptableContentLength', 'UnacceptableContentType', 'Unauthorized', '__userUpdate_ExpectedNonEmptyNickname', '__userUpdate_NicknameAlreadyExists'] as const
+export const errs__userUpdate = ['DbUpdExpectedIdGt0', 'DbUpdate_ExpectedChangesForUpdate', 'DbUpdate_ExpectedQueryForUpdate', 'TimedOut', 'UnacceptableContentLength', 'UnacceptableContentType', 'Unauthorized', '__userUpdate_ExpectedNonEmptyNickname', '__userUpdate_NicknameAlreadyExists'] as const
+export type __userUpdateErr = typeof errs__userUpdate[number]
 export async function api__userUpdate(payload?: ApiUpdateArgs_kaffe_app_User_kaffe_app_UserField_, formData?: FormData, query?: {[_:string]:string}): Promise<None> {
 	try {
 		return await req<ApiUpdateArgs_kaffe_app_User_kaffe_app_UserField_, None, __userUpdateErr>('_/userUpdate', payload, formData, query)
@@ -332,7 +333,6 @@ export async function api__userUpdate(payload?: ApiUpdateArgs_kaffe_app_User_kaf
 		throw(err)
 	}
 }
-export type __userUpdateErr = typeof errs__userUpdate[number]
 
 export type PostField = 'Id' | 'DtMade' | 'DtMod' | 'By' | 'To' | 'Htm' | 'Files'
 
@@ -356,6 +356,11 @@ export type MailReqField = 'Id' | 'DtMade' | 'DtMod' | 'TmplId' | 'TmplArgs' | '
 
 export type __postDelete_In = {
 	Id?: I64
+}
+
+export type __postEmojiFullList_Out = {
+	Result: { [_:string]: string }
+	Slice: boolean[]
 }
 
 export type __postMonthsUtc_In = {
@@ -453,10 +458,6 @@ export type None = {
 
 export type Return__kaffe_app_User_ = {
 	Result: User
-}
-
-export type Return_map_string_string_ = {
-	Result: { [_:string]: string }
 }
 
 export type Return_yo_db_I64_ = {
