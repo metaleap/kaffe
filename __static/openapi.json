@@ -19,6 +19,9 @@
           },
           {
             "$ref": "#/components/parameters/yoValiOnly"
+          },
+          {
+            "$ref": "#/components/parameters/yoJsonIndent"
           }
         ],
         "requestBody": {
@@ -155,6 +158,9 @@
           },
           {
             "$ref": "#/components/parameters/yoValiOnly"
+          },
+          {
+            "$ref": "#/components/parameters/yoJsonIndent"
           }
         ],
         "requestBody": {
@@ -254,6 +260,9 @@
           },
           {
             "$ref": "#/components/parameters/yoValiOnly"
+          },
+          {
+            "$ref": "#/components/parameters/yoJsonIndent"
           }
         ],
         "requestBody": {
@@ -379,6 +388,9 @@
           },
           {
             "$ref": "#/components/parameters/yoValiOnly"
+          },
+          {
+            "$ref": "#/components/parameters/yoJsonIndent"
           }
         ],
         "requestBody": {
@@ -389,8 +401,8 @@
               "example": {
                 "NewPost": {
                   "Id": -9007199254740991,
-                  "DtMade": "2023-11-17T17:06:29.790069329Z",
-                  "DtMod": "2023-11-17T17:06:29.790069329Z",
+                  "DtMade": "2023-11-17T17:16:49.693631706Z",
+                  "DtMod": "2023-11-17T17:16:49.693631706Z",
                   "By": 0,
                   "To": [
                     -9007199254740991
@@ -534,6 +546,9 @@
           },
           {
             "$ref": "#/components/parameters/yoValiOnly"
+          },
+          {
+            "$ref": "#/components/parameters/yoJsonIndent"
           }
         ],
         "requestBody": {
@@ -656,6 +671,9 @@
           },
           {
             "$ref": "#/components/parameters/yoValiOnly"
+          },
+          {
+            "$ref": "#/components/parameters/yoJsonIndent"
           }
         ],
         "requestBody": {
@@ -703,8 +721,8 @@
                   "Posts": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-17T17:06:29.790224505Z",
-                      "DtMod": "2023-11-17T17:06:29.790224505Z",
+                      "DtMade": "2023-11-17T17:16:49.693782166Z",
+                      "DtMod": "2023-11-17T17:16:49.693782166Z",
                       "By": 0,
                       "To": [
                         -9007199254740991
@@ -718,7 +736,7 @@
                       ]
                     }
                   ],
-                  "NextSince": "2023-11-17T17:06:29.790224505Z",
+                  "NextSince": "2023-11-17T17:16:49.693782166Z",
                   "UnreadCounts": {
                     "someMapKey1": -9007199254740991,
                     "some_map_key_2": -9007199254740991
@@ -802,6 +820,9 @@
           },
           {
             "$ref": "#/components/parameters/yoValiOnly"
+          },
+          {
+            "$ref": "#/components/parameters/yoJsonIndent"
           }
         ],
         "requestBody": {
@@ -814,7 +835,7 @@
                 "type": "object"
               },
               "example": {
-                "Since": "2023-11-17T17:06:29.790296137Z",
+                "Since": "2023-11-17T17:16:49.69386603Z",
                 "OnlyBy": [
                   -9007199254740991
                 ]
@@ -846,8 +867,8 @@
                   "Posts": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-17T17:06:29.790224505Z",
-                      "DtMod": "2023-11-17T17:06:29.790224505Z",
+                      "DtMade": "2023-11-17T17:16:49.693782166Z",
+                      "DtMod": "2023-11-17T17:16:49.693782166Z",
                       "By": 0,
                       "To": [
                         -9007199254740991
@@ -861,7 +882,7 @@
                       ]
                     }
                   ],
-                  "NextSince": "2023-11-17T17:06:29.790224505Z",
+                  "NextSince": "2023-11-17T17:16:49.693782166Z",
                   "UnreadCounts": {
                     "someMapKey1": -9007199254740991,
                     "some_map_key_2": -9007199254740991
@@ -945,6 +966,9 @@
           },
           {
             "$ref": "#/components/parameters/yoValiOnly"
+          },
+          {
+            "$ref": "#/components/parameters/yoJsonIndent"
           }
         ],
         "requestBody": {
@@ -984,9 +1008,9 @@
                   "Buddies": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-17T17:06:29.790341714Z",
-                      "DtMod": "2023-11-17T17:06:29.790341714Z",
-                      "LastSeen": "2023-11-17T17:06:29.790341714Z",
+                      "DtMade": "2023-11-17T17:16:49.693914949Z",
+                      "DtMod": "2023-11-17T17:16:49.693914949Z",
+                      "LastSeen": "2023-11-17T17:16:49.693914949Z",
                       "Account": 0,
                       "PicFileId": "someStr",
                       "Nick": "someStr",
@@ -1001,9 +1025,9 @@
                   "BuddyRequestsBy": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-17T17:06:29.790341714Z",
-                      "DtMod": "2023-11-17T17:06:29.790341714Z",
-                      "LastSeen": "2023-11-17T17:06:29.790341714Z",
+                      "DtMade": "2023-11-17T17:16:49.693914949Z",
+                      "DtMod": "2023-11-17T17:16:49.693914949Z",
+                      "LastSeen": "2023-11-17T17:16:49.693914949Z",
                       "Account": 0,
                       "PicFileId": "someStr",
                       "Nick": "someStr",
@@ -1094,6 +1118,9 @@
           },
           {
             "$ref": "#/components/parameters/yoValiOnly"
+          },
+          {
+            "$ref": "#/components/parameters/yoJsonIndent"
           }
         ],
         "requestBody": {
@@ -1238,6 +1265,9 @@
           },
           {
             "$ref": "#/components/parameters/yoValiOnly"
+          },
+          {
+            "$ref": "#/components/parameters/yoJsonIndent"
           }
         ],
         "requestBody": {
@@ -1279,9 +1309,9 @@
                 "example": {
                   "Result": {
                     "Id": -9007199254740991,
-                    "DtMade": "2023-11-17T17:06:29.79048439Z",
-                    "DtMod": "2023-11-17T17:06:29.79048439Z",
-                    "LastSeen": "2023-11-17T17:06:29.79048439Z",
+                    "DtMade": "2023-11-17T17:16:49.694073774Z",
+                    "DtMod": "2023-11-17T17:16:49.694073774Z",
+                    "LastSeen": "2023-11-17T17:16:49.694073774Z",
                     "Account": 0,
                     "PicFileId": "someStr",
                     "Nick": "someStr",
@@ -1391,6 +1421,9 @@
           },
           {
             "$ref": "#/components/parameters/yoValiOnly"
+          },
+          {
+            "$ref": "#/components/parameters/yoJsonIndent"
           }
         ],
         "requestBody": {
@@ -1599,6 +1632,9 @@
           },
           {
             "$ref": "#/components/parameters/yoValiOnly"
+          },
+          {
+            "$ref": "#/components/parameters/yoJsonIndent"
           }
         ],
         "requestBody": {
@@ -1693,6 +1729,9 @@
           },
           {
             "$ref": "#/components/parameters/yoValiOnly"
+          },
+          {
+            "$ref": "#/components/parameters/yoJsonIndent"
           }
         ],
         "requestBody": {
@@ -1844,6 +1883,9 @@
           },
           {
             "$ref": "#/components/parameters/yoValiOnly"
+          },
+          {
+            "$ref": "#/components/parameters/yoJsonIndent"
           }
         ],
         "requestBody": {
@@ -1855,9 +1897,9 @@
                 "Id": -9007199254740991,
                 "Changes": {
                   "Id": -9007199254740991,
-                  "DtMade": "2023-11-17T17:06:29.790722922Z",
-                  "DtMod": "2023-11-17T17:06:29.790722922Z",
-                  "LastSeen": "2023-11-17T17:06:29.790722922Z",
+                  "DtMade": "2023-11-17T17:16:49.694300998Z",
+                  "DtMod": "2023-11-17T17:16:49.694300998Z",
+                  "LastSeen": "2023-11-17T17:16:49.694300998Z",
                   "Account": {},
                   "PicFileId": "someStr",
                   "Nick": "someStr",
@@ -2148,8 +2190,8 @@
           {
             "NewPost": {
               "Id": -9007199254740991,
-              "DtMade": "2023-11-17T17:06:29.790069329Z",
-              "DtMod": "2023-11-17T17:06:29.790069329Z",
+              "DtMade": "2023-11-17T17:16:49.693631706Z",
+              "DtMod": "2023-11-17T17:16:49.693631706Z",
               "By": 0,
               "To": [
                 -9007199254740991
@@ -2240,8 +2282,8 @@
             "Posts": [
               {
                 "Id": -9007199254740991,
-                "DtMade": "2023-11-17T17:06:29.790224505Z",
-                "DtMod": "2023-11-17T17:06:29.790224505Z",
+                "DtMade": "2023-11-17T17:16:49.693782166Z",
+                "DtMod": "2023-11-17T17:16:49.693782166Z",
                 "By": 0,
                 "To": [
                   -9007199254740991
@@ -2255,7 +2297,7 @@
                 ]
               }
             ],
-            "NextSince": "2023-11-17T17:06:29.790224505Z",
+            "NextSince": "2023-11-17T17:16:49.693782166Z",
             "UnreadCounts": {
               "someMapKey1": -9007199254740991,
               "some_map_key_2": -9007199254740991
@@ -2319,9 +2361,9 @@
         "examples": [
           {
             "Id": -9007199254740991,
-            "DtMade": "2023-11-17T17:06:29.790749144Z",
-            "DtMod": "2023-11-17T17:06:29.790749144Z",
-            "LastSeen": "2023-11-17T17:06:29.790749144Z",
+            "DtMade": "2023-11-17T17:16:49.694327818Z",
+            "DtMod": "2023-11-17T17:16:49.694327818Z",
+            "LastSeen": "2023-11-17T17:16:49.694327818Z",
             "Account": {},
             "PicFileId": "someStr",
             "Nick": "someStr",
@@ -2480,9 +2522,9 @@
             "Buddies": [
               {
                 "Id": -9007199254740991,
-                "DtMade": "2023-11-17T17:06:29.790341714Z",
-                "DtMod": "2023-11-17T17:06:29.790341714Z",
-                "LastSeen": "2023-11-17T17:06:29.790341714Z",
+                "DtMade": "2023-11-17T17:16:49.693914949Z",
+                "DtMod": "2023-11-17T17:16:49.693914949Z",
+                "LastSeen": "2023-11-17T17:16:49.693914949Z",
                 "Account": 0,
                 "PicFileId": "someStr",
                 "Nick": "someStr",
@@ -2497,9 +2539,9 @@
             "BuddyRequestsBy": [
               {
                 "Id": -9007199254740991,
-                "DtMade": "2023-11-17T17:06:29.790341714Z",
-                "DtMod": "2023-11-17T17:06:29.790341714Z",
-                "LastSeen": "2023-11-17T17:06:29.790341714Z",
+                "DtMade": "2023-11-17T17:16:49.693914949Z",
+                "DtMod": "2023-11-17T17:16:49.693914949Z",
+                "LastSeen": "2023-11-17T17:16:49.693914949Z",
                 "Account": 0,
                 "PicFileId": "someStr",
                 "Nick": "someStr",
@@ -2680,7 +2722,7 @@
         },
         "examples": [
           {
-            "Since": "2023-11-17T17:06:29.790296137Z",
+            "Since": "2023-11-17T17:16:49.69386603Z",
             "OnlyBy": [
               -9007199254740991
             ]
@@ -2778,9 +2820,9 @@
           {
             "Result": {
               "Id": -9007199254740991,
-              "DtMade": "2023-11-17T17:06:29.79048439Z",
-              "DtMod": "2023-11-17T17:06:29.79048439Z",
-              "LastSeen": "2023-11-17T17:06:29.79048439Z",
+              "DtMade": "2023-11-17T17:16:49.694073774Z",
+              "DtMod": "2023-11-17T17:16:49.694073774Z",
+              "LastSeen": "2023-11-17T17:16:49.694073774Z",
               "Account": 0,
               "PicFileId": "someStr",
               "Nick": "someStr",
@@ -2857,9 +2899,9 @@
             "Id": -9007199254740991,
             "Changes": {
               "Id": -9007199254740991,
-              "DtMade": "2023-11-17T17:06:29.790722922Z",
-              "DtMod": "2023-11-17T17:06:29.790722922Z",
-              "LastSeen": "2023-11-17T17:06:29.790722922Z",
+              "DtMade": "2023-11-17T17:16:49.694300998Z",
+              "DtMod": "2023-11-17T17:16:49.694300998Z",
+              "LastSeen": "2023-11-17T17:16:49.694300998Z",
               "Account": {},
               "PicFileId": "someStr",
               "Nick": "someStr",
@@ -2882,6 +2924,16 @@
         "name": "yoFail",
         "in": "query",
         "description": "optional: if not missing or empty, enforces an early error response (prior to any request parsing or handling) with the specified HTTP status code or 500 (eg. for client-side unit-test cases of error-handling)",
+        "content": {
+          "text/plain": {
+            "example": ""
+          }
+        }
+      },
+      "yoJsonIndent": {
+        "name": "yoJsonIndent",
+        "in": "query",
+        "description": "optional: if not missing or empty, enforces a more-readable JSON-response with 2-space indentation level",
         "content": {
           "text/plain": {
             "example": ""
