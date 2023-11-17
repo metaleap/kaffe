@@ -33,6 +33,7 @@ var mockUsersAllById = map[yodb.I64]string{}
 var mockUsersAllByEmail = map[string]yodb.I64{}
 var mockUsersLoggedIn = map[string]*http.Client{}
 var mockUsersNever = map[string]bool{
+	"foo1@bar.baz":      true,
 	"foo123@bar.baz":    true,
 	"foo234@bar.baz":    true,
 	"foo321@bar.baz":    true,
@@ -49,7 +50,7 @@ func init() {
 	}
 	devModeInitMockUsers = func() {
 		// ensure all users exist
-		for i := 2; i <= mockUsersNumTotal; i++ {
+		for i := 2; /*mock user eliza already exists, necessarily always under id 1*/ i <= mockUsersNumTotal; i++ {
 			mockEnsureUser(i)
 		}
 
@@ -167,12 +168,9 @@ func mockSomeActivityChangeBuddy(ctx *Ctx, user *User, userEmailAddr string) {
 	if add_or_remove := rand.Intn(11); ((add_or_remove == 0) || (len(user.Buddies) > mockUsersNumMaxBuddies)) && (len(user.Buddies) > 0) {
 		user.Buddies = sl.WithoutIdx(user.Buddies, rand.Intn(len(user.Buddies)), true) // remove a buddy
 	} else { // add a buddy
-		var buddy_email_addr string
 		var buddy_id yodb.I64
-		for (buddy_id == 0) || (buddy_id == user.Id) || sl.Has(user.Buddies, buddy_id) || (buddy_email_addr == "") || (buddy_email_addr == userEmailAddr) {
-			if buddy_email_addr = str.Fmt("foo%d@bar.baz", 1+rand.Intn(mockUsersNumTotal)); buddy_email_addr != userEmailAddr {
-				buddy_id = userByEmailAddr(ctx, buddy_email_addr).Id
-			}
+		for (buddy_id == 0) || (buddy_id == user.Id) || sl.Has(user.Buddies, buddy_id) {
+			buddy_id = yodb.I64(1 + rand.Intn(mockUsersNumTotal))
 		}
 		user.Buddies = append(user.Buddies, buddy_id)
 	}
