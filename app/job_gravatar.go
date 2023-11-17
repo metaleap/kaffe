@@ -7,9 +7,9 @@ import (
 	. "yo/ctx"
 	yodb "yo/db"
 	yojobs "yo/jobs"
+	"yo/misc/gravatar"
 	. "yo/util"
 	"yo/util/sl"
-	"yo/web/gravatar"
 )
 
 var gravatarJobTypeId = yojobs.Register[gravatarJob, gravatarJobDetails, gravatarJobResults, gravatarTaskDetails, gravatarTaskResults](func(string) gravatarJob {

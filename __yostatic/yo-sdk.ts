@@ -286,7 +286,7 @@ export async function api__userBy(payload?: __userBy_In, formData?: FormData, qu
 	}
 }
 
-export const errs__userSignInOrReset = ['DbUpdate_ExpectedChangesForUpdate', 'DbUpdate_ExpectedQueryForUpdate', 'TimedOut', 'UnacceptableContentLength', 'UnacceptableContentType', 'Unauthorized', '___yo_authLoginOrFinalizePwdReset_AccountDoesNotExist', '___yo_authLoginOrFinalizePwdReset_EmailInvalid', '___yo_authLoginOrFinalizePwdReset_EmailRequiredButMissing', '___yo_authLoginOrFinalizePwdReset_NewPasswordExpectedToDiffer', '___yo_authLoginOrFinalizePwdReset_NewPasswordInvalid', '___yo_authLoginOrFinalizePwdReset_NewPasswordTooLong', '___yo_authLoginOrFinalizePwdReset_NewPasswordTooShort', '___yo_authLoginOrFinalizePwdReset_OkButFailedToCreateSignedToken', '___yo_authLoginOrFinalizePwdReset_PwdReqExpired', '___yo_authLoginOrFinalizePwdReset_PwdResetRequired', '___yo_authLoginOrFinalizePwdReset_WrongPassword', '__userSignInOrReset_ExpectedPasswordAndNickOrEmailAddr', '__userSignInOrReset_WrongPassword'] as const
+export const errs__userSignInOrReset = ['DbUpdate_ExpectedChangesForUpdate', 'DbUpdate_ExpectedQueryForUpdate', 'TimedOut', 'UnacceptableContentLength', 'UnacceptableContentType', 'Unauthorized', '___yo_authLoginOrFinalizePwdReset_AccountDoesNotExist', '___yo_authLoginOrFinalizePwdReset_EmailInvalid', '___yo_authLoginOrFinalizePwdReset_EmailRequiredButMissing', '___yo_authLoginOrFinalizePwdReset_NewPasswordExpectedToDiffer', '___yo_authLoginOrFinalizePwdReset_NewPasswordTooLong', '___yo_authLoginOrFinalizePwdReset_NewPasswordTooShort', '___yo_authLoginOrFinalizePwdReset_PwdReqExpired', '___yo_authLoginOrFinalizePwdReset_PwdResetRequired', '___yo_authLoginOrFinalizePwdReset_WrongPassword', '__userSignInOrReset_ExpectedPasswordAndNickOrEmailAddr', '__userSignInOrReset_WrongPassword'] as const
 export type __userSignInOrResetErr = typeof errs__userSignInOrReset[number]
 export async function api__userSignInOrReset(payload?: ApiUserSignInOrReset, formData?: FormData, query?: {[_:string]:string}): Promise<None> {
 	try {
@@ -310,7 +310,7 @@ export async function api__userSignOut(payload?: None, formData?: FormData, quer
 	}
 }
 
-export const errs__userSignUpOrForgotPassword = ['TimedOut', 'UnacceptableContentLength', 'UnacceptableContentType', '___yo_authRegister_EmailAddrAlreadyExists', '___yo_authRegister_EmailInvalid', '___yo_authRegister_EmailRequiredButMissing', '___yo_authRegister_PasswordInvalid', '___yo_authRegister_PasswordTooLong', '___yo_authRegister_PasswordTooShort', '__userSignUpOrForgotPassword_EmailInvalid', '__userSignUpOrForgotPassword_EmailRequiredButMissing'] as const
+export const errs__userSignUpOrForgotPassword = ['TimedOut', 'UnacceptableContentLength', 'UnacceptableContentType', '___yo_authRegister_EmailAddrAlreadyExists', '___yo_authRegister_EmailInvalid', '___yo_authRegister_EmailRequiredButMissing', '___yo_authRegister_PasswordTooLong', '___yo_authRegister_PasswordTooShort', '__userSignUpOrForgotPassword_EmailInvalid', '__userSignUpOrForgotPassword_EmailRequiredButMissing'] as const
 export type __userSignUpOrForgotPasswordErr = typeof errs__userSignUpOrForgotPassword[number]
 export async function api__userSignUpOrForgotPassword(payload?: ApiNickOrEmailAddr, formData?: FormData, query?: {[_:string]:string}): Promise<None> {
 	try {

@@ -6,6 +6,7 @@ import (
 	yoauth "yo/auth"
 	. "yo/ctx"
 	yodb "yo/db"
+	"yo/misc/emoji"
 	. "yo/srv"
 	. "yo/util"
 	"yo/util/sl"
@@ -93,7 +94,7 @@ func userCur(ctx *Ctx) (ret *User) {
 
 func (me *User) augmentAfterLoaded() *User {
 	if me != nil {
-		me.Offline, me.BtwEmoji = true, emojiUnescaped(string(me.Btw))
+		me.Offline, me.BtwEmoji = true, emoji.GithubLike(string(me.Btw))
 		if me.LastSeen != nil {
 			me.Offline = time.Since(*me.LastSeen.Time()) > (11 * time.Second)
 		}

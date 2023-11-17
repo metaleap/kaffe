@@ -389,8 +389,8 @@
               "example": {
                 "NewPost": {
                   "Id": -9007199254740991,
-                  "DtMade": "2023-11-17T09:26:54.114362125Z",
-                  "DtMod": "2023-11-17T09:26:54.114362125Z",
+                  "DtMade": "2023-11-17T17:06:29.790069329Z",
+                  "DtMod": "2023-11-17T17:06:29.790069329Z",
                   "By": 0,
                   "To": [
                     -9007199254740991
@@ -703,8 +703,8 @@
                   "Posts": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-17T09:26:54.114460072Z",
-                      "DtMod": "2023-11-17T09:26:54.114460072Z",
+                      "DtMade": "2023-11-17T17:06:29.790224505Z",
+                      "DtMod": "2023-11-17T17:06:29.790224505Z",
                       "By": 0,
                       "To": [
                         -9007199254740991
@@ -718,7 +718,7 @@
                       ]
                     }
                   ],
-                  "NextSince": "2023-11-17T09:26:54.114460072Z",
+                  "NextSince": "2023-11-17T17:06:29.790224505Z",
                   "UnreadCounts": {
                     "someMapKey1": -9007199254740991,
                     "some_map_key_2": -9007199254740991
@@ -814,7 +814,7 @@
                 "type": "object"
               },
               "example": {
-                "Since": "2023-11-17T09:26:54.114513192Z",
+                "Since": "2023-11-17T17:06:29.790296137Z",
                 "OnlyBy": [
                   -9007199254740991
                 ]
@@ -846,8 +846,8 @@
                   "Posts": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-17T09:26:54.114460072Z",
-                      "DtMod": "2023-11-17T09:26:54.114460072Z",
+                      "DtMade": "2023-11-17T17:06:29.790224505Z",
+                      "DtMod": "2023-11-17T17:06:29.790224505Z",
                       "By": 0,
                       "To": [
                         -9007199254740991
@@ -861,7 +861,7 @@
                       ]
                     }
                   ],
-                  "NextSince": "2023-11-17T09:26:54.114460072Z",
+                  "NextSince": "2023-11-17T17:06:29.790224505Z",
                   "UnreadCounts": {
                     "someMapKey1": -9007199254740991,
                     "some_map_key_2": -9007199254740991
@@ -984,9 +984,9 @@
                   "Buddies": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-17T09:26:54.114543572Z",
-                      "DtMod": "2023-11-17T09:26:54.114543572Z",
-                      "LastSeen": "2023-11-17T09:26:54.114543572Z",
+                      "DtMade": "2023-11-17T17:06:29.790341714Z",
+                      "DtMod": "2023-11-17T17:06:29.790341714Z",
+                      "LastSeen": "2023-11-17T17:06:29.790341714Z",
                       "Account": 0,
                       "PicFileId": "someStr",
                       "Nick": "someStr",
@@ -1001,9 +1001,9 @@
                   "BuddyRequestsBy": [
                     {
                       "Id": -9007199254740991,
-                      "DtMade": "2023-11-17T09:26:54.114543572Z",
-                      "DtMod": "2023-11-17T09:26:54.114543572Z",
-                      "LastSeen": "2023-11-17T09:26:54.114543572Z",
+                      "DtMade": "2023-11-17T17:06:29.790341714Z",
+                      "DtMod": "2023-11-17T17:06:29.790341714Z",
+                      "LastSeen": "2023-11-17T17:06:29.790341714Z",
                       "Account": 0,
                       "PicFileId": "someStr",
                       "Nick": "someStr",
@@ -1279,9 +1279,9 @@
                 "example": {
                   "Result": {
                     "Id": -9007199254740991,
-                    "DtMade": "2023-11-17T09:26:54.114635431Z",
-                    "DtMod": "2023-11-17T09:26:54.114635431Z",
-                    "LastSeen": "2023-11-17T09:26:54.114635431Z",
+                    "DtMade": "2023-11-17T17:06:29.79048439Z",
+                    "DtMod": "2023-11-17T17:06:29.79048439Z",
+                    "LastSeen": "2023-11-17T17:06:29.79048439Z",
                     "Account": 0,
                     "PicFileId": "someStr",
                     "Nick": "someStr",
@@ -1404,8 +1404,8 @@
               },
               "example": {
                 "NickOrEmailAddr": "someStr",
-                "PasswordPlain": "lenOfMin6AndMax64",
-                "Password2Plain": "lenOfMin6AndMax64"
+                "PasswordPlain": "lenOfMin6AndMax8192",
+                "Password2Plain": "lenOfMin6AndMax8192"
               }
             }
           }
@@ -1504,7 +1504,7 @@
             }
           },
           "422": {
-            "description": "Possible `text/plain` responses:\n- `__userSignInOrReset_ExpectedPasswordAndNickOrEmailAddr`\n- `___yo_authLoginOrFinalizePwdReset_EmailRequiredButMissing`\n- `___yo_authLoginOrFinalizePwdReset_EmailInvalid`\n- `___yo_authLoginOrFinalizePwdReset_NewPasswordTooShort`\n- `___yo_authLoginOrFinalizePwdReset_NewPasswordTooLong`\n- `___yo_authLoginOrFinalizePwdReset_NewPasswordExpectedToDiffer`\n- `___yo_authLoginOrFinalizePwdReset_PwdResetRequired`\n- `___yo_authLoginOrFinalizePwdReset_NewPasswordInvalid`\n- `DbUpdate_ExpectedChangesForUpdate`\n- `DbUpdate_ExpectedQueryForUpdate`",
+            "description": "Possible `text/plain` responses:\n- `__userSignInOrReset_ExpectedPasswordAndNickOrEmailAddr`\n- `___yo_authLoginOrFinalizePwdReset_EmailRequiredButMissing`\n- `___yo_authLoginOrFinalizePwdReset_EmailInvalid`\n- `___yo_authLoginOrFinalizePwdReset_NewPasswordTooShort`\n- `___yo_authLoginOrFinalizePwdReset_NewPasswordTooLong`\n- `___yo_authLoginOrFinalizePwdReset_NewPasswordExpectedToDiffer`\n- `___yo_authLoginOrFinalizePwdReset_PwdResetRequired`\n- `DbUpdate_ExpectedChangesForUpdate`\n- `DbUpdate_ExpectedQueryForUpdate`",
             "headers": {
               "Cache-Control": {
                 "$ref": "#/components/headers/Cache-Control"
@@ -1531,9 +1531,6 @@
                   "___yo_authLoginOrFinalizePwdReset_NewPasswordExpectedToDiffer": {
                     "value": "___yo_authLoginOrFinalizePwdReset_NewPasswordExpectedToDiffer"
                   },
-                  "___yo_authLoginOrFinalizePwdReset_NewPasswordInvalid": {
-                    "value": "___yo_authLoginOrFinalizePwdReset_NewPasswordInvalid"
-                  },
                   "___yo_authLoginOrFinalizePwdReset_NewPasswordTooLong": {
                     "value": "___yo_authLoginOrFinalizePwdReset_NewPasswordTooLong"
                   },
@@ -1551,7 +1548,7 @@
             }
           },
           "500": {
-            "description": "Possible `text/plain` responses:\n- `___yo_authLoginOrFinalizePwdReset_PwdReqExpired`\n- `___yo_authLoginOrFinalizePwdReset_OkButFailedToCreateSignedToken`",
+            "description": "Possible `text/plain` responses:\n- `___yo_authLoginOrFinalizePwdReset_PwdReqExpired`",
             "headers": {
               "Cache-Control": {
                 "$ref": "#/components/headers/Cache-Control"
@@ -1563,9 +1560,6 @@
             "content": {
               "text/plain": {
                 "examples": {
-                  "___yo_authLoginOrFinalizePwdReset_OkButFailedToCreateSignedToken": {
-                    "value": "___yo_authLoginOrFinalizePwdReset_OkButFailedToCreateSignedToken"
-                  },
                   "___yo_authLoginOrFinalizePwdReset_PwdReqExpired": {
                     "value": "___yo_authLoginOrFinalizePwdReset_PwdReqExpired"
                   }
@@ -1784,7 +1778,7 @@
             }
           },
           "422": {
-            "description": "Possible `text/plain` responses:\n- `__userSignUpOrForgotPassword_EmailRequiredButMissing`\n- `__userSignUpOrForgotPassword_EmailInvalid`\n- `___yo_authRegister_EmailRequiredButMissing`\n- `___yo_authRegister_EmailInvalid`\n- `___yo_authRegister_PasswordTooShort`\n- `___yo_authRegister_PasswordTooLong`\n- `___yo_authRegister_PasswordInvalid`",
+            "description": "Possible `text/plain` responses:\n- `__userSignUpOrForgotPassword_EmailRequiredButMissing`\n- `__userSignUpOrForgotPassword_EmailInvalid`\n- `___yo_authRegister_EmailRequiredButMissing`\n- `___yo_authRegister_EmailInvalid`\n- `___yo_authRegister_PasswordTooShort`\n- `___yo_authRegister_PasswordTooLong`",
             "headers": {
               "Cache-Control": {
                 "$ref": "#/components/headers/Cache-Control"
@@ -1801,9 +1795,6 @@
                   },
                   "___yo_authRegister_EmailRequiredButMissing": {
                     "value": "___yo_authRegister_EmailRequiredButMissing"
-                  },
-                  "___yo_authRegister_PasswordInvalid": {
-                    "value": "___yo_authRegister_PasswordInvalid"
                   },
                   "___yo_authRegister_PasswordTooLong": {
                     "value": "___yo_authRegister_PasswordTooLong"
@@ -1864,9 +1855,9 @@
                 "Id": -9007199254740991,
                 "Changes": {
                   "Id": -9007199254740991,
-                  "DtMade": "2023-11-17T09:26:54.114819807Z",
-                  "DtMod": "2023-11-17T09:26:54.114819807Z",
-                  "LastSeen": "2023-11-17T09:26:54.114819807Z",
+                  "DtMade": "2023-11-17T17:06:29.790722922Z",
+                  "DtMod": "2023-11-17T17:06:29.790722922Z",
+                  "LastSeen": "2023-11-17T17:06:29.790722922Z",
                   "Account": {},
                   "PicFileId": "someStr",
                   "Nick": "someStr",
@@ -2082,20 +2073,20 @@
             "type": "string",
             "format": "password",
             "minLength": 6,
-            "maxLength": 64
+            "maxLength": 8192
           },
           "PasswordPlain": {
             "type": "string",
             "format": "password",
             "minLength": 6,
-            "maxLength": 64
+            "maxLength": 8192
           }
         },
         "examples": [
           {
             "NickOrEmailAddr": "someStr",
-            "PasswordPlain": "lenOfMin6AndMax64",
-            "Password2Plain": "lenOfMin6AndMax64"
+            "PasswordPlain": "lenOfMin6AndMax8192",
+            "Password2Plain": "lenOfMin6AndMax8192"
           }
         ]
       },
@@ -2157,8 +2148,8 @@
           {
             "NewPost": {
               "Id": -9007199254740991,
-              "DtMade": "2023-11-17T09:26:54.114362125Z",
-              "DtMod": "2023-11-17T09:26:54.114362125Z",
+              "DtMade": "2023-11-17T17:06:29.790069329Z",
+              "DtMod": "2023-11-17T17:06:29.790069329Z",
               "By": 0,
               "To": [
                 -9007199254740991
@@ -2249,8 +2240,8 @@
             "Posts": [
               {
                 "Id": -9007199254740991,
-                "DtMade": "2023-11-17T09:26:54.114460072Z",
-                "DtMod": "2023-11-17T09:26:54.114460072Z",
+                "DtMade": "2023-11-17T17:06:29.790224505Z",
+                "DtMod": "2023-11-17T17:06:29.790224505Z",
                 "By": 0,
                 "To": [
                   -9007199254740991
@@ -2264,7 +2255,7 @@
                 ]
               }
             ],
-            "NextSince": "2023-11-17T09:26:54.114460072Z",
+            "NextSince": "2023-11-17T17:06:29.790224505Z",
             "UnreadCounts": {
               "someMapKey1": -9007199254740991,
               "some_map_key_2": -9007199254740991
@@ -2328,9 +2319,9 @@
         "examples": [
           {
             "Id": -9007199254740991,
-            "DtMade": "2023-11-17T09:26:54.114850082Z",
-            "DtMod": "2023-11-17T09:26:54.114850082Z",
-            "LastSeen": "2023-11-17T09:26:54.114850082Z",
+            "DtMade": "2023-11-17T17:06:29.790749144Z",
+            "DtMod": "2023-11-17T17:06:29.790749144Z",
+            "LastSeen": "2023-11-17T17:06:29.790749144Z",
             "Account": {},
             "PicFileId": "someStr",
             "Nick": "someStr",
@@ -2489,9 +2480,9 @@
             "Buddies": [
               {
                 "Id": -9007199254740991,
-                "DtMade": "2023-11-17T09:26:54.114543572Z",
-                "DtMod": "2023-11-17T09:26:54.114543572Z",
-                "LastSeen": "2023-11-17T09:26:54.114543572Z",
+                "DtMade": "2023-11-17T17:06:29.790341714Z",
+                "DtMod": "2023-11-17T17:06:29.790341714Z",
+                "LastSeen": "2023-11-17T17:06:29.790341714Z",
                 "Account": 0,
                 "PicFileId": "someStr",
                 "Nick": "someStr",
@@ -2506,9 +2497,9 @@
             "BuddyRequestsBy": [
               {
                 "Id": -9007199254740991,
-                "DtMade": "2023-11-17T09:26:54.114543572Z",
-                "DtMod": "2023-11-17T09:26:54.114543572Z",
-                "LastSeen": "2023-11-17T09:26:54.114543572Z",
+                "DtMade": "2023-11-17T17:06:29.790341714Z",
+                "DtMod": "2023-11-17T17:06:29.790341714Z",
+                "LastSeen": "2023-11-17T17:06:29.790341714Z",
                 "Account": 0,
                 "PicFileId": "someStr",
                 "Nick": "someStr",
@@ -2689,7 +2680,7 @@
         },
         "examples": [
           {
-            "Since": "2023-11-17T09:26:54.114513192Z",
+            "Since": "2023-11-17T17:06:29.790296137Z",
             "OnlyBy": [
               -9007199254740991
             ]
@@ -2787,9 +2778,9 @@
           {
             "Result": {
               "Id": -9007199254740991,
-              "DtMade": "2023-11-17T09:26:54.114635431Z",
-              "DtMod": "2023-11-17T09:26:54.114635431Z",
-              "LastSeen": "2023-11-17T09:26:54.114635431Z",
+              "DtMade": "2023-11-17T17:06:29.79048439Z",
+              "DtMod": "2023-11-17T17:06:29.79048439Z",
+              "LastSeen": "2023-11-17T17:06:29.79048439Z",
               "Account": 0,
               "PicFileId": "someStr",
               "Nick": "someStr",
@@ -2866,9 +2857,9 @@
             "Id": -9007199254740991,
             "Changes": {
               "Id": -9007199254740991,
-              "DtMade": "2023-11-17T09:26:54.114819807Z",
-              "DtMod": "2023-11-17T09:26:54.114819807Z",
-              "LastSeen": "2023-11-17T09:26:54.114819807Z",
+              "DtMade": "2023-11-17T17:06:29.790722922Z",
+              "DtMod": "2023-11-17T17:06:29.790722922Z",
+              "LastSeen": "2023-11-17T17:06:29.790722922Z",
               "Account": {},
               "PicFileId": "someStr",
               "Nick": "someStr",

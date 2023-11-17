@@ -15,6 +15,7 @@ import (
 	. "yo/ctx"
 	yodb "yo/db"
 	q "yo/db/query"
+	"yo/misc/emoji"
 	. "yo/srv"
 	. "yo/util"
 	"yo/util/sl"
@@ -270,7 +271,7 @@ var apiPostNew = api(func(this *ApiCtx[PostNew, Return[yodb.I64]]) {
 		this.Args.NewPost.Htm = yodb.Text(str.Trim(str.Replace(string(" "+this.Args.NewPost.Htm+" "), uris)))
 		if idx1 := str.Idx(string(this.Args.NewPost.Htm), ':'); idx1 >= 0 {
 			if idx2 := str.IdxLast(string(this.Args.NewPost.Htm), ':'); idx2 > idx1 {
-				this.Args.NewPost.Htm = yodb.Text(str.Replace(string(this.Args.NewPost.Htm), emojiKnown))
+				this.Args.NewPost.Htm = yodb.Text(str.Replace(string(this.Args.NewPost.Htm), emoji.GithubLikeAsHtml))
 			}
 		}
 	}
@@ -294,9 +295,9 @@ var apiPostDelete = api(func(this *ApiCtx[struct {
 })
 
 var apiPostEmojiFullList = api(func(this *ApiCtx[None, Return[map[string]string]]) {
-	this.Ret.Result = make(map[string]string, len(emojiKnown))
-	for emoji_code := range emojiKnown {
-		this.Ret.Result[emoji_code] = emojiUnescaped(emoji_code)
+	this.Ret.Result = make(map[string]string, len(emoji.GithubLikeAsHtml))
+	for emoji_code := range emoji.GithubLikeAsHtml {
+		this.Ret.Result[emoji_code] = emoji.GithubLike(emoji_code)
 	}
 })
 
