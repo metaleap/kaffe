@@ -23,7 +23,7 @@ func init() {
 	AppSideStaticRePathFor = func(reqUrlPath string) string {
 		return If(str.Begins(reqUrlPath, "_/"), "", "__static/kaffe.html")
 	}
-	StaticFileFilters["picRounded"] = imageRoundedSvgOfImage
+	StaticFileFilters["picRounded"] = imageRoundedSvgOfSquareImage
 	OnBeforeServingStaticFile = func(ctx *Ctx) {
 		var is_anon *bool
 		for static_dir_name := range StaticFileDirs {

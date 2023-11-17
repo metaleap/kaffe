@@ -160,6 +160,7 @@ func postsDeleted(ctx *Ctx, postIds []yodb.I64) (ret []yodb.I64) {
 }
 
 func postDelete(ctx *Ctx, post *Post) bool {
+	ctx.DbTx(false)
 	if len(post.Files) > 0 {
 		yodb.CreateOne[fileDelReq](ctx, &fileDelReq{FileNames: post.Files})
 	}

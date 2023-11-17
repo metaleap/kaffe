@@ -49,7 +49,7 @@ func init() {
 	}
 	devModeInitMockUsers = func() {
 		// ensure all users exist
-		for i := 1; i <= mockUsersNumTotal; i++ {
+		for i := 2; i <= mockUsersNumTotal; i++ {
 			mockEnsureUser(i)
 		}
 

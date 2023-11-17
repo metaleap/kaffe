@@ -13,8 +13,8 @@ import (
 	"yo/util/sl"
 )
 
-// assumes a square image, as we do square avatar uploads. only for avatar favicons, since we css-round otherwise.
-func imageRoundedSvgOfImage(_ *Ctx, src_raw []byte) (fileExt string, fileSrc []byte) {
+// assumes a square image, as we do square avatar uploads. only for favicons, since we css-round otherwise.
+func imageRoundedSvgOfSquareImage(_ *Ctx, src_raw []byte) (fileExt string, fileSrc []byte) {
 	_, format, _ := image.Decode(bytes.NewReader(src_raw))
 
 	src_b64 := base64.StdEncoding.EncodeToString(src_raw)

@@ -74,10 +74,11 @@ func elizaEnsureUser() {
 			EmailAddr: yodb.Text(elizaUser.emailAddr),
 		})
 		user := &User{
-			LastSeen:  yodb.DtNow(),
-			PicFileId: yodb.Text(elizaUser.picFileName),
-			Nick:      yodb.Text(elizaUser.nick),
-			Btw:       yodb.Text(elizaUser.btw),
+			LastSeen:        yodb.DtNow(),
+			PicFileId:       yodb.Text(elizaUser.picFileName),
+			Nick:            yodb.Text(elizaUser.nick),
+			Btw:             yodb.Text(elizaUser.btw),
+			gravatarChecked: true,
 		}
 		user.Account.SetId(account_id)
 		elizaUser.id = yodb.CreateOne[User](ctx, user)
